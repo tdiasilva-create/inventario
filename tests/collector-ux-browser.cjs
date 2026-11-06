@@ -10,7 +10,10 @@ const pw=require('./helpers/playwright.cjs');
  const browser=await pw.chromium.launch({headless:true,channel:'msedge'}),page=await browser.newPage({viewport:{width:390,height:660},isMobile:true,hasTouch:true});page.setDefaultTimeout(10000);page.on('pageerror',e=>errors.push(e.stack));page.on('dialog',d=>d.accept());
  const shot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png'});};
  const metric=async()=>page.evaluate(()=>{const rect=s=>{const e=document.querySelector(s);if(!e)return null;const r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:r.height};};return {width:innerWidth,height:innerHeight,scrollY,visualHeight:visualViewport?.height,header:rect('.app-header'),footer:rect('.collection-footer'),firstItem:rect('.equipment-card'),filter:rect('[data-field=_query]'),active:document.activeElement?.dataset?.field||document.activeElement?.tagName};});
- const closeKeyboard=async()=>{const close=page.getByRole('button',{name:'Fechar teclado',exact:true});if(await close.isVisible())await close.click();await page.waitForFunction(()=>!document.querySelector('#collector.is-typing'));};
+ const closeKeyboard=async()=>{
+  // Esperar a atualização visual disparada pelo foco antes de consultar o botão.
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  const close=page.getByRole('button',{name:'Fechar teclado',exact:true});if(await close.isVisible())await close.click();await page.waitForFunction(()=>!document.querySelector('#collector.is-typing'));};
  const data={passed:false,keyboardPhysicalTest:false,measurements:{}};
  const png={name:'TESTE.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aKxkAAAAASUVORK5CYII=','base64')};
  try{
