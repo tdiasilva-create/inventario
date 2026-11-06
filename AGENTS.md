@@ -42,3 +42,5 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 - Atualizar documentação e `docs/00-governanca/RASTREABILIDADE.md` quando houver mudança aprovada; preservar sempre a Base de Coleta original.
 
 
+
+- D-068 (06/11/2026): sete tipos atuais em web/unit-schema.js; conveniadas fora do escopo, histórico preservado, somente inativação/exclusão pelo root. Obras visíveis no desktop e indisponíveis para coleta (também validação no servidor). Quinze campos opcionais do cadastro mestre, modelo 27 colunas/compatibilidade 12, matriz abreviada e Total. Decisões de nomes/etapas/obras já confirmadas. Migração 0016 aplicada em produção; nunca renomear 0015_questionario_v3.sql. Publicação real dos dois Workers autorizada e executada em 06/11/2026; carga de planilhas permanece pendente. D-065–D-067 preservadas. Ver docs/05-qualidade/PUBLICACAO_D068_2026-11-06.md.

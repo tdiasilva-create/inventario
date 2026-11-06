@@ -15,3 +15,7 @@
 | Risco/criticidade | Prioridades registradas e política futura | Não inferir risco por baixa quantidade; nível Baixa/Média/Alta/Crítica ainda sem critérios institucionais completos. |
 
 **Não implementar percentuais nem séries históricas fictícias.** Na primeira etapa desktop, usar contratos tipados e dados de demonstração apenas quando rotulados, até SQL e indicadores serem validados.
+
+## D-068 — números do cadastro, separados dos resultados de vistoria
+
+Rede em números soma students_total, classes_total, seats_available e staff_total das unidades ativas filtradas, excluindo conveniadas e obras. Cada métrica informa cobertura; N de M geral conta unidades com ao menos um desses quatro campos. Nenhum valor informado: —, inclusive conjunto vazio; zero informado: 0. Fontes/datas podem variar e ficam no detalhe. Falha da API: indisponível, não zero. A contagem por categoria mantém sete tipos; não criar total genérico de unidades. Total da matriz soma as oito categorias físicas já publicadas, sem incorporar rascunhos.

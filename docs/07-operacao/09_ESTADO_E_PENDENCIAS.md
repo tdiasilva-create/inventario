@@ -51,3 +51,9 @@ Listas anteriores de R2 bloqueado, autorização de lote, ausência de fotografi
 ## Escopo desta entrega
 
 Documentação, organização Git, exemplos locais, catálogo físico e portabilidade dos três testes de navegador atuais. Nenhuma nova pergunta, regra, tela, migração SQL, credencial ou deploy de produção. Base original preservada. Resultados efetivamente executados ficam no [registro da organização](10_REGISTRO_DA_ORGANIZACAO.md).
+
+## Publicação D-068 — 06/11/2026
+
+O responsável autorizou a publicação após a entrega local. Migração 0016 aplicada ao D1 compartilhado, com backup anterior; painel 8f38585c-a65e-417a-a499-04d406209149 e coletor 859d0016-755f-4104-94ed-94e4780e2f8e ativos em 100%. Configurações e integração Drive preservadas. As 69 unidades existentes foram conferidas sem alteração de seus campos anteriores. Código de cadastro ampliado e escopo/matriz disponível no ambiente real. Ver [publicação D-068](../05-qualidade/PUBLICACAO_D068_2026-11-06.md).
+
+Sem importação automática. A planilha de escolas tem vagas -16 na linha 31; campos e tipos aprovados não autorizam corrigir a fonte, reclassificar registros ou carregar dados. A carga, prioridade das fontes e atualização em lote por INEP permanecem pendentes. A cópia do D1 e o ensaio em SQLite não equivalem a restauração completa com arquivos do Drive. Ver também [testes locais](../05-qualidade/CADASTRO_UNIDADES_2026-11-06.md).

@@ -36,3 +36,7 @@ A entidade usuários agora tem os quatro perfis aprovados pelo responsável, sup
 ## Administração de unidades — D-035
 
 Cadastro/edição de unidades e atribuição direta a operadores agora operacionais em `/administracao`, exclusivo root. O catálogo é real, persistido em `units`; a lista `/api/units` filtra o operador por `unit_assignments` e por unidade ativa. Não há ainda importação ou grupos de autorização, calendário de visitas, tabelas de equipamentos ou coletas. Campo nome individual disponível na criação de conta. Criação exclusiva root; admin não cria contas por D-035.
+
+## Implementação local posterior: D-068
+
+Migração aditiva 0016 adiciona à entidade units os inteiros opcionais students_total, students_daycare, students_preschool, students_early_years, students_final_years, students_eja, classes_total, seats_available, capacity_total, staff_total, teachers_total, com CHECK 0–99999 ou NULL. Acrescenta building_code/notes/figures_source (texto, vazio permitido) e figures_reference_date (ISO ou NULL). Valores são cadastro mestre, não respostas de vistoria. Sem backfill, cópia de planilha ou reclassificação. Tipos canônicos e INEP definidos em web/unit-schema.js; conveniadas preservadas como legado fora do inventário. Dicionário físico em docs/07-operacao/gerado é gerado de migrações locais, não afirma aplicação no D1 remoto.

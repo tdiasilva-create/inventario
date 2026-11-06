@@ -60,6 +60,10 @@
     {
       "file": "0015_questionario_v3.sql",
       "sha256": "1a70a869ea035fc2d95f7f46ed921399be96fd43ae4ff29572ca795a16c67587"
+    },
+    {
+      "file": "0016_unidades_cadastro_ampliado.sql",
+      "sha256": "c240a02f7c760baa8c1cdf38a2be93c8d7d315673e37b623db58b626e0c17dbe"
     }
   ],
   "tables": [
@@ -3731,6 +3735,126 @@
           "notnull": 1,
           "dflt_value": "''",
           "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "students_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "students_daycare",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "students_preschool",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "students_early_years",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "students_final_years",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "students_eja",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "classes_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 24,
+          "name": "seats_available",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 25,
+          "name": "capacity_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 26,
+          "name": "staff_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 27,
+          "name": "teachers_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 28,
+          "name": "building_code",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 29,
+          "name": "notes",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 30,
+          "name": "figures_source",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 31,
+          "name": "figures_reference_date",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
         }
       ],
       "foreignKeys": []
@@ -4422,7 +4546,7 @@
       "type": "table",
       "name": "units",
       "tbl_name": "units",
-      "sql": "CREATE TABLE units (id TEXT PRIMARY KEY,name TEXT NOT NULL,name_key TEXT NOT NULL UNIQUE,code TEXT UNIQUE,address TEXT NOT NULL DEFAULT '',neighborhood TEXT NOT NULL DEFAULT '',latitude REAL,longitude REAL,active INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL, manager_name TEXT NOT NULL DEFAULT '', unit_type TEXT NOT NULL DEFAULT '', region TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '')"
+      "sql": "CREATE TABLE units (id TEXT PRIMARY KEY,name TEXT NOT NULL,name_key TEXT NOT NULL UNIQUE,code TEXT UNIQUE,address TEXT NOT NULL DEFAULT '',neighborhood TEXT NOT NULL DEFAULT '',latitude REAL,longitude REAL,active INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL, manager_name TEXT NOT NULL DEFAULT '', unit_type TEXT NOT NULL DEFAULT '', region TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', students_total INTEGER CHECK(students_total IS NULL OR (typeof(students_total)='integer' AND students_total BETWEEN 0 AND 99999)), students_daycare INTEGER CHECK(students_daycare IS NULL OR (typeof(students_daycare)='integer' AND students_daycare BETWEEN 0 AND 99999)), students_preschool INTEGER CHECK(students_preschool IS NULL OR (typeof(students_preschool)='integer' AND students_preschool BETWEEN 0 AND 99999)), students_early_years INTEGER CHECK(students_early_years IS NULL OR (typeof(students_early_years)='integer' AND students_early_years BETWEEN 0 AND 99999)), students_final_years INTEGER CHECK(students_final_years IS NULL OR (typeof(students_final_years)='integer' AND students_final_years BETWEEN 0 AND 99999)), students_eja INTEGER CHECK(students_eja IS NULL OR (typeof(students_eja)='integer' AND students_eja BETWEEN 0 AND 99999)), classes_total INTEGER CHECK(classes_total IS NULL OR (typeof(classes_total)='integer' AND classes_total BETWEEN 0 AND 99999)), seats_available INTEGER CHECK(seats_available IS NULL OR (typeof(seats_available)='integer' AND seats_available BETWEEN 0 AND 99999)), capacity_total INTEGER CHECK(capacity_total IS NULL OR (typeof(capacity_total)='integer' AND capacity_total BETWEEN 0 AND 99999)), staff_total INTEGER CHECK(staff_total IS NULL OR (typeof(staff_total)='integer' AND staff_total BETWEEN 0 AND 99999)), teachers_total INTEGER CHECK(teachers_total IS NULL OR (typeof(teachers_total)='integer' AND teachers_total BETWEEN 0 AND 99999)), building_code TEXT NOT NULL DEFAULT '', notes TEXT NOT NULL DEFAULT '', figures_source TEXT NOT NULL DEFAULT '', figures_reference_date TEXT)"
     },
     {
       "type": "table",

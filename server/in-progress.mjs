@@ -19,14 +19,14 @@ export async function inProgressRead(request,url,user,env,{json,fail}){
    COALESCE(t.records,0) AS records,COALESCE(t.items,0) AS items,COALESCE(t.new_records,0) AS new_records,COALESCE(t.changed_records,0) AS changed_records,
    (SELECT json_group_object(s.section,s.state) FROM inspection_sections s WHERE s.inspection_id=i.id) AS states_json
    FROM inspections i JOIN units u ON u.id=i.unit_id LEFT JOIN users creator ON creator.id=i.created_by LEFT JOIN inspection_collection_totals t ON t.inspection_id=i.id
-   WHERE i.state='open' AND u.active=1 ${cursor?'AND (i.created_at<? OR (i.created_at=? AND i.id<?))':''}
+   WHERE i.state='open' AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') ${cursor?'AND (i.created_at<? OR (i.created_at=? AND i.id<?))':''}
    ORDER BY i.created_at DESC,i.id DESC LIMIT 51`).bind(...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
-  const total=await db.prepare("SELECT COUNT(*) AS count FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.state='open' AND u.active=1").first();
+  const total=await db.prepare("SELECT COUNT(*) AS count FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.state='open' AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").first();
   const page=rows.slice(0,50),last=page.at(-1);
   return json({items:page.map(r=>({...r,states:r.questionnaire_version===visitVersion?visitStates(parse(r.visit_json)):parse(r.states_json),visit_json:undefined,states_json:undefined})),total:total.count,nextCursor:rows.length>50?btoa(JSON.stringify([last.created_at,last.id])):null,serverTime:Date.now()});
  }
  const id=url.searchParams.get('id');if(!uuid(id))return fail('Vistoria inválida.');
- const inspection=await db.prepare("SELECT i.*,u.name AS unit_name,COALESCE(NULLIF(creator.display_name,''),creator.username,'Usuário indisponível') AS created_by_name FROM inspections i JOIN units u ON u.id=i.unit_id LEFT JOIN users creator ON creator.id=i.created_by WHERE i.id=? AND u.active=1").bind(id).first();
+ const inspection=await db.prepare("SELECT i.*,u.name AS unit_name,COALESCE(NULLIF(creator.display_name,''),creator.username,'Usuário indisponível') AS created_by_name FROM inspections i JOIN units u ON u.id=i.unit_id LEFT JOIN users creator ON creator.id=i.created_by WHERE i.id=? AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").bind(id).first();
  if(!inspection)return fail('Vistoria indisponível.',404);
  if(path==='/api/inventory/in-progress-detail'){
   const rows=(await db.prepare("SELECT s.section,s.state,s.data_json,s.version,s.updated_at,COALESCE(NULLIF(u.display_name,''),u.username,'Usuário indisponível') AS updated_by_name FROM inspection_sections s LEFT JOIN users u ON u.id=s.updated_by WHERE s.inspection_id=? ORDER BY s.section").bind(id).all()).results;

@@ -106,3 +106,14 @@ As referências acima a aprovação/publicação de V2/QR aguardando autorizaç�
 
 ### Atualização D-058 — 05/11/2026
 O responsável escolheu explicitamente cadastro automático SEM lote. A exigência de GRANT_USED/INVALID_GRANT para novas instalações foi superada. Novos cadastros são pendentes e assinados; vínculo e telemetria continuam protegidos. Testes locais: 94 aprovados, incluindo 200 identidades no mesmo IP e reenvio tardio sem duplicação. Pendentes: homologação física do EXE 0.1.8 em dois PCs Windows, leitura pela câmera do celular, reinício/reinstalação/queda de rede. Não confundir teste de protocolo com execução do EXE. Alertas de troca de peça e QR permanente continuam fora desta entrega.
+
+### D-068 — cadastro ampliado, publicado em 06/11/2026
+- [x] Três propostas confirmadas: nomes dos tipos, total/etapas de alunos e obras fora da coleta. Não perguntar novamente.
+- [x] Publicação do código nos dois Workers e migração aditiva 0016 no D1 compartilhado, após autorização posterior do responsável. Backup anterior e conferência dos registros existentes; ver docs/05-qualidade/PUBLICACAO_D068_2026-11-06.md. Sem carga automática.
+- [ ] Carga pelo root após publicação. Não interpretar 141 nomes de referência, arquivos de importação ou sugestões da planilha como cadastro oficial já gravado.
+- [ ] Corrigir na fonte importacao_escolas_municipais.csv, linha 31: vagas disponíveis -16. Lote de 71 linhas bloqueado corretamente; quatro outros lotes passaram em SQLite isolado (8/33/6/17).
+- [ ] Confirmar prioridade das fontes dos números, inativação de três escolas e reclassificações sugeridas no pacote, inclusive EC Mickey; nenhuma executada automaticamente.
+- [ ] A-cadastro-01: atualização de números em lote por INEP não autorizada/implementada. Importação permanece inserção; unidades existentes são editadas pelo root, com versão.
+- [ ] Homologação física das novas telas publicadas. Teste de navegador local e conferência desktop real não confirmam fluxo no celular real nem novo upload ao Drive real.
+
+- [ ] Atualizar roteiros antigos de navegador V2/QR/fotos citados no pacote: esperam entrada, botão ou título de versão removidos por D-060. Falhas e substituição pelo aceite do fluxo atual registradas em docs/05-qualidade/CADASTRO_UNIDADES_2026-11-06.md; não reintroduzir comportamento antigo.

@@ -1,0 +1,33 @@
+/* D-068: cadastro opcional e matriz compacta; identidade D-065 preservada. */
+.matrix-panel{container:matrix / inline-size}
+.matrix-panel .matrix,.panorama-edited .panorama-matrix .matrix{min-width:0;width:100%;table-layout:fixed!important}
+.matrix-panel .matrix th:first-child,.panorama-edited .panorama-matrix th:first-child{width:23%;min-width:0;max-width:none}
+.matrix-panel .matrix .unit-name,.panorama-edited .panorama-matrix .unit-name{min-width:0;max-width:none;white-space:normal;line-height:1.2}
+.matrix-panel .matrix .unit-name button,.panorama-edited .panorama-matrix .unit-name button{display:block;width:100%;max-width:100%;font-size:10px;font-weight:600;white-space:normal;overflow:hidden;overflow-wrap:anywhere;padding:5px 4px;text-align:left;line-height:1.2}
+.matrix .unit-name .short{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.matrix-panel .matrix .unit-name small.full{display:block;font-weight:400;font-size:10px;color:var(--texto-secundario);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.matrix-panel .matrix td{height:30px}.matrix-panel .matrix th{height:40px;overflow:hidden}
+.matrix-panel .matrix .heat button{font-size:12px;font-weight:700;padding:0;line-height:1.2}
+.matrix-panel .matrix .total{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;padding:0 5px;background:var(--cinza-claro,#f3f4f5);color:var(--preto,#16191d);border-bottom:1px solid var(--borda,#d8dde2)}
+.matrix-panel .matrix .total-head{width:9%;font-size:10px}
+.matrix th .th-label{display:block;font-size:9px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.matrix-panel .matrix th .icon{max-width:20px}
+.expanded-matrix .matrix th:first-child{width:26%}.expanded-matrix .matrix .unit-name button{font-size:12px}.expanded-matrix .matrix .heat button,.expanded-matrix .matrix .total{font-size:13px}
+@container matrix (max-width:520px){.matrix th .th-label{display:none}}
+.network-figures{border-top:1px solid var(--borda,#d8dde2);padding:10px 2px 2px;margin-top:8px}.network-figures h3{font-size:13px;margin:0 0 8px}.network-figures dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;gap:8px}
+.network-figures dt{font-size:12px}.network-figures dd{font-size:20px;font-weight:700;margin:3px 0}.network-figures small,.network-figures p{font-size:11px;color:var(--texto-secundario);margin-bottom:0}
+.unit-master-figures dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.unit-master-figures dt{font-size:12px}.unit-master-figures dd{margin:0;font-size:18px;font-weight:600}.unit-master-figures p{overflow-wrap:anywhere}
+.unit-figures-line{display:block;font-size:11px;margin-top:4px;color:var(--texto-secundario)}
+.unit-numbers-heading,.unit-numbers-warning,.unit-scope-notice{grid-column:1/-1}
+.unit-numbers-heading{font-size:16px;border-top:1px solid var(--borda,#d8dde2);padding-top:20px;margin:10px 0 0}
+.unit-numbers-warning:not(:empty),.unit-scope-notice:not(:empty){padding:12px;background:#fff5d9;color:#654500;border:1px solid #d8bd6c;border-radius:6px}
+.unit-numbers-warning:empty,.unit-scope-notice:empty{display:none}
+#unit-fields textarea{width:100%;min-height:80px;resize:vertical;border:1px solid var(--borda,#d8dde2);border-radius:8px;padding:10px;background:#fff;color:#16191d;font:inherit}
+@media(max-width:700px){.network-figures dl,.unit-master-figures dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Neutraliza a largura fixa legada de 82px por categoria. */
+.matrix-panel .matrix thead th:not(:first-child){width:8.5%;min-width:0;padding:8px 2px}
+.matrix-panel .matrix thead th.total-head{width:9%}
+.matrix-panel .matrix thead th:first-child{width:23%;min-width:0;padding:8px 4px}
+.expanded-matrix .matrix thead th:first-child{width:26%}
+.matrix-panel .matrix thead .ico{width:19px;height:19px}

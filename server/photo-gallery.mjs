@@ -3,7 +3,7 @@ import {photoStore,StorageError} from './photo-storage.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 const kinds=['facade','environment','equipment','answer','occurrence'];
 const from=`FROM collection_photos p JOIN units u ON u.id=p.unit_id JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id`;
-const eligible=`u.active=1 AND p.status='ready' AND i.state IN ('open','paused','completed') AND (i.state<>'completed' OR p.target_kind<>'equipment' OR EXISTS(SELECT 1 FROM inventory_equipment_all eq WHERE eq.id=p.target_id AND eq.unit_id=p.unit_id AND eq.published_json IS NOT NULL))`;
+const eligible=`u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND p.status='ready' AND i.state IN ('open','paused','completed') AND (i.state<>'completed' OR p.target_kind<>'equipment' OR EXISTS(SELECT 1 FROM inventory_equipment_all eq WHERE eq.id=p.target_id AND eq.unit_id=p.unit_id AND eq.published_json IS NOT NULL))`;
 export async function photoGalleryRead(request,url,user,env,{json,fail}){
  if(!['/api/inventory/photos','/api/inventory/photo'].includes(url.pathname))return null;
  if(!user)return fail('Autenticação necessária.',401);

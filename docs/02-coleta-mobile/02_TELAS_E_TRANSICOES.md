@@ -47,3 +47,7 @@
 
 ## Regra de integridade de arte
 Fotos de fachadas, nomes fictícios, distância das escolas, horário de status e rótulos de `passo 1 de 4` dos PNGs não se tornam dados ou requisitos institucionais. A quantidade de etapas por ficha deve ser determinada pelos campos reais do TXT.
+
+## Escopo posterior D-068 — sem alterar perguntas ou interface
+
+Depois de publicada a mudança D-068, a lista imediata de unidades continua, mas conveniadas e obras em andamento ficam fora da coleta; URL direta também é recusada pelo servidor. Obras são liberadas apenas após root alterar o tipo quando entregues. Campos numéricos do cadastro mestre não são editados no coletor. QR, fotos, fluxo atual, históricos e retomada preservados. Não reescrever a Base de Coleta original.

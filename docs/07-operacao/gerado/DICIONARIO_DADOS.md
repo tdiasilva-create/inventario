@@ -17,6 +17,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0013_photo_storage.sql`
 - `0014_agentes.sql`
 - `0015_questionario_v3.sql`
+- `0016_unidades_cadastro_ampliado.sql`
 
 ## agent_audit_log
 
@@ -703,6 +704,21 @@ Referências: `assigned_by` → `users.id` (delete: NO ACTION); `unit_id` → `u
 | region | TEXT | sim |  | '' |
 | phone | TEXT | sim |  | '' |
 | email | TEXT | sim |  | '' |
+| students_total | INTEGER | não |  | — |
+| students_daycare | INTEGER | não |  | — |
+| students_preschool | INTEGER | não |  | — |
+| students_early_years | INTEGER | não |  | — |
+| students_final_years | INTEGER | não |  | — |
+| students_eja | INTEGER | não |  | — |
+| classes_total | INTEGER | não |  | — |
+| seats_available | INTEGER | não |  | — |
+| capacity_total | INTEGER | não |  | — |
+| staff_total | INTEGER | não |  | — |
+| teachers_total | INTEGER | não |  | — |
+| building_code | TEXT | sim |  | '' |
+| notes | TEXT | sim |  | '' |
+| figures_source | TEXT | sim |  | '' |
+| figures_reference_date | TEXT | não |  | — |
 
 ## users
 

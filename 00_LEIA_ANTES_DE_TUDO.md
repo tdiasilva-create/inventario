@@ -32,3 +32,7 @@ Codex: leia `AGENTS.md`, indexe os documentos, abra os PNGs, mostre uma matriz d
 
 ## Conteúdo faltante que ninguém deve inventar
 Lista oficial completa das 90 unidades, credenciais e recursos Cloudflare, brasão/logotipos oficiais autorizados, coordenadas geográficas, regras de negócio desktop ainda não finalizadas, e os pontos P1–P11 do TXT (§14). É possível desenvolver com seeds DEMO rotuladas, nunca fingir que são dados oficiais.
+
+## Atualização D-068 — publicada em 06/11/2026
+
+Cadastro ampliado, tipos de unidade e matriz compacta publicados nos dois Workers reais após autorização do responsável. Migração aditiva 0016 aplicada ao D1 compartilhado, com backup prévio e sem carga de planilhas. Conveniadas fora do escopo e obras fora da coleta. Base original preservada. Consultar DECISOES/PENDENCIAS, [testes locais](docs/05-qualidade/CADASTRO_UNIDADES_2026-11-06.md) e [publicação real](docs/05-qualidade/PUBLICACAO_D068_2026-11-06.md).

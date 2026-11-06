@@ -1,8 +1,10 @@
+import {unitColumns,isOutOfScope} from '../web/unit-schema.js';
+import {inventoryScopeSql,collectionScopeSql} from './unit-scope.mjs';
 import {validateUnit} from './unit-validation.mjs';
 import {unitDeletion} from './unit-deletion.mjs';
 import {operatorUnitAccess,operatorUnitParams} from './collector-access.mjs';
 export {validateUnit} from './unit-validation.mjs';
-export async function unitRoutes(request,url,user,db,{json,fail,body,audit,photos,store}){
+export async function unitRoutes(request,url,user,db,{json,fail,body,audit,photos,store,collector=false}){
  const path=url.pathname;
  const deletion=await unitDeletion(request,url,user,db,{json,fail,body,audit,photos,store});if(deletion)return deletion;
  if(path==='/api/units'&&request.method==='GET'){
@@ -10,22 +12,24 @@ export async function unitRoutes(request,url,user,db,{json,fail,body,audit,photo
    COALESCE((SELECT SUM(pc.records) FROM published_equipment_counts pc WHERE pc.unit_id=u.id),0) AS inventory_records,
    COALESCE((SELECT records FROM unit_collection_totals t WHERE t.unit_id=u.id),0) AS draft_records,
    EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='open') AS collection_started
-   FROM units u WHERE u.active=1 ${user.role==='operador'?'AND '+operatorUnitAccess():''} ORDER BY u.name COLLATE NOCASE`;
+   FROM units u WHERE u.active=1 AND ${user.role==='operador'||collector?collectionScopeSql():inventoryScopeSql()} ${user.role==='operador'?'AND '+operatorUnitAccess():''} ORDER BY u.name COLLATE NOCASE`;
   const stmt=db.prepare(query);return json({units:(await (user.role==='operador'?stmt.bind(...operatorUnitParams(user)):stmt).all()).results});
  }
  if(!path.startsWith('/api/root/'))return null;
  if(user.role!=='root')return fail('Somente root pode administrar unidades e atribuições.',403);
- if(path==='/api/root/units'&&request.method==='GET')return json({units:(await db.prepare("SELECT u.*,(SELECT i.id FROM inspections i WHERE i.unit_id=u.id AND i.state='open') AS open_inspection FROM units u ORDER BY u.name").all()).results});
+ if(path==='/api/root/units'&&request.method==='GET')return json({units:(await db.prepare("SELECT u.*,CASE WHEN u.unit_type='Escola conveniada' THEN 1 ELSE 0 END AS out_of_scope,(SELECT i.id FROM inspections i WHERE i.unit_id=u.id AND i.state='open') AS open_inspection FROM units u ORDER BY u.name").all()).results});
  if(path==='/api/root/unit-save'&&request.method==='POST'){
   const data=await body(request);const old=data.id?await db.prepare('SELECT * FROM units WHERE id=?').bind(String(data.id)).first():null;const checked=validateUnit({...old,...data,active:data.active??(old?!!old.active:true)});if(checked.error)return json({error:checked.error,fields:checked.fields},400);const v=checked.value;
+  if(old&&isOutOfScope(old.unit_type)){v.name_key=old.name_key;if(v.active!==0||Object.keys(v).some(key=>key!=='active'&&v[key]!==old[key]))return fail('Unidade fora do escopo: somente inativação ou exclusão são permitidas.',400);}
   if(data.id&&!old)return fail('Unidade não encontrada.',404);
   if(old&&(!Number.isInteger(data.version)||old.version!==data.version))return fail('Unidade alterada por outro acesso. Recarregue antes de salvar.',409);
   const duplicate=await db.prepare('SELECT id FROM units WHERE (name_key=? OR (code IS NOT NULL AND code=?)) AND id<>?').bind(v.name_key,v.code,old?.id||'').first();if(duplicate){const row=await db.prepare('SELECT name,code FROM units WHERE id=?').bind(duplicate.id).first();const field=v.code&&row.code===v.code?'code':'name';const message=field==='code'?'INEP já cadastrado em '+row.name:'Nome já cadastrado: '+row.name;return json({error:message,fields:{[field]:message}},409);}
   const now=Date.now(),id=old?.id||crypto.randomUUID();let stmt;
-  if(old)stmt=db.prepare('UPDATE units SET name=?,name_key=?,code=?,address=?,neighborhood=?,latitude=?,longitude=?,active=?,manager_name=?,unit_type=?,region=?,phone=?,email=?,version=version+1,updated_at=? WHERE id=? AND version=?').bind(v.name,v.name_key,v.code,v.address,v.neighborhood,v.latitude,v.longitude,v.active,v.manager_name,v.unit_type,v.region,v.phone,v.email,now,id,data.version);
-  else stmt=db.prepare('INSERT INTO units(id,name,name_key,code,address,neighborhood,latitude,longitude,active,manager_name,unit_type,region,phone,email,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,v.name,v.name_key,v.code,v.address,v.neighborhood,v.latitude,v.longitude,v.active,v.manager_name,v.unit_type,v.region,v.phone,v.email,now,now);
+  const columns=['name_key',...unitColumns.map(([key])=>key)];
+  if(old)stmt=db.prepare('UPDATE units SET '+columns.map(key=>key+'=?').join(',')+',version=version+1,updated_at=? WHERE id=? AND version=?').bind(...columns.map(key=>v[key]),now,id,data.version);
+  else stmt=db.prepare('INSERT INTO units(id,'+columns.join(',')+',created_at,updated_at) VALUES('+Array(columns.length+3).fill('?').join(',')+')').bind(id,...columns.map(key=>v[key]),now,now);
   const result=await db.batch([stmt,db.prepare('INSERT INTO unit_changes(actor_id,event,target_id,payload,created_at) VALUES(?,?,?,?,?)').bind(user.id,old?'unit_updated':'unit_created',id,JSON.stringify({before:old,after:v}),now),audit(db,user.id,(old?'unit_updated:':'unit_created:')+id)]);
-  if(!result[0].meta.changes)return fail('Conflito de atualização. Recarregue.',409);return json({id},old?200:201);
+  if(!result[0].meta.changes)return fail('Conflito de atualização. Recarregue.',409);return json({id,warnings:checked.warnings},old?200:201);
  }
  if(path==='/api/root/assignments'&&request.method==='GET')return json({operators:(await db.prepare("SELECT id,username,display_name,active FROM users WHERE role='operador' ORDER BY username").all()).results,assignments:(await db.prepare('SELECT user_id,unit_id FROM unit_assignments').all()).results});
  if(path==='/api/root/assignments'&&request.method==='POST'){

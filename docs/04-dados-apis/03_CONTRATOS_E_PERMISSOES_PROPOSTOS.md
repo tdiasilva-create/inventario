@@ -35,3 +35,11 @@ Este documento organiza endpoints e eventos para que o Codex possa planejar a im
 
 ## Restrições técnicas a validar
 Browsers mobile podem limitar armazenamento persistente, câmera, detecção Wi-Fi, WebAuthn offline, background sync e execução após fechamento. Não vender recursos como garantidos: testes em dispositivos são critério de aceite.
+
+## Contratos implementados e publicados em 06/11/2026 — D-068
+
+- GET /api/units: cadastro ativo sem Escola conveniada; também sem Obra em andamento para operador ou Worker coletor. Campos novos via units.*. GET /api/root/units inclui legado, out_of_scope e novos campos.
+- POST /api/root/unit-save: root exclusivo; 15 campos opcionais, validação compartilhada, versão 409 e auditoria before/after. Omitir um campo na edição conserva o valor anterior; vazio explícito limpa (NULL para números/data). Resposta contém warnings. Corpo limitado a 16 KiB.
+- POST /api/root/import-preview: modelo 27 colunas; cliente aceita 12 antigas. rows[].warnings não bloqueia; errors bloqueia todo lote. Não aceita legado mesmo com id forjado. Limites 200 linhas/90 KB persistidos. POST /api/root/import-confirm revalida e conserva idempotência.
+- Coleta de conveniada/obra por ID direto: 422, code UNIT_OUT_OF_SCOPE. Leitura de rascunhos/indicadores exclui legado; histórico continua armazenado. Obras podem ter histórico consultado no desktop.
+- Agentes: catálogo/adaptador aplica o mesmo escopo ao pareamento. Sem alteração de chaves, assinatura, recibos, heartbeat ou Drive.

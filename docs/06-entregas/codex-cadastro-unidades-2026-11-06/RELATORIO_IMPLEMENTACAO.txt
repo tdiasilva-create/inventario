@@ -1,0 +1,129 @@
+SEMED — CADASTRO DE UNIDADES AMPLIADO E MATRIZ
+Entrega local — 06/11/2026 — decisão D-068
+
+1. ESTADO DA ENTREGA
+
+As três propostas foram confirmadas pelo responsável:
+- Escola municipal militar, Creche municipal e Obra em andamento.
+- Total de alunos por unidade e detalhamento opcional por etapa.
+- Obras visíveis no painel e fora da coleta até serem entregues.
+
+IMPLEMENTADO E TESTADO LOCALMENTE:
+- Conveniadas/comunitárias fora de novos cadastros, importação, coleta e indicadores.
+- Registros legados preservados; root pode consultar, inativar ou excluir pelo fluxo existente.
+- Quinze campos opcionais do cadastro, com validação, persistência, auditoria e controle de versão.
+- Sete tipos cadastráveis; INEP de oito dígitos exigido para escola municipal, militar e creche.
+- Modelo CSV/XLSX de 27 colunas e compatibilidade com 12 colunas antigas.
+- Avisos de consistência que não bloqueiam salvamento/importação; erros de formato bloqueiam.
+- Rede em números, cobertura por indicador, detalhe e cadastro expansível da unidade selecionada.
+- Matriz abreviada, quantidades destacadas e Total, preservando nome completo/seleção/exportação.
+- Documentação, contratos e catálogo físico atualizados.
+
+PENDENTE:
+- Publicar e aplicar migração remota. O pacote enviado determina “Sem publicar”; nada foi publicado nesta entrega.
+- Corrigir vagas -16 na linha 31 de importacao_escolas_municipais.csv.
+- Carga real pelo root, prioridades das fontes e reclassificações/inativações sugeridas na planilha.
+- Atualização de números em lote por INEP: não aprovada; não implementada.
+- Atualizar roteiros de navegador legados dependentes de telas/títulos V2 já removidos anteriormente.
+
+NÃO TESTADO FISICAMENTE:
+- Novas telas em celulares reais, câmera Android/Safari, EXE Windows e novo upload ao Drive institucional.
+
+2. COMO FICOU O CADASTRO
+
+Alunos (total), Alunos creche, Alunos pré-escola, Alunos anos iniciais,
+Alunos anos finais, Alunos EJA, Turmas, Vagas disponíveis, Capacidade total,
+Servidores lotados e Professores: inteiros opcionais, de 0 a 99.999.
+Vazio significa não informado (NULL); zero só aparece quando informado.
+Texto “1.232” é aceito como 1232. Número decimal do Excel, negativos, letras
+e valores acima do limite são recusados. Não preencher ausências automaticamente.
+
+Código do prédio: até 20 letras/números/hífens, normalizado em maiúsculas.
+Observações: até 500 caracteres. Fonte dos números: até 180.
+Data de referência: opcional, válida e não futura.
+
+Soma das etapas maior que total, vagas maiores que capacidade e professores
+maiores que servidores produzem AVISOS. O root pode salvar após conferir.
+
+Na edição, cliente antigo que omite um campo conserva o valor. Envio explícito
+vazio limpa. Conflito de versão continua recusado com 409. Administração de
+unidades não foi liberada para admin, operador ou visualizador.
+
+Obras ativas aparecem no painel/mapa e categoria própria, mas não nas somas
+educacionais nem na coleta. Root altera o tipo quando forem entregues e
+informa INEP se necessário. Não foi feita nenhuma reclassificação automática.
+
+3. O QUE APARECE NO PAINEL
+
+Rede em números (cadastro): alunos, turmas, vagas e servidores, com filtros,
+cobertura e indicação de fonte/data por unidade. Não se confunde com vistorias.
+Campos ausentes não viram zero; obras e conveniadas não entram nessas somas.
+
+Unidade selecionada: bloco expansível Cadastro da unidade.
+Detalhe da unidade: todos os campos informados, prédio, observações, fonte/data.
+Lista de unidades: alunos e turmas na linha secundária quando preenchidos.
+
+Matriz: abreviações conferidas contra 141 exemplos; nomes completos continuam
+em título, acessibilidade, exportação e detalhe. Total soma oito categorias.
+Panorama mantém notebook na última coluna, conforme alteração anterior D-067.
+Paleta atual branco/preto/vermelho/laranja preservada; mapa não foi alterado.
+
+4. TESTES E LIMITAÇÕES
+
+pnpm test: 112 aprovados, zero falhas.
+Browser de cadastro/matriz: 1440, 1672 e 1920 px; salvar/reabrir/importar,
+filtros, zero/vazio, totais, legado, nomes completos e seis núcleos da fonte.
+Browser geral do painel: 17 rotas e verificação de 390 px aprovadas.
+Browser do coletor atual: aprovado, incluindo QR e sete fotografias isoladas.
+Browser root/agentes: aprovado com Edge.
+Build desktop: 67 arquivos. Build coletor: 47 arquivos.
+Dry-run dos quatro arquivos Wrangler: aprovado; não realiza publicação.
+Schema local: 16 migrações, 56 tabelas, 34 índices, uma view, dez triggers;
+integridade OK, sem erros de chaves estrangeiras.
+
+Roteiros antigos V2 de navegação/QR/resposta perdida falharam porque esperam
+a entrada V2, enquanto a entrada atual abre V3. O roteiro desktop V2 exige
+o número da versão visível, removido por decisão D-060. O roteiro antigo de
+evidências depende do botão “Usar questionário anterior” e não foi executado.
+Esses roteiros NÃO são declarados aprovados. Não foram restauradas telas e
+versões antigas para satisfazê-los. Fluxo atual e protocolo são cobertos pela
+suíte atual e pelo browser V3. Detalhes em docs/05-qualidade/CADASTRO_UNIDADES_2026-11-06.md.
+
+Ensaios de cinco CSVs nos endpoints reais, com SQLite em memória:
+- Escolas municipais: 71 linhas; lote bloqueado pela linha 31, vagas -16.
+- Locais institucionais: 8 linhas aprovadas e gravadas na fixture.
+- Núcleos Educa Paço: 33 linhas aprovadas e gravadas na fixture.
+- Núcleos tecnológicos: 6 linhas aprovadas em API e navegador.
+- Obras: 17 linhas aprovadas e gravadas na fixture.
+Nenhum desses registros foi gravado no banco oficial. Contatos pessoais
+ficaram privados; não integram os modelos nem o pacote de código.
+
+5. MIGRAÇÃO E DOCUMENTAÇÃO
+
+Usar migrations/0016_unidades_cadastro_ampliado.sql. O número 0015 sugerido
+no anexo já pertencia ao questionário atual e foi preservado. D-054 também
+já existia; a nova decisão é D-068. Não reaplicar nem modificar migrações antigas.
+
+Documentos atualizados: DECISOES, PENDENCIAS, CONFLITOS_DOCUMENTAIS,
+RASTREABILIDADE, AGENTS, entrada do projeto, modelo/contratos, setores e
+indicadores desktop, escopo de seleção mobile, DEVELOPMENT e manual operacional.
+Base de Coleta original e arquivos das migrações 0001–0015 preservados.
+As novas informações são cadastro mestre; nenhuma pergunta foi alterada.
+
+Após autorização de publicação: fazer backup, conferir migrações aplicadas,
+aplicar somente a aditiva pendente e publicar painel/coletor compartilhando
+o mesmo D1 e Drive. Verificar login/perfis, cadastro, lista do coletor, QR,
+dados e fotos já existentes. A carga manual vem depois da revisão da fonte.
+Não executar seed, reset, DELETE ou importar todos os CSVs automaticamente.
+
+6. ARQUIVOS DE REVISÃO
+
+RELATORIO_IMPLEMENTACAO.txt — este arquivo.
+MANIFESTO_SHA256.txt — hashes antes/depois das alterações, base do Git e fontes.
+DIFF.patch — alterações aplicáveis sobre a base indicada no manifesto.
+evidencias/ — capturas locais de cadastro, matriz, importação, totais e detalhe.
+codigo/ — cópia dos arquivos alterados, preservando caminhos do projeto.
+
+As capturas novas usam dados demonstrativos identificados. A captura anterior
+D-067 permite comparação. O pacote contém alterações para o repositório
+existente; não é um instalador nem uma cópia do banco ou do Drive.

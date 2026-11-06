@@ -17,11 +17,11 @@ export async function inventoryResults(request,url,user,env,{json,fail}){
  if(user.role==='operador')return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Consulta disponível somente para leitura.',405);
  const db=env.DB,unitId=url.searchParams.get('unitId')||'';
- const sections=(await db.prepare(`SELECT s.*,i.unit_id,i.questionnaire_version,u.name AS unit_name FROM inspection_sections s JOIN inspections i ON i.id=s.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
+ const sections=(await db.prepare(`SELECT s.*,i.unit_id,i.questionnaire_version,u.name AS unit_name FROM inspection_sections s JOIN inspections i ON i.id=s.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
  const derived=sectionFindings(sections);
- const visits=(await db.prepare(`SELECT v.*,i.unit_id,u.name AS unit_name FROM visit_answers v JOIN inspections i ON i.id=v.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
+ const visits=(await db.prepare(`SELECT v.*,i.unit_id,u.name AS unit_name FROM visit_answers v JOIN inspections i ON i.id=v.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
  for(const row of visits){const a=parse(row.data_json);for(const [key,kind]of [['problems','Demanda geral'],['needs','Necessidade de equipamento']])for(const [index,item]of (a[key]||[]).entries())derived.push({id:row.inspection_id+':'+key+':'+(item.id||index),unit_id:row.unit_id,unit_name:row.unit_name,inspection_id:row.inspection_id,kind:item.area||kind,description:item.description||item.type,quantity:item.quantity??null,priority:item.priority||null,impact:null,location:item.location||'',environment_ids:[],target_id:item.id||null});}
- const equipmentBase=`FROM inventory_equipment_all e JOIN units u ON u.id=e.unit_id WHERE u.active=1 AND e.published_json IS NOT NULL ${unitId?'AND u.id=?':''}`;
+ const equipmentBase=`FROM inventory_equipment_all e JOIN units u ON u.id=e.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND e.published_json IS NOT NULL ${unitId?'AND u.id=?':''}`;
  const args=unitId?[unitId]:[];
  const problemCondition=`AND (trim(COALESCE(json_extract(e.published_json,'$.problems'),''))<>'' OR json_extract(e.published_json,'$.operation') IN ('Funciona parcialmente','Não funciona'))`;
  if(url.pathname==='/api/inventory/results'){
@@ -40,8 +40,8 @@ export async function inventoryResults(request,url,user,env,{json,fail}){
   if(items.length<50){const rows=(await db.prepare(`SELECT e.id,e.unit_id,u.name AS unit_name,e.published_json,e.inspection_id ${equipmentBase} ${problemCondition} ORDER BY e.unit_id,e.id LIMIT ? OFFSET ?`).bind(...args,50-items.length,equipmentOffset).all()).results;
    items.push(...rows.map(r=>{const d=parse(r.published_json);return {id:'equipment:'+r.id,unit_id:r.unit_id,unit_name:r.unit_name,kind:'Equipamento com problema',description:d.problems||d.operation,category:d.category,brand:d.brand,operation:d.operation,asset:d.asset,quantity:d.mode==='Lote'?d.quantity:1,priority:d.priority||null,environment_ids:[d.environment],target_id:r.id,inspection_id:r.inspection_id};}));}
  }
- const environments=(await db.prepare('SELECT e.id,e.name FROM environments e JOIN units u ON u.id=e.unit_id WHERE u.active=1'+(unitId?' AND u.id=?':'')).bind(...args).all()).results;
- const photos=(await db.prepare(`SELECT p.id,p.target_id FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id JOIN units u ON u.id=p.unit_id WHERE p.status='ready' AND i.state='completed' AND u.active=1 ${unitId?'AND u.id=?':''}`).bind(...args).all()).results;
+ const environments=(await db.prepare('SELECT e.id,e.name FROM environments e JOIN units u ON u.id=e.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')'+(unitId?' AND u.id=?':'')).bind(...args).all()).results;
+ const photos=(await db.prepare(`SELECT p.id,p.target_id FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id JOIN units u ON u.id=p.unit_id WHERE p.status='ready' AND i.state='completed' AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') ${unitId?'AND u.id=?':''}`).bind(...args).all()).results;
  const total=sectionItems.length+equipmentCount;
  return json({items:items.map(item=>({...item,location:item.location||item.environment_ids.map(id=>environments.find(e=>e.id===id)?.name||'Local não identificado').join(', '),photos:photos.filter(p=>p.target_id===item.target_id).map(p=>p.id)})),total,nextOffset:offset+items.length<total?offset+items.length:null});
 }

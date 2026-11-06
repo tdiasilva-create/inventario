@@ -2,9 +2,9 @@
 
 ## Esquema físico verificável
 
-[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 15 migrações num SQLite vazio em memória. Resultado: **56 tabelas, 34 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 16 migrações locais num SQLite vazio em memória. Resultado: **56 tabelas, 34 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
 
-Regenerar com `pnpm docs:schema`. As migrações 0001–0015 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+Regenerar com `pnpm docs:schema`. As migrações 0001–0016 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
 
 | Família | O que preservar |
 |---|---|
@@ -59,3 +59,5 @@ Preservar corpo bruto, método, caminho, headers assinados, relógio, nonce, has
 ## Alteração de banco/provedor
 
 SQLite/D1 usa recursos que não traduzem literalmente para MySQL/PostgreSQL. Uma mudança exige adaptador de persistência e migração validada de tipos, consultas JSON, triggers, índices parciais, transações e resultados retornados por `prepare/bind/first/all/run/batch`. Não há adaptador genérico pronto neste repositório.
+
+A migração 0016 do cadastro ampliado foi aplicada ao D1 real em 06/11/2026 após backup e autorização do responsável. Conferência remota: nenhuma migração pendente, 32 colunas em units e registros anteriores preservados. Ver [publicação D-068](../05-qualidade/PUBLICACAO_D068_2026-11-06.md). O catálogo gerado continua sendo reproduzido das migrações versionadas; não contém dados de produção.

@@ -13,7 +13,7 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
  if(!['root','admin','visualizador'].includes(user.role))return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Acompanhamento disponível somente para consulta.',405);
  const id=url.searchParams.get('id');if(!uuid(id))return fail('Vistoria inválida.');
- const db=env.DB,inspection=await db.prepare("SELECT i.id,i.unit_id,i.state FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=? AND u.active=1").bind(id).first();
+ const db=env.DB,inspection=await db.prepare("SELECT i.id,i.unit_id,i.state FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=? AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").bind(id).first();
  if(!inspection)return fail('Vistoria indisponível.',404);
  if(url.pathname.endsWith('-photos')){
   if(inspection.state!=='open')return json({completed:true,items:[],ready:0,pending:0,nextCursor:null});

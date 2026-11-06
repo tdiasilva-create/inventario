@@ -285,3 +285,15 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 - `tests/desktop-identity-browser.cjs`: ordem/geometria, valores por categoria, troca de duas unidades, vínculo de fotos/respostas, funcionamento, fontes preservadas, Planejamento e regressão D-066. Dados fictícios somente em SQLite isolado.
 - [Relatório, evidências e publicação](../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md). Nenhuma pergunta da Base TXT alterada ou nova; nenhum requisito funcional pendente declarado concluído. Coletor, schema e dados oficiais preservados.
 - D-066 e D-067 publicadas juntas em `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, 100% do painel. Resolve a pendência de deploy D-066 por 503, sem apagar seu histórico. 46 sondas públicas aprovadas e 13 assets conferidos; coletor continua `5cf137cd-9c34-4e41-806b-d19cf0887bb6`.
+
+## D-068 — cadastro ampliado e matriz, 06/11/2026
+
+| Requisito | Implementação | Verificação |
+|---|---|---|
+| Fora do escopo e obras fora da coleta | web/unit-schema.js; server/unit-scope.mjs; units.mjs; collector.mjs; in-progress*.mjs; inventory-results.mjs; photo-gallery.mjs; agentes/catalogo.mjs | tests/unit-catalogue.test.mjs; regressão de perfis/coleta/QR |
+| 15 campos, sete tipos, 27 colunas | migrations/0016_unidades_cadastro_ampliado.sql; web/admin-units.js; web/spreadsheet-io.js; server/units.mjs; import-units.mjs; worker.mjs | tests/units.test.mjs; unit-catalogue.test.mjs; unit-files.test.mjs; unit-catalogue-browser.cjs |
+| Rede em números/detalhe | web/unit-figures.js; desktop.js; unit-catalogue.css | totais, ausência/zero, filtros e capturas |
+| Abreviação, cabeçalhos e total | web/unit-names.js; desktop-data.js; desktop.js; unit-catalogue.css | tests/unit-names.test.mjs (141 casos); navegador 1440/1672/1920 |
+| Publicação/carga | Dois Workers publicados e migração 0016 aplicada por autorização posterior; carga não executada | PUBLICACAO_D068_2026-11-06.md, backup privado e pendências D-068 |
+
+Documentos originais do pacote lidos: 00_LEIA_PRIMEIRO.md, 01_PEDIDO_E_CONTEXTO.md, 02_ESPEC_PARTE1_ESCOLAS_COMUNITARIAS_FORA_DO_INVENTARIO.md, 03_ESPEC_PARTE2_CADASTRO_UNIDADES_AMPLIADO.md, 04_ESPEC_PARTE3_CARD_EQUIPAMENTOS_POR_UNIDADE.md, 05_DICIONARIO_PLANILHA_API_MAPA.md, 06_PLANO_DE_CARGA_DADOS.md e 07_CRITERIOS_DE_ACEITE_E_TESTES.md; também 00_LEIA_PRIMEIRO_2.md externo, referência JS, CSV de 141 nomes e cinco CSVs de importação. Contatos/arquivos recebidos ficam privados. Base de Coleta e PNGs originais preservados.

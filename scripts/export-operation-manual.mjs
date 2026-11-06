@@ -9,7 +9,7 @@ Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o
 CHECKLIST PARA A EQUIPE RECEPTORA
 [ ] Ler regras, decisões posteriores e limites de homologação.
 [ ] Clonar o commit correto e instalar com Node 24/pnpm 11.25.0/lockfile.
-[ ] Executar testes, builds e conferir esquema das 15 migrações.
+[ ] Executar testes, builds e conferir esquema das migrações versionadas (conferir as pendentes no destino).
 [ ] Obter acesso institucional aos recursos por canal privado.
 [ ] Confirmar chaves/segredos correspondentes, sem publicá-los no Git.
 [ ] Confirmar backup do D1, arquivos do Drive e manifesto de vínculos.

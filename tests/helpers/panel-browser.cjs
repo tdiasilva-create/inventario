@@ -1,0 +1,10 @@
+const fs=require('node:fs'),http=require('node:http'),path=require('node:path');
+module.exports=async function panelBrowser(){
+ const {collectorFixture}=await import('./collector-db.mjs'),{session}=await import('./agent-client.mjs'),worker=(await import('../../server/worker.mjs')).default;
+ const f=collectorFixture(),root=await session(f,f.root),errors=[];
+ const env={DB:f.db,AUTH_PEPPER:'TEST-ONLY',DEBUG_COLLECTION:'1',ASSETS:{fetch:async req=>{const file=path.resolve('dist/painel','.'+new URL(req.url).pathname);if(!file.startsWith(path.resolve('dist/painel')+path.sep)||!fs.existsSync(file))return new Response('not found',{status:404});return new Response(fs.readFileSync(file),{headers:{'Content-Type':({'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.woff2':'font/woff2','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(file)]||'application/octet-stream'}});}}};
+ const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,'http://127.0.0.1:'+server.address().port),headers=new Headers(req.headers);headers.set('Cookie',root.cookie);const chunks=[];for await(const chunk of req)chunks.push(chunk);const response=await worker.fetch(new Request(url,{method:req.method,headers,...(['GET','HEAD'].includes(req.method)?{}:{body:Buffer.concat(chunks)})}),env);res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));}catch(e){errors.push(e.stack);res.writeHead(500);res.end('TEST ERROR');}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;
+ const pw=require('./playwright.cjs'),browser=await pw.chromium.launch({headless:true,channel:'msedge'}),page=await browser.newPage({viewport:{width:1672,height:1050}});page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.stack));
+ return {f,env,page,origin,errors,close:async()=>{await browser.close();await new Promise(r=>server.close(r));f.sqlite.close();}};
+};

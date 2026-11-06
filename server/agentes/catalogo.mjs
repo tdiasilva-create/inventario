@@ -1,3 +1,5 @@
+import {isOutOfScope,collectorHiddenTypes} from '../../web/unit-schema.js';
+import {collectionScopeSql} from '../unit-scope.mjs';
 // ADAPTADOR DE CATÁLOGO do módulo de agentes para as tabelas REAIS do inventário SEMED.
 // Único ponto que conhece units / environments / inspections / equipments. Formatos conforme nucleo/catalogo.mjs.
 // Não cria catálogo paralelo; a ficha (equipments) continua a fonte de verdade de unidade/ambiente/posição.
@@ -10,14 +12,14 @@ const EQ_COLS=`e.id,e.unit_id,e.environment_id,e.category,e.asset,e.serial,e.ver
 const pubLoc=json=>{if(!json)return null;try{const d=JSON.parse(json);return {environment_id:d.environment??null,position_label:d.position_label??null,position_description:d.position_description??null,location_state:d.location_state??'declarada',location_confirmed_by:d.location_confirmed_by??null,location_confirmed_at:d.location_confirmed_at??null,registration:d.registration??null};}catch{return null;}};
 const eq=r=>{if(!r)return r;const published_location=pubLoc(r.published_json);const cur={environment_id:r.environment_id??null,position_label:r.position_label??null,position_description:r.position_description??null,location_state:r.location_state??'declarada'};const partial=!!r.published&&!!published_location&&(published_location.environment_id!==cur.environment_id||published_location.position_label!==cur.position_label||published_location.location_state!==cur.location_state);return {id:r.id,unit_id:r.unit_id,environment_id:cur.environment_id,category:r.category,asset:r.asset||null,serial:r.serial||null,status:r.published?'publicado':'rascunho',version:Number(r.version),inspection_id:r.inspection_id??null,position_label:cur.position_label,position_description:cur.position_description,location_state:cur.location_state,location_confirmed_by:r.location_confirmed_by??null,location_confirmed_at:r.location_confirmed_at??null,duplicate_flag:!!r.duplicate_flag,brand:safe(r.data_json,'brand'),model:safe(r.data_json,'model'),registration:safe(r.data_json,'registration'),published_location,partial_location:partial,already_linked:r.already_linked===undefined?undefined:!!r.already_linked};};
 function safe(json,key){try{return JSON.parse(json||'{}')[key]??null;}catch{return null;}}
-const unit=r=>r&&({unit_id:r.id,name:r.name,active:!!r.active,code:r.code??null});
+const unit=r=>r&&({unit_id:r.id,name:r.name,active:!!r.active&&!isOutOfScope(r.unit_type)&&!collectorHiddenTypes.includes(r.unit_type),code:r.code??null});
 const env=r=>r&&({environment_id:r.id,unit_id:r.unit_id,name:r.name});
 const insp=r=>r&&({inspection_id:r.id,unit_id:r.unit_id,state:r.state,questionnaire_version:r.questionnaire_version});
 const guard=(db,condition,...args)=>db.prepare('INSERT INTO agent_tx_guard(ok) SELECT 0 WHERE NOT ('+condition+')').bind(...args);
 export const catalogo={
  nome:'inventario-semed (units/environments/inspections/equipments)',
- async getUnit(db,id){return unit(await db.prepare('SELECT id,name,active,code FROM units WHERE id=?1').bind(id).first());},
- async listUnits(db){return (await db.prepare('SELECT id,name,active,code FROM units WHERE active=1 ORDER BY name COLLATE NOCASE').all()).results.map(unit);},
+ async getUnit(db,id){return unit(await db.prepare('SELECT id,name,active,code,unit_type FROM units WHERE id=?1').bind(id).first());},
+ async listUnits(db){return (await db.prepare('SELECT id,name,active,code,unit_type FROM units u WHERE active=1 AND '+collectionScopeSql()+' ORDER BY name COLLATE NOCASE').all()).results.map(unit);},
  async getEnvironment(db,id){return env(await db.prepare('SELECT id,unit_id,name FROM environments WHERE id=?1').bind(id).first());},
  async listEnvironments(db,unitId){return (await db.prepare('SELECT id,unit_id,name FROM environments WHERE unit_id=?1 ORDER BY name COLLATE NOCASE').bind(unitId).all()).results.map(env);},
  async getInspection(db,id){return insp(await db.prepare('SELECT id,unit_id,state,questionnaire_version FROM inspections WHERE id=?1').bind(id).first());},
@@ -47,7 +49,7 @@ export const catalogo={
   * mesma unidade e trava de edição do próprio usuário (token válido). Igual à regra de /api/collector/equipment-save. */
  policyGuards(db,{unitId,inspectionId,equipmentId,userId,lockToken,nowMs=Date.now()}){
   return [
-   guard(db,'EXISTS (SELECT 1 FROM units WHERE id=?1 AND active=1)',unitId),
+   guard(db,'EXISTS (SELECT 1 FROM units u WHERE id=?1 AND active=1 AND '+collectionScopeSql()+')',unitId),
    guard(db,"EXISTS (SELECT 1 FROM inspections WHERE id=?1 AND unit_id=?2 AND state='open')",inspectionId||'',unitId),
    guard(db,'EXISTS (SELECT 1 FROM equipment_locks WHERE equipment_id=?1 AND user_id=?2 AND token=?3 AND expires_at>?4)',equipmentId,userId,String(lockToken||''),nowMs),
    guard(db,'NOT '+SECAO_CONCLUIDA,inspectionId||'') // [R2-B] assunto dos computadores não pode estar concluído (reabertura manual)
@@ -55,7 +57,7 @@ export const catalogo={
  },
  /** Pré-verificação legível da mesma política (o batch continua sendo a verificação que vale). Devolve null ou um motivo. */
  async checkPolicy(db,{unitId,inspectionId,equipmentId,userId,lockToken,nowMs=Date.now()}){
-  const u=await db.prepare('SELECT active FROM units WHERE id=?1').bind(unitId).first();if(!u)return 'UNIT_NOT_FOUND';if(!u.active)return 'UNIT_INACTIVE';
+  const u=await db.prepare('SELECT active,unit_type FROM units WHERE id=?1').bind(unitId).first();if(!u)return 'UNIT_NOT_FOUND';if(isOutOfScope(u.unit_type)||collectorHiddenTypes.includes(u.unit_type))return 'UNIT_OUT_OF_SCOPE';if(!u.active)return 'UNIT_INACTIVE';
   if(!inspectionId)return 'INSPECTION_REQUIRED';
   const i=await db.prepare('SELECT unit_id,state FROM inspections WHERE id=?1').bind(inspectionId).first();if(!i||i.unit_id!==unitId)return 'INSPECTION_NOT_IN_UNIT';if(i.state!=='open')return 'INSPECTION_CLOSED';
   const l=await db.prepare('SELECT user_id,token,expires_at FROM equipment_locks WHERE equipment_id=?1').bind(equipmentId).first();
