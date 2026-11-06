@@ -52,3 +52,11 @@ A primeira CI Linux aprovou dependências, scanner, 98 testes, builds, links e r
 Na segunda CI, QR aprovado; o teste UX revelou outra antecipação da automação: consultar o botão Fechar teclado antes do requestAnimationFrame disparado pelo foco. O auxiliar dos testes aguarda a atualização visual antes de agir. As verificações de foco, cursor e visibilidade continuam ativas, sem mudança do formulário ou afrouxamento de aceite.
 
 A CI foi fixada em Ubuntu 24.04 para reprodução, com limite de 15 minutos por execução e cinco minutos para instalar o navegador. Uma nova execução substitui a anterior da mesma branch. Isso evita depender da mudança de versão de ubuntu-latest ou deixar instalação de dependência aguardando indefinidamente. Não envolve deploy.
+
+## Validação remota concluída
+
+Código/ferramentas do commit bcf2ebabdc5e15dd3933a605bf5ee0a29ec6ff1e aprovados no GitHub Actions: dependências com lockfile, scanner do repositório, 98 testes, dois builds, links, reprodução do TXT/esquema e os três testes de navegador em Chromium/Linux. Execução: https://github.com/tdiasilva-create/inventario/actions/runs/42146235419 .
+
+Uma repetição adicional local teve falha de fetch ao carregar a lista inicial; a repetição seguinte passou sem alteração do código da aplicação. As falhas iniciais da CI e os ajustes de sincronização da automação permanecem registrados acima. Não houve homologação física.
+
+Este complemento altera apenas documentação e o TXT gerado. A verificação final local de links/regeneração é executada antes do envio; não exige repetir os testes da aplicação já aprovados.

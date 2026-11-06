@@ -565,6 +565,10 @@ O que existe
 - Cadastro automático do agente sem lote conforme D-058 e preservação de assinaturas/vínculo autenticado.
 - Identidade visual/UX do coletor publicadas conforme D-061/D-062. Não alteradas nesta organização.
 
+Verificação desta organização
+
+A CI do commit bcf2ebab (https://github.com/tdiasilva-create/inventario/actions/runs/42146235419) passou em Linux/Chromium, incluindo 98 testes, três testes de navegador, builds e reprodução dos documentos. O ensaio de instalação local a partir dos arquivos Git também passou. Isso comprova reprodução do código/testes, não restauração de produção ou homologação física.
+
 O que não deve ser anunciado como concluído
 
 | Pendência | Implicação / próximo passo |
@@ -577,7 +581,6 @@ O que não deve ser anunciado como concluído
 | Offline durável | Fila atual vive na memória da aba; fechar aba pode perder pendências |
 | Teclado/câmera físicos | Testes em navegador desktop não substituem aparelhos reais |
 | Observabilidade operacional | Definir monitoramento/alertas, logs privados e responsáveis |
-| CI em GitHub | A execução remota deve ser conferida; teste local não prova runner remoto |
 | Separação de material privado | Cofre institucional, fontes/instaladores e backup precisam de responsável |
 
 Lacunas de apresentação desktop já identificadas
