@@ -4,9 +4,13 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: verificacao-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   local:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,6 +28,7 @@ jobs:
       - run: pnpm docs:schema
       - run: git diff --exit-code -- docs/07-operacao/gerado
       - run: pnpm exec playwright install --with-deps chromium
+        timeout-minutes: 5
       - run: pnpm test:v3:browser
         env:
           SEMED_TEST_BROWSER: chromium
