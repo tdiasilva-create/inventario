@@ -28,6 +28,7 @@ Leia PRIMEIRO `00_LEIA_ANTES_DE_TUDO.md` e `docs/00-governanca/REGRAS_DE_PRECEDE
 - Desktop dark-tech; preservar mapa, matriz de equipamentos por escola, detalhe da unidade e fotos. A decisão posterior D-023 (27/10/2026) pede fidelidade ao PNG desktop 00, incluindo sua faixa de cinco indicadores, sem substituir as demais áreas.
 - D-065 (06/11/2026) supera a paleta dark-tech acima: TODO o painel usa a identidade D-061/D-062 do coletor (branco/preto/vermelho/laranja/pêssego e fontes compartilhadas). Preservar composição e funções. Não criar aba Fotografias; sua futura distribuição no sistema depende de definição do responsável. Coletor preservado nesta correção desktop.
 - D-066 (06/11/2026): o indicador de unidades do Panorama conta cada tipo separadamente; não somar escolas, núcleos e unidades administrativas num total geral. Usar o tipo real e os filtros, sem números fixos ou classificação inferida pelo nome.
+- D-067 (06/11/2026): composição de Panorama/Planejamento segue o TXT e JSON de layout aprovados. Manter nomes na matriz, retirando somente seu título de coluna; manter questionário/resultados/galeria também nas telas de origem. Coletas em andamento ficam no Planejamento. D-066 prevalece sobre o indicador genérico do modelo; as 15 lacunas sem decisão continuam pendentes.
 - Mockups contêm escolas/brasões/datas/mapas fictícios: jamais usá-los como dados oficiais.
 
 ## Tratamento de questões pendentes

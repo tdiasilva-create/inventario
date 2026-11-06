@@ -19,7 +19,7 @@
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas em 06/11/2026: painel `fb776adf-4b7b-4cac-8aa9-6923bd636144`, com [identidade em todo o painel D-065](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md); coletor `5cf137cd-9c34-4e41-806b-d19cf0887bb6`, preservado. Ambos conferidos com 100% do tráfego. A versão anterior do painel era `9b25ccf1-fa98-4ae7-a2dd-7af35e59c991` ([histórico D-064](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md)). O [registro de UX](../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões registradas em 06/11/2026: painel `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, com contagens por categoria D-066 e [layout de Panorama/Planejamento D-067](../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md); coletor `5cf137cd-9c34-4e41-806b-d19cf0887bb6`, preservado. Ambos conferidos com 100% do tráfego. A versão anterior do painel era `fb776adf-4b7b-4cac-8aa9-6923bd636144` ([identidade geral D-065](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md)). O [registro de UX](../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no [README da raiz](../../README.md). `workers.dev` pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 

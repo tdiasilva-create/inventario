@@ -27,3 +27,7 @@ Nenhuma alteração no Worker, migração, recadastro, pergunta do coletor, perm
 O painel público continua acessível: 46 sondas HTTP da versão existente aprovadas durante a falha da API de gerenciamento. **Isso não comprova publicação da nova contagem.** Última versão confirmada antes das tentativas: painel `fb776adf-4b7b-4cac-8aa9-6923bd636144`; coletor preservado em `5cf137cd-9c34-4e41-806b-d19cf0887bb6`. Snapshot privado prévio preservado; nenhum upload de release ou alteração do banco ocorreu nas tentativas recusadas.
 
 Para concluir quando a API recuperar: conferir deployments e ausência de alterações concorrentes; `pnpm build:desktop`, `wrangler deploy --config wrangler.jsonc`; conferir versão/tráfego, tema servido e proteção pública com `scripts/verify-panel-release.mjs`. Registrar o identificador real aqui e em `docs/07-operacao/02_AMBIENTES_E_CONFIGURACAO.md`. Não anunciar D-066 como disponível em produção até essa verificação.
+
+### Atualização posterior — publicação concluída
+
+Em 06/11/2026 a API recuperou e D-066 foi publicada junto ao layout D-067, versão desktop `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, 100% do tráfego. Os cenários de categorias passaram novamente no teste isolado; 46 verificações públicas e hashes dos assets servidos foram conferidos após o deploy. A pendência de publicação acima fica resolvida, preservando o registro da indisponibilidade anterior. Coletor e dados oficiais inalterados. Ver [registro D-067](LAYOUT_PANORAMA_2026-11-06.md).

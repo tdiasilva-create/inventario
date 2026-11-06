@@ -277,3 +277,11 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 - Teste integrado em `tests/desktop-identity-browser.cjs`: acrescentar unidade administrativa não muda escolas; consulta de ativos, filtros, busca vazia, tipo ausente e falha HTTP. Sem escrita real, migração ou alteração da Base/coletores.
 - [Relatório e publicação](../05-qualidade/CONTAGENS_CATEGORIAS_2026-11-06.md).
 - Estado desta entrega: implementação/build e teste de 17 rotas aprovados; publicação ainda pendente após três recusas HTTP 503 da API de gerenciamento Cloudflare. O ambiente real mantém D-065; não confundir código enviado ao Git com release publicado.
+
+## D-067 · composição do Panorama e Planejamento — 06/11/2026
+
+- TXT/JSON de 06:55 e duas respostas explícitas do responsável: manter nomes na matriz e manter blocos nas telas de origem. Aprovação expressa de publicação real; 15 lacunas sem decisão continuam pendentes.
+- `web/desktop.js`: onze blocos no Panorama, matriz reordenada, questionário/resultado da unidade e galeria; acompanhamento no Planejamento. `web/desktop-results.js`: indicador funcionando no mapa, demais números preservados. `web/panorama-layout.css`, `web/index.html`, `scripts/build-desktop.mjs`: grade responsiva e distribuição do CSS.
+- `tests/desktop-identity-browser.cjs`: ordem/geometria, valores por categoria, troca de duas unidades, vínculo de fotos/respostas, funcionamento, fontes preservadas, Planejamento e regressão D-066. Dados fictícios somente em SQLite isolado.
+- [Relatório, evidências e publicação](../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md). Nenhuma pergunta da Base TXT alterada ou nova; nenhum requisito funcional pendente declarado concluído. Coletor, schema e dados oficiais preservados.
+- D-066 e D-067 publicadas juntas em `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, 100% do painel. Resolve a pendência de deploy D-066 por 503, sem apagar seu histórico. 46 sondas públicas aprovadas e 13 assets conferidos; coletor continua `5cf137cd-9c34-4e41-806b-d19cf0887bb6`.

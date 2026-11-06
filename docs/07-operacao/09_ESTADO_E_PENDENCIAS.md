@@ -38,6 +38,14 @@ D-064 criou uma página de fotografias e verificou a leitura de dez arquivos rea
 
 ## Como ler pendências antigas
 
+### Atualização posterior: composição D-067 e categorias D-066
+
+Publicado o layout aprovado no TXT/JSON de 06/11: mapa e matriz lado a lado, indicadores/filtros sob o mapa, questionário e resultados da unidade no Panorama, galeria contextual única e coletas em andamento no Planejamento. Nomes permanecem na matriz; blocos permanecem também nas telas de origem. D-066 separa contagens de escolas, núcleos e unidades administrativas. Versão desktop `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, 100%; resolve o bloqueio temporário de publicação por 503. Coletor, dados e configurações preservados.
+
+As 15 lacunas marcadas não decididas pelo responsável continuam pendentes. Não confundir a distribuição dos blocos com conclusão de relatórios, histórico, paginação, telemetria ou uniformização dos filtros. Ver [relatório D-067](../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md).
+
+### Precedência das decisões
+
 Listas anteriores de R2 bloqueado, autorização de lote, ausência de fotografia de computador ou navegação V2 podem estar superadas pelas decisões D-048/D-057/D-058/D-060/D-062. Preservar histórico e consultar a decisão posterior antes de reimplementar a solução antiga. O manual atual não apaga lacunas de homologação.
 
 ## Escopo desta entrega
