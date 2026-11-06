@@ -1,0 +1,37 @@
+/* Coleta SEMED — tokens da identidade "Contraste técnico" (D-061). Gerado do design system em 05/11/2026.
+   Fonte dos valores: https://claude.ai/artifact/AzC1xLkUSfRbgcbM7JuwLU (project/tokens.json). Carregar ANTES de collector.css. */
+@font-face { font-family: "Chakra Petch"; src: url("/vendor/chakra-petch/ChakraPetch-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Chakra Petch"; src: url("/vendor/chakra-petch/ChakraPetch-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Chakra Petch"; src: url("/vendor/chakra-petch/ChakraPetch-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Chakra Petch"; src: url("/vendor/chakra-petch/ChakraPetch-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("/vendor/barlow/Barlow-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("/vendor/barlow/Barlow-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("/vendor/barlow/Barlow-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Barlow"; src: url("/vendor/barlow/Barlow-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 800; font-style: normal; font-display: swap; }
+:root, [data-theme="claro"] {
+  --fundo: #ffffff; --superficie: #ffffff; --cinza-claro: #f3f4f5; --preto: #16191d; --grafite: #25272c;
+  --texto-secundario: #5d6368; --vermelho: #d70825; --laranja: #ff4b1e; --pessego: #ffad78; --pessego-suave: #ffece7;
+  --vermelho-suave: #fde8ea; --vermelho-borda: #f2b3bb; --sobre-escuro: #ffffff; --borda: #dfe2e6; --pano: #16191d99; --qr-palco: #000000;
+  --primary: var(--preto); --muted: var(--texto-secundario); --border: var(--borda);
+  --sombra-cartao: 0 1px 3px #0000001a; --sombra-fab: 0 8px 24px #16191d4d; --sombra-flutuante: 0 4px 20px #00000026;
+}
+:root {
+  --espaco-4: 4px; --espaco-8: 8px; --espaco-10: 10px; --espaco-12: 12px; --espaco-14: 14px; --espaco-16: 16px; --espaco-18: 18px; --espaco-20: 20px; --espaco-24: 24px; --espaco-28: 28px;
+  --raio-6: 6px; --raio-8: 8px; --raio-10: 10px; --raio-12: 12px; --raio-16: 16px; --raio-pilula: 9999px; --raio-circulo: 50%;
+  --largura-maxima: 430px; --largura-maxima-larga: 640px; --toque-minimo: 44px; --botao-icone: 48px; --botao-altura: 52px; --campo-altura: 48px; --opcao-altura: 56px; --linha-cartao: 64px; --fab-tamanho: 64px; --icone: 24px; --tile-icone: 48px; --tile-grande: 64px; --traco-icone: 2.2px; --filete: 4px; --regua: 2px; --folga-rodape: 150px; --progresso-altura: 4px; --foco-contorno: 3px;
+  --camada-rodape: 15; --camada-fab: 18; --camada-cabecalho: 20; --camada-pano: 50; --camada-menu-fab: 51; --camada-toast: 100; --camada-tela-cheia: 120;
+  --font-display: "Chakra Petch", "Barlow", Arial, sans-serif; --font-sans: "Barlow", "Segoe UI", Arial, sans-serif; --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+.titulo-tela { font-family: var(--font-display); font-size: 28px; line-height: 1.1; font-weight: 700; letter-spacing: 0.02em; }
+.titulo-pergunta { font-family: var(--font-display); font-size: 22px; line-height: 1.2; font-weight: 700; letter-spacing: 0.02em; }
+.titulo-cabecalho { font-family: var(--font-display); font-size: 15px; line-height: 1.2; font-weight: 700; letter-spacing: 0.06em; }
+.nome-cartao { font-family: var(--font-display); font-size: 15px; line-height: 1.25; font-weight: 700; letter-spacing: 0.04em; }
+.rotulo-secao { font-family: var(--font-display); font-size: 11px; line-height: 1.3; font-weight: 600; letter-spacing: 0.18em; }
+.botao { font-family: var(--font-display); font-size: 14px; line-height: 1.3; font-weight: 600; letter-spacing: 0.08em; }
+.selo { font-family: var(--font-display); font-size: 11px; line-height: 1.3; font-weight: 600; letter-spacing: 0.12em; }
+.opcao { font-family: var(--font-sans); font-size: 17px; line-height: 1.3; font-weight: 600; }
+.corpo { font-family: var(--font-sans); font-size: 16px; line-height: 1.5; font-weight: 400; }
+.apoio { font-family: var(--font-sans); font-size: 13px; line-height: 1.45; font-weight: 500; }
+.codigo { font-family: var(--font-mono); font-size: 15px; line-height: 1.4; font-weight: 500; }
+.codigo-qr { font-family: var(--font-mono); font-size: 24px; line-height: 1.2; font-weight: 600; letter-spacing: 0.08em; }

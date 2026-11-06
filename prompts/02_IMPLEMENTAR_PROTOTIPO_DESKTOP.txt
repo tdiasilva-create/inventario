@@ -1,0 +1,5 @@
+FASE DESKTOP, após aprovação: leia AGENTS.md, base do questionário para compreender dados e estados, a documentação da pasta docs/03-painel-desktop e abra todos os PNGs design/referencias/desktop.
+
+Construa a estrutura visual aprovada: sidebar, cabeçalho, Panorama com MAPA, MATRIZ HEATMAP e UNIDADE SELECIONADA, e telas setoriais correspondentes. Os cinco cards KPI genéricos foram rejeitados; usar indicadores integrados. Se ainda não houver dados oficiais, usar demonstração explicitamente identificada, sem coordenadas/inventário fictícios vendidos como reais. Nunca repetir cadastro de equipamento por cada vistoria. Separar pendências de cálculos e interações não aprovadas.
+
+Antes de implementar, apresente um checklist de fidelidade visual; depois forneça capturas reais e indique o que não foi concluído. Não modificar o projeto mobile fora da interface comum aprovada.

@@ -1,0 +1,8 @@
+export const encode=b=>Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');
+export const random=()=>encode(crypto.getRandomValues(new Uint8Array(32)));
+export async function digest(value){return encode(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)));}
+export async function hashPassword(password,salt,pepper){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password+'\0'+pepper),'PBKDF2',false,['deriveBits']);return encode(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-512',iterations:100000,salt:new TextEncoder().encode(salt)},key,256));}
+export function equal(a,b){if(a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;}
+export const canManage=(actor,target)=>actor==='root'||(actor==='admin'&&['operador','visualizador'].includes(target));
+export const canView=role=>['root','admin','visualizador'].includes(role);
+export async function validatePassword(password){if(typeof password!=='string'||password.length<12||password.length>256)return 'Use uma senha entre 12 e 256 caracteres.';const sha=encode(await crypto.subtle.digest('SHA-1',new TextEncoder().encode(password))).toUpperCase();let r;try{r=await fetch('https://api.pwnedpasswords.com/range/'+sha.slice(0,5),{headers:{'Add-Padding':'true'},signal:AbortSignal.timeout(8000)});}catch{return 'Não foi possível verificar a segurança da senha. Tente novamente.';}if(!r.ok)return 'Verificação de senha indisponível. Tente novamente.';if((await r.text()).split('\n').some(line=>line.split(':')[0]===sha.slice(5)))return 'Esta senha consta em vazamentos. Escolha outra frase-senha.';return null;}

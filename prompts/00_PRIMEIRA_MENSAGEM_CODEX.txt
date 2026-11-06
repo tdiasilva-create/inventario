@@ -1,0 +1,10 @@
+Você desenvolverá o Sistema de Inventário Tecnológico SEMED no repositório atual. ESTE REPOSITÓRIO é a fonte documental oficial; não dependa de prompts antigos ou memória de chats.
+
+1) Antes de programar, abra e leia `00_LEIA_ANTES_DE_TUDO.md`, `AGENTS.md`, `docs/00-governanca/INVENTARIO_DAS_FONTES_E_LACUNAS.md` e `docs/00-governanca/REGRAS_DE_PRECEDENCIA.md`.
+2) Leia NA ÍNTEGRA a Base de Coleta de mais de 1.000 linhas em `docs/02-coleta-mobile/BASE_DE_COLETA_V1_0_ORIGINAL.txt` e use o catálogo CSV/8 grupos como índice. Não substitua por um resumo.
+3) ABRA VISUALMENTE os 6 PNGs em `design/referencias/`, inclusive a imagem mobile e as 5 desktop; leia `design/COMO_USAR_CADA_IMAGEM.md`.
+4) Examine os 5 diagramas em `arquitetura/` e suas fontes DOT. Diagramas são sínteses técnicas, e não novos requisitos aprovados.
+5) Apresente primeiro: (a) índice de todos os documentos lidos; (b) quadro das decisões funcionais aprovadas; (c) tabela de telas previstas para mobile/desktop; (d) conflitos e pontos pendentes; (e) plano de implementação em etapas com os testes de aceite. Nomeie expressamente os arquivos originais que encontrou, não somente a estrutura de pastas.
+6) Comece a implementação de uma primeira fase **da coleta mobile**, reproduzindo a linguagem dark-tech aprovada em componentes reais, navegáveis e não imagens de fundo. Respeite login, seleção de escola existente, cartões A–H, wizard, rascunho/estados e câmera conforme planejamento, sem afirmar que persistência, offline ou login são operacionais antes de integrar e testar.
+7) Não transforme características fictícias do mockup em requisitos, não imponha regras pendentes, não invente escolas oficiais/latitudes/contagens. Preservar D1 + R2 + Workers. Se necessário use DEMO claramente rotulado e isolado.
+8) Em cada entrega informe quais requisitos do TXT foram cobertos e quais ainda faltam, com screenshots e testes. Não crie backend fake que finja sucesso.

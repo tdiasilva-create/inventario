@@ -1,0 +1,179 @@
+4.F. GRUPO F — INVENTÁRIO DE EQUIPAMENTOS TECNOLÓGICOS
+
+4.F.1. Política de cadastro
+- Modelo HÍBRIDO conforme tipo de equipamento: ficha individual para
+  categorias escolhidas; cadastro agrupado/lote para outras quando adequado.
+- Quando um lote possuir equipamentos com situações diferentes, separar os
+  registros, garantindo consistência dos atributos do grupo.
+- Identificadores de patrimônio e número de série pertencem a cada item real;
+  não atribuir o mesmo número de série a um lote inteiro.
+- Toda ficha deve ter identificador interno imutável para histórico/auditoria.
+- Vincular a unidade e, quando aplicável, ao ambiente cadastrado.
+
+4.F.2. Forma de cadastro por categoria (decisões 17.2.x)
+
+CATEGORIA                                            FORMA APROVADA
+------------------------------------------------------------------
+Computador desktop                                   INDIVIDUAL
+Notebook                                             INDIVIDUAL
+Tablet                                               INDIVIDUAL
+Monitor de computador                                INDIVIDUAL
+Impressora / multifuncional                          INDIVIDUAL
+Scanner independente                                 HÍBRIDA
+Projetor / datashow                                  INDIVIDUAL
+Televisão / painel interativo                        HÍBRIDA
+Roteador                                             HÍBRIDA
+Ponto de acesso / Access Point (AP)                  HÍBRIDA
+Switch de rede                                       HÍBRIDA
+Nobreak / UPS                                        HÍBRIDA
+Webcam                                               HÍBRIDA
+Microfone                                            HÍBRIDA
+Caixa de som                                         HÍBRIDA
+Servidor físico / NAS / armazenamento dedicado       HÍBRIDA
+Outros equipamentos                                  PERSONALIZÁVEL;
+                                                     individual ou lote
+------------------------------------------------------------------
+
+- Webcam, microfone e caixa de som são categorias distintas, apesar do mesmo
+  regime híbrido.
+- Não duplicar scanner integrado a multifuncional como scanner independente.
+- Routers/APs/switches integram Grupo D; UPS integra Grupo E.
+- A categoria Outros equipamentos poderá ser preenchida pelo coletor, com
+  classificação posterior pelo administrador e identidade estável do registro.
+
+4.F.3. Campos genéricos de identificação (decisões 17.3.x)
+
+17.3.1. Patrimônio — exigido quando disponível; permitir:
+        Sem patrimônio / Não identificado. Armazenar como TEXTO para
+        preservar zeros à esquerda. Ter ID interno independente.
+17.3.2. Número de série — exigido quando disponível; permitir:
+        Sem número de série / Não identificado. Não aplicar serial único a lote.
+17.3.3. Marca/fabricante — exigida quando disponível; sugestões controladas,
+        Outra marca / Não identificado.
+17.3.4. Modelo — exigido quando disponível; texto livre, autocomplete
+        opcional, Não identificado.
+17.3.5. Especificações técnicas — dependem da categoria, geralmente OPCIONAIS.
+17.3.6. Conservação física — OBRIGATÓRIA:
+        Bom / Regular / Ruim / Não avaliado.
+17.3.7. Funcionamento — OBRIGATÓRIO:
+        Funcionando / Funciona parcialmente / Não funciona / Não testado.
+17.3.8. Situação de uso — OBRIGATÓRIA:
+        Em uso / Fora de uso / Reserva / Desconhecido.
+17.3.9. Problemas identificados — OBRIGATÓRIOS QUANDO HOUVER FALHAS,
+        especialmente quando funcionamento for parcial ou inexistente.
+        Lista de problemas conforme categoria; seleção múltipla;
+        Problema não identificado; observações adicionais.
+        Possibilitar apontamento opcional mesmo em equipamento funcionando.
+17.3.10. Ação recomendada — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS.
+         Manutenção / Substituição / Instalação / Avaliação técnica /
+         Outra ação (especificar). É recomendação, não ordem de serviço.
+17.3.11. Prioridade de atendimento — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS:
+         Baixa / Média / Alta / Crítica; classificação preliminar.
+17.3.12. Observações adicionais — texto livre OPCIONAL em toda categoria.
+17.3.13. Fotografias do equipamento — OPCIONAIS, independentemente de
+         funcionamento. Máximo 5 por equipamento (17.3.14).
+
+4.F.4. Especificações técnicas por categoria (17.3.5.x)
+
+ATENÇÃO: Todos os campos abaixo foram aprovados como OPCIONAIS, quando
+aplicáveis. Não transformá-los em obrigatórios sem nova aprovação.
+
+DESKTOP:
+- Processador (CPU) — opcional; foi revisado durante o questionário:
+  a escolha FINAL é INCLUIR COMO OPCIONAL.
+- Memória RAM — opcional.
+- Tipo de armazenamento (HD/SSD) e capacidade — opcional.
+- Sistema operacional — opcional.
+
+NOTEBOOK:
+- Os quatro campos do desktop acima — opcionais.
+- Condição da bateria — opcional, opções possíveis:
+  Funcionando / Autonomia reduzida / Sem bateria / Não funciona / Não testada.
+- Tamanho da tela — opcional.
+
+TABLET:
+- Armazenamento interno — opcional.
+- RAM — opcional.
+- Sistema operacional — opcional.
+- Tamanho da tela — opcional.
+- Condição da bateria — opcional.
+- Conectividade Wi-Fi/rede móvel — opcional.
+
+MONITOR:
+- Tamanho da tela — opcional.
+- Resolução — opcional.
+- Tipos de conexão disponíveis — opcional.
+- Tipo de painel — opcional.
+- Monitor é ficha própria, diferente do desktop; opcionalmente relacionar
+  monitor e computador quando aplicável.
+
+IMPRESSORA / MULTIFUNCIONAL:
+- Tecnologia de impressão — opcional.
+- Impressão colorida ou preto e branco — opcional.
+- Conectividade — opcional.
+- Funções do equipamento — opcional.
+- Tipo de consumível — opcional.
+- Formatos de papel — opcional.
+
+SCANNER INDEPENDENTE — FICHA SIMPLIFICADA:
+- Tipo (mesa/ADF/portátil) — opcional.
+- Conectividade — opcional.
+- Presença de alimentador automático (ADF) — opcional.
+- Não exigir resolução óptica, duplex ou formatos de papel.
+
+PROJETOR / DATASHOW — FICHA SIMPLIFICADA:
+- Conexões (HDMI/VGA/USB) — opcional.
+- Instalação fixa ou móvel — opcional.
+- Acessórios presentes — opcional.
+- Não exigir tecnologia, tipo de lâmpada ou resolução.
+
+TV / PAINEL INTERATIVO — FICHA SIMPLIFICADA:
+- Tipo (TV convencional/SmartTV/painel interativo) — opcional.
+- Tamanho em polegadas — opcional.
+- Conexões/conectividade — opcional.
+- Instalação (parede/móvel/mesa etc.) — opcional.
+- Não exigir resolução ou acessórios.
+
+ROTEADOR — FICHA SIMPLIFICADA:
+- Tipo Wi-Fi/cabeado — opcional.
+- Frequências 2,4/5/6 GHz — opcional.
+- Número de portas Ethernet — opcional.
+- Forma de instalação — opcional.
+- Não exigir velocidades de portas nem geração Wi-Fi.
+
+ACCESS POINT — FICHA SIMPLIFICADA:
+- Interno/externo (indoor/outdoor) — opcional.
+- Frequências Wi-Fi — opcional.
+- Suporte PoE (Sim/Não/Não identificado) — opcional.
+- Forma de instalação/montagem — opcional.
+- Não exigir padrão Wi-Fi nem quantidade de portas.
+
+SWITCH — FICHA SIMPLIFICADA:
+- Gerenciável/não gerenciável — opcional.
+- Quantidade de portas — opcional.
+- PoE (quando aplicável) — opcional.
+- Instalação — opcional.
+- Não exigir velocidades de portas nem uplinks.
+
+NOBREAK / UPS — FICHA SIMPLIFICADA:
+- Capacidade em VA — opcional.
+- Estado da bateria — opcional.
+- Quantidade de tomadas — opcional.
+- Local/tipo de instalação — opcional.
+- Não exigir autonomia ou lista de equipamentos conectados.
+
+WEBCAM, MICROFONE, CAIXA DE SOM:
+- NÃO coletar especificações técnicas extras.
+- Utilizar os campos genéricos de identificação, conservação, funcionamento,
+  situação de uso, problema, ação, prioridade, observações e fotos.
+
+SERVIDOR FÍSICO / NAS:
+- Tipo de equipamento — opcional.
+- Capacidade de discos em GB/TB — opcional.
+- Finalidade (arquivos/aplicações/backup etc.) — opcional.
+- Formato rack/torre — opcional.
+- Não exigir CPU, RAM ou sistema operacional.
+
+OUTROS EQUIPAMENTOS:
+- Permitir categoria descritiva personalizada e cadastro individual ou em lote.
+- Administrador poderá classificar posteriormente, preservando ID e histórico.

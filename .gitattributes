@@ -1,0 +1,15 @@
+* text=auto eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.sql text eol=lf
+# Migrações existentes também têm hashes de transferência: preservar seus bytes.
+migrations/*.sql -text
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ttf binary
+# Preservar bytes dos originais documentais e seus hashes de origem.
+docs/02-coleta-mobile/BASE_DE_COLETA_V1_0_ORIGINAL.txt -text
+docs/02-coleta-mobile/grupos-originais/* -text
+design/MANIFESTO_SHA256.txt -text

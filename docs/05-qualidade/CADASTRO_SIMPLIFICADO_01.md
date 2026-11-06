@@ -1,0 +1,16 @@
+# Cadastro simplificado — 28/10/2026
+
+D-036. Versão publicada `602163b9-3833-40d5-a23d-0c4897c8e43a`.
+
+Cadastro de unidades: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/cadastro-unidades
+Usuários: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/usuarios
+
+Fontes: pedido posterior do responsável e decisões D-035/D-036; implementação, relatórios e governança já consultados nas fases anteriores. Esta revisão substitui a composição anterior de Administração. Formulário de unidade com exatamente quatro campos visíveis: nome, gestor, latitude, longitude. Mantidos apenas identificador/versão ocultos para persistência/edição; não são campos solicitados ao usuário. Nome obrigatório e coordenadas opcionais em par conforme regra já existente; nenhuma nova obrigatoriedade de negócio imposta.
+
+Alterados `web/account.html`, `account.js`, `admin-units.js`, `desktop.js`, `server/units.mjs`, `server/worker.mjs`; migração aditiva `0004_unit_manager.sql`. Nova coluna `manager_name` guarda nome do gestor; edição preserva campos antigos que saíram da interface. Usuários em rota separada, mantendo criação individual, perfis e credenciais provisórias. Seções Unidades por operador e Segurança removidas da interface e chamadas correspondentes retiradas da página. Permissões, sessões, auditoria e autorizações existentes permanecem protegidas no servidor; não houve liberação geral de unidades ao operador nem exclusão de registros históricos. `/administracao` redireciona para o cadastro para preservar links anteriores.
+
+Validação: 7 testes unitários de unidades/segurança aprovados. Uma primeira execução simultânea ao Chrome falhou ao iniciar o processo do teste de segurança, sem falha de asserção; repetição sequencial após encerrar o navegador passou integralmente. Testes reais em Worker/D1 isolados: nome do gestor salvo por API e formulário, edição e persistência após reload; quatro campos visíveis; páginas separadas; nenhuma seção de atribuição/segurança; criação de usuário individual e persistência; largura 390 px sem overflow e sem erros JavaScript. `scripts/verify-simple-registration.mjs` PASS. Capturas: `evidencias/cadastro-simplificado/unidades.png`, `usuarios.png`, `mobile.png`; resultado JSON ao lado. Cadastros TESTE ISOLADO existem somente nessas evidências, não no banco oficial. Worker/banco de validação removidos depois dos testes.
+
+Produção: migração aplicada sem apagar dados; deploy concluído; 30 verificações públicas de rotas/proteção PASS (`scripts/verify-panel-release.mjs`). Não alteradas credenciais de produção. Não inseridos exemplos de unidade ou pessoa em produção. A consulta autenticada do painel exibe gestor no lugar do endereço que saiu do cadastro; mapa segue usando só coordenadas explicitamente preenchidas, com zoom inicial 3 km preservado.
+
+Cobertura TXT: revisão da interface de cadastro mestre (§2.5) e usuários (§8.3), com persistência real e autoridade root por decisões posteriores. Não adiciona cobertura dos formulários A–H, offline, fotos R2, sincronização, conclusão de visitas ou backups homologados. A coleta em campo ainda é etapa futura. A retirada da tela de atribuições não equivale a decisão sobre a futura política de autorização dos operadores.

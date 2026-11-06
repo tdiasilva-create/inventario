@@ -1,0 +1,53 @@
+# Segredos e conteúdo que não deve ir ao repositório
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+node_modules/
+.wrangler/
+dist/
+build/
+.cache/
+*.log
+# Dados reais locais/exportações de produção
+private-data/
+backups/
+exports-reais/
+
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+# Arquivos recebidos, binários, evidências privadas e cópias de trabalho
+/revisoes/
+/entregas/
+*.zip
+*.exe
+*.msi
+*.docx
+*.db
+*.sqlite
+*.sqlite3
+client_secret*.json
+*credentials*.json
+*secrets*.json
+*.har
+*.trace
+playwright-report/
+test-results/
+/docs/05-qualidade/evidencias/
+/docs/01-projeto/relatos-navegacao-2026-10-28/
+/docs/01-projeto/avaliacao-coleta-ficticia-2026-10-28/
+/docs/01-projeto/revisao-questionario-2026-10-28/
+/docs/06-entregas/claude-v2-qr-2026-11-04/
+/docs/06-entregas/mapeamento-coletor-desktop-2026-11-05/
+# Textos avulsos recebidos: versões publicáveis organizadas em docs/99-historico
+/*.txt
+/*.json
+!package.json
+# Configurações de destino privadas; exemplos ficam em config/
+*.local.jsonc
+.DS_Store
+Thumbs.db

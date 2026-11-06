@@ -1,0 +1,4506 @@
+{
+  "source": "Migrações locais aplicadas em SQLite vazio, sem dados de produção",
+  "migrations": [
+    {
+      "file": "0001_auth.sql",
+      "sha256": "5936ce94b036d4de35e806e399142d3b658dee05cb33ea2e514ff99e2828c380"
+    },
+    {
+      "file": "0002_credential_version.sql",
+      "sha256": "406eb434227893d2d54ac01d50f6154849d5e6355f1bf4d9d57858cafd0d0fc9"
+    },
+    {
+      "file": "0003_units_assignments.sql",
+      "sha256": "38dd290778ddf2b74dbcc44549b4d06c196fe67c49238878c723ab5ae194fe8c"
+    },
+    {
+      "file": "0004_unit_manager.sql",
+      "sha256": "18f46f39a21d1e25b525c6aa42db145728fbd944d9c61915b909548f31fd8b4d"
+    },
+    {
+      "file": "0005_review_catalogue.sql",
+      "sha256": "de0ea82f448000f855fbd0fed994df02aa3316d82a3753f7489603f151e8b242"
+    },
+    {
+      "file": "0006_collector.sql",
+      "sha256": "e0cadd346e5f34d22f2707eec0b5b9a083f2aaaf4a540ceafe1ad61ad3392b0d"
+    },
+    {
+      "file": "0007_collector_totals.sql",
+      "sha256": "525ac1a1973e9bfe5b16df7f5e821d4a129c82b27eb2b13dc62836d9fa7d6594"
+    },
+    {
+      "file": "0008_collector_publication.sql",
+      "sha256": "a0cbb30b8223d51c90a0f243d2ad9f76a21bc1767e4e52f5fe67c2fc5eee7143"
+    },
+    {
+      "file": "0009_published_totals.sql",
+      "sha256": "de7065cf02caacb35f3e880ed7cab144df1360eacf9fe5d49bf7b3de890cb250"
+    },
+    {
+      "file": "0010_in_progress.sql",
+      "sha256": "9e58d93475aa48422bcbf2b2fff1e3421fce7375f7511ffa38527b4c12cef566"
+    },
+    {
+      "file": "0011_root_deletion.sql",
+      "sha256": "3c403993db733bab0c6d3e0498b8dec85ee42f6f80f8534881265d8deeca1985"
+    },
+    {
+      "file": "0012_visit_answers.sql",
+      "sha256": "d8d16fb943d1259c778984dd270d60f881808618d1b64e14cd8692d36125ee9f"
+    },
+    {
+      "file": "0013_photo_storage.sql",
+      "sha256": "8bd0beafe8298cdd095a5a1435ae4ff1375909540c06602bafb9c2702b485ca3"
+    },
+    {
+      "file": "0014_agentes.sql",
+      "sha256": "ad1a95992600cda3f1e6b9ffa20369b0346bc13b75b06cbae16672749498c2c8"
+    },
+    {
+      "file": "0015_questionario_v3.sql",
+      "sha256": "1a70a869ea035fc2d95f7f46ed921399be96fd43ae4ff29572ca795a16c67587"
+    }
+  ],
+  "tables": [
+    {
+      "name": "agent_audit_log",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "audit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "action",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "target",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "details_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_baseline",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "inventory_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "set_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_claim_requests",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "request_key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "body_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "status",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "response_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_current_snapshot",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "inventory_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "collected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_devices",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "revoked_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "revoked_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "revoke_reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_enrollment_challenges",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "challenge_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "grant_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "challenge",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "used_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_enrollments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "enrollment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "grant_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "code_hash",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "visual_code",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "failed_attempts",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "renewals",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "consumed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "summary_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_equipment_links",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "link_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "linked_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "linked_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "device_confirmed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "ended_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "end_reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_equipment_location_history",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "history_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "version_before",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "version_after",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "source",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "before_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "after_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "changed_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "changed_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_heartbeats",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "collected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "received_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "boot_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "sequence",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "live",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_identity_conflicts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "conflict_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "detected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "installation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "key_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "resolved_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "resolved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_install_grants",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "grant_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "code_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "max_uses",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "uses_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "used_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "last_used_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "used_by_installation",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "revoked_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "note",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_installations",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "installation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "agent_version",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "current_key_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "revoked_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_inventory_snapshots",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inventory_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "collected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "received_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "boot_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "sequence",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "previous_inventory_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "content_hash",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "snapshot_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "queue_gaps_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "sections_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_keys",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "key_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "installation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "public_jwk",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "valid_until",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_location_requests",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "request_key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "body_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "status",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "response_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_message_receipts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "message_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "body_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "ack_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_presence",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "updated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "boot_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "sequence",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "collected_ms",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_queue_gaps",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "gap_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "dropped_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "dropped_change_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "first_dropped_collected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "last_dropped_collected_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "first_reported_inventory_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "received_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_rate_limits",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "rate_key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "window_start",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_request_nonces",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "key_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "nonce",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_tx_guard",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "ok",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "attempts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "blocked_until",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "audit",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "event",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "collection_conflicts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "entity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "attempted_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "server_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "collection_history",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "entity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "event",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "before_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "after_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "collection_photos",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "target_kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "target_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "object_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "mime_type",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "size",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'pending'",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "storage_provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'r2'",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "storage_ref",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "environments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "type",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "name_key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "equipment_locks",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "token",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "equipments",
+          "from": "equipment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "equipment_verifications",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "result",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "equipments",
+          "from": "equipment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "equipments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "category",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "environment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "asset",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "serial",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "search_text",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "published_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "verified_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "verified_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "mutation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "duplicate_flag",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "published_verified_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "published_updated_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "position_label",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "position_description",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "location_state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'declarada'",
+          "pk": 0
+        },
+        {
+          "cid": 24,
+          "name": "location_confirmed_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 25,
+          "name": "location_confirmed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "environments",
+          "from": "environment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "import_batches",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "rows_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "commit_token",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "inspection_collection_totals",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "records",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "items",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "new_records",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "changed_records",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "inspection_environments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "environment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "inspection_sections",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "section",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'{}'",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'Pendente'",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "mutation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "inspections",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "questionnaire_version",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'1.0'",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "completed_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "completion_token",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "created_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "integration_events",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "event",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "detail",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "integration_folders",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "scope_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "folder_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "integration_oauth_states",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "nonce_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "integration_tokens",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "provider",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "account_email",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "account_name",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "scope",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "refresh_token_enc",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "access_token_enc",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "access_token_expires_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "folder_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "folder_name",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "connected_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "connected_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "last_refresh_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "last_test_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "last_test_result",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "last_error",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "revoked_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "miscellaneous_equipments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "category",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "environment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "asset",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "serial",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "search_text",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "published_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "verified_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "verified_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "mutation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "duplicate_flag",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "published_verified_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "published_updated_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "position_label",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "position_description",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "location_state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'declarada'",
+          "pk": 0
+        },
+        {
+          "cid": 24,
+          "name": "location_confirmed_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 25,
+          "name": "location_confirmed_at",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "environments",
+          "from": "environment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "miscellaneous_locks",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "token",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "miscellaneous_equipments",
+          "from": "equipment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "missing_equipment_cases",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'open'",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "resolved_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "resolved_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "equipments",
+          "from": "equipment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "photo_deletion_queue",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "object_key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "deletion_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "storage_provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'r2'",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "storage_ref",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "published_equipment_counts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "category",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "records",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "items",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "published_unit_status",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "visits",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "latest",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "environment_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "root_deletion_guard",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "valid",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "root_deletions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "unit_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "impact_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "sessions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "token_hash",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "csrf",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "credential_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "user_agent",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "key",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "value",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "unit_assignments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "assigned_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "assigned_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "assigned_by",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "unit_changes",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "event",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "target_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "payload",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "unit_collection_totals",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "records",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "items",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "problems",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "units",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "code",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "address",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "neighborhood",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "latitude",
+          "type": "REAL",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "longitude",
+          "type": "REAL",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "active",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "manager_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "unit_type",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "region",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "phone",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "email",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "users",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "username",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "role",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "password_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "salt",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "active",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "must_change",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "temporary_expires",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "credential_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "display_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "last_login_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "visit_answers",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "inspection_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "data_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'{}'",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "inspections",
+          "from": "inspection_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "type": "index",
+      "name": "assignments_unit",
+      "tbl_name": "unit_assignments",
+      "sql": "CREATE INDEX assignments_unit ON unit_assignments(unit_id)"
+    },
+    {
+      "type": "index",
+      "name": "collection_history_entity",
+      "tbl_name": "collection_history",
+      "sql": "CREATE INDEX collection_history_entity ON collection_history(entity_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "collection_photos_target",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_target ON collection_photos(target_kind,target_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "environment_normalized_name",
+      "tbl_name": "environments",
+      "sql": "CREATE UNIQUE INDEX environment_normalized_name ON environments(unit_id,name_key) WHERE name_key IS NOT NULL"
+    },
+    {
+      "type": "index",
+      "name": "environment_unit_name",
+      "tbl_name": "environments",
+      "sql": "CREATE UNIQUE INDEX environment_unit_name ON environments(unit_id,name COLLATE NOCASE)"
+    },
+    {
+      "type": "index",
+      "name": "equipment_unit_category",
+      "tbl_name": "equipments",
+      "sql": "CREATE INDEX equipment_unit_category ON equipments(unit_id,category,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "equipment_unit_identity",
+      "tbl_name": "equipments",
+      "sql": "CREATE INDEX equipment_unit_identity ON equipments(unit_id,asset,serial)"
+    },
+    {
+      "type": "index",
+      "name": "equipment_unit_page",
+      "tbl_name": "equipments",
+      "sql": "CREATE INDEX equipment_unit_page ON equipments(unit_id,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "equipment_unit_serial",
+      "tbl_name": "equipments",
+      "sql": "CREATE INDEX equipment_unit_serial ON equipments(unit_id,serial)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_audit_at",
+      "tbl_name": "agent_audit_log",
+      "sql": "CREATE INDEX idx_agent_audit_at ON agent_audit_log(at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_challenges_expires",
+      "tbl_name": "agent_enrollment_challenges",
+      "sql": "CREATE INDEX idx_agent_challenges_expires ON agent_enrollment_challenges(expires_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_enrollments_grant",
+      "tbl_name": "agent_enrollments",
+      "sql": "CREATE INDEX idx_agent_enrollments_grant ON agent_enrollments(grant_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_eq_loc_hist",
+      "tbl_name": "agent_equipment_location_history",
+      "sql": "CREATE INDEX idx_agent_eq_loc_hist ON agent_equipment_location_history(equipment_id, version_after)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_hb_device",
+      "tbl_name": "agent_heartbeats",
+      "sql": "CREATE INDEX idx_agent_hb_device ON agent_heartbeats(device_id, id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_installations_device",
+      "tbl_name": "agent_installations",
+      "sql": "CREATE INDEX idx_agent_installations_device ON agent_installations(device_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_keys_installation",
+      "tbl_name": "agent_keys",
+      "sql": "CREATE INDEX idx_agent_keys_installation ON agent_keys(installation_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_link_equipment",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE INDEX idx_agent_link_equipment ON agent_equipment_links(equipment_id, linked_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_links_device_time",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE INDEX idx_agent_links_device_time ON agent_equipment_links(device_id, linked_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_nonces_expires",
+      "tbl_name": "agent_request_nonces",
+      "sql": "CREATE INDEX idx_agent_nonces_expires ON agent_request_nonces(expires_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_receipts_expires",
+      "tbl_name": "agent_message_receipts",
+      "sql": "CREATE INDEX idx_agent_receipts_expires ON agent_message_receipts(expires_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_snap_device_time",
+      "tbl_name": "agent_inventory_snapshots",
+      "sql": "CREATE INDEX idx_agent_snap_device_time ON agent_inventory_snapshots(device_id, collected_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_snap_equipment_time",
+      "tbl_name": "agent_inventory_snapshots",
+      "sql": "CREATE INDEX idx_agent_snap_equipment_time ON agent_inventory_snapshots(equipment_id, collected_at)"
+    },
+    {
+      "type": "index",
+      "name": "inspection_open_unit",
+      "tbl_name": "inspections",
+      "sql": "CREATE UNIQUE INDEX inspection_open_unit ON inspections(unit_id) WHERE state='open'"
+    },
+    {
+      "type": "index",
+      "name": "inspection_unit_time",
+      "tbl_name": "inspections",
+      "sql": "CREATE INDEX inspection_unit_time ON inspections(unit_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "integration_events_time",
+      "tbl_name": "integration_events",
+      "sql": "CREATE INDEX integration_events_time ON integration_events(provider,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "miscellaneous_inspection_page",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE INDEX miscellaneous_inspection_page ON miscellaneous_equipments(inspection_id,updated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "miscellaneous_unit_page",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE INDEX miscellaneous_unit_page ON miscellaneous_equipments(unit_id,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "missing_open_equipment",
+      "tbl_name": "missing_equipment_cases",
+      "sql": "CREATE UNIQUE INDEX missing_open_equipment ON missing_equipment_cases(equipment_id) WHERE state='open'"
+    },
+    {
+      "type": "index",
+      "name": "progress_equipment_page",
+      "tbl_name": "equipments",
+      "sql": "CREATE INDEX progress_equipment_page ON equipments(inspection_id,updated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "progress_history_page",
+      "tbl_name": "collection_history",
+      "sql": "CREATE INDEX progress_history_page ON collection_history(inspection_id,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "progress_inspections_page",
+      "tbl_name": "inspections",
+      "sql": "CREATE INDEX progress_inspections_page ON inspections(state,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "sessions_user",
+      "tbl_name": "sessions",
+      "sql": "CREATE INDEX sessions_user ON sessions(user_id)"
+    },
+    {
+      "type": "index",
+      "name": "uq_agent_link_active_device",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE UNIQUE INDEX uq_agent_link_active_device ON agent_equipment_links(device_id) WHERE ended_at IS NULL"
+    },
+    {
+      "type": "index",
+      "name": "uq_agent_link_active_equipment",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE UNIQUE INDEX uq_agent_link_active_equipment ON agent_equipment_links(equipment_id) WHERE ended_at IS NULL"
+    },
+    {
+      "type": "table",
+      "name": "agent_audit_log",
+      "tbl_name": "agent_audit_log",
+      "sql": "CREATE TABLE agent_audit_log (\n  audit_id     TEXT PRIMARY KEY,\n  at           TEXT NOT NULL,\n  actor        TEXT NOT NULL,\n  action       TEXT NOT NULL,\n  target       TEXT,\n  details_json TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_baseline",
+      "tbl_name": "agent_baseline",
+      "sql": "CREATE TABLE agent_baseline (\n  device_id     TEXT PRIMARY KEY,\n  inventory_id  TEXT NOT NULL,\n  version       INTEGER NOT NULL,\n  set_at        TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_claim_requests",
+      "tbl_name": "agent_claim_requests",
+      "sql": "CREATE TABLE agent_claim_requests (\n  request_key   TEXT PRIMARY KEY,            -- user_id|request_id\n  body_hash     TEXT NOT NULL,\n  status        INTEGER NOT NULL,\n  response_json TEXT NOT NULL,\n  created_at    TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_current_snapshot",
+      "tbl_name": "agent_current_snapshot",
+      "sql": "CREATE TABLE agent_current_snapshot (\n  device_id     TEXT PRIMARY KEY,\n  inventory_id  TEXT NOT NULL,\n  collected_at  TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_devices",
+      "tbl_name": "agent_devices",
+      "sql": "CREATE TABLE agent_devices (\n  device_id     TEXT PRIMARY KEY,\n  state         TEXT NOT NULL CHECK (state IN ('pending_pairing','linked','revoked','identity_conflict')),\n  created_at    TEXT NOT NULL,\n  revoked_at    TEXT,\n  revoked_by    TEXT,\n  revoke_reason TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_enrollment_challenges",
+      "tbl_name": "agent_enrollment_challenges",
+      "sql": "CREATE TABLE agent_enrollment_challenges (\n  challenge_id   TEXT PRIMARY KEY,\n  grant_id       TEXT NOT NULL,\n  challenge      TEXT NOT NULL,\n  created_at     TEXT NOT NULL,\n  expires_at     TEXT NOT NULL,\n  used_by        TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_enrollments",
+      "tbl_name": "agent_enrollments",
+      "sql": "CREATE TABLE agent_enrollments (\n  enrollment_id     TEXT PRIMARY KEY,\n  device_id         TEXT NOT NULL UNIQUE,\n  grant_id          TEXT NOT NULL,\n  code_hash         TEXT,                    -- NULL após consumo\n  visual_code       TEXT,\n  expires_at        TEXT NOT NULL,\n  failed_attempts   INTEGER NOT NULL DEFAULT 0,\n  renewals          INTEGER NOT NULL DEFAULT 0,\n  consumed_at       TEXT,\n  summary_json      TEXT NOT NULL CHECK (length(summary_json) <= 4096),\n  created_at        TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_equipment_links",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE TABLE agent_equipment_links (\n  link_id               TEXT PRIMARY KEY,\n  device_id             TEXT NOT NULL,\n  equipment_id          TEXT NOT NULL,\n  inspection_id         TEXT,\n  linked_by             TEXT NOT NULL,\n  linked_at             TEXT NOT NULL,\n  device_confirmed_at   TEXT,\n  ended_at              TEXT,\n  end_reason            TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_equipment_location_history",
+      "tbl_name": "agent_equipment_location_history",
+      "sql": "CREATE TABLE agent_equipment_location_history (\n  history_id        TEXT PRIMARY KEY,\n  equipment_id      TEXT NOT NULL,\n  version_before    INTEGER NOT NULL,\n  version_after     INTEGER NOT NULL,\n  kind              TEXT NOT NULL CHECK (kind IN ('ficha_criada','localizacao_confirmada','posicao_definida_e_confirmada','mudanca_de_localizacao')),\n  source            TEXT NOT NULL CHECK (source IN ('pairing_claim','equipment_location')),\n  before_json       TEXT,\n  after_json        TEXT NOT NULL,\n  reason            TEXT,\n  changed_by        TEXT NOT NULL,\n  changed_at        TEXT NOT NULL,\n  inspection_id     TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_heartbeats",
+      "tbl_name": "agent_heartbeats",
+      "sql": "CREATE TABLE agent_heartbeats (\n  id            INTEGER PRIMARY KEY AUTOINCREMENT,\n  device_id     TEXT NOT NULL,\n  collected_at  TEXT NOT NULL,\n  received_at   TEXT NOT NULL,\n  boot_id       TEXT NOT NULL,\n  sequence      INTEGER NOT NULL,\n  reason        TEXT NOT NULL,\n  live          INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_identity_conflicts",
+      "tbl_name": "agent_identity_conflicts",
+      "sql": "CREATE TABLE agent_identity_conflicts (\n  conflict_id      TEXT PRIMARY KEY,\n  detected_at      TEXT NOT NULL,\n  kind             TEXT NOT NULL,\n  installation_id  TEXT,\n  key_id           TEXT,\n  resolved_at      TEXT,\n  resolved_by      TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_install_grants",
+      "tbl_name": "agent_install_grants",
+      "sql": "CREATE TABLE agent_install_grants (\n  grant_id              TEXT PRIMARY KEY,\n  code_hash             TEXT NOT NULL UNIQUE,\n  created_by            TEXT NOT NULL,\n  created_at            TEXT NOT NULL,\n  expires_at            TEXT NOT NULL,\n  max_uses              INTEGER NOT NULL DEFAULT 1 CHECK (max_uses BETWEEN 1 AND 1000),\n  uses_count            INTEGER NOT NULL DEFAULT 0 CHECK (uses_count >= 0 AND uses_count <= max_uses),\n  used_at               TEXT,                -- primeiro uso\n  last_used_at          TEXT,\n  used_by_installation  TEXT,                -- último uso\n  revoked_at            TEXT,\n  note                  TEXT CHECK (note IS NULL OR length(note) <= 140)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_installations",
+      "tbl_name": "agent_installations",
+      "sql": "CREATE TABLE agent_installations (\n  installation_id  TEXT PRIMARY KEY,\n  device_id        TEXT NOT NULL,\n  agent_version    TEXT,\n  current_key_id   TEXT NOT NULL,\n  created_at       TEXT NOT NULL,\n  revoked_at       TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_inventory_snapshots",
+      "tbl_name": "agent_inventory_snapshots",
+      "sql": "CREATE TABLE agent_inventory_snapshots (\n  inventory_id           TEXT PRIMARY KEY,\n  device_id              TEXT NOT NULL,\n  equipment_id           TEXT,\n  collected_at           TEXT NOT NULL,\n  received_at            TEXT NOT NULL,\n  boot_id                TEXT NOT NULL,\n  sequence               INTEGER NOT NULL,\n  reason                 TEXT NOT NULL,\n  previous_inventory_id  TEXT,\n  content_hash           TEXT,\n  snapshot_hash          TEXT NOT NULL,\n  queue_gaps_json        TEXT,\n  sections_json          TEXT NOT NULL CHECK (length(sections_json) <= 65536)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_keys",
+      "tbl_name": "agent_keys",
+      "sql": "CREATE TABLE agent_keys (\n  key_id           TEXT PRIMARY KEY,         -- thumbprint RFC 7638\n  installation_id  TEXT NOT NULL,\n  public_jwk       TEXT NOT NULL,            -- JSON {kty,crv,x,y}; NUNCA chave privada\n  status           TEXT NOT NULL CHECK (status IN ('active','retiring','revoked')),\n  created_at       TEXT NOT NULL,\n  valid_until      TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_location_requests",
+      "tbl_name": "agent_location_requests",
+      "sql": "CREATE TABLE agent_location_requests (\n  request_key   TEXT PRIMARY KEY,\n  body_hash     TEXT NOT NULL,\n  status        INTEGER NOT NULL,\n  response_json TEXT NOT NULL,\n  created_at    TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_message_receipts",
+      "tbl_name": "agent_message_receipts",
+      "sql": "CREATE TABLE agent_message_receipts (\n  device_id    TEXT NOT NULL,\n  message_id   TEXT NOT NULL,\n  body_hash    TEXT NOT NULL,\n  ack_json     TEXT NOT NULL,\n  expires_at   INTEGER NOT NULL,             -- epoch ms\n  PRIMARY KEY (device_id, message_id)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_presence",
+      "tbl_name": "agent_presence",
+      "sql": "CREATE TABLE agent_presence (\n  device_id   TEXT PRIMARY KEY,\n  data_json   TEXT NOT NULL,\n  updated_at  TEXT NOT NULL\n, boot_id TEXT, sequence INTEGER, collected_ms INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "agent_queue_gaps",
+      "tbl_name": "agent_queue_gaps",
+      "sql": "CREATE TABLE agent_queue_gaps (\n  device_id                   TEXT NOT NULL,\n  gap_id                      TEXT NOT NULL,\n  dropped_count               INTEGER NOT NULL CHECK (dropped_count >= 1),\n  dropped_change_count        INTEGER NOT NULL CHECK (dropped_change_count >= 0),\n  first_dropped_collected_at  TEXT NOT NULL,\n  last_dropped_collected_at   TEXT NOT NULL,\n  first_reported_inventory_id TEXT NOT NULL,\n  received_at                 TEXT NOT NULL,\n  PRIMARY KEY (device_id, gap_id)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_rate_limits",
+      "tbl_name": "agent_rate_limits",
+      "sql": "CREATE TABLE agent_rate_limits (\n  rate_key      TEXT PRIMARY KEY,\n  count         INTEGER NOT NULL,\n  window_start  INTEGER NOT NULL             -- epoch ms\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_request_nonces",
+      "tbl_name": "agent_request_nonces",
+      "sql": "CREATE TABLE agent_request_nonces (\n  key_id      TEXT NOT NULL,\n  nonce       TEXT NOT NULL,\n  expires_at  INTEGER NOT NULL,              -- epoch ms\n  PRIMARY KEY (key_id, nonce)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_tx_guard",
+      "tbl_name": "agent_tx_guard",
+      "sql": "CREATE TABLE agent_tx_guard (ok INTEGER NOT NULL CHECK (ok = 1))"
+    },
+    {
+      "type": "table",
+      "name": "attempts",
+      "tbl_name": "attempts",
+      "sql": "CREATE TABLE attempts (key TEXT PRIMARY KEY, count INTEGER NOT NULL, blocked_until INTEGER NOT NULL, updated_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "audit",
+      "tbl_name": "audit",
+      "sql": "CREATE TABLE audit (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, event TEXT NOT NULL, created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "collection_conflicts",
+      "tbl_name": "collection_conflicts",
+      "sql": "CREATE TABLE collection_conflicts(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,entity_id TEXT NOT NULL,actor_id TEXT NOT NULL,attempted_json TEXT NOT NULL,server_json TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "collection_history",
+      "tbl_name": "collection_history",
+      "sql": "CREATE TABLE collection_history(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,entity_id TEXT NOT NULL,event TEXT NOT NULL,before_json TEXT,after_json TEXT,actor_id TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "collection_photos",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TABLE collection_photos(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,target_kind TEXT NOT NULL,target_id TEXT NOT NULL,object_key TEXT NOT NULL UNIQUE,mime_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'pending', storage_provider TEXT NOT NULL DEFAULT 'r2', storage_ref TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "environments",
+      "tbl_name": "environments",
+      "sql": "CREATE TABLE environments(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL REFERENCES units(id),name TEXT NOT NULL,type TEXT NOT NULL,created_at INTEGER NOT NULL,created_by TEXT NOT NULL, name_key TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "equipment_locks",
+      "tbl_name": "equipment_locks",
+      "sql": "CREATE TABLE equipment_locks(equipment_id TEXT PRIMARY KEY REFERENCES equipments(id),user_id TEXT NOT NULL,token TEXT NOT NULL,expires_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "equipment_verifications",
+      "tbl_name": "equipment_verifications",
+      "sql": "CREATE TABLE equipment_verifications(inspection_id TEXT NOT NULL REFERENCES inspections(id),equipment_id TEXT NOT NULL REFERENCES equipments(id),result TEXT NOT NULL,reason TEXT NOT NULL DEFAULT '',user_id TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(inspection_id,equipment_id))"
+    },
+    {
+      "type": "table",
+      "name": "equipments",
+      "tbl_name": "equipments",
+      "sql": "CREATE TABLE equipments(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL REFERENCES units(id),inspection_id TEXT NOT NULL REFERENCES inspections(id),category TEXT NOT NULL,environment_id TEXT NOT NULL REFERENCES environments(id),asset TEXT NOT NULL,serial TEXT NOT NULL,search_text TEXT NOT NULL,data_json TEXT NOT NULL,published_json TEXT,version INTEGER NOT NULL DEFAULT 1,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL,verified_at INTEGER,verified_by TEXT,mutation_id TEXT,duplicate_flag INTEGER NOT NULL DEFAULT 0, published_verified_at INTEGER, published_updated_at INTEGER, position_label TEXT, position_description TEXT, location_state TEXT NOT NULL DEFAULT 'declarada', location_confirmed_by TEXT, location_confirmed_at TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "import_batches",
+      "tbl_name": "import_batches",
+      "sql": "CREATE TABLE import_batches(id TEXT PRIMARY KEY,actor_id TEXT NOT NULL,rows_json TEXT NOT NULL,created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL,commit_token TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "inspection_collection_totals",
+      "tbl_name": "inspection_collection_totals",
+      "sql": "CREATE TABLE inspection_collection_totals(inspection_id TEXT PRIMARY KEY,records INTEGER NOT NULL DEFAULT 0,items INTEGER NOT NULL DEFAULT 0,new_records INTEGER NOT NULL DEFAULT 0,changed_records INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "type": "table",
+      "name": "inspection_environments",
+      "tbl_name": "inspection_environments",
+      "sql": "CREATE TABLE inspection_environments(inspection_id TEXT NOT NULL REFERENCES inspections(id),environment_id TEXT NOT NULL,data_json TEXT NOT NULL,PRIMARY KEY(inspection_id,environment_id))"
+    },
+    {
+      "type": "table",
+      "name": "inspection_sections",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TABLE inspection_sections(inspection_id TEXT NOT NULL REFERENCES inspections(id),section TEXT NOT NULL,data_json TEXT NOT NULL DEFAULT '{}',state TEXT NOT NULL DEFAULT 'Pendente',version INTEGER NOT NULL DEFAULT 1,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL,mutation_id TEXT,PRIMARY KEY(inspection_id,section))"
+    },
+    {
+      "type": "table",
+      "name": "inspections",
+      "tbl_name": "inspections",
+      "sql": "CREATE TABLE inspections(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL REFERENCES units(id),state TEXT NOT NULL DEFAULT 'open',questionnaire_version TEXT NOT NULL DEFAULT '1.0',created_by TEXT NOT NULL REFERENCES users(id),created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,completed_at INTEGER,revision INTEGER NOT NULL DEFAULT 1,completion_token TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "integration_events",
+      "tbl_name": "integration_events",
+      "sql": "CREATE TABLE integration_events(id INTEGER PRIMARY KEY AUTOINCREMENT,provider TEXT NOT NULL,event TEXT NOT NULL,actor_id TEXT,detail TEXT,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "integration_folders",
+      "tbl_name": "integration_folders",
+      "sql": "CREATE TABLE integration_folders(provider TEXT NOT NULL,scope_key TEXT NOT NULL,folder_id TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(provider,scope_key))"
+    },
+    {
+      "type": "table",
+      "name": "integration_oauth_states",
+      "tbl_name": "integration_oauth_states",
+      "sql": "CREATE TABLE integration_oauth_states(state TEXT PRIMARY KEY,provider TEXT NOT NULL,user_id TEXT NOT NULL,created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL,nonce_hash TEXT NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "integration_tokens",
+      "tbl_name": "integration_tokens",
+      "sql": "CREATE TABLE integration_tokens(provider TEXT PRIMARY KEY,account_email TEXT,account_name TEXT,scope TEXT NOT NULL,refresh_token_enc TEXT,access_token_enc TEXT,access_token_expires_at INTEGER,folder_id TEXT,folder_name TEXT,connected_by TEXT NOT NULL,connected_at INTEGER NOT NULL,last_refresh_at INTEGER,last_test_at INTEGER,last_test_result TEXT,last_error TEXT,revoked_at INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "miscellaneous_equipments",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TABLE miscellaneous_equipments(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL REFERENCES units(id),inspection_id TEXT NOT NULL REFERENCES inspections(id),category TEXT NOT NULL,environment_id TEXT REFERENCES environments(id),asset TEXT NOT NULL,serial TEXT NOT NULL,search_text TEXT NOT NULL,data_json TEXT NOT NULL,published_json TEXT,version INTEGER NOT NULL DEFAULT 1,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL,verified_at INTEGER,verified_by TEXT,mutation_id TEXT,duplicate_flag INTEGER NOT NULL DEFAULT 0,published_verified_at INTEGER,published_updated_at INTEGER,position_label TEXT,position_description TEXT,location_state TEXT NOT NULL DEFAULT 'declarada',location_confirmed_by TEXT,location_confirmed_at TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "miscellaneous_locks",
+      "tbl_name": "miscellaneous_locks",
+      "sql": "CREATE TABLE miscellaneous_locks(equipment_id TEXT PRIMARY KEY REFERENCES miscellaneous_equipments(id),user_id TEXT NOT NULL,token TEXT NOT NULL,expires_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "missing_equipment_cases",
+      "tbl_name": "missing_equipment_cases",
+      "sql": "CREATE TABLE missing_equipment_cases(id TEXT PRIMARY KEY,equipment_id TEXT NOT NULL REFERENCES equipments(id),unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,state TEXT NOT NULL DEFAULT 'open',reason TEXT NOT NULL,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,resolved_by TEXT,resolved_at INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "photo_deletion_queue",
+      "tbl_name": "photo_deletion_queue",
+      "sql": "CREATE TABLE photo_deletion_queue(object_key TEXT PRIMARY KEY,deletion_id TEXT NOT NULL,created_at INTEGER NOT NULL, storage_provider TEXT NOT NULL DEFAULT 'r2', storage_ref TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "published_equipment_counts",
+      "tbl_name": "published_equipment_counts",
+      "sql": "CREATE TABLE published_equipment_counts(unit_id TEXT NOT NULL,category TEXT NOT NULL,records INTEGER NOT NULL DEFAULT 0,items INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(unit_id,category))"
+    },
+    {
+      "type": "table",
+      "name": "published_unit_status",
+      "tbl_name": "published_unit_status",
+      "sql": "CREATE TABLE published_unit_status(unit_id TEXT PRIMARY KEY,visits INTEGER NOT NULL DEFAULT 0,latest INTEGER,environment_count INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "type": "table",
+      "name": "root_deletion_guard",
+      "tbl_name": "root_deletion_guard",
+      "sql": "CREATE TABLE root_deletion_guard(id TEXT PRIMARY KEY,valid INTEGER NOT NULL CHECK(valid=1))"
+    },
+    {
+      "type": "table",
+      "name": "root_deletions",
+      "tbl_name": "root_deletions",
+      "sql": "CREATE TABLE root_deletions(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,actor_id TEXT NOT NULL,unit_json TEXT NOT NULL,impact_json TEXT NOT NULL,reason TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "sessions",
+      "tbl_name": "sessions",
+      "sql": "CREATE TABLE sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), csrf TEXT NOT NULL, expires_at INTEGER NOT NULL, created_at INTEGER NOT NULL, credential_version INTEGER NOT NULL DEFAULT 0, user_agent TEXT NOT NULL DEFAULT '')"
+    },
+    {
+      "type": "table",
+      "name": "settings",
+      "tbl_name": "settings",
+      "sql": "CREATE TABLE settings (key TEXT PRIMARY KEY, value INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "unit_assignments",
+      "tbl_name": "unit_assignments",
+      "sql": "CREATE TABLE unit_assignments (user_id TEXT NOT NULL REFERENCES users(id),unit_id TEXT NOT NULL REFERENCES units(id),assigned_by TEXT NOT NULL REFERENCES users(id),assigned_at INTEGER NOT NULL,PRIMARY KEY(user_id,unit_id))"
+    },
+    {
+      "type": "table",
+      "name": "unit_changes",
+      "tbl_name": "unit_changes",
+      "sql": "CREATE TABLE unit_changes(id INTEGER PRIMARY KEY AUTOINCREMENT,actor_id TEXT NOT NULL,event TEXT NOT NULL,target_id TEXT NOT NULL,payload TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "unit_collection_totals",
+      "tbl_name": "unit_collection_totals",
+      "sql": "CREATE TABLE unit_collection_totals(unit_id TEXT PRIMARY KEY,records INTEGER NOT NULL DEFAULT 0,items INTEGER NOT NULL DEFAULT 0,problems INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "type": "table",
+      "name": "units",
+      "tbl_name": "units",
+      "sql": "CREATE TABLE units (id TEXT PRIMARY KEY,name TEXT NOT NULL,name_key TEXT NOT NULL UNIQUE,code TEXT UNIQUE,address TEXT NOT NULL DEFAULT '',neighborhood TEXT NOT NULL DEFAULT '',latitude REAL,longitude REAL,active INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL, manager_name TEXT NOT NULL DEFAULT '', unit_type TEXT NOT NULL DEFAULT '', region TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '')"
+    },
+    {
+      "type": "table",
+      "name": "users",
+      "tbl_name": "users",
+      "sql": "CREATE TABLE users (id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, role TEXT NOT NULL CHECK(role IN ('root','admin','operador','visualizador')), password_hash TEXT NOT NULL, salt TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, must_change INTEGER NOT NULL DEFAULT 1, temporary_expires INTEGER, created_at INTEGER NOT NULL, credential_version INTEGER NOT NULL DEFAULT 0, display_name TEXT NOT NULL DEFAULT '', last_login_at INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "visit_answers",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TABLE visit_answers(inspection_id TEXT PRIMARY KEY REFERENCES inspections(id),data_json TEXT NOT NULL DEFAULT '{}',version INTEGER NOT NULL DEFAULT 1,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "trigger",
+      "name": "equipment_totals_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER equipment_totals_insert AFTER INSERT ON equipments BEGIN\n INSERT INTO unit_collection_totals(unit_id,records,items,problems) VALUES(NEW.unit_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)\n ON CONFLICT(unit_id) DO UPDATE SET records=records+1,items=items+excluded.items,problems=problems+excluded.problems;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "equipment_totals_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER equipment_totals_update AFTER UPDATE OF data_json ON equipments BEGIN\n UPDATE unit_collection_totals SET items=items+CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER)-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),problems=problems+(CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)-(CASE WHEN COALESCE(json_extract(OLD.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END) WHERE unit_id=NEW.unit_id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_equipment_totals_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_equipment_totals_insert AFTER INSERT ON miscellaneous_equipments BEGIN\r\n INSERT INTO unit_collection_totals(unit_id,records,items,problems) VALUES(NEW.unit_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)\r\n ON CONFLICT(unit_id) DO UPDATE SET records=records+1,items=items+excluded.items,problems=problems+excluded.problems;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_equipment_totals_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_equipment_totals_update AFTER UPDATE OF data_json ON miscellaneous_equipments BEGIN\r\n UPDATE unit_collection_totals SET items=items+CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER)-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),problems=problems+(CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)-(CASE WHEN COALESCE(json_extract(OLD.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END) WHERE unit_id=NEW.unit_id;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_progress_equipment_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_progress_equipment_insert AFTER INSERT ON miscellaneous_equipments BEGIN\r\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\r\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_progress_equipment_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_progress_equipment_update AFTER UPDATE OF inspection_id,data_json,published_json ON miscellaneous_equipments WHEN NEW.inspection_id IS NOT OLD.inspection_id OR NEW.data_json IS NOT OLD.data_json OR NEW.published_json IS NOT OLD.published_json BEGIN\r\n UPDATE inspection_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),new_records=new_records-(OLD.published_json IS NULL),changed_records=changed_records-(OLD.published_json IS NOT NULL) WHERE inspection_id=OLD.inspection_id;\r\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\r\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_published_equipment_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_published_equipment_update AFTER UPDATE OF published_json ON miscellaneous_equipments WHEN NEW.published_json IS NOT OLD.published_json BEGIN\r\n UPDATE published_equipment_counts SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.published_json,'$.quantity'),1) AS INTEGER) WHERE unit_id=OLD.unit_id AND category=json_extract(OLD.published_json,'$.category') AND OLD.published_json IS NOT NULL;\r\n INSERT INTO published_equipment_counts(unit_id,category,records,items) SELECT NEW.unit_id,json_extract(NEW.published_json,'$.category'),1,CAST(COALESCE(json_extract(NEW.published_json,'$.quantity'),1) AS INTEGER) WHERE NEW.published_json IS NOT NULL ON CONFLICT(unit_id,category) DO UPDATE SET records=records+1,items=items+excluded.items;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "progress_equipment_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER progress_equipment_insert AFTER INSERT ON equipments BEGIN\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "progress_equipment_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER progress_equipment_update AFTER UPDATE OF inspection_id,data_json,published_json ON equipments WHEN NEW.inspection_id IS NOT OLD.inspection_id OR NEW.data_json IS NOT OLD.data_json OR NEW.published_json IS NOT OLD.published_json BEGIN\n UPDATE inspection_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),new_records=new_records-(OLD.published_json IS NULL),changed_records=changed_records-(OLD.published_json IS NOT NULL) WHERE inspection_id=OLD.inspection_id;\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "published_equipment_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER published_equipment_update AFTER UPDATE OF published_json ON equipments WHEN NEW.published_json IS NOT OLD.published_json BEGIN\n UPDATE published_equipment_counts SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.published_json,'$.quantity'),1) AS INTEGER) WHERE unit_id=OLD.unit_id AND category=json_extract(OLD.published_json,'$.category') AND OLD.published_json IS NOT NULL;\n INSERT INTO published_equipment_counts(unit_id,category,records,items) SELECT NEW.unit_id,json_extract(NEW.published_json,'$.category'),1,CAST(COALESCE(json_extract(NEW.published_json,'$.quantity'),1) AS INTEGER) WHERE NEW.published_json IS NOT NULL ON CONFLICT(unit_id,category) DO UPDATE SET records=records+1,items=items+excluded.items;\nEND"
+    },
+    {
+      "type": "view",
+      "name": "inventory_equipment_all",
+      "tbl_name": "inventory_equipment_all",
+      "sql": "CREATE VIEW inventory_equipment_all AS SELECT *, 'legacy' AS storage_kind FROM equipments UNION ALL SELECT *, 'misc' AS storage_kind FROM miscellaneous_equipments"
+    }
+  ]
+}

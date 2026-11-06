@@ -1,0 +1,186 @@
+SEMED — REVISÃO DE EXPERIÊNCIA DO COLETOR
+Data: 05/11/2026
+Status: DIAGNÓSTICO OBSERVADO + PROPOSTA LOCAL. Nenhuma nova publicação.
+
+PEDIDO E CONTEXTO
+O responsável aprovou a identidade visual, mas relatou botões grandes,
+campos encobertos pelo teclado, fechamento do teclado/pulos de tela e
+dificuldade de avançar entre campos. Pediu navegação e proposta de melhoria.
+Esta entrega analisa esses pontos sem trocar perguntas ou regras de negócio.
+
+LIMITES DA VERIFICAÇÃO
+- Captura do celular enviada pelo responsável examinada.
+- Tentativa de acesso à aba autenticada retornou "browser.user is unavailable".
+- Navegação reproduzida com o mesmo código da publicação D-061, Worker real
+  e SQLite efêmero; apenas dados TESTE ISOLADO. Sem acessar/gravar D1 oficial.
+- Navegador Edge automatizado, largura 390px e área de página de 660px.
+- Também reduzida a altura da página para 360px. Isso mostra a disputa por
+  espaço, MAS NÃO equivale a abrir um teclado físico Android/iPhone.
+- Os testes anteriores cobriram dados, fotos, QR, tamanhos de tela e erros
+  de JavaScript. Não homologaram a experiência com teclado virtual real.
+  Essa lacuna explica por que a aprovação anterior não detectou estes casos.
+
+1. RESULTADOS CONFIRMADOS
+
+1.1. Pouco espaço para os computadores
+Na área de 390 x 660px:
+  cabeçalho fixo ........... 121px
+  rodapé fixo ............. 77px
+  primeiro equipamento .... começa em aproximadamente 542px
+  início do rodapé ......... 583px
+Só cerca de 41px do primeiro cartão aparecem antes do rodapé. A maior parte
+da tela é gasta em título repetido, símbolo de 64px, instrução, botão grande
+de adicionar, campo de filtro e outro botão de filtrar.
+
+Os botões principais têm altura mínima de 52px; os campos, 48px. A dimensão
+isolada não explica tudo: há ações em muitas linhas e o conteúdo útil começa
+tarde. Diminuir só a letra seria insuficiente e prejudicaria a leitura.
+
+1.2. Disputa de espaço durante a digitação
+Com altura reduzida de 360px, o cabeçalho ocupa 113px e o rodapé 69px.
+Restam cerca de 178px entre eles. Não há tratamento específico de
+VisualViewport/foco/teclado no código atual. A redução é uma simulação de
+espaço disponível, não prova de como cada navegador move seu teclado.
+
+1.3. Perda de foco reproduzida
+- Digitar texto simples manteve o foco no teste; não se observou perda a
+  cada tecla.
+- Mudar uma seleção reconstrói todo o conteúdo e devolveu o foco ao BODY.
+- Durante o envio de foto, foi digitado AnyDesk. Ao chegar a confirmação da
+  foto, o foco mudou de AnyDesk para BODY. O valor 00123 permaneceu.
+  Isso comprova perda de foco; o fechamento físico do teclado não foi
+  observado neste computador, mas é compatível com o relato do usuário.
+- Causa: render() troca app.innerHTML. Um upload concluído chama render();
+  seleções também chamam render(), substituindo os elementos em edição.
+
+1.4. Busca sem ação de teclado
+O campo de filtro é input text, sem formulário e sem enterkeyhint.
+Digitar e pressionar Enter não fez requisição de busca: zero requisições
+equipment-list. Exige tocar no botão Filtrar. Depois da ação, repaint()
+reconstrói a página e força scrollTo(0,0), levando o usuário de volta ao topo.
+
+1.5. Defeito funcional adicional: filtro contaminando respostas
+Reproduzido: digitar no filtro, tocar Filtrar e tentar concluir o assunto.
+Resultado: HTTP 400 e "Dados inválidos ou segredo enviado em campo comum."
+O handler input separa _query, mas o handler change não: escreve _query em
+answers e marca o assunto como alterado. O servidor corretamente recusa esse
+campo que não pertence às respostas. Buscar não deveria alterar o inventário.
+Não corrigir isso liberando campos desconhecidos no servidor: separar o
+estado de pesquisa do estado das respostas no navegador.
+
+1.6. Erro de validação escondido
+Ao deixar Ambiente vazio e salvar uma ficha, o erro específico apareceu em
+y=587px, enquanto o rodapé começava em y=573px. O erro ficou coberto pela
+barra. O foco voltou ao BODY. Existe aviso geral, mas não há deslocamento e
+foco confiável até o campo inválido.
+
+2. PROPOSTA DE EXPERIÊNCIA
+
+PRIORIDADE 1 — Corrigir interrupções, preservando o formulário atual
+- Isolar o estado do filtro. Enter e botão Buscar devem executar a mesma
+  ação; não alterar seção/versão/histórico nem disparar autosave de respostas.
+- Atualizar apenas a área da fotografia ao concluir um envio. Não substituir
+  os campos em que alguém esteja digitando. Manter cursor/seleção/valor.
+- Atualizar apenas campos dependentes de uma seleção. Se reconstruir for
+  inevitável, restaurar foco e seleção com cuidado, sem forçar foco após o
+  usuário ter saído do campo.
+- Preservar posição da lista ao filtrar, editar e retornar. Rolar ao topo
+  somente quando houver troca real de tela que justifique esse movimento.
+- Erros: posicionar o primeiro campo inválido acima do teclado/rodapé,
+  focá-lo e relacionar mensagem e campo com aria-describedby.
+
+PRIORIDADE 2 — Compactar a tela sem perder a identidade
+- Uma linha de navegação: seta Voltar, nome da seção e unidade. Retirar o
+  bloco separado "Voltar às categorias" e o título repetido.
+- Manter ícones/cores/fontes, mas usar símbolo de 32–40px junto ao título
+  quando necessário. Não reservar um bloco de 64px sozinho antes da lista.
+- Botão Adicionar com texto curto e altura de 44–48px.
+- Campo de busca em uma linha, com lupa e ação Buscar do teclado; limpar
+  acessível. Evitar a sequência rótulo + campo + botão em três linhas.
+- Cartão com tipo, ambiente/posição e vínculo visíveis; Editar pequeno, mas
+  com área de toque confortável. Não esconder estados ou identificação.
+- "Concluir assunto" continua manual, mas com aparência secundária e menor
+  peso visual. Adicionar/editar são as ações frequentes dessa tela.
+- Campos editáveis permanecem em 16px. Não reduzir tudo indiscriminadamente.
+- Meta: primeiro equipamento aparecer antes de 250px numa área de 390x660.
+
+PRIORIDADE 3 — Tratar o teclado como parte do fluxo
+- Adaptar a interface à área realmente visível (VisualViewport, com fallback
+  e detecção cuidadosa de foco; não confundir rotação/zoom com teclado).
+- Durante digitação, recolher a barra de conclusão e detalhes secundários
+  do cabeçalho. A ação de conclusão reaparece quando a digitação termina.
+- Manter campo, rótulo e erro dentro da área visível, sem rolar a cada tecla.
+- Oferecer Próximo nos campos de texto e Buscar no filtro. O atributo
+  enterkeyhint é uma indicação visual: implementar também a ação real de
+  avançar/buscar. Enter em observações multilinha deve continuar nova linha.
+- AnyDesk/RustDesk mantêm teclado numérico e zeros iniciais. IP não deve
+  usar máscara/teclado que impeça digitar o ponto. Não coletar novas senhas.
+- Ter uma forma discreta de encerrar a digitação. Não remover rascunho,
+  confirmar vínculo, enviar conclusão ou salvar ficha só por fechar teclado.
+
+3. PRÉVIA PREPARADA
+Arquivo: PROPOSTA_UX_COLETOR_2026-11-05.html, na mesma pasta deste TXT.
+É um protótipo visual autônomo, com fontes embutidas e dados demonstrativos.
+Não contém login, credenciais, API, persistência ou conexão com o ambiente real.
+
+Permite experimentar filtro, Enter para buscar, abrir uma ficha reduzida de
+exemplo, Próximo entre quatro campos existentes, retorno e recolhimento do
+rodapé durante digitação. Não é implementação do questionário completo.
+Os três equipamentos e estados são exemplos, expressamente rotulados.
+O envio/conclusão nunca é apresentado como sucesso real.
+
+Medição da prévia na mesma área de 390x660px: primeiro equipamento em y=226px
+(era aproximadamente 542px). O cabeçalho ocupa 66px, além de 26px da faixa
+"PROPOSTA". O rodapé ocupa 65px. Três exemplos completos ficam visíveis.
+Busca/Enter, abertura/retorno, Próximo e ocultação/restauração do rodapé por
+foco foram conferidos no navegador; não substituem homologação do teclado.
+
+4. ACEITE NECESSÁRIO ANTES DA PRÓXIMA PUBLICAÇÃO
+
+A. Busca
+[ ] Enter busca; limpar restaura a lista; termos não entram nas respostas.
+[ ] Filtrar não muda versão/estado/histórico da seção.
+[ ] Filtrar e concluir assunto não produz o erro HTTP 400 diagnosticado.
+[ ] A busca mantém paginação/escopo no servidor, sem cortar o inventário ao
+    filtrar apenas os itens já carregados. Sem requisição por tecla sem controle.
+
+B. Foco e teclado
+[ ] Digitar continuamente sem perder caracteres/cursor.
+[ ] Upload de foto terminar enquanto digita sem fechar teclado ou tirar foco.
+[ ] Select, campos condicionais, erro de validação, retorno e conflito não
+    causam salto inesperado nem apagam o texto.
+[ ] Teclas Próximo/Buscar/Concluir adequadas, sem salvar indevidamente.
+[ ] Campo ativo e erro permanecem visíveis com teclado aberto.
+[ ] Observar fechamento voluntário do teclado, rotação e zoom do sistema.
+
+C. Apresentação
+[ ] 360px e 390px; retrato e paisagem; primeiro item antes de 250px.
+[ ] Toque confortável; rótulos legíveis; nenhum controle sob rodapé.
+[ ] Mesma identidade aprovada; sem novas perguntas ou versões visíveis.
+
+D. Teste físico que ficou faltando
+[ ] No celular do responsável: navegador usado na captura, teclado habitual,
+    busca, ambiente, posição, AnyDesk, RustDesk, observações e envio de foto.
+[ ] Chrome Android, se disponível, nas mesmas situações.
+[ ] Safari iPhone, se disponível, registrando explicitamente quando não testado.
+[ ] Vídeo/captura com teclado aberto, tipo de aparelho, navegador e resultado.
+Emulação desktop não substitui esses testes de teclado/câmera.
+
+5. FONTES E RASTREABILIDADE
+Implementação analisada: web/collector-v3.js, collector.css, collector-v3.css,
+tokens.css, collector-v3-schema.js, collector-drafts.js; D-057 a D-061.
+Roteiro executável: tests/collector-ux-audit.cjs.
+Evidências: docs/05-qualidade/evidencias/ux-coletor-2026-11-05/diagnostico.json
+e capturas 01 a 05. Nenhum erro JavaScript; os problemas são de interação e
+um erro de estado da busca, não falta de execução do JS.
+Protótipo: scripts/gerar-proposta-ux-coletor.mjs e capturar-proposta-ux.cjs;
+capturas 06/07 e proposta-metricas.json. Não confundir protótipo com produção.
+
+Referências técnicas consultadas:
+https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport
+https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/enterkeyhint
+https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html
+O critério de alvo 44x44px citado é WCAG AAA, não alegação de requisito AA.
+
+Nenhum arquivo do aplicativo em web/ ou server/ foi alterado nesta revisão.
+Nenhum deploy, migração, mudança de credencial ou teste em dados oficiais.

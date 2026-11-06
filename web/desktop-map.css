@@ -1,0 +1,30 @@
+/* Scoped cartographic integration: no dashboard-wide visual rules. */
+.map-panel .map-canvas{position:absolute;inset:0;background:#102631;z-index:0;font-family:'Segoe UI',Arial,sans-serif}
+.map-panel .panel-title{z-index:1001;background:linear-gradient(#031725f0,#031725aa,transparent);padding-bottom:24px}
+.map-panel .map-tools{z-index:1001;top:70px}
+.map-panel .cartography-controls{position:absolute;bottom:42px;right:9px;z-index:1001;display:flex;gap:4px;padding:4px;border:1px solid #3b5e70;border-radius:7px;background:#061d2de8}
+.cartography-controls button{border:1px solid #35576e;border-radius:4px;background:#0d2b40;color:#c7e0ef;font-size:10px;min-height:30px;padding:5px 8px;display:inline-flex;align-items:center;gap:5px}
+.cartography-controls button[aria-pressed="true"]{color:#8de5ff;background:#064876;border-color:#129bdb}
+.cartography-controls .ico{width:14px;height:14px}
+.map-panel .cartography-status{position:absolute;left:7px;bottom:6px;z-index:1001;background:#041b2aeb;color:#bad4df;border:1px solid #2d4a5c;font-size:9px;border-radius:4px;padding:5px 7px;max-width:calc(100% - 14px);pointer-events:none}
+.map-panel .cartography-status.error{color:#ffe2a4;border-color:#886538;background:#2c2515ee}
+.map-panel .leaflet-control-attribution{font-size:8px;background:#031a28e8;color:#a1bbca;max-width:340px;line-height:1.3}
+.map-panel .leaflet-control-attribution a{color:#7fbedb}
+.map-panel .leaflet-bottom.leaflet-right{bottom:26px}
+.map-panel .leaflet-bottom.leaflet-left{bottom:29px}
+.map-panel .leaflet-control-scale-line{background:#062136bd;color:#cee5f3;border-color:#b3d2e1;font-size:9px;text-shadow:none}
+.map-panel .leaflet-tile-pane{filter:brightness(.8) saturate(.8)}
+.map-panel .leaflet-tile{transition:none;filter:none}
+.map-panel .v33-tooltip{background:#092c42;color:#d4ebf6;border-color:#456d83;box-shadow:0 5px 20px #0006;font-size:11px}
+.map-panel .v33-tooltip:before{display:none}
+.map-panel .map-canvas:focus-visible{outline:2px solid #5fe3ff;outline-offset:-3px}
+.map-panel .map-info{position:absolute;top:10px;right:10px;z-index:1001;width:27px;height:27px;border:1px solid #47718c;border-radius:50%;background:#062238;color:#97dbf5;font-size:13px}
+.map-reference-info{color:#bdd5e3;line-height:1.7}
+.map-panel .institutional-marker{display:grid;place-items:center;background:linear-gradient(130deg,#ffc453,#d77d12);border:2px solid #fff0c9;border-radius:8px 8px 8px 1px;color:#2d2207;box-shadow:0 3px 12px #0009}
+.map-panel .institutional-marker .ico{width:21px;height:25px;stroke-width:1.7}
+.map-panel .institutional-leaflet-popup .leaflet-popup-content-wrapper,.map-panel .institutional-leaflet-popup .leaflet-popup-tip{background:#08293b;color:#d9edf5}
+.map-panel .institutional-popup strong{font-size:14px;color:#ffda83;display:block}
+.map-panel .institutional-popup p{font-size:11px;line-height:1.5;margin:8px 0}
+.map-panel .institutional-popup a{font-size:11px;color:#7fddff}
+@media(max-width:1500px){.map-panel .panel-title h3{font-size:12px}.map-panel .panel-title small{font-size:9px}}
+@media(max-width:500px){.map-panel .panel-title h3{font-size:11px}.map-panel .panel-title small{font-size:8px}.map-panel .cartography-controls{right:7px;bottom:54px}.cartography-controls button{font-size:9px;padding:5px 6px}.map-panel .leaflet-control-attribution{max-width:240px;font-size:7px}.map-panel .cartography-status{font-size:8px}.map-panel .map-info{top:36px;right:9px}.map-panel .panel-title{padding-right:10px}}

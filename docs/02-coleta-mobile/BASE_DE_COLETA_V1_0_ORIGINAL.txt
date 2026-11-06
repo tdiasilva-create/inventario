@@ -1,0 +1,1084 @@
+﻿SISTEMA DE INVENTÁRIO TECNOLÓGICO — SEMED
+ESPECIFICAÇÃO CONSOLIDADA — ETAPA 1: AMBIENTE DE COLETA MOBILE
+Versão deste documento: 1.0 (consolidação das decisões aprovadas)
+Data: 27/10/2026
+Formato: TXT / UTF-8
+Situação: QUESTIONÁRIO ENCERRADO POR SOLICITAÇÃO DO RESPONSÁVEL
+
+======================================================================
+0. FINALIDADE E ORIENTAÇÕES PARA A PRÓXIMA CONVERSA
+======================================================================
+
+Este arquivo consolida as decisões tomadas durante a definição funcional do
+ambiente de coleta do Inventário Tecnológico da SEMED. Seu objetivo é permitir
+que outra conversa, equipe técnica ou agente de desenvolvimento (como Codex)
+retome o projeto sem refazer o questionário de levantamento de requisitos.
+
+ESCOPO EXCLUSIVO DESTE DOCUMENTO:
+- Etapa 1: interface de coleta de dados, mobile-first, acessada via navegador.
+- Fluxos de vistoria, cadastro, atualização, conferência e fotografia.
+- Regras de autenticação, autorização, segurança, uso offline, sincronização e
+  gestão administrativa necessária ao funcionamento da coleta.
+
+FORA DO ESCOPO DE DESENHO DE INTERFACE NESTE DOCUMENTO:
+- Construção ou detalhamento visual do painel analítico desktop (Etapa 2).
+- Relatórios executivos, gráficos, indicadores e layouts do painel gerencial.
+- Demais sistemas ou portais da SEMED.
+
+RELAÇÃO ENTRE ETAPAS:
+A coleta mobile e o painel analítico são interfaces distintas, porém usam a
+mesma base de dados Cloudflare D1 e o mesmo repositório de fotografias
+Cloudflare R2. As vistorias concluídas e sincronizadas deverão ficar
+disponíveis imediatamente para o painel; os rascunhos não entrarão nos
+indicadores oficiais. O detalhamento do painel será tratado separadamente.
+
+PRINCÍPIO DE LEITURA:
+- As escolhas explicitamente aprovadas prevalecem sobre recomendações feitas
+  durante o questionário.
+- Quando uma escolha posterior modificou uma anterior, prevalece a mais
+  recente (exemplo: CPU do desktop tornou-se campo opcional).
+- Decisões não tomadas estão identificadas como PENDENTE, e não devem ser
+  inventadas ou interpretadas como aprovadas.
+- A proposta técnica poderá ser refinada para respeitar segurança e limitações
+  reais dos navegadores, sem alterar silenciosamente as regras funcionais.
+- Não reabrir o questionário sem solicitação expressa do responsável.
+
+======================================================================
+1. VISÃO GERAL E ARQUITETURA APROVADA
+======================================================================
+
+1.1. Conceito funcional
+- Inventário tecnológico CONTÍNUO, e não campanha de coleta descartável.
+- Uma unidade escolar possui inventário permanente e atualizável.
+- Em novas visitas, conferir e atualizar somente o necessário.
+- Preservar histórico, identificação do responsável, datas de última
+  alteração e de última verificação.
+- Uma vistoria pode ocorrer em vários dias e ser retomada.
+- Mais de um coletor autorizado pode trabalhar na mesma unidade.
+- Impedir edição simultânea do mesmo equipamento, com controle no servidor;
+  considerar conflitos quando houver atividades offline.
+
+1.2. Tecnologia de persistência
+- Cloudflare D1: registros estruturados, unidades, ambientes, usuários,
+  equipamentos, vistorias, problemas, permissões, pendências, histórico etc.
+- Cloudflare R2: fotografias e miniaturas vinculadas aos registros do D1.
+- Mecanismos de comunicação, autenticação, autorização, gravação e controle de
+  versão deverão ser implementados do lado servidor, não apenas na interface.
+- A integração D1/R2 deverá garantir vínculos consistentes e prevenir
+  duplicação ou perda silenciosa de registros e anexos.
+
+1.3. Experiência de uso
+- Modelo: MOBILE-FIRST TASK-ORIENTED WIZARD.
+- Navegação principal por CARTÕES (Card-Based Navigation).
+- Cada cartão abre seu fluxo de perguntas / cadastro guiado.
+- Botões Próximo / Voltar dentro das etapas.
+- Organização por categorias e opções predefinidas, minimizando digitação.
+- Fotos por câmera e galeria.
+- Agilidade e clareza são prioridades.
+- O visual de referência escolhido em conversa anterior não está reproduzido
+  neste TXT; caso necessário, utilizar a imagem original como referência,
+  evitando estilos genéricos e sem alterar as funcionalidades aqui definidas.
+
+======================================================================
+2. UNIDADES ESCOLARES E ORGANIZAÇÃO DAS VISTORIAS
+======================================================================
+
+2.1. Inventário contínuo — APROVADO
+- Cada escola mantém uma base patrimonial/tecnológica contínua.
+- Correções e novas verificações não apagam o histórico anterior.
+- Exibir separadamente data da última modificação e última verificação.
+
+2.2. Acesso de coletores — APROVADO
+- Coletores diferentes, individualmente autorizados, poderão atualizar o
+  inventário de uma mesma escola.
+- Todas as ações identificarão o usuário autenticado.
+
+2.3. Concorrência — APROVADO
+- Podem ocorrer vistorias simultâneas na mesma unidade.
+- Não permitir edição online simultânea do mesmo cadastro de equipamento.
+- Alterações offline potencialmente concorrentes serão detectadas na
+  sincronização e passarão por resolução controlada.
+
+2.4. Troca de escola — APROVADO
+- O coletor poderá mudar de unidade, desde que as alterações em andamento
+  sejam salvas ou explicitamente descartadas.
+- Não abandonar alterações silenciosamente.
+- Trabalho incompleto pode ser retomado.
+
+2.5. Catálogo oficial de unidades — APROVADO
+- Somente o administrador mantém a lista oficial das escolas/unidades.
+- Administrador pode importar planilha Excel/CSV de unidades.
+- Também pode criar, alterar e desativar unidades individualmente.
+- Validar duplicidades de unidades na importação/cadastro.
+- O coletor escolhe apenas dentre as escolas para as quais foi autorizado.
+- O coletor não cria ou altera escolas do catálogo oficial.
+
+2.6. Abertura da vistoria — APROVADO
+- Usuário autenticado e data/hora identificados.
+- Nome/cargo do responsável presente na unidade: OPCIONAIS.
+- A coleta pode ser distribuída por mais de um dia e continuada por outros
+  coletores que possuam a devida autorização.
+
+======================================================================
+3. NAVEGAÇÃO POR CARTÕES E ESTADOS DA COLETA
+======================================================================
+
+3.1. Tela de entrada
+- Identificar usuário e selecionar uma das unidades escolares autorizadas.
+- Após entrar na unidade, apresentar categorias em cartões acessíveis.
+- Grupo A (identificação) será predominantemente preenchido automaticamente.
+
+3.2. Sequência geral
+- Os cartões aparecerão numa ORDEM RECOMENDADA, mas o acesso entre cartões é
+  LIVRE (pergunta 25.8, opção C).
+- Dependências obrigatórias BLOQUEIAM O AVANÇO na etapa que delas depende
+  (pergunta 25.9, opção D). Apresentar aviso objetivo e atalho ao cartão
+  necessário, preservando tudo o que já foi preenchido.
+- Exemplo: sem ambiente cadastrado, não permitir avançar na etapa que exige a
+  localização do computador até que o ambiente seja registrado.
+- O bloqueio não deve impedir o uso de outros cartões independentes.
+
+3.3. Progresso visual — APROVADO
+- Somente indicadores diretamente NOS CARTÕES, sem barra geral percentual.
+- Estados dos cartões: PENDENTE, EM ANDAMENTO e CONCLUÍDO.
+- Para concluir um cartão, o coletor pressiona MARCAR COMO CONCLUÍDO.
+- O aplicativo valida previamente os requisitos obrigatórios aplicáveis.
+- Concluir cartão não equivale a enviar oficialmente a vistoria.
+- Se o usuário quiser editar um cartão concluído, o sistema DEVE PEDIR
+  CONFIRMAÇÃO antes de reabri-lo (pergunta 25.7, opção C).
+- Após reabertura autorizada, o cartão volta a EM ANDAMENTO e deverá ser
+  concluído manualmente novamente.
+
+3.4. Orientação da tela — APROVADO
+- Layout criado para celular na posição VERTICAL (retrato).
+- Não desenvolver layout horizontal próprio como requisito da primeira versão.
+- Se o celular girar, NÃO apresentar aviso e NÃO impedir a utilização.
+- Preservar respostas, etapa atual e permitir rolagem, sem ocultar informações.
+- Não depender de bloqueio físico de orientação, pois será uma aplicação web.
+
+3.5. Distribuição — APROVADO
+- Acesso somente por navegador e URL, sem exigir instalação do aplicativo.
+- Não criar distribuição por App Store / Play Store nem instalação PWA como
+  funcionalidade obrigatória da primeira versão.
+- Plataformas oficialmente atendidas: Google Chrome no Android e Safari no
+  iPhone. Validar câmera, galeria, salvamento, armazenamento e operação offline.
+
+3.6. Validação de campos — PENDENTE DE DEFINIÇÃO PERSONALIZADA
+- Pergunta 25.10: o responsável rejeitou os modelos disponíveis e optou por
+  descrever uma regra própria, mas decidiu encerrar o questionário antes de
+  fornecê-la.
+- NÃO PRESUMIR que tenha escolhido validação em tempo real, ao clicar em
+  Próximo ou somente ao finalizar o cartão.
+- Requisito mínimo já decorrente de outras decisões: campos obrigatórios e
+  dependências devem ser validados antes da conclusão do cartão e da vistoria;
+  dependências obrigatórias impedem avançar na etapa correspondente; indicar
+  pendências sem perda das respostas.
+- Momento exato e apresentação visual dos erros ficam PENDENTES.
+
+======================================================================
+4. GRUPOS DO QUESTIONÁRIO — COMPORTAMENTO APROVADO
+======================================================================
+
+4.A. GRUPO A — IDENTIFICAÇÃO DA UNIDADE E VISTORIA
+- Preenchimento híbrido: dados da unidade, login do coletor, identificadores
+  e marcas de data/hora vêm automaticamente do sistema.
+- Exibir resumo ao coletor.
+- Disponibilizar observações opcionais.
+- Responsável/cargo informado pela escola: campos opcionais.
+- Unidade escolhida obrigatoriamente no cadastro oficial do administrador.
+
+4.B. GRUPO B — AMBIENTES / SETORES
+- Modelo híbrido: contar tipos de salas/ambientes e identificar
+  individualmente ambientes relevantes que possuam equipamentos.
+- Tipos padronizados e nomes personalizáveis, incluindo Outro ambiente.
+- Equipamentos devem ser vinculados ao ambiente em que estão localizados.
+- Ambiente NÃO é uma nova escola/unidade.
+- Geolocalização/GPS: OPCIONAL; não realizar rastreamento contínuo.
+- Informações dos ambientes alimentam seleções em internet, rede, energia,
+  equipamentos, impactos e necessidades gerais.
+
+4.C. GRUPO C — INTERNET E CONECTIVIDADE
+
+C.1. Existe internet na escola? OBRIGATÓRIO.
+     Respostas: Sim / Não / Não foi possível verificar.
+C.2. Funciona durante a vistoria? OBRIGATÓRIO SE HOUVER INTERNET.
+     Respostas: Sim / Parcialmente / Não / Não foi possível testar.
+C.3. Tipo de conexão: OBRIGATÓRIO SE HOUVER INTERNET.
+     Fibra / Rádio / Cabo / 4G-5G / Satélite / Desconhecido.
+C.4. Provedor/operadora: OBRIGATÓRIO SE HOUVER INTERNET.
+     Lista predefinida, Outra operadora, Não soube informar.
+C.5. Quantidade de links de internet: OBRIGATÓRIO.
+     1 / 2 / 3 ou mais / Não foi possível identificar.
+     Não confundir links de internet com roteadores ou redes Wi-Fi.
+C.6. Velocidade contratada: OBRIGATÓRIO quando aplicável.
+     Registrar Mbps por link quando conhecido; opção Não soube informar.
+C.7. Velocidade medida: pergunta OBRIGATÓRIA.
+     Download/upload em Mbps, momento do teste se disponível; permitir
+     Teste não realizado. Não confundir medida com contratada.
+C.8. Estabilidade: OBRIGATÓRIO.
+     Boa / Instável / Indisponível / Não avaliada.
+     Diferenciar observação direta e relato quando possível.
+C.9. Ambientes sem conectividade: OBRIGATÓRIO.
+     Sim / Não / Não avaliado. Selecionar ambientes afetados.
+C.10. Descrição dos problemas: OBRIGATÓRIA SOMENTE quando houver problemas.
+C.11. Fotografias: CONDICIONAIS a problemas visíveis/fotografáveis da
+      infraestrutura de internet; se não for seguro ou possível fotografar,
+      registrar justificativa. Sem problemas, fotos opcionais.
+
+Regras condicionais devem evitar exigir velocidade e operadora quando a
+internet não existe, permitindo registrar adequadamente a ausência.
+
+4.D. GRUPO D — REDE INTERNA E WI-FI
+
+D.1. Rede cabeada existe? OBRIGATÓRIO.
+     Sim / Não / Parcialmente / Não avaliada.
+D.2. Wi-Fi existe? OBRIGATÓRIO.
+     Sim / Não / Não avaliado.
+D.3. Cobertura por ambiente: OBRIGATÓRIA SE HOUVER WI-FI.
+     Seleção múltipla de ambientes; opção não foi possível verificar.
+D.4. Qualidade de cobertura Wi-Fi: OBRIGATÓRIA SE HOUVER WI-FI.
+     Adequada / Parcial / Insuficiente / Não avaliada.
+D.5. Roteadores: presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.6. Access Points (APs): presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.7. Switches: presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.8. Racks: presença OBRIGATÓRIA; quantidade, ambiente e conservação quando
+     houver.
+D.9. Organização dos cabos: OBRIGATÓRIA.
+     Adequada / Requer correção / Não avaliada. Avaliação visual.
+D.10. Cabos, tomadas ou portas de rede danificados: pergunta OBRIGATÓRIA;
+      quando identificados, detalhar tipo, localização, descrição e quantidade.
+D.11. Fotografias: condicionais para falhas visíveis; ou justificar a
+      impossibilidade. Opcionais quando não houver problema.
+
+Roteadores, APs e switches registrados na ficha de equipamentos (Grupo F)
+devem alimentar os totais e indicadores do Grupo D, sem contagem dupla.
+
+4.E. GRUPO E — ENERGIA ELÉTRICA E INSTALAÇÕES
+
+E.1. Tomadas suficientes? OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado; indicar ambientes afetados.
+E.2. Extensões, adaptadores ou irregularidades elétricas aparentes:
+     OBRIGATÓRIO; quando presentes, tipo, ambiente e descrição.
+E.3. Proteções de energia: OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado.
+     Se presentes, identificar nobreak, filtro de linha, estabilizador etc.,
+     quantidade, ambientes e condições; não misturar os tipos.
+E.4. Cabos elétricos expostos/danificados, sobrecargas e improvisações:
+     INCORPORAR AO ITEM E.2, sem pergunta duplicada.
+E.5. Equipamentos guardados aguardando instalação: OBRIGATÓRIO.
+     Se houver, registrar tipo, quantidade, local, motivo e condição.
+     Evitar duplicação com os registros individuais do Grupo F.
+E.6. Necessidade de avaliação por especialista elétrico:
+     CONDICIONAL quando houver problemas nos itens anteriores.
+     Respostas: Sim / Não / Não foi possível determinar.
+     Identificar ambiente, tipo e descrição.
+     O coletor fará apenas observação visual; não executar ensaios elétricos
+     perigosos nem alegar laudo especializado.
+E.7. Fotografias: condicionais a problemas elétricos visíveis;
+     caso seja inseguro fotografar, justificar; opcionais no restante.
+
+4.F. GRUPO F — INVENTÁRIO DE EQUIPAMENTOS TECNOLÓGICOS
+
+4.F.1. Política de cadastro
+- Modelo HÍBRIDO conforme tipo de equipamento: ficha individual para
+  categorias escolhidas; cadastro agrupado/lote para outras quando adequado.
+- Quando um lote possuir equipamentos com situações diferentes, separar os
+  registros, garantindo consistência dos atributos do grupo.
+- Identificadores de patrimônio e número de série pertencem a cada item real;
+  não atribuir o mesmo número de série a um lote inteiro.
+- Toda ficha deve ter identificador interno imutável para histórico/auditoria.
+- Vincular a unidade e, quando aplicável, ao ambiente cadastrado.
+
+4.F.2. Forma de cadastro por categoria (decisões 17.2.x)
+
+CATEGORIA                                            FORMA APROVADA
+------------------------------------------------------------------
+Computador desktop                                   INDIVIDUAL
+Notebook                                             INDIVIDUAL
+Tablet                                               INDIVIDUAL
+Monitor de computador                                INDIVIDUAL
+Impressora / multifuncional                          INDIVIDUAL
+Scanner independente                                 HÍBRIDA
+Projetor / datashow                                  INDIVIDUAL
+Televisão / painel interativo                        HÍBRIDA
+Roteador                                             HÍBRIDA
+Ponto de acesso / Access Point (AP)                  HÍBRIDA
+Switch de rede                                       HÍBRIDA
+Nobreak / UPS                                        HÍBRIDA
+Webcam                                               HÍBRIDA
+Microfone                                            HÍBRIDA
+Caixa de som                                         HÍBRIDA
+Servidor físico / NAS / armazenamento dedicado       HÍBRIDA
+Outros equipamentos                                  PERSONALIZÁVEL;
+                                                     individual ou lote
+------------------------------------------------------------------
+
+- Webcam, microfone e caixa de som são categorias distintas, apesar do mesmo
+  regime híbrido.
+- Não duplicar scanner integrado a multifuncional como scanner independente.
+- Routers/APs/switches integram Grupo D; UPS integra Grupo E.
+- A categoria Outros equipamentos poderá ser preenchida pelo coletor, com
+  classificação posterior pelo administrador e identidade estável do registro.
+
+4.F.3. Campos genéricos de identificação (decisões 17.3.x)
+
+17.3.1. Patrimônio — exigido quando disponível; permitir:
+        Sem patrimônio / Não identificado. Armazenar como TEXTO para
+        preservar zeros à esquerda. Ter ID interno independente.
+17.3.2. Número de série — exigido quando disponível; permitir:
+        Sem número de série / Não identificado. Não aplicar serial único a lote.
+17.3.3. Marca/fabricante — exigida quando disponível; sugestões controladas,
+        Outra marca / Não identificado.
+17.3.4. Modelo — exigido quando disponível; texto livre, autocomplete
+        opcional, Não identificado.
+17.3.5. Especificações técnicas — dependem da categoria, geralmente OPCIONAIS.
+17.3.6. Conservação física — OBRIGATÓRIA:
+        Bom / Regular / Ruim / Não avaliado.
+17.3.7. Funcionamento — OBRIGATÓRIO:
+        Funcionando / Funciona parcialmente / Não funciona / Não testado.
+17.3.8. Situação de uso — OBRIGATÓRIA:
+        Em uso / Fora de uso / Reserva / Desconhecido.
+17.3.9. Problemas identificados — OBRIGATÓRIOS QUANDO HOUVER FALHAS,
+        especialmente quando funcionamento for parcial ou inexistente.
+        Lista de problemas conforme categoria; seleção múltipla;
+        Problema não identificado; observações adicionais.
+        Possibilitar apontamento opcional mesmo em equipamento funcionando.
+17.3.10. Ação recomendada — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS.
+         Manutenção / Substituição / Instalação / Avaliação técnica /
+         Outra ação (especificar). É recomendação, não ordem de serviço.
+17.3.11. Prioridade de atendimento — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS:
+         Baixa / Média / Alta / Crítica; classificação preliminar.
+17.3.12. Observações adicionais — texto livre OPCIONAL em toda categoria.
+17.3.13. Fotografias do equipamento — OPCIONAIS, independentemente de
+         funcionamento. Máximo 5 por equipamento (17.3.14).
+
+4.F.4. Especificações técnicas por categoria (17.3.5.x)
+
+ATENÇÃO: Todos os campos abaixo foram aprovados como OPCIONAIS, quando
+aplicáveis. Não transformá-los em obrigatórios sem nova aprovação.
+
+DESKTOP:
+- Processador (CPU) — opcional; foi revisado durante o questionário:
+  a escolha FINAL é INCLUIR COMO OPCIONAL.
+- Memória RAM — opcional.
+- Tipo de armazenamento (HD/SSD) e capacidade — opcional.
+- Sistema operacional — opcional.
+
+NOTEBOOK:
+- Os quatro campos do desktop acima — opcionais.
+- Condição da bateria — opcional, opções possíveis:
+  Funcionando / Autonomia reduzida / Sem bateria / Não funciona / Não testada.
+- Tamanho da tela — opcional.
+
+TABLET:
+- Armazenamento interno — opcional.
+- RAM — opcional.
+- Sistema operacional — opcional.
+- Tamanho da tela — opcional.
+- Condição da bateria — opcional.
+- Conectividade Wi-Fi/rede móvel — opcional.
+
+MONITOR:
+- Tamanho da tela — opcional.
+- Resolução — opcional.
+- Tipos de conexão disponíveis — opcional.
+- Tipo de painel — opcional.
+- Monitor é ficha própria, diferente do desktop; opcionalmente relacionar
+  monitor e computador quando aplicável.
+
+IMPRESSORA / MULTIFUNCIONAL:
+- Tecnologia de impressão — opcional.
+- Impressão colorida ou preto e branco — opcional.
+- Conectividade — opcional.
+- Funções do equipamento — opcional.
+- Tipo de consumível — opcional.
+- Formatos de papel — opcional.
+
+SCANNER INDEPENDENTE — FICHA SIMPLIFICADA:
+- Tipo (mesa/ADF/portátil) — opcional.
+- Conectividade — opcional.
+- Presença de alimentador automático (ADF) — opcional.
+- Não exigir resolução óptica, duplex ou formatos de papel.
+
+PROJETOR / DATASHOW — FICHA SIMPLIFICADA:
+- Conexões (HDMI/VGA/USB) — opcional.
+- Instalação fixa ou móvel — opcional.
+- Acessórios presentes — opcional.
+- Não exigir tecnologia, tipo de lâmpada ou resolução.
+
+TV / PAINEL INTERATIVO — FICHA SIMPLIFICADA:
+- Tipo (TV convencional/SmartTV/painel interativo) — opcional.
+- Tamanho em polegadas — opcional.
+- Conexões/conectividade — opcional.
+- Instalação (parede/móvel/mesa etc.) — opcional.
+- Não exigir resolução ou acessórios.
+
+ROTEADOR — FICHA SIMPLIFICADA:
+- Tipo Wi-Fi/cabeado — opcional.
+- Frequências 2,4/5/6 GHz — opcional.
+- Número de portas Ethernet — opcional.
+- Forma de instalação — opcional.
+- Não exigir velocidades de portas nem geração Wi-Fi.
+
+ACCESS POINT — FICHA SIMPLIFICADA:
+- Interno/externo (indoor/outdoor) — opcional.
+- Frequências Wi-Fi — opcional.
+- Suporte PoE (Sim/Não/Não identificado) — opcional.
+- Forma de instalação/montagem — opcional.
+- Não exigir padrão Wi-Fi nem quantidade de portas.
+
+SWITCH — FICHA SIMPLIFICADA:
+- Gerenciável/não gerenciável — opcional.
+- Quantidade de portas — opcional.
+- PoE (quando aplicável) — opcional.
+- Instalação — opcional.
+- Não exigir velocidades de portas nem uplinks.
+
+NOBREAK / UPS — FICHA SIMPLIFICADA:
+- Capacidade em VA — opcional.
+- Estado da bateria — opcional.
+- Quantidade de tomadas — opcional.
+- Local/tipo de instalação — opcional.
+- Não exigir autonomia ou lista de equipamentos conectados.
+
+WEBCAM, MICROFONE, CAIXA DE SOM:
+- NÃO coletar especificações técnicas extras.
+- Utilizar os campos genéricos de identificação, conservação, funcionamento,
+  situação de uso, problema, ação, prioridade, observações e fotos.
+
+SERVIDOR FÍSICO / NAS:
+- Tipo de equipamento — opcional.
+- Capacidade de discos em GB/TB — opcional.
+- Finalidade (arquivos/aplicações/backup etc.) — opcional.
+- Formato rack/torre — opcional.
+- Não exigir CPU, RAM ou sistema operacional.
+
+OUTROS EQUIPAMENTOS:
+- Permitir categoria descritiva personalizada e cadastro individual ou em lote.
+- Administrador poderá classificar posteriormente, preservando ID e histórico.
+
+4.G. GRUPO G — RECURSOS AUDIOVISUAIS
+- Existe como CARTÃO / AGRUPAMENTO VISUAL DE NAVEGAÇÃO.
+- Suas categorias compartilham fichas e registros do Grupo F.
+- Exemplo: TV, painel interativo, projetor, webcam, microfone e caixa de som.
+- NUNCA gerar novo cadastro do mesmo bem apenas por aparecer em dois cartões.
+- Escolha aprovada na pergunta 18: opção C (separado apenas na navegação).
+
+4.H. GRUPO H — PROBLEMAS, NECESSIDADES E PRIORIDADES
+
+19.1. Levantamento geral de problemas — HÍBRIDO:
+- Reunir automaticamente problemas dos grupos anteriores.
+- Permitir registrar manualmente novas ocorrências/necessidades gerais.
+- Não duplicar contagens; preservar vínculo com registro de origem.
+
+19.2. Impacto nos setores — OBRIGATÓRIO SE HOUVER PROBLEMAS:
+- Impede funcionamento / Prejudica parcialmente / Não prejudica /
+  Não foi possível avaliar.
+- Se houver impacto, identificar os ambientes/setores afetados.
+
+19.3. Equipamentos sem utilização — HÍBRIDO:
+- Resumo automático dos registros fora de uso/aguardando instalação.
+- Permitir complementar motivo, necessidade de peças, manutenção,
+  instalação etc., sem recadastrar equipamento.
+
+19.4. Falta de equipamentos em setores — PERGUNTA OBRIGATÓRIA:
+- Sim / Não / Não avaliado.
+- Se Sim: ambiente/setor, tipo de equipamento, quantidade estimada,
+  justificativa, múltiplas demandas por unidade.
+- Necessidades de novos equipamentos NÃO entram no inventário de bens existentes.
+
+19.5. Melhorias de infraestrutura — HÍBRIDO:
+- Consolidar problemas já registrados em internet, cabeamento, Wi-Fi,
+  instalações elétricas e novos pontos de rede.
+- Permitir acrescentar demandas que não tenham origem em defeitos anteriores.
+- Identificar ambiente quando aplicável e evitar duplicações.
+
+19.6. Prioridade das demandas — HÍBRIDA:
+- Reutilizar prioridades dos equipamentos quando existentes.
+- Classificar as demais necessidades em Baixa/Média/Alta/Crítica.
+- Classificação obrigatória para demandas gerais que requerem intervenção.
+- Administrador/responsável autorizado poderá revisar com histórico.
+- Prioridade de um item NÃO determina automaticamente prioridade de toda escola.
+- Classificação não equivale à autorização de compra/manutenção.
+
+19.7. Origem das informações — OBRIGATÓRIA EM NOVOS REGISTROS MANUAIS H:
+- Constatada pelo coletor / Informada pela unidade escolar /
+  Não foi possível verificar.
+- Resumos importados de outros grupos preservam origem anterior quando
+  conhecida; não inventar origem de registros antigos.
+
+======================================================================
+5. REGRAS DE FOTOGRAFIAS, VÍDEOS E ANEXOS
+======================================================================
+
+5.1. Limites
+- Fotos por equipamento: OPCIONAIS; de 0 até 5 (17.3.13/17.3.14).
+- Fotos por ocorrência de infraestrutura: até 5 (20.1).
+- Em problemas VISÍVEIS de internet, rede ou elétrica, a fotografia é
+  obrigatória se a situação puder ser registrada com segurança;
+  justificar caso não seja possível fotografar.
+- Em equipamentos, fotos continuam opcionais mesmo com defeito; não aplicar
+  indevidamente a obrigatoriedade de fotos de infraestrutura ao Grupo F.
+
+5.2. Origem da imagem (20.2)
+- Permitir tirar foto pela CÂMERA e selecionar foto da GALERIA.
+- Exibir prévia; permitir substituir ou excluir antes de concluir o registro.
+
+5.3. Otimização (20.3)
+- Comprimir/redimensionar automaticamente para economizar dados e espaço.
+- Preservar nitidez suficiente para etiquetas, patrimônios, seriais e danos.
+- Parâmetros exatos técnicos ainda não aprovados; validar em testes.
+
+5.4. Mídias permitidas (20.4/20.5)
+- NÃO permitir gravação ou anexação de vídeos.
+- NÃO permitir anexar PDF, Word, Excel ou outros documentos ao inventário
+  mobile. Documentos usados pelo administrador para importar a lista oficial
+  de unidades são assunto distinto e continuam permitidos.
+
+5.5. Edição (20.6)
+- NÃO implementar desenhos, círculos, setas ou marcações sobre fotografias.
+- Descrever ocorrências nos campos do formulário.
+
+5.6. Armazenamento e vínculo
+- Fotografias originais/otimizadas vinculadas logicamente no D1 e guardadas
+  no R2. Não armazenar binários diretamente no D1.
+- Miniaturas de fotos antigas podem ser baixadas para uso offline; foto
+  completa consultada quando houver internet.
+- Fotografias novas obtidas offline ficam locais até sincronização.
+- Não apagar imagem pendente antes da confirmação no R2.
+
+======================================================================
+6. CONFIGURAÇÃO DO QUESTIONÁRIO
+======================================================================
+
+6.1. Flexibilidade (21.1) — PARCIALMENTE CONFIGURÁVEL
+- Administrador pode ativar/desativar perguntas previamente existentes.
+- Pode editar opções e certas regras de obrigatoriedade previamente previstas
+  como configuráveis.
+- Novos tipos de perguntas, lógica complexa e funcionalidades adicionais
+  dependerão de desenvolvimento.
+- O coletor não altera a estrutura do questionário.
+- Nunca destruir interpretação dos registros históricos.
+
+6.2. Publicação (21.2) — CONTROLADA POR VERSÕES
+- Administrador prepara mudanças como rascunho de configuração.
+- Mudanças valem somente após publicação explícita.
+- Identificar versões (1.0, 1.1, 1.2 etc.).
+- Coletas já iniciadas mantêm a versão na qual começaram.
+- Próximas coletas usam a versão mais recente publicada.
+- Registrar a versão efetiva usada em cada vistoria.
+
+======================================================================
+7. SALVAMENTO, VISTORIAS E SINCRONIZAÇÃO
+======================================================================
+
+7.1. Salvamento (22.1)
+- SALVAMENTO AUTOMÁTICO + BOTÃO SALVAR.
+- Indicar estados Salvando / Salvo / Erro ao salvar.
+- Diferenciar Salvo no dispositivo de Sincronizado com o servidor.
+- Salvar não significa concluir a vistoria.
+
+7.2. Offline (22.2)
+- Permitir preencher, cadastrar e corrigir durante falta de conexão.
+- Armazenar respostas e fotografias temporariamente no dispositivo de modo
+  protegido, sincronizando automaticamente ao retornar a conectividade.
+- Dados locais ainda não sincronizados não entram nos indicadores do painel.
+- Falhas não podem apagar os registros pendentes.
+
+7.3. Conflitos (22.3/22.4)
+- Detectar conflitos de edição a partir de versões/alterações concorrentes.
+- Preservar duas versões conflitantes, sem usar "último a salvar ganha".
+- Registros não conflitantes continuam sincronizando normalmente.
+- Coletores autorizados podem solucionar conflitos comuns de sua unidade.
+- Conflitos patrimoniais, duplicidade, número de série e dados críticos
+  exigem decisão administrativa.
+- Guardar auditoria de toda resolução.
+
+7.4. Correção após envio (22.5)
+- Coletores autorizados corrigem diretamente informações usuais em unidades
+  permitidas; preservar antes/depois, responsável e data.
+- Restrições específicas: transferência de escola é administrativa;
+  cancelamento/inativação de registro enviado é administrativo;
+  resolução definitiva de duplicidade é administrativa.
+- Correções offline devem passar por validação/conflitos na sincronização.
+
+7.5. Revisão e finalização (22.6/22.7)
+- Revisão geral OBRIGATÓRIA antes de finalizar.
+- Mostrar cartões, erros, requisitos pendentes e atalhos para correção.
+- Exigir confirmação explícita do coletor.
+- A vistoria é CONCLUÍDA OFICIALMENTE após confirmação do servidor para
+  dados obrigatórios, incluindo fotografias obrigatórias ou justificativas.
+- NÃO exigir aprovação administrativa da vistoria.
+- Disponibilizar imediatamente os dados concluídos no painel gerencial.
+- Rascunhos e itens não enviados permanecem separados.
+
+7.6. Acompanhamento de coletas abertas (22.8)
+- Administração visualiza unidade, situação de andamento, última atualização
+  e progresso, separadamente dos indicadores oficiais.
+- Dados parciais não compõem resultados finais.
+- Informações existentes somente no celular offline não aparecem no servidor.
+
+7.7. Preparação antecipada offline (24.11)
+- MODELO HÍBRIDO: coletor prepara uma escola manualmente para uso offline.
+- Ao abrir uma escola com conexão, aplicativo poderá atualizar localmente
+  ambientes/equipamentos necessários.
+- Indicar última sincronização; respeitar escolas autorizadas.
+- Se versão local estiver defasada, revalidar mudanças ao sincronizar.
+
+7.8. Fotos antigas offline (24.12)
+- Baixar MINIATURAS das fotografias existentes, não as imagens completas.
+- Imagem em resolução integral exige conexão para consulta.
+- Fotografias novas capturadas offline são retidas até confirmação do envio.
+
+7.9. Rede móvel e fotos (24.13)
+- Preferência CONFIGURÁVEL PELO COLETOR:
+  (a) enviar fotografias por qualquer conexão; ou
+  (b) aguardar Wi-Fi para envio de fotografias.
+- Formulários podem sincronizar separadamente das fotografias.
+- Na indisponibilidade da detecção confiável do tipo de rede pelo navegador,
+  apresentar controle manual; não contrariar escolha do usuário.
+
+7.10. Conclusão com fotos pendentes (24.14)
+- Obrigatório sincronizar os dados e fotografias OBRIGATÓRIAS para concluir,
+  exceto quando houver justificativa válida para foto impossível.
+- Fotos OPCIONAIS podem permanecer pendentes após conclusão.
+- Não afirmar que todas as imagens foram transmitidas quando não foram.
+
+7.11. Reenvio após concluir (24.15)
+- Reenvio AUTOMÁTICO das fotografias opcionais pendentes, respeitando conexão.
+- Exibir quantidades pendentes, enviadas, falhas; botão Tentar novamente.
+- Evitar uploads duplicados/repetidos.
+- Navegador fechado pode impedir execução contínua; retomar tentativas com
+  aplicativo aberto, sem prometer background sync universal.
+
+7.12. Armazenamento insuficiente (24.16)
+- Monitorar capacidade quando a API do navegador permitir.
+- Alertar preventivamente o coletor.
+- Liberar espaço local apagando somente cópias sincronizadas e autorizadas
+  pela política de retenção.
+- NUNCA apagar automaticamente fotos/respostas pendentes de upload.
+- Se nova gravação não for segura, impedir a operação e explicar o motivo.
+- Dados de navegação podem ser eliminados externamente pelo navegador/SO;
+  conscientizar sobre a necessidade de sincronização.
+
+======================================================================
+8. SEGURANÇA, USUÁRIOS E AUTORIZAÇÕES
+======================================================================
+
+8.1. Perfis de acesso (23.2)
+- EXATAMENTE DOIS PERFIS NA PRIMEIRA VERSÃO:
+  (1) ADMINISTRADOR: usuários, unidades, grupos de autorização,
+      questionário, versões, conflitos críticos, duplicidades,
+      movimentação entre escolas, segurança e operações administrativas.
+  (2) COLETOR: vistorias, equipamentos, problemas, fotos, conferências
+      e atualizações permitidas nas unidades autorizadas.
+- Estrutura técnica poderá permitir perfis futuros, sem criá-los agora.
+
+8.2. Atribuição de escolas (23.1)
+- HÍBRIDA: individual por escola ou por grupo de escolas.
+- Administrador pode acrescentar/remover exceções de cada coletor.
+- Autorizações verificadas no servidor, inclusive após conexão offline.
+- Coletor vê apenas unidades autorizadas.
+
+8.3. Cadastro (23.3)
+- EXCLUSIVO PELO ADMINISTRADOR.
+- Não permitir autocadastro público ou solicitação aberta de conta.
+- Administrador ativa/desativa conta e mantém suas autorizações.
+
+8.4. Login (23.4)
+- NOME DE USUÁRIO + SENHA.
+- Não depender de matrícula, CPF ou e-mail.
+- Uma conta individual por usuário, sem uso compartilhado.
+
+8.5. Primeiro acesso (23.5)
+- Sistema gera SENHA PROVISÓRIA INDIVIDUAL, validade limitada.
+- Coletor deve trocá-la obrigatoriamente por senha pessoal no primeiro login.
+- Senha provisória não reutilizável após troca.
+
+8.6. Esqueci minha senha (23.6)
+- Redefinição PELO ADMINISTRADOR após verificar identidade.
+- Gerar nova senha provisória e obrigar nova troca.
+- Invalidar credencial antiga; não exibir senha pessoal anterior.
+- Auditar processo.
+
+8.7. Sessões (23.7/23.8)
+- Manter conectado por período limitado; prazo CONFIGURÁVEL pelo administrador.
+- Prazo inicial não decidido; sugestão de 24 horas NÃO foi aprovada.
+- Administrador pode revogar sessão; coletor pode sair manualmente.
+- Expirar sessão não apaga rascunhos; impede acesso/sync sem credencial válida.
+
+8.8. Segundo fator (23.9)
+- NÃO implementar autenticação em duas etapas na primeira versão.
+- Administrador e coletor usam nome de usuário e senha.
+
+8.9. Política de senha (23.10)
+- CONFIGURÁVEL pelo administrador, respeitando mínimo de 12 caracteres.
+- Rejeitar senhas comuns/comprometidas; admitir frases-senha.
+- Não obrigar composição artificial como regra-padrão.
+- Hash robusto e sal para senhas no servidor, transmissão segura TLS,
+  sem registrar senhas em logs ou exibi-las em relatórios.
+
+8.10. Tentativas erradas (23.11)
+- PROTEÇÃO PROGRESSIVA AUTOMÁTICA com atraso/bloqueio temporário.
+- Evitar enumeração de contas por mensagens de erro.
+- Auditar tentativas suspeitas, limites aplicados no servidor.
+
+8.11. Vários dispositivos (23.12)
+- Permitir logins simultâneos da mesma conta em vários aparelhos.
+- Sessões independentes por dispositivo; conflitos de dados são detectados.
+- Dados locais de um aparelho somente ficam disponíveis a outro após sync.
+
+8.12. Gerenciamento de sessões (23.13)
+- Coletor visualiza e encerra suas sessões remotas.
+- Administrador visualiza e revoga sessões dos usuários.
+- Revogação online não apaga instantaneamente dados de aparelho offline.
+
+8.13. Proteção local (23.14)
+- ARMAZENAMENTO LOCAL CRIPTOGRAFADO de dados e fotografias pendentes.
+- Chaves protegidas, sem embutir segredo compartilhado no frontend público.
+- Considerar limitações do navegador em proteção de dados e persistência.
+
+8.14. Sessão expirada offline (23.15)
+- Permitir continuidade OFFLINE por prazo limitado, com desbloqueio seguro.
+- Sincronização posterior requer autenticação online válida.
+- Dados locais pendentes permanecem preservados ao expirar a janela.
+
+8.15. Prazo de continuidade offline (23.16)
+- CONFIGURÁVEL pelo administrador, sujeito a teto máximo técnico de segurança.
+- Prazo padrão e teto ainda PENDENTES DE ESPECIFICAÇÃO.
+- Contar a partir da última validação online confiável e mitigar alteração
+  arbitrária do relógio do celular.
+
+8.16. Desbloqueio offline (23.17)
+- MODELO HÍBRIDO: mecanismo seguro do dispositivo quando efetivamente
+  suportado offline no navegador; alternativa com credencial offline própria.
+- Configuração antecipada enquanto há conexão.
+- Credencial deve permitir proteção efetiva das chaves criptográficas, e não
+  simples ocultação visual das telas.
+- Verificar compatibilidade real com Chrome/Android e Safari/iPhone;
+  alternativas devem funcionar onde a solução preferencial não funcionar.
+
+8.17. Retenção de cópias locais (23.18)
+- Prazo CONFIGURÁVEL pelo administrador para dados já sincronizados.
+- Nunca excluir automaticamente dados ainda pendentes.
+- Confirmar persistência no D1/R2 antes de limpar cópias locais.
+- Excluir cache local não apaga registros oficiais.
+
+======================================================================
+9. REGRAS DE MOVIMENTAÇÃO, HISTÓRICO E INTEGRIDADE
+======================================================================
+
+9.1. Dados históricos anteriores (24.1)
+- PRIMEIRA VERSÃO sem ferramenta de importação de equipamentos antigos.
+- Banco de dados preparado para FUTURA IMPORTAÇÃO e conciliação de bens.
+- Importação de escolas/unidades por Excel/CSV continua prevista agora.
+
+9.2. Equipamento retirado/descartado/não localizado (24.2)
+- NÃO excluir permanentemente registro histórico.
+- Coletor autorizado pode registrar ocorrência de transferência, descarte,
+  recolhimento ou não localização, com justificativa e rastreabilidade.
+- Não confundir anotação de inventário com baixa patrimonial oficial.
+- Histórico e distinção inventário ativo / não ativo preservados.
+
+9.3. Transferência entre escolas (24.3)
+- SOMENTE ADMINISTRADOR muda a unidade oficial associada a equipamento.
+- Coletor pode comunicar transferência e abrir pendência de regularização.
+- Preservar um mesmo ID e o histórico antes/depois da movimentação.
+- Selecionar destino entre escolas oficialmente cadastradas.
+- Não criar segundo equipamento físico pela movimentação.
+- Não substitui trâmite patrimonial da SEMED.
+
+9.4. Duplicidades detectadas (24.4)
+- Sistema compara patrimônio, serial e outros sinais de identidade.
+- Coletor recebe aviso e pode utilizar o registro já existente.
+- Se entender que novo registro é necessário, sinalizar para análise.
+- Suspeitas são analisadas administrativamente.
+- Em offline, pesquisar base local e reavaliar ao conectar.
+- Não bloquear tudo automaticamente nem permitir duplicidade silenciosa.
+
+9.5. Duplicidades confirmadas (24.5)
+- Administrador possui tratamento FLEXÍVEL:
+  unificar; inativar duplicado; ou manter cadastros vinculados.
+- Guardar fotos, observações, versões e histórico das duas origens.
+- Nunca contar duas vezes o mesmo equipamento físico nos indicadores oficiais.
+
+9.6. Conferência de equipamento existente (24.6)
+- MODELO HÍBRIDO: confirmar individualmente ou em lote, conforme categoria.
+- Botão de confirmação rápida de equipamento verificado sem alterações.
+- Registrar usuário, data/hora e identidade dos itens efetivamente conferidos.
+- Distinção obrigatória: última VERIFICAÇÃO x última ALTERAÇÃO.
+
+9.7. Não conferidos na visita (24.7)
+- Na revisão final, mostrar equipamentos não conferidos.
+- Separar NÃO VERIFICADO (não houve conferência) de NÃO LOCALIZADO
+  (equipamento foi procurado mas não encontrado).
+- Nunca transformar automaticamente não conferido em desaparecido.
+- Vistoria pode terminar com itens não conferidos identificados.
+- Não adulterar última verificação real do equipamento.
+
+9.8. Justificativas (24.8)
+- Para NÃO LOCALIZADO: justificativa OBRIGATÓRIA.
+- Para NÃO VERIFICADO: justificativa OPCIONAL.
+- Oferecer opções padronizadas e campo complementar.
+
+9.9. Pendências por não localização (24.9)
+- Criar pendência AUTOMÁTICA para equipamento marcado não localizado.
+- Administrador acompanha pendências da unidade.
+- Vistoria pode ser concluída sem resolução imediata da pendência.
+- Novas conferências podem atualizar a situação.
+
+9.10. Resolução dessas pendências (24.10)
+- Modelo HÍBRIDO:
+  se o coletor encontrar e identificar corretamente o equipamento, o
+  servidor poderá encerrar automaticamente a pendência após validar dados;
+  divergências de identificação, transferência, descarte ou situações
+  incertas exigem análise administrativa.
+- Pendência encerrada fica no histórico e sai da lista de abertas.
+
+9.11. Exclusão/cancelamento de cadastros (24.17)
+- COLETOR pode cancelar RASCUNHO não oficializado, com confirmação.
+- Após envio oficial, apenas ADMINISTRADOR inativa/cancela registro do bem,
+  preservando histórico.
+- Correções comuns nos dados de registro enviado continuam autorizadas ao
+  coletor habilitado, conforme 22.5.
+
+======================================================================
+10. BACKUP, RETENÇÃO E RESTAURAÇÃO
+======================================================================
+
+10.1. Frequência (24.18): BACKUP AUTOMÁTICO DIÁRIO.
+- Abrange D1 e fotografias R2; deve preservar consistência de referências.
+- Registrar data/hora, sucesso/falha e avisar responsáveis quando falhar.
+- Sem etapas manuais para o coletor.
+
+10.2. Retenção (24.19): 7 DIAS.
+- Manter cópias dos últimos sete dias.
+- Backups antigos poderão ser expurgados segundo a política aprovada.
+- Reconhecer risco: problema detectado tardiamente pode não ser recuperável.
+
+10.3. Teste de restauração (24.20): TRIMESTRAL.
+- Realizar a cada três meses em ambiente isolado.
+- Testar integridade das tabelas e recuperação dos vínculos com R2.
+- Registrar responsável, data, resultado e falhas.
+
+10.4. Permissão de restauração (24.21): SOMENTE ADMINISTRADOR.
+- Autorizar e executar operações de restauração é atribuição exclusiva do
+  perfil administrativo, sujeito às permissões reais de infraestrutura.
+- Exigir confirmação e auditoria.
+- Antes da restauração, apresentar risco de perda de alterações posteriores.
+- Não incluir comandos ou botões de restauração no aplicativo do coletor.
+
+NOTA DE VIABILIDADE:
+- A estratégia de backup de D1 e R2 é uma exigência funcional aprovada;
+  recursos nativos, cronogramas, cópias externas e capacidade real de restaurar
+  fotografias precisam ser verificados tecnicamente na implementação.
+- Não prometer que simples backup do D1 preserva automaticamente objetos do R2.
+
+======================================================================
+11. MODELO DE DADOS LÓGICO — DIRETRIZES, NÃO ESQUEMA FINAL
+======================================================================
+
+A lista abaixo propõe CONCEITOS DE ENTIDADES para orientar o Codex. Não é
+uma decisão sobre nomes definitivos de tabelas, colunas ou tecnologias extras.
+
+- users: identificador, nome de usuário, hash de senha, perfil, status.
+- sessions/devices: sessões, expiração, revogações, aparelhos.
+- school_units: catálogo oficial, ativo/inativo, origem de importação.
+- school_groups + user_unit_permissions: permissões por grupo e exceções.
+- questionnaires/questionnaire_versions/question_definitions: catálogo
+  configurável e versões publicadas.
+- inspections/inspection_sections: vistorias, responsável, unidade, estado,
+  versão do questionário, revisão, conclusão e sincronização.
+- environments: ambientes, tipo, nome, unidade e relações.
+- internet_links/internet_assessments: links e avaliação da conectividade.
+- network_assessments/electrical_assessments: respostas por infraestrutura.
+- equipments: ID permanente, unidade, ambiente, categoria, modo individual/
+  lote, atributos identificadores e situação corrente.
+- equipment_technical_details: propriedades opcionais por categoria.
+- equipment_verifications: confirmação individual/lote e resultado da visita.
+- findings/problems/needs: defeitos, impactos, ações, prioridades, origem.
+- photos/photo_upload_jobs: metadados no D1, objeto no R2, miniatura, estado
+  de envio e identificador idempotente.
+- equipment_movements: transferências informadas, confirmadas e resolvidas.
+- duplicate_cases: suspeitas, vínculos, fusões/inativações e decisão.
+- missing_equipment_cases: não localizado, justificativas, pendências e baixa
+  da pendência por verificação ou decisão administrativa.
+- change_history/audit_events: trilha imutável e rastreabilidade de alterações.
+- sync_conflicts: versões divergentes, resolução e responsáveis.
+- application_settings: prazos de sessão, offline, retenção local, senhas etc.
+- backup_logs: execuções, resultados, testes e restaurações.
+
+REGRAS TRANSVERSAIS PARA A PERSISTÊNCIA:
+- IDs internos estáveis, diferentes do patrimônio e número de série.
+- Não descartar dados históricos ao alterar fichas ou questionários.
+- Evitar dupla contagem entre grupos e registros de mesma natureza.
+- Controle de concorrência/versões no servidor.
+- Isolamento de acesso por escola e perfil.
+- Exclusões administrativas lógicas/históricas quando apropriado.
+- Vínculo verificável entre foto no R2 e registro no D1.
+- Diferenciar equipamento existente, demanda de equipamento novo, e registro
+  de lote / conferência de lote.
+- Distinguir rascunho local, rascunho sincronizado, registro concluído,
+  upload de foto pendente, ocorrência e pendência administrativa.
+
+======================================================================
+12. MATRIZ DE PERMISSÕES — RESUMO
+======================================================================
+
+OPERAÇÃO                                           COLETOR    ADMIN
+------------------------------------------------------------------
+Entrar no sistema com conta individual             SIM        SIM
+Ver somente unidades autorizadas                   SIM        [1]
+Criar/editar/desativar unidades oficiais           NÃO        SIM
+Importar lista oficial de escolas (Excel/CSV)      NÃO        SIM
+Cadastrar/atualizar equipamentos permitidos        SIM        SIM
+Corrigir dados usuais já enviados                  SIM [2]    SIM
+Mover equipamento oficialmente entre escolas       NÃO        SIM
+Cancelar rascunho próprio/autorizado               SIM        SIM
+Inativar/cancelar cadastro oficial                  NÃO        SIM
+Resolver duplicidade confirmada                    NÃO        SIM
+Resolver conflito comum de sincronização           SIM [2]    SIM
+Resolver conflito patrimonial/crítico              NÃO        SIM
+Preparar escola para offline                       SIM [2]    SIM
+Configurar/publicar questionário                    NÃO        SIM
+Gerenciar usuários/permissões                      NÃO        SIM
+Ver/encerrar sessões da própria conta              SIM        SIM
+Revogar sessões de outros usuários                 NÃO        SIM
+Acompanhar pendências administrativas gerais       NÃO        SIM
+Autorizar/executar restauração de backup           NÃO        SIM
+------------------------------------------------------------------
+[1] Administrador com acesso conforme poderes de administração.
+[2] Sempre dentro das unidades e operações autorizadas.
+
+======================================================================
+13. ESTADOS IMPORTANTES DO SISTEMA
+======================================================================
+
+13.1. Estados de cartão:
+- Pendente; Em andamento; Concluído.
+
+13.2. Estados de salvamento/sincronização:
+- Salvando; Salvo no dispositivo; Pendente; Sincronizando; Sincronizado;
+  Erro de sincronização; Conflito pendente.
+
+13.3. Estado da vistoria:
+- Não iniciada; Em andamento; Revisão; Envio pendente; Concluída.
+- Conclusão não depende de aprovação administrativa, mas sim de confirmação
+  final + requisitos obrigatórios sincronizados.
+
+13.4. Estados de verificação de equipamento:
+- Verificado sem alterações; Verificado com alteração;
+  Não verificado; Não localizado.
+
+13.5. Situações de equipamento:
+- Em uso; Fora de uso; Reserva; Desconhecido.
+- Status administrativo/histórico adicionais para retirado, transferido,
+  descartado, recolhido etc. não devem se confundir com situação de uso.
+
+13.6. Problemas e solicitações:
+- Manter tipo, origem, ambiente, equipamento relacionado, impacto,
+  prioridade, ação recomendada e histórico de resolução.
+
+======================================================================
+14. PONTOS EXPRESSAMENTE PENDENTES — NÃO BLOQUEIAM ENTREGA DESTE TXT
+======================================================================
+
+P1. Pergunta 25.10 — REGRA PERSONALIZADA DE VALIDAÇÃO.
+    O responsável solicitou defini-la com suas próprias palavras, mas
+    encerrou o questionário antes de especificá-la. Não escolher uma das
+    alternativas anteriores por conta própria.
+
+P2. Prazo inicial da sessão online (23.8).
+    Deve ser configurável; o valor padrão não foi aprovado.
+
+P3. Limite padrão e teto de acesso offline (23.16).
+    Deve ser configurável com teto seguro; números não foram aprovados.
+
+P4. Prazo inicial de retenção local pós-sincronização (23.18).
+    Configurável; valor inicial não aprovado.
+
+P5. Parâmetros de compressão e formatos de fotos (20.3).
+    Otimização automática aprovada; qualidade/resolução/tamanho exatos
+    precisam de validação técnica.
+
+P6. Limite fotográfico para um LOTE de equipamentos.
+    Até 5 fotos por equipamento está aprovado. A aplicabilidade do mesmo
+    limite a um registro de lote inteiro não foi decidida explicitamente.
+
+P7. Critérios objetivos institucionais dos níveis Baixa/Média/Alta/Crítica.
+    Níveis aprovados; manual detalhado de classificação ainda não finalizado.
+
+P8. Regras técnicas de proteção local offline, compatibilidade de WebAuthn/
+    mecanismos do dispositivo, ciclo de vida das chaves e limites reais dos
+    navegadores Chrome/Android e Safari/iPhone — a validar em protótipo.
+
+P9. Política técnica de backup de objetos R2, integridade D1/R2, mecanismo
+    de restauração e proteção operacional do serviço — a especificar sem
+    alterar frequência diária, retenção de 7 dias, teste trimestral e
+    competência exclusiva do administrador.
+
+P10. Regras visuais finais do projeto e identidade gráfica definitiva.
+     O padrão funcional de navegação está fixado; qualquer referência de
+     imagem escolhida em outra conversa deve ser fornecida/recuperada antes
+     de alegar reprodução visual exata.
+
+P11. Detalhes técnicos de políticas de editabilidade de cada pergunta no
+     editor parcialmente configurável; manter as perguntas aprovadas como
+     base e respeitar versionamento.
+
+Nenhum item PENDENTE autoriza reiniciar o longo questionário sem solicitação.
+Caso seja necessário criar um protótipo, adotar soluções técnicas reversíveis
+para pontos ainda indefinidos, identificando claramente seus valores como
+PROVISÓRIOS, não como decisões do responsável.
+
+======================================================================
+15. CHECKLIST DE IMPLEMENTAÇÃO PARA O CÓDIGO
+======================================================================
+
+[ ] Aplicação web responsiva vertical, Chrome Android e Safari iPhone.
+[ ] Login nome de usuário/senha; cadastro exclusivo do administrador.
+[ ] Autorização de unidades por coletor/grupo, validada pelo servidor.
+[ ] Seleção de escola e navegação por cartões; wizard Próximo/Voltar.
+[ ] Ordem sugerida, navegação livre, dependências bloqueantes com atalho.
+[ ] Marcar cartão como concluído manualmente; reabrir com confirmação.
+[ ] Grupos A a H conforme regras; G apenas navegação, sem duplicar dados F.
+[ ] Cadastros individuais/lotes conforme tabela; campos técnicos opcionais.
+[ ] Salvamento automático + Salvar; estados locais e remotos separados.
+[ ] Offline com proteção local criptografada e preparação por escola.
+[ ] Desbloqueio offline limitado e autenticação válida para sincronização.
+[ ] Controle de conflitos de sincronização; resolução por permissões.
+[ ] Fotos câmera/galeria, até 5 conforme tipo, otimização e miniaturas.
+[ ] Sem vídeos, documentos anexos ou editor de desenhos em imagens.
+[ ] Upload idempotente, fotos obrigatórias por problema de infraestrutura.
+[ ] Preferência de Wi-Fi para fotos; reenvio de opcionais pós-conclusão.
+[ ] Revisão obrigatória, envio explícito e conclusão sem aprovação admin.
+[ ] Concluídas disponíveis imediatamente ao painel; rascunhos separados.
+[ ] Histórico completo, última alteração separada de última verificação.
+[ ] Transferência entre escolas exclusivamente pelo administrador.
+[ ] Suspeitas de duplicidade e pendências de não localização administradas.
+[ ] Correção de informações por coletor habilitado com auditoria.
+[ ] Editor parcial de questionário e publicação por versões.
+[ ] Backups diários, retenção sete dias, restauração testada trimestralmente.
+[ ] Confirmar restrições reais dos navegadores antes de afirmar suporte total.
+
+======================================================================
+16. INSTRUÇÃO FINAL PARA A PRÓXIMA CONVERSA / CODEX
+======================================================================
+
+"Este TXT contém as decisões aprovadas para a Etapa 1 do Sistema de
+Inventário Tecnológico da SEMED. Desenvolva/especifique exclusivamente o
+ambiente de coleta mobile-first em forma de task-oriented wizard com
+navegação por cartões e preenchimento guiado. Utilize Cloudflare D1 para
+dados e Cloudflare R2 para fotografias. Preserve as regras de usuários,
+autorização por escola, questionário, equipamentos, fotos, offline,
+sincronização, auditoria, revisão e finalização. O painel desktop é outra
+interface e será tratado separadamente. Não reabra o levantamento de
+requisitos nem transforme sugestões não aprovadas em decisões. Identifique
+explicitamente os poucos pontos pendentes antes de fixar valores finais.
+Na implementação, valide as limitações reais do navegador e documente
+qualquer inviabilidade técnica com alternativas que preservem a intenção
+funcional das decisões tomadas."
+
+======================================================================
+FIM DO DOCUMENTO
+======================================================================

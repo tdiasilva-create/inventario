@@ -1,0 +1,23 @@
+digraph G {
+ graph [label="Coleta Mobile — fluxo orientado a tarefas",labelloc=t,fontsize=22,fontname="DejaVu Sans",fontcolor="#f5faff",bgcolor="#061d30",ranksep=0.7,nodesep=0.4,pad=0.3];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,fillcolor="#10304d",color="#3589b4",fontcolor="#ffffff",margin="0.17,0.15"];
+ edge [color="#50b8f3",fontname="DejaVu Sans",fontcolor="#ffffff",arrowsize=0.7];
+ login [label="Login usuário / senha"];
+ unidade [label="Escolher unidade\nPRÉ-CADASTRADA e AUTORIZADA"];
+ cards [label="Cartões A–H\nordem sugerida + acesso livre",fillcolor="#0a5792"];
+ wizard [label="Wizard da categoria\nVoltar / Próximo"];
+ dep [shape=diamond,label="Dependência\nresolvida?",fillcolor="#3f4a2c",color="#e8b942"];
+ cadastro [label="Cadastrar ou conferir\nitem/ambiente/rede"];
+ foto [label="Capturar fotos / justificar\nsegundo regra do grupo"];
+ salvar [label="Salvar local / servidor\nstatus separado"];
+ conclui [label="Marcar cartão CONCLUÍDO\nmanual + validação",fillcolor="#12604f"];
+ revisao [label="Revisão geral\nobrigatória",fillcolor="#12604f"];
+ envio [label="Confirmar envio\n+ sincronização"];
+ ok [label="Servidor confirma conclusão\nvisível no painel",fillcolor="#12604f"];
+ login->unidade->cards->wizard->dep;
+ dep->wizard [label="NÃO: retornar à origem",color="#ffca49"];
+ dep->cadastro [label="SIM"];
+ cadastro->foto->salvar->conclui->cards [label="outro cartão"];
+ cards->revisao [label="todos os exigidos concluídos"];
+ revisao->envio->ok;
+}

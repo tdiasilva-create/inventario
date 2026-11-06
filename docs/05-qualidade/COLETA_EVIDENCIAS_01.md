@@ -1,0 +1,18 @@
+# Coleta com evidências — D-050
+
+Implementado: seleção → fachada → acompanhante A → internet C; navegação A–H preservada. Evidência por pergunta e por ficha C/D/E/H, ambiente B e equipamento F/G. Sem exclusão/migração de respostas antigas. Fachada também disponível nas categorias para retomada.
+
+Verificação: 49/49 testes Node aprovados; testes Drive ampliados para fachada em A–H, ambiente da mesma unidade, resposta da mesma vistoria, vínculo inexistente recusado, limite cinco e retomada de contextos. Upload idempotente, permissões e erro do provedor continuam testados. Upload confirmado atualiza atividade/autoria; repetição pronta não cria novo arquivo.
+
+Teste de navegador com SQLite em memória e armazenamento isolado, executando a rota real do coletor: seleção abre fachada; galeria/prévia/envio e leitura; recarregamento conserva fachada; acompanhante antes de internet; evidência na resposta e retomada; armazenamento desabilitado mantém prévia e bloqueia envio. Nenhum dado do teste gravado em D1 oficial. Script: tests/collector-evidence-browser.cjs. Capturas reais em evidencias/coleta-evidencias-2026-11-03/, resultado.json documenta cenários. Comparação: aparência clara/petróleo da D-040, controles grandes e cabeçalho/rodapé; imagem original dark mantida apenas como referência histórica.
+
+Cobertura TXT: §§2.6/4.A acompanhante; §§4.B–E/H vínculos contextuais; §4.F/G mesma ficha e fotografias; §§5.1–5.6 câmera/galeria, limites, prévia, vínculo; §7 estados remotos separados da prévia. Não representa cobertura integral do TXT.
+
+Limites: câmera física Chrome Android/Safari iPhone não homologada; Drive real ainda não autorizado na verificação anterior; envio real não declarado operacional. Sem offline protegido/reenvio em background; novas obrigatoriedades e P6 lotes pendentes. Prévia vive apenas na aba e se perde ao fechar/recarregar antes do envio. Campo de senhas de rede/consulta restrita e faixa de IP ainda não implementados nesta fase. Desktop ainda não apresenta cada nova evidência inline junto da resposta: metadados estão disponíveis no detalhe oficial e galeria existente após conclusão, mas o aceite de apresentação contextual desktop permanece pendente.
+
+Publicação: registrar versões na entrega; builds coletor e desktop aprovados. Não publicar dados fictícios nem concluir vistoria de teste oficial.
+
+Publicação final do coletor em 03/11/2026: a75028f6-804c-4a3f-990d-861fc479e70a. Smoke HTTP aprovado. Verificação adicional na sessão autenticada do navegador confirmou Fachada da unidade, Fotografar, Escolher da galeria e Continuar · acompanhante; armazenamento permanece não conectado. Consulta direta do JavaScript sem sessão redirecionou ao login, como esperado; não foi utilizada como prova de conteúdo. Nenhuma migração aplicada; nenhum cadastro oficial alterado no teste. Navegador isolado também aprovou cadastro/foto de ambiente e prévia durante identificação de equipamento, preservada ao avançar e enviada ao salvar a ficha. Capturas 04/05 na pasta de evidências. Painel desktop não republicado nesta fase.
+
+## D-051 — retorno às categorias
+Teste de navegador isolado aprovado: retorno da fachada; salvamento de resposta antes de sair, abertura de outro cartão e retomada; ficha incompleta com prévia retornando à mesma etapa após visitar outro quesito. Capturas 06/07. Build aprovado. Publicação do coletor: 4ce66d17-5545-4ff2-883e-d59d18a43c8d. Sem migrações ou escrita de testes em D1 oficial. Fichas incompletas e prévias continuam limitadas à aba; não são offline persistente. Cobertura Base §3.2/7.1; pendências de fotos/Drive/celulares permanecem as anteriormente registradas.

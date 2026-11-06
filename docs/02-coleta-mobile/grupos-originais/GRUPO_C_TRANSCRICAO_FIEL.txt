@@ -1,0 +1,30 @@
+4.C. GRUPO C — INTERNET E CONECTIVIDADE
+
+C.1. Existe internet na escola? OBRIGATÓRIO.
+     Respostas: Sim / Não / Não foi possível verificar.
+C.2. Funciona durante a vistoria? OBRIGATÓRIO SE HOUVER INTERNET.
+     Respostas: Sim / Parcialmente / Não / Não foi possível testar.
+C.3. Tipo de conexão: OBRIGATÓRIO SE HOUVER INTERNET.
+     Fibra / Rádio / Cabo / 4G-5G / Satélite / Desconhecido.
+C.4. Provedor/operadora: OBRIGATÓRIO SE HOUVER INTERNET.
+     Lista predefinida, Outra operadora, Não soube informar.
+C.5. Quantidade de links de internet: OBRIGATÓRIO.
+     1 / 2 / 3 ou mais / Não foi possível identificar.
+     Não confundir links de internet com roteadores ou redes Wi-Fi.
+C.6. Velocidade contratada: OBRIGATÓRIO quando aplicável.
+     Registrar Mbps por link quando conhecido; opção Não soube informar.
+C.7. Velocidade medida: pergunta OBRIGATÓRIA.
+     Download/upload em Mbps, momento do teste se disponível; permitir
+     Teste não realizado. Não confundir medida com contratada.
+C.8. Estabilidade: OBRIGATÓRIO.
+     Boa / Instável / Indisponível / Não avaliada.
+     Diferenciar observação direta e relato quando possível.
+C.9. Ambientes sem conectividade: OBRIGATÓRIO.
+     Sim / Não / Não avaliado. Selecionar ambientes afetados.
+C.10. Descrição dos problemas: OBRIGATÓRIA SOMENTE quando houver problemas.
+C.11. Fotografias: CONDICIONAIS a problemas visíveis/fotografáveis da
+      infraestrutura de internet; se não for seguro ou possível fotografar,
+      registrar justificativa. Sem problemas, fotos opcionais.
+
+Regras condicionais devem evitar exigir velocidade e operadora quando a
+internet não existe, permitindo registrar adequadamente a ausência.

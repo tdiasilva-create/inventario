@@ -1,0 +1,24 @@
+4.D. GRUPO D — REDE INTERNA E WI-FI
+
+D.1. Rede cabeada existe? OBRIGATÓRIO.
+     Sim / Não / Parcialmente / Não avaliada.
+D.2. Wi-Fi existe? OBRIGATÓRIO.
+     Sim / Não / Não avaliado.
+D.3. Cobertura por ambiente: OBRIGATÓRIA SE HOUVER WI-FI.
+     Seleção múltipla de ambientes; opção não foi possível verificar.
+D.4. Qualidade de cobertura Wi-Fi: OBRIGATÓRIA SE HOUVER WI-FI.
+     Adequada / Parcial / Insuficiente / Não avaliada.
+D.5. Roteadores: presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.6. Access Points (APs): presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.7. Switches: presença OBRIGATÓRIA; se houver, quantidade e estado.
+D.8. Racks: presença OBRIGATÓRIA; quantidade, ambiente e conservação quando
+     houver.
+D.9. Organização dos cabos: OBRIGATÓRIA.
+     Adequada / Requer correção / Não avaliada. Avaliação visual.
+D.10. Cabos, tomadas ou portas de rede danificados: pergunta OBRIGATÓRIA;
+      quando identificados, detalhar tipo, localização, descrição e quantidade.
+D.11. Fotografias: condicionais para falhas visíveis; ou justificar a
+      impossibilidade. Opcionais quando não houver problema.
+
+Roteadores, APs e switches registrados na ficha de equipamentos (Grupo F)
+devem alimentar os totais e indicadores do Grupo D, sem contagem dupla.

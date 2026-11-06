@@ -1,0 +1,52 @@
+/* D-062: interface compacta, preservando identidade, leitura e toque. */
+#collector,.app-header,.collection-footer{max-width:var(--largura-maxima-larga)}
+.header-row{min-height:66px;padding:8px 12px;gap:10px}
+.header-row h1{font-size:16px;letter-spacing:.025em}
+.header-title small{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-row .save-state{flex:0 0 90px;max-width:90px;font-size:10px;letter-spacing:.04em}
+.category-return{width:44px;height:44px;min-width:44px;padding:0;margin:0;flex-shrink:0;justify-content:center}
+.category-return .ico{width:22px;height:22px}
+.keyboard-dismiss{display:none;align-items:center;justify-content:center;gap:4px;min-height:44px;padding:4px 6px;border:0;background:var(--cinza-claro);border-radius:8px;font:600 11px var(--font-display);color:var(--vermelho)}
+.keyboard-dismiss .ico{width:18px;height:18px}
+.is-typing .keyboard-dismiss{display:inline-flex}
+.is-typing .save-state{display:none}
+.is-typing .collection-footer{display:none}
+.content{padding:16px 16px 110px}
+.content h2{font-size:24px}
+.content>p{font-size:14px}
+#collector:not([data-screen=cards]):not([data-screen=review]) .content>.simbolo{display:none}
+#collector:not([data-screen=cards]):not([data-screen=review]) .content>h2:first-of-type{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0;padding:0}
+.primary,.secondary{min-height:44px;padding:9px 12px;font-size:13px;letter-spacing:.04em;border-radius:8px}
+.field{margin:12px 0}
+.field>span{font-size:12px;letter-spacing:.08em}
+.field input,.field select{min-height:46px;padding:10px 12px;font-size:16px}
+.field textarea{font-size:16px;min-height:86px}
+.content .field-error{color:var(--vermelho);scroll-margin-top:calc(var(--header-height,66px) + 16px)}
+.field,.notice.error{scroll-margin-block:calc(var(--header-height,66px) + 16px) 100px}
+.collection-footer{padding:10px 16px calc(10px + env(safe-area-inset-bottom));gap:10px;align-items:center}
+.footer-note{font-size:12px;color:var(--texto-secundario);flex:1}
+[data-screen=inventory] .collection-footer>button{flex:0 1 auto}
+.inventory-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.inventory-toolbar>span{font-size:13px;color:var(--texto-secundario)}
+.equipment-search{position:relative;display:flex;align-items:center;margin:0 0 16px}
+.equipment-search input{margin:0;height:46px;padding:10px 96px 10px 12px;font-size:16px}
+.equipment-search input::-webkit-search-cancel-button{display:none}
+.equipment-search button{position:absolute;right:44px;width:44px;height:44px;min-height:44px;padding:0;border:0;background:transparent;color:var(--vermelho);display:grid;place-items:center}
+.equipment-search .clear-search{right:0;font-size:24px;border-radius:0 8px 8px 0}
+.equipment-search .ico{width:20px;height:20px}
+.equipment-card{display:flex;align-items:center;gap:10px;padding:12px;margin:10px 0;border-left-width:3px;border-radius:10px}
+.equipment-icon{display:grid;place-items:center;flex-shrink:0;width:36px;height:36px;background:var(--pessego-suave);color:var(--laranja);border-radius:8px}
+.equipment-icon .ico{width:22px;height:22px}
+.equipment-info{flex:1;min-width:0}
+.equipment-card h3{font-size:14px;letter-spacing:.025em;margin:0 0 5px}
+.equipment-card p{display:block;margin:0 0 5px;font-size:14px;line-height:1.3}
+.equipment-card small{display:block;font-size:12px;color:var(--texto-secundario);line-height:1.3}
+.equipment-card>.text-button{flex-shrink:0;padding:6px;min-width:48px;min-height:44px;font-size:12px;letter-spacing:0}
+.category-card{grid-template-columns:36px minmax(0,1fr) auto;gap:10px;min-height:62px}
+.category-card .category-icon{width:36px;height:36px}
+.category-card strong{font-size:14px;letter-spacing:.02em}
+.summary-card,.repeat-row{padding:12px;margin:12px 0}
+.photo-control{min-height:44px}
+.photo-control:focus-within{outline:3px solid var(--laranja);outline-offset:2px}
+@media(min-width:540px){.content{padding:20px 24px 110px}.category-card{grid-template-columns:36px minmax(0,1fr)}}
+@media(max-height:480px){.header-row{min-height:58px;padding-block:6px}.collection-footer{padding-block:8px}.content{padding-top:12px}}

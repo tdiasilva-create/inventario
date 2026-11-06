@@ -1,0 +1,44 @@
+4.H. GRUPO H — PROBLEMAS, NECESSIDADES E PRIORIDADES
+
+19.1. Levantamento geral de problemas — HÍBRIDO:
+- Reunir automaticamente problemas dos grupos anteriores.
+- Permitir registrar manualmente novas ocorrências/necessidades gerais.
+- Não duplicar contagens; preservar vínculo com registro de origem.
+
+19.2. Impacto nos setores — OBRIGATÓRIO SE HOUVER PROBLEMAS:
+- Impede funcionamento / Prejudica parcialmente / Não prejudica /
+  Não foi possível avaliar.
+- Se houver impacto, identificar os ambientes/setores afetados.
+
+19.3. Equipamentos sem utilização — HÍBRIDO:
+- Resumo automático dos registros fora de uso/aguardando instalação.
+- Permitir complementar motivo, necessidade de peças, manutenção,
+  instalação etc., sem recadastrar equipamento.
+
+19.4. Falta de equipamentos em setores — PERGUNTA OBRIGATÓRIA:
+- Sim / Não / Não avaliado.
+- Se Sim: ambiente/setor, tipo de equipamento, quantidade estimada,
+  justificativa, múltiplas demandas por unidade.
+- Necessidades de novos equipamentos NÃO entram no inventário de bens existentes.
+
+19.5. Melhorias de infraestrutura — HÍBRIDO:
+- Consolidar problemas já registrados em internet, cabeamento, Wi-Fi,
+  instalações elétricas e novos pontos de rede.
+- Permitir acrescentar demandas que não tenham origem em defeitos anteriores.
+- Identificar ambiente quando aplicável e evitar duplicações.
+
+19.6. Prioridade das demandas — HÍBRIDA:
+- Reutilizar prioridades dos equipamentos quando existentes.
+- Classificar as demais necessidades em Baixa/Média/Alta/Crítica.
+- Classificação obrigatória para demandas gerais que requerem intervenção.
+- Administrador/responsável autorizado poderá revisar com histórico.
+- Prioridade de um item NÃO determina automaticamente prioridade de toda escola.
+- Classificação não equivale à autorização de compra/manutenção.
+
+19.7. Origem das informações — OBRIGATÓRIA EM NOVOS REGISTROS MANUAIS H:
+- Constatada pelo coletor / Informada pela unidade escolar /
+  Não foi possível verificar.
+- Resumos importados de outros grupos preservam origem anterior quando
+  conhecida; não inventar origem de registros antigos.
+
+======================================================================

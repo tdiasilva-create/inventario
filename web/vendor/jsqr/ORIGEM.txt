@@ -1,0 +1,2 @@
+jsQR 1.4.0 (https://www.npmjs.com/package/jsqr), Apache-2.0. Arquivo dist/jsQR.js copiado sem alteração do pacote npm em 04/11/2026.
+Uso: fallback local de leitura de QR Code no coletor (web/collector-qr.js) quando BarcodeDetector não existir (Safari iPhone, Firefox).

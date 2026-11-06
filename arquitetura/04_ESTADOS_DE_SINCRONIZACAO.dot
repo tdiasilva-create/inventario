@@ -1,0 +1,19 @@
+digraph G {
+ graph [label="Estados de salvamento e sincronização (regras aprovadas)",labelloc=t,fontsize=20,fontname="DejaVu Sans",fontcolor="#f5faff",bgcolor="#061d30",ranksep=0.75,pad=0.3];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,fillcolor="#10304d",color="#3486ac",fontcolor="#ffffff"];
+ edge [color="#51bbea",fontname="DejaVu Sans",fontcolor="#ffffff",arrowsize=0.7];
+ edit [label="Editando respostas / fotos"];
+ localsave [label="Salvo no dispositivo\nNÃO é envio oficial",fillcolor="#574827"];
+ syncing [label="Sincronizando"];
+ conflict [label="Conflito\nversões preservadas",fillcolor="#63323c"];
+ failed [label="Erro / offline\naguarda reenvio",fillcolor="#63323c"];
+ synced [label="Dados sincronizados\nNÃO é vistoria concluída",fillcolor="#165c4f"];
+ review [label="Revisão obrigatória\ncartões e fotos exigidos"];
+ complete [label="Vistoria CONCLUÍDA\nconfirmada pelo servidor",fillcolor="#126847"];
+ photop [label="Fotos opcionais ainda pendentes\nreenvio depois, se necessário",fillcolor="#574827"];
+ edit->localsave->syncing;
+ syncing->failed->syncing;
+ syncing->conflict->syncing;
+ syncing->synced->review->complete;
+ complete->photop [style=dashed,color="#ffcb60"];
+}

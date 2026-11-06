@@ -1,0 +1,30 @@
+{
+  // AMBIENTE DE VALIDAÇÃO — COLETOR. Par do painel de validação em wrangler.validation.painel.jsonc (mesmo D1 isolado).
+  // Sem provedor de fotos configurado o recebimento fica desabilitado; ver comentários do arquivo do painel. Nunca apontar ao D1 oficial.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "painel-semed-paco-validacao",
+  "account_id": "ce059c2b3e50037922a441a66814090d",
+  "compatibility_date": "2026-10-27",
+  "main": "server/worker.mjs",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "DEBUG_COLLECTION": "1",
+    "APP_KIND": "collector"
+  },
+  "assets": {
+    "directory": "./dist/coletor",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "none",
+    "not_found_handling": "none"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "semed-auth-validacao",
+      "database_id": "90a217c8-8540-4ee2-a2a4-8e328137c5a1",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

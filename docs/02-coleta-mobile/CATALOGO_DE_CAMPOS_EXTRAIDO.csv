@@ -1,0 +1,139 @@
+﻿id_no_txt,grupo,inicio_literal,trecho_integral_sem_reformulacao,secao_no_txt,origem
+C.1,C,C.1. Existe internet na escola? OBRIGATÓRIO.,"C.1. Existe internet na escola? OBRIGATÓRIO.
+     Respostas: Sim / Não / Não foi possível verificar.",4.C,ORIGINAL/BASE
+C.2,C,C.2. Funciona durante a vistoria? OBRIGATÓRIO SE HOUVER INTERNET.,"C.2. Funciona durante a vistoria? OBRIGATÓRIO SE HOUVER INTERNET.
+     Respostas: Sim / Parcialmente / Não / Não foi possível testar.",4.C,ORIGINAL/BASE
+C.3,C,C.3. Tipo de conexão: OBRIGATÓRIO SE HOUVER INTERNET.,"C.3. Tipo de conexão: OBRIGATÓRIO SE HOUVER INTERNET.
+     Fibra / Rádio / Cabo / 4G-5G / Satélite / Desconhecido.",4.C,ORIGINAL/BASE
+C.4,C,C.4. Provedor/operadora: OBRIGATÓRIO SE HOUVER INTERNET.,"C.4. Provedor/operadora: OBRIGATÓRIO SE HOUVER INTERNET.
+     Lista predefinida, Outra operadora, Não soube informar.",4.C,ORIGINAL/BASE
+C.5,C,C.5. Quantidade de links de internet: OBRIGATÓRIO.,"C.5. Quantidade de links de internet: OBRIGATÓRIO.
+     1 / 2 / 3 ou mais / Não foi possível identificar.
+     Não confundir links de internet com roteadores ou redes Wi-Fi.",4.C,ORIGINAL/BASE
+C.6,C,C.6. Velocidade contratada: OBRIGATÓRIO quando aplicável.,"C.6. Velocidade contratada: OBRIGATÓRIO quando aplicável.
+     Registrar Mbps por link quando conhecido; opção Não soube informar.",4.C,ORIGINAL/BASE
+C.7,C,C.7. Velocidade medida: pergunta OBRIGATÓRIA.,"C.7. Velocidade medida: pergunta OBRIGATÓRIA.
+     Download/upload em Mbps, momento do teste se disponível; permitir
+     Teste não realizado. Não confundir medida com contratada.",4.C,ORIGINAL/BASE
+C.8,C,C.8. Estabilidade: OBRIGATÓRIO.,"C.8. Estabilidade: OBRIGATÓRIO.
+     Boa / Instável / Indisponível / Não avaliada.
+     Diferenciar observação direta e relato quando possível.",4.C,ORIGINAL/BASE
+C.9,C,C.9. Ambientes sem conectividade: OBRIGATÓRIO.,"C.9. Ambientes sem conectividade: OBRIGATÓRIO.
+     Sim / Não / Não avaliado. Selecionar ambientes afetados.",4.C,ORIGINAL/BASE
+C.10,C,C.10. Descrição dos problemas: OBRIGATÓRIA SOMENTE quando houver problemas.,C.10. Descrição dos problemas: OBRIGATÓRIA SOMENTE quando houver problemas.,4.C,ORIGINAL/BASE
+C.11,C,C.11. Fotografias: CONDICIONAIS a problemas visíveis/fotografáveis da,"C.11. Fotografias: CONDICIONAIS a problemas visíveis/fotografáveis da
+      infraestrutura de internet; se não for seguro ou possível fotografar,
+      registrar justificativa. Sem problemas, fotos opcionais.
+
+Regras condicionais devem evitar exigir velocidade e operadora quando a
+internet não existe, permitindo registrar adequadamente a ausência.",4.C,ORIGINAL/BASE
+D.1,D,D.1. Rede cabeada existe? OBRIGATÓRIO.,"D.1. Rede cabeada existe? OBRIGATÓRIO.
+     Sim / Não / Parcialmente / Não avaliada.",4.D,ORIGINAL/BASE
+D.2,D,D.2. Wi-Fi existe? OBRIGATÓRIO.,"D.2. Wi-Fi existe? OBRIGATÓRIO.
+     Sim / Não / Não avaliado.",4.D,ORIGINAL/BASE
+D.3,D,D.3. Cobertura por ambiente: OBRIGATÓRIA SE HOUVER WI-FI.,"D.3. Cobertura por ambiente: OBRIGATÓRIA SE HOUVER WI-FI.
+     Seleção múltipla de ambientes; opção não foi possível verificar.",4.D,ORIGINAL/BASE
+D.4,D,D.4. Qualidade de cobertura Wi-Fi: OBRIGATÓRIA SE HOUVER WI-FI.,"D.4. Qualidade de cobertura Wi-Fi: OBRIGATÓRIA SE HOUVER WI-FI.
+     Adequada / Parcial / Insuficiente / Não avaliada.",4.D,ORIGINAL/BASE
+D.5,D,"D.5. Roteadores: presença OBRIGATÓRIA; se houver, quantidade e estado.","D.5. Roteadores: presença OBRIGATÓRIA; se houver, quantidade e estado.",4.D,ORIGINAL/BASE
+D.6,D,"D.6. Access Points (APs): presença OBRIGATÓRIA; se houver, quantidade e estado.","D.6. Access Points (APs): presença OBRIGATÓRIA; se houver, quantidade e estado.",4.D,ORIGINAL/BASE
+D.7,D,"D.7. Switches: presença OBRIGATÓRIA; se houver, quantidade e estado.","D.7. Switches: presença OBRIGATÓRIA; se houver, quantidade e estado.",4.D,ORIGINAL/BASE
+D.8,D,"D.8. Racks: presença OBRIGATÓRIA; quantidade, ambiente e conservação quando","D.8. Racks: presença OBRIGATÓRIA; quantidade, ambiente e conservação quando
+     houver.",4.D,ORIGINAL/BASE
+D.9,D,D.9. Organização dos cabos: OBRIGATÓRIA.,"D.9. Organização dos cabos: OBRIGATÓRIA.
+     Adequada / Requer correção / Não avaliada. Avaliação visual.",4.D,ORIGINAL/BASE
+D.10,D,"D.10. Cabos, tomadas ou portas de rede danificados: pergunta OBRIGATÓRIA;","D.10. Cabos, tomadas ou portas de rede danificados: pergunta OBRIGATÓRIA;
+      quando identificados, detalhar tipo, localização, descrição e quantidade.",4.D,ORIGINAL/BASE
+D.11,D,D.11. Fotografias: condicionais para falhas visíveis; ou justificar a,"D.11. Fotografias: condicionais para falhas visíveis; ou justificar a
+      impossibilidade. Opcionais quando não houver problema.
+
+Roteadores, APs e switches registrados na ficha de equipamentos (Grupo F)
+devem alimentar os totais e indicadores do Grupo D, sem contagem dupla.",4.D,ORIGINAL/BASE
+E.1,E,E.1. Tomadas suficientes? OBRIGATÓRIO.,"E.1. Tomadas suficientes? OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado; indicar ambientes afetados.",4.E,ORIGINAL/BASE
+E.2,E,"E.2. Extensões, adaptadores ou irregularidades elétricas aparentes:","E.2. Extensões, adaptadores ou irregularidades elétricas aparentes:
+     OBRIGATÓRIO; quando presentes, tipo, ambiente e descrição.",4.E,ORIGINAL/BASE
+E.3,E,E.3. Proteções de energia: OBRIGATÓRIO.,"E.3. Proteções de energia: OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado.
+     Se presentes, identificar nobreak, filtro de linha, estabilizador etc.,
+     quantidade, ambientes e condições; não misturar os tipos.",4.E,ORIGINAL/BASE
+E.4,E,"E.4. Cabos elétricos expostos/danificados, sobrecargas e improvisações:","E.4. Cabos elétricos expostos/danificados, sobrecargas e improvisações:
+     INCORPORAR AO ITEM E.2, sem pergunta duplicada.",4.E,ORIGINAL/BASE
+E.5,E,E.5. Equipamentos guardados aguardando instalação: OBRIGATÓRIO.,"E.5. Equipamentos guardados aguardando instalação: OBRIGATÓRIO.
+     Se houver, registrar tipo, quantidade, local, motivo e condição.
+     Evitar duplicação com os registros individuais do Grupo F.",4.E,ORIGINAL/BASE
+E.6,E,E.6. Necessidade de avaliação por especialista elétrico:,"E.6. Necessidade de avaliação por especialista elétrico:
+     CONDICIONAL quando houver problemas nos itens anteriores.
+     Respostas: Sim / Não / Não foi possível determinar.
+     Identificar ambiente, tipo e descrição.
+     O coletor fará apenas observação visual; não executar ensaios elétricos
+     perigosos nem alegar laudo especializado.",4.E,ORIGINAL/BASE
+E.7,E,E.7. Fotografias: condicionais a problemas elétricos visíveis;,"E.7. Fotografias: condicionais a problemas elétricos visíveis;
+     caso seja inseguro fotografar, justificar; opcionais no restante.",4.E,ORIGINAL/BASE
+17.3.1,F,17.3.1. Patrimônio — exigido quando disponível; permitir:,"17.3.1. Patrimônio — exigido quando disponível; permitir:
+        Sem patrimônio / Não identificado. Armazenar como TEXTO para
+        preservar zeros à esquerda. Ter ID interno independente.",4.F.3,ORIGINAL/BASE
+17.3.2,F,17.3.2. Número de série — exigido quando disponível; permitir:,"17.3.2. Número de série — exigido quando disponível; permitir:
+        Sem número de série / Não identificado. Não aplicar serial único a lote.",4.F.3,ORIGINAL/BASE
+17.3.3,F,"17.3.3. Marca/fabricante — exigida quando disponível; sugestões controladas,","17.3.3. Marca/fabricante — exigida quando disponível; sugestões controladas,
+        Outra marca / Não identificado.",4.F.3,ORIGINAL/BASE
+17.3.4,F,"17.3.4. Modelo — exigido quando disponível; texto livre, autocomplete","17.3.4. Modelo — exigido quando disponível; texto livre, autocomplete
+        opcional, Não identificado.",4.F.3,ORIGINAL/BASE
+17.3.5,F,"17.3.5. Especificações técnicas — dependem da categoria, geralmente OPCIONAIS.","17.3.5. Especificações técnicas — dependem da categoria, geralmente OPCIONAIS.",4.F.3,ORIGINAL/BASE
+17.3.6,F,17.3.6. Conservação física — OBRIGATÓRIA:,"17.3.6. Conservação física — OBRIGATÓRIA:
+        Bom / Regular / Ruim / Não avaliado.",4.F.3,ORIGINAL/BASE
+17.3.7,F,17.3.7. Funcionamento — OBRIGATÓRIO:,"17.3.7. Funcionamento — OBRIGATÓRIO:
+        Funcionando / Funciona parcialmente / Não funciona / Não testado.",4.F.3,ORIGINAL/BASE
+17.3.8,F,17.3.8. Situação de uso — OBRIGATÓRIA:,"17.3.8. Situação de uso — OBRIGATÓRIA:
+        Em uso / Fora de uso / Reserva / Desconhecido.",4.F.3,ORIGINAL/BASE
+17.3.9,F,"17.3.9. Problemas identificados — OBRIGATÓRIOS QUANDO HOUVER FALHAS,","17.3.9. Problemas identificados — OBRIGATÓRIOS QUANDO HOUVER FALHAS,
+        especialmente quando funcionamento for parcial ou inexistente.
+        Lista de problemas conforme categoria; seleção múltipla;
+        Problema não identificado; observações adicionais.
+        Possibilitar apontamento opcional mesmo em equipamento funcionando.",4.F.3,ORIGINAL/BASE
+17.3.10,F,17.3.10. Ação recomendada — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS.,"17.3.10. Ação recomendada — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS.
+         Manutenção / Substituição / Instalação / Avaliação técnica /
+         Outra ação (especificar). É recomendação, não ordem de serviço.",4.F.3,ORIGINAL/BASE
+17.3.11,F,17.3.11. Prioridade de atendimento — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS:,"17.3.11. Prioridade de atendimento — OBRIGATÓRIA QUANDO HOUVER PROBLEMAS:
+         Baixa / Média / Alta / Crítica; classificação preliminar.",4.F.3,ORIGINAL/BASE
+17.3.12,F,17.3.12. Observações adicionais — texto livre OPCIONAL em toda categoria.,17.3.12. Observações adicionais — texto livre OPCIONAL em toda categoria.,4.F.3,ORIGINAL/BASE
+17.3.13,F,"17.3.13. Fotografias do equipamento — OPCIONAIS, independentemente de","17.3.13. Fotografias do equipamento — OPCIONAIS, independentemente de
+         funcionamento. Máximo 5 por equipamento (17.3.14).
+
+",4.F.3,ORIGINAL/BASE
+19.1,H,19.1. Levantamento geral de problemas — HÍBRIDO:,"19.1. Levantamento geral de problemas — HÍBRIDO:
+- Reunir automaticamente problemas dos grupos anteriores.
+- Permitir registrar manualmente novas ocorrências/necessidades gerais.
+- Não duplicar contagens; preservar vínculo com registro de origem.",4.H,ORIGINAL/BASE
+19.2,H,19.2. Impacto nos setores — OBRIGATÓRIO SE HOUVER PROBLEMAS:,"19.2. Impacto nos setores — OBRIGATÓRIO SE HOUVER PROBLEMAS:
+- Impede funcionamento / Prejudica parcialmente / Não prejudica /
+  Não foi possível avaliar.
+- Se houver impacto, identificar os ambientes/setores afetados.",4.H,ORIGINAL/BASE
+19.3,H,19.3. Equipamentos sem utilização — HÍBRIDO:,"19.3. Equipamentos sem utilização — HÍBRIDO:
+- Resumo automático dos registros fora de uso/aguardando instalação.
+- Permitir complementar motivo, necessidade de peças, manutenção,
+  instalação etc., sem recadastrar equipamento.",4.H,ORIGINAL/BASE
+19.4,H,19.4. Falta de equipamentos em setores — PERGUNTA OBRIGATÓRIA:,"19.4. Falta de equipamentos em setores — PERGUNTA OBRIGATÓRIA:
+- Sim / Não / Não avaliado.
+- Se Sim: ambiente/setor, tipo de equipamento, quantidade estimada,
+  justificativa, múltiplas demandas por unidade.
+- Necessidades de novos equipamentos NÃO entram no inventário de bens existentes.",4.H,ORIGINAL/BASE
+19.5,H,19.5. Melhorias de infraestrutura — HÍBRIDO:,"19.5. Melhorias de infraestrutura — HÍBRIDO:
+- Consolidar problemas já registrados em internet, cabeamento, Wi-Fi,
+  instalações elétricas e novos pontos de rede.
+- Permitir acrescentar demandas que não tenham origem em defeitos anteriores.
+- Identificar ambiente quando aplicável e evitar duplicações.",4.H,ORIGINAL/BASE
+19.6,H,19.6. Prioridade das demandas — HÍBRIDA:,"19.6. Prioridade das demandas — HÍBRIDA:
+- Reutilizar prioridades dos equipamentos quando existentes.
+- Classificar as demais necessidades em Baixa/Média/Alta/Crítica.
+- Classificação obrigatória para demandas gerais que requerem intervenção.
+- Administrador/responsável autorizado poderá revisar com histórico.
+- Prioridade de um item NÃO determina automaticamente prioridade de toda escola.
+- Classificação não equivale à autorização de compra/manutenção.",4.H,ORIGINAL/BASE
+19.7,H,19.7. Origem das informações — OBRIGATÓRIA EM NOVOS REGISTROS MANUAIS H:,"19.7. Origem das informações — OBRIGATÓRIA EM NOVOS REGISTROS MANUAIS H:
+- Constatada pelo coletor / Informada pela unidade escolar /
+  Não foi possível verificar.
+- Resumos importados de outros grupos preservam origem anterior quando
+  conhecida; não inventar origem de registros antigos.
+
+======================================================================",4.H,ORIGINAL/BASE

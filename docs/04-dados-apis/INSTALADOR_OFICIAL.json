@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "decision": "D-056",
+  "selected_on": "2026-11-04",
+  "status": "selecionado_pelo_responsavel",
+  "filename": "SemedAgente-InstaladorUnico.exe",
+  "source_path": "C:/Users/SIGAE/Desktop/SemedAgente-InstaladorUnico.exe",
+  "preserved_path_relative_to_repository": "private-data/instalador-oficial/2026-11-04-35277f87/SemedAgente-InstaladorUnico.exe",
+  "bytes": 26133504,
+  "sha256": "35277F87E0FD06CBA098A3608DE13EF516E76F188ECE597144D0CE3FB342F375",
+  "file_version": "0.1.6.0",
+  "product_version": "0.1.6.0",
+  "authenticode": "NotSigned",
+  "copy_integrity_verified": true,
+  "executed_during_registration": false,
+  "compatibility_validation": "pendente_para_este_binario_exato",
+  "public_download_url": null,
+  "supersedes_as_default": ["SemedInventoryAgentSetup-0.1.6.0-completo.exe", "SEMED-AGENTE-TESTE-WINDOWS-0.1.6.zip"]
+}

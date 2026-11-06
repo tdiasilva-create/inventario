@@ -1,0 +1,10 @@
+{
+  // Somente desenvolvimento local: não publicar esta configuração.
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "semed-painel-local",
+  "main": "../server/worker.mjs",
+  "compatibility_date": "2026-10-27",
+  "vars": {"PHOTO_STORAGE_PROVIDER":"disabled", "AGENTES_EXIGIR_AUTORIZACAO":"nao"},
+  "assets": {"directory":"../dist/painel", "binding":"ASSETS", "run_worker_first":true, "html_handling":"none", "not_found_handling":"404-page"},
+  "d1_databases": [{"binding":"DB", "database_name":"semed-inventario-local", "database_id":"00000000-0000-0000-0000-000000000001", "migrations_dir":"../migrations"}]
+}

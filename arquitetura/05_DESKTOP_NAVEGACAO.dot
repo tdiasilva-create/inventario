@@ -1,0 +1,14 @@
+digraph G {
+ graph [label="Centro de Inteligência Tecnológica — navegação desktop",labelloc=t,fontsize=20,fontname="DejaVu Sans",fontcolor="#f5faff",bgcolor="#061d30",ranksep=0.65,pad=0.3];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,fillcolor="#0c314f",color="#337c9a",fontcolor="#ffffff"];
+ edge [color="#51bbea",fontname="DejaVu Sans",fontcolor="#ffffff",arrowsize=0.7];
+ home [label="PANORAMA\nMapa + matriz + unidade",fillcolor="#0c5783"];
+ map [label="MAPA DA REDE\nescolas em localização real"];
+ matrix [label="MATRIZ\nquantidade por categoria"];
+ unit [label="UNIDADE SELECIONADA\nambientes, bens, fotos",fillcolor="#19594e"];
+ alerts [label="OCORRÊNCIAS\nproblemas e pendências"];
+ reports [label="RELATÓRIOS\nregras detalhadas ainda pendentes",fillcolor="#544a33"];
+ api [label="Cloudflare Workers\nconsultas autorizadas",fillcolor="#19594e"];
+ home->map;home->matrix;home->unit; map->unit;matrix->unit;unit->alerts;unit->reports;
+ api->home [style=dashed,label="dados oficiais sincronizados"];
+}

@@ -1,0 +1,574 @@
+﻿BASE DE COLETA
+SISTEMA DE INVENTÁRIO TECNOLÓGICO - SEMED
+Versão inicial para discussão: 0.1
+Data de elaboração: 27/10/2026
+Etapa do projeto: ETAPA 1 - COLETA MOBILE
+
+======================================================================
+COMO EDITAR ESTE DOCUMENTO
+======================================================================
+
+Este é um documento de trabalho. Não é ainda o prompt final do Codex.
+
+Legenda:
+[DEFINIDO] = informação já estabelecida pelo responsável do projeto.
+[PROPOSTA] = recomendação a avaliar; ainda não foi aprovada.
+[A DECIDIR] = pergunta ou escolha ainda em aberto.
+[MINHA ALTERAÇÃO] = espaço para você registrar a sua preferência.
+
+Você pode apagar, incluir ou alterar perguntas, opções e observações.
+Quando reenviar este arquivo como "base de coleta", o objetivo será revisar
+E EVOLUIR A ETAPA 1 (COLETA MOBILE), sem misturar seus requisitos com a
+interface analítica do painel desktop.
+
+======================================================================
+01. OBJETIVO DA COLETA
+======================================================================
+
+[DEFINIDO]
+- Construir um sistema de inventário tecnológico para a SEMED.
+- A coleta será realizada por celular, com formulário/questionário extenso.
+- O usuário responderá perguntas, registrará equipamentos e tirará fotos.
+- Os dados estruturados serão armazenados no Cloudflare D1.
+- As imagens e arquivos serão armazenados no Cloudflare R2.
+- O sistema será desenvolvido com apoio do Codex.
+- Os dados deverão permanecer relacionados à unidade e ao item correto.
+- Após a conclusão e envio bem-sucedido, as informações ficarão disponíveis
+  no painel desktop (ambiente de análise/gestão).
+
+[PROPOSTA]
+- Registrar tanto a existência de recursos como seu estado de conservação,
+  funcionamento, localização e necessidades de manutenção/substituição.
+- Construir uma base apta a gerar relatórios com fotos, por unidade e por
+  categoria, sem depender de leitura manual de respostas soltas.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+______________________________________________________________________
+
+======================================================================
+02. CADASTRO E SELEÇÃO DAS UNIDADES
+======================================================================
+
+[DEFINIDO - REGRA CENTRAL]
+- O responsável pelo sistema fornecerá previamente a lista das unidades.
+- Na tela inicial, o coletor ESCOLHE uma unidade nessa lista.
+- O coletor NÃO poderá criar uma unidade nova, mudar seu nome ou remover
+  uma unidade por conta própria.
+- O preenchimento ocorre somente dentro da unidade escolhida.
+- Toda resposta, foto, ambiente e item registrado deve permanecer vinculado
+  ao identificador único daquela unidade (unidade_id).
+
+[PROPOSTA]
+- Tela inicial com busca por nome e lista de unidades existentes.
+- Após selecionar, exibir nome completo e pedir confirmação antes de iniciar.
+- Impedir selecionar unidades fora da base pré-cadastrada.
+- Unidades homônimas deverão aparecer com código ou identificação adicional.
+- A gestão da lista oficial de unidades será feita fora do fluxo do coletor,
+  por perfil administrativo autorizado.
+
+[A DECIDIR]
+- Uma unidade pode ter mais de um inventário em datas diferentes? [ ] Sim [ ] Não
+- Diferentes coletores podem atuar na mesma unidade?         [ ] Sim [ ] Não
+- Duas coletas podem ocorrer em paralelo na mesma unidade?   [ ] Sim [ ] Não
+- O coletor poderá trocar de unidade com coleta em andamento? [ ] Sim [ ] Não
+- Como será fornecida a lista inicial das unidades? _____________
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+03. IDENTIFICAÇÃO DA VISTORIA / SESSÃO DE COLETA
+======================================================================
+
+[PROPOSTA - DADOS DA VISTORIA]
+[ ] ID único da vistoria (gerado automaticamente)
+[ ] Unidade selecionada (preenchida automaticamente; não digitável)
+[ ] Nome/identificador do coletor (preferencialmente pela conta logada)
+[ ] Data/hora de início (automática)
+[ ] Data/hora de conclusão e envio (automática)
+[ ] Situação: em andamento / enviada / revisão solicitada (a validar)
+[ ] Observação geral sobre a visita
+[ ] Identificação da campanha ou ciclo de inventário (ex.: 2026)
+
+[A DECIDIR]
+- Haverá login individual para cada coletor? ___________________
+- O sistema precisará registrar nome do responsável pela unidade? ______
+- A unidade poderá ser inventariada em etapas/dias diferentes? _________
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+04. ORGANIZAÇÃO DO QUESTIONÁRIO MOBILE
+======================================================================
+
+[DEFINIDO]
+- A interface de coleta será MOBILE-FIRST.
+- O foco é responder perguntas e anexar fotos diretamente no celular.
+
+[PROPOSTA - EXPERIÊNCIA DE NAVEGAÇÃO]
+- Formato assistido por etapas: seleção > confirmação da unidade > áreas
+  do questionário > cadastro de itens > fotos > revisão > envio.
+- Perguntas agrupadas em cartões, com botões grandes e linguagem clara.
+- Preferir opções pré-definidas a digitação longa, quando fizer sentido.
+- Mostrar perguntas condicionais somente quando relacionadas à resposta.
+- Botões: Voltar / Próximo / Salvar rascunho / Adicionar outro item.
+- Barra de progresso por grupo e indicação de pendências obrigatórias.
+- Permitir repetir cadastros sem voltar ao início do inventário.
+- Antes de enviar, apresentar resumo de quantidade de itens, fotos e
+  campos pendentes.
+- Não expor ao coletor os painéis analíticos ou relatórios complexos.
+
+[PROPOSTA - GRUPOS]
+A. Identificação da vistoria
+B. Ambientes e espaços da unidade
+C. Conectividade e internet
+D. Rede interna e Wi-Fi
+E. Energia e condições de instalação
+F. Equipamentos de informática e periféricos
+G. Recursos audiovisuais e outros recursos tecnológicos
+H. Problemas encontrados e prioridades
+I. Revisão e envio
+
+[MINHA ALTERAÇÃO - ADICIONAR, REMOVER OU REORDENAR GRUPOS]
+______________________________________________________________________
+______________________________________________________________________
+
+======================================================================
+05. GRUPO B - AMBIENTES / LOCAIS DA UNIDADE
+======================================================================
+
+[PROPOSTA - POR QUE COLETAR]
+Registrar ONDE o equipamento está, para evitar um inventário formado apenas
+por números totais de computadores ou fotos sem contexto.
+
+[PROPOSTA - CAMPOS / PERGUNTAS]
+[ ] Quais ambientes possuem equipamentos? (seleção múltipla)
+    Opções sugeridas: secretaria, direção, coordenação, sala de aula,
+    laboratório de informática, biblioteca, sala de professores, recepção,
+    sala multifuncional, auditório, almoxarifado, outros.
+[ ] Nome ou número do ambiente, se necessário.
+[ ] Quantos ambientes de cada categoria foram encontrados?
+[ ] Observações sobre a localização.
+[ ] Foto geral do ambiente (opcional, se pertinente).
+
+[A DECIDIR]
+- Ambientes deverão ser cadastrados individualmente? [ ] Sim [ ] Não
+- O coletor poderá criar novos NOMES DE AMBIENTES, sem criar unidades?
+  [ ] Sim [ ] Não
+- Precisamos de coordenadas/geolocalização da unidade? [ ] Sim [ ] Não
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+06. GRUPO C - INTERNET / CONECTIVIDADE
+======================================================================
+
+[PROPOSTA - QUESTÕES]
+[ ] A unidade possui acesso à internet? Sim / Não / Não foi possível verificar
+[ ] Internet está operante no momento da visita? Sim / Parcial / Não
+[ ] Tipo de conexão: fibra / rádio / cabo / móvel / satélite / desconhecido
+[ ] Provedor/operadora (lista ou texto)
+[ ] Quantidade de links de internet
+[ ] Velocidade contratada (Mbps), SE CONHECIDA
+[ ] Velocidade aferida em teste (Mbps), SE TESTADA
+[ ] Estabilidade percebida: boa / instável / indisponível / não avaliada
+[ ] Há pontos da unidade sem conectividade? Sim / Não / Não avaliado
+[ ] Descrição do problema, quando existir
+[ ] Fotografias dos equipamentos/instalações relevantes, se necessário
+
+[ATENÇÃO]
+Não confundir velocidade CONTRATADA com velocidade MEDIDA. Caso haja teste,
+registrar a data e a condição de medição.
+Não coletar nem fotografar senhas de Wi-Fi ou credenciais administrativas.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+07. GRUPO D - REDE INTERNA / WI-FI
+======================================================================
+
+[PROPOSTA - QUESTÕES]
+[ ] Existe rede cabeada? Sim / Não / Parcial / Não avaliada
+[ ] Existe Wi-Fi? Sim / Não / Não avaliado
+[ ] Wi-Fi atende quais áreas? (seleção por ambiente)
+[ ] Cobertura Wi-Fi: adequada / parcial / insuficiente / não avaliada
+[ ] Existem roteadores? Quantidade e condições
+[ ] Existem access points? Quantidade e condições
+[ ] Existem switches? Quantidade e condições
+[ ] Existe rack de rede? Sim / Não / Não verificado
+[ ] Organização aparente do cabeamento: adequada / requer correção / não avaliada
+[ ] Há portas, tomadas de rede ou cabos danificados?
+[ ] Fotos gerais dos pontos com problema, quando existentes
+
+[ATENÇÃO]
+Registrar observações técnicas sem coletar credenciais, chaves de rede,
+configurações sensíveis ou endereços administrativos desnecessários.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+08. GRUPO E - ENERGIA E CONDIÇÕES DE INSTALAÇÃO
+======================================================================
+
+[PROPOSTA - QUESTÕES]
+[ ] Existe tomada disponível para os equipamentos?
+[ ] Existem extensões, adaptadores ou sobrecarga aparente?
+[ ] Equipamentos possuem proteção elétrica/UPS/nobreak?
+[ ] Existem cabos expostos ou instalações aparentemente inadequadas?
+[ ] Há equipamentos guardados sem instalação?
+[ ] Há necessidade de avaliação por profissional habilitado?
+[ ] Fotos de situações relevantes
+
+[ATENÇÃO]
+Este módulo é de OBSERVAÇÃO, não de laudo elétrico ou certificação de
+segurança. Não solicitar manipulação de quadros, tomadas ou instalações.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+09. GRUPO F - INVENTÁRIO DE EQUIPAMENTOS
+======================================================================
+
+[PROPOSTA - CATEGORIAS INICIAIS]
+[ ] Computador desktop
+[ ] Notebook
+[ ] Tablet
+[ ] Monitor
+[ ] Impressora / multifuncional
+[ ] Scanner
+[ ] Projetor / datashow
+[ ] Tela / TV / painel interativo
+[ ] Roteador
+[ ] Access point
+[ ] Switch
+[ ] Nobreak
+[ ] Webcam / microfone / caixa de som
+[ ] Servidor ou equipamento de armazenamento
+[ ] Outro equipamento: _____________________
+
+[PROPOSTA - FICHA PADRÃO DE CADA EQUIPAMENTO]
+[ ] Categoria do equipamento (seleção)
+[ ] Local / ambiente (seleção entre ambientes cadastrados)
+[ ] Quantidade (quando a coleta for por lote)
+[ ] Número de patrimônio (se houver; texto, para preservar zeros)
+[ ] Número de série (se disponível)
+[ ] Marca / fabricante
+[ ] Modelo
+[ ] Tipo / especificação técnica essencial (varia conforme a categoria)
+[ ] Condição física: boa / regular / ruim / não avaliada
+[ ] Funcionamento: funciona / funciona parcialmente / não funciona /
+    não testado
+[ ] Em uso? Sim / Não / Reserva / Desconhecido
+[ ] Problema identificado (lista de causas + observação)
+[ ] Ação sugerida: nenhuma / manutenção / substituição / instalação /
+    avaliação técnica / outra
+[ ] Prioridade: baixa / média / alta / crítica (regras a definir)
+[ ] Observações
+[ ] Fotos vinculadas EXCLUSIVAMENTE a esse equipamento
+
+[PROPOSTA - REGRAS]
+- Cada registro de item recebe um ID interno único, mesmo sem patrimônio.
+- Dois itens não devem ser tratados como iguais só porque têm mesma marca.
+- Permitir "Adicionar outro equipamento" sem repetir toda a vistoria.
+- Perguntas específicas aparecem conforme categoria: impressoras podem
+  ter tipo de impressão/conexão; computadores podem ter RAM, disco, SO etc.
+- Permitir marcar "Não sei / Não testado / Não disponível" nos campos em
+  que a informação técnica não puder ser identificada com segurança.
+- Evitar exigir marca, modelo e número de série quando não são conhecidos.
+
+[A DECIDIR - ESCOLHA IMPORTANTE]
+Os equipamentos serão registrados:
+[ ] INDIVIDUALMENTE: cada computador recebe sua ficha e suas fotos.
+[ ] POR QUANTIDADE: informar, por exemplo, "10 computadores iguais".
+[ ] MODELO HÍBRIDO: cadastro resumido por lote e detalhamento individual
+    obrigatório somente em determinadas categorias/situações.
+
+A escolha afeta o tempo de visita, os relatórios, a rastreabilidade e o
+controle de patrimônio. NÃO assumir o modelo sem sua decisão.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+______________________________________________________________________
+
+======================================================================
+10. GRUPO G - RECURSOS AUDIOVISUAIS / TECNOLÓGICOS
+======================================================================
+
+[PROPOSTA]
+Para evitar repetição, esses equipamentos podem utilizar a MESMA ficha
+padrão do Grupo F, com perguntas condicionais próprias.
+
+[ ] Projetor: funciona? possui cabos? está instalado?
+[ ] TV/painel: tamanho/modelo (se conhecido), funciona, local
+[ ] Som/microfone: tipo, quantidade, estado e local
+[ ] Lousa/painel interativo: funcionamento e disponibilidade
+[ ] Recursos adicionais definidos pela SEMED
+
+[A DECIDIR]
+Esse grupo deve existir separadamente ou ser incorporado ao Grupo F?
+______________________________________________________________________
+
+======================================================================
+11. GRUPO H - PROBLEMAS / NECESSIDADES / PRIORIDADES
+======================================================================
+
+[PROPOSTA - QUESTÕES]
+[ ] Quais são os principais problemas tecnológicos encontrados?
+[ ] A situação impede o funcionamento de algum setor da unidade?
+[ ] Há equipamento sem uso por falta de instalação/peça/manutenção?
+[ ] Há falta de equipamentos em algum setor?
+[ ] Há necessidade de melhorias de internet, rede ou energia?
+[ ] Qual a prioridade da demanda? (critério institucional a definir)
+[ ] Descrição objetiva do problema
+[ ] Fotos comprobatórias, quando aplicável
+[ ] Observações finais do coletor
+
+[PROPOSTA]
+Diferenciar sempre:
+- OBSERVAÇÃO: o coletor viu ou testou.
+- INFORMAÇÃO DECLARADA: alguém da unidade informou.
+- NÃO AVALIADO: não foi possível conferir.
+
+Essa distinção melhora a confiabilidade dos relatórios.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+12. REGISTRO FOTOGRÁFICO - REGRAS
+======================================================================
+
+[DEFINIDO]
+- A coleta terá fotografia dos itens e informações vinculadas às imagens.
+- As imagens serão armazenadas no Cloudflare R2.
+- Seus vínculos/metadados serão registrados no Cloudflare D1.
+
+[PROPOSTA]
+- Capturar pela câmera do celular ou selecionar foto existente, se autorizado.
+- Exibir miniaturas antes de salvar e permitir substituir/excluir foto
+  enquanto a vistoria ainda não foi enviada.
+- Vincular a foto a unidade_id, vistoria_id e, quando houver, item_id
+  ou ambiente_id.
+- Categorizar a foto: visão geral / etiqueta patrimonial / defeito /
+  instalação / outro.
+- Permitir múltiplas fotos por item, com limite configurável.
+- Comprimir e redimensionar as imagens para reduzir tráfego e custos,
+  mantendo qualidade suficiente para análise e emissão de relatório.
+- Armazenar chave do objeto, formato, tamanho, data, legenda e autor.
+- Exibir progresso de upload e confirmação de recebimento.
+- Usar acesso controlado aos arquivos (não tornar o R2 público por padrão).
+- Orientar o coletor a evitar rostos de estudantes, documentos pessoais,
+  telas com dados sensíveis e senhas visíveis nas fotografias.
+
+[A DECIDIR]
+- Quantidade mínima de fotos por item: _________________________
+- Quantidade máxima de fotos por item: _________________________
+- Foto obrigatória para todo item? [ ] Sim [ ] Não [ ] Depende da condição
+- Permitir vídeo? [ ] Sim [ ] Não
+- Permitir PDF/documentos? [ ] Sim [ ] Não
+- Permitir anotações diretamente na foto? [ ] Sim [ ] Não
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+13. PERGUNTAS CONDICIONAIS E PADRÃO DE CADASTRO
+======================================================================
+
+[PROPOSTA]
+Cada pergunta futura deverá ter, idealmente:
+- Código único (ex.: INTERNET_001, EQUIP_012)
+- Grupo/seção
+- Texto exibido no celular
+- Tipo de resposta: Sim/Não, escolha única, múltipla, número, texto,
+  data, foto, seleção de equipamento/ambiente
+- Lista de opções admitidas
+- Obrigatoriedade e regras de validação
+- Condição de exibição (quando aparecer)
+- Instrução curta, se necessária
+- Campo/estrutura de destino no banco
+
+EXEMPLO:
+Código: INTERNET_001
+Pergunta: A unidade possui acesso à internet?
+Respostas: Sim / Não / Não foi possível verificar
+Obrigatória: Sim
+Condição: Mostrar em toda vistoria
+Se resposta = "Sim": perguntar tipo, provedor, funcionamento etc.
+Se resposta = "Não": pular perguntas de velocidade e operadora.
+
+[A DECIDIR]
+Deseja futuramente editar perguntas/opções sem alterar código do sistema?
+[ ] Sim [ ] Não [ ] Avaliar depois
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+14. RASCUNHO, VALIDAÇÃO, ENVIO E DISPONIBILIDADE NO PAINEL
+======================================================================
+
+[DEFINIDO]
+- O coletor seleciona a unidade, responde ao questionário, anexa fotos
+  e envia a vistoria concluída.
+- Após o ENVIO BEM-SUCEDIDO, as informações ficam disponíveis no painel
+  desktop, sem transferência manual por planilhas.
+
+[PROPOSTA - CICLO]
+1) Selecionar unidade previamente cadastrada.
+2) Criar ou retomar uma vistoria em andamento, conforme permissões.
+3) Responder aos grupos e registrar equipamentos/fotos.
+4) Salvar progresso, inclusive após interrupção do navegador, conforme
+   estratégia técnica aprovada.
+5) Revisar pendências e validar obrigatórios.
+6) Finalizar e enviar.
+7) O servidor valida os dados e confirma upload/vínculo das fotos.
+8) Vistoria passa ao estado ENVIADA (com data e versão).
+9) Painel desktop lê os dados consolidados e permite consultar registros
+   e fotos imediatamente após a confirmação do envio.
+
+[PROPOSTA - CUIDADOS TÉCNICOS]
+- Não considerar uma vistoria "enviada" enquanto existirem fotos
+  obrigatórias pendentes ou erros de gravação.
+- Evitar envio duplicado ao tocar várias vezes no botão Enviar.
+- Definir regra de edição/correção pós-envio com registro de histórico.
+- Controlar sincronização entre registros D1 e objetos R2, inclusive
+  recuperação de uploads interrompidos.
+- Não prometer modo offline total sem projetar e testar a sincronização.
+
+[A DECIDIR]
+- O formulário deve funcionar sem internet? [ ] Sim [ ] Não [ ] Parcialmente
+- O coletor pode editar depois do envio? [ ] Sim [ ] Não [ ] Só autorizado
+- Precisará de validação/aprovação por gestor antes de o dado entrar em
+  relatórios oficiais? [ ] Sim [ ] Não
+  Observação: a regra já definida é que o dado ENVIADO deve ficar visível
+  no painel; eventual aprovação pode afetar apenas seu status oficial.
+- O painel mostrará rascunhos ou apenas vistorias enviadas? ___________
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+15. SEGURANÇA, PRIVACIDADE E RASTREABILIDADE
+======================================================================
+
+[PROPOSTA]
+- Exigir autenticação e identificar o responsável por cada vistoria.
+- Restringir a lista de unidades e as ações conforme permissões.
+- Não confiar apenas em campos ocultos na interface: validar autorização
+  e unidade_id no backend (Cloudflare Workers).
+- Registrar alterações relevantes, autor e data/hora.
+- Limitar tamanho e formato dos arquivos recebidos.
+- Não incluir senhas, dados pessoais de estudantes ou conteúdos sigilosos
+  no questionário ou nas fotos.
+- Prever política de retenção, backup e exportação de dados e imagens.
+- Aplicar políticas de privacidade e proteção de dados pertinentes.
+
+[A DECIDIR]
+- Perfis de usuário que poderão COLETAR: ______________________
+- Quem poderá corrigir uma vistoria enviada? _________________
+- Quem poderá criar/editar a LISTA OFICIAL DE UNIDADES? _______
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+16. COMO OS DADOS DEVEM SER ORGANIZADOS (REFERÊNCIA INICIAL)
+======================================================================
+
+[PROPOSTA - ENTIDADES LÓGICAS, NÃO ESQUEMA DEFINITIVO]
+
+UNIDADES
+  id, codigo, nome, ativo
+
+USUARIOS
+  id, identificação, perfil/status
+
+VISTORIAS
+  id, unidade_id, coletor_id, ciclo, data_inicio, data_envio, status,
+  versao_questionario
+
+AMBIENTES
+  id, unidade_id, vistoria_id, tipo, nome, observacoes
+
+EQUIPAMENTOS
+  id, unidade_id, vistoria_id, ambiente_id, categoria, patrimonio,
+  serie, marca, modelo, funcionamento, conservacao, observacoes
+
+RESPOSTAS
+  id, vistoria_id, pergunta_id, contexto (unidade/ambiente/item),
+  referencia_contexto_id, valor, fonte_da_informacao
+
+FOTOGRAFIAS
+  id, unidade_id, vistoria_id, equipamento_id/opcional,
+  ambiente_id/opcional, chave_objeto_r2, categoria, legenda, tamanho,
+  data_upload
+
+QUESTIONARIOS / PERGUNTAS / OPCOES (caso haja formulário configurável)
+  id, versao, secao, texto, tipo_resposta, obrigatoria,
+  condicao_exibicao, ordem, opcoes
+
+[ATENÇÃO]
+O banco deve guardar valores estruturados e identificadores estáveis;
+não depender exclusivamente de um bloco de texto livre para gerar gráficos.
+Uma nova edição de questionário não deverá apagar o significado de
+respostas anteriores.
+
+[MINHA ALTERAÇÃO]
+______________________________________________________________________
+
+======================================================================
+17. PRINCIPAIS DECISÕES PENDENTES (RESPONDA NO SEU RITMO)
+======================================================================
+
+01. Inventário individual, por quantidade ou híbrido? ______________
+02. Quais categorias de equipamentos REALMENTE entram? _____________
+03. Quais seções não devem fazer parte da coleta? _________________
+04. Quais fotos serão obrigatórias e quando? _______________________
+05. Pode haver vários coletores por escola? ________________________
+06. A coleta precisa funcionar offline? ____________________________
+07. Pode haver várias vistorias da mesma escola? ____________________
+08. Quem poderá corrigir dados após o envio? _______________________
+09. Deverá existir campo para demanda/prioridade técnica? ___________
+10. Precisará registrar o número de patrimônio? ____________________
+11. Questionário será fixo ou administrável? _______________________
+12. Há dados a importar de planilhas anteriores? ___________________
+13. Que campos são obrigatórios ANTES do envio final? ______________
+14. O que está faltando neste documento? ___________________________
+
+======================================================================
+18. MINHAS OBSERVAÇÕES E NOVAS IDEIAS
+======================================================================
+
+Use este espaço para acrescentar qualquer problema real da SEMED, caso
+específico, pergunta, exemplo ou decisão que deva entrar na Etapa 1.
+
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+
+======================================================================
+19. CONTROLE DE REVISÃO
+======================================================================
+
+Versão 0.1 - 27/10/2026
+Criação da proposta inicial com separação entre decisões já definidas,
+recomendações e perguntas pendentes. Escopo exclusivo da ETAPA 1.
+
+Próximas revisões: registrar aqui as decisões incorporadas, alterações
+solicitadas e questões que ainda aguardam definição.
+
+======================================================================
+FIM DA BASE DE COLETA - VERSÃO 0.1
+======================================================================

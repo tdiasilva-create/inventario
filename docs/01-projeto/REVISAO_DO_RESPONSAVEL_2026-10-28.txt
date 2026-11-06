@@ -1,0 +1,297 @@
+INVENTÁRIO TECNOLÓGICO SEMED · PAINEL
+Revisão de erros, organização da página e orientações de correção
+Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+Revisado em 28/10/2026, logado como root, tela 870 x 1372 (computador).
+Páginas vistas: Panorama, Mapa da Rede, Unidades, Ambientes, Equipamentos,
+Ocorrências, Relatórios, Planejamento, Exportar dados, Configurações,
+/cadastro-unidades, /usuarios e /conta.
+
+Prioridade:  [ALTA] quebra o uso ou perde dado  ·  [MÉDIA] confunde o usuário
+             [BAIXA] acabamento visual
+Cada item tem: O QUE ACONTECE  ->  COMO CORRIGIR.
+
+==========================================================================
+1. NAVEGAÇÃO E BOTÃO VOLTAR
+==========================================================================
+
+[ALTA] 1.1 As seções do painel não têm endereço próprio
+  O que acontece: Panorama, Mapa da Rede, Unidades, Ambientes, Equipamentos,
+  Ocorrências, Relatórios, Planejamento e Configurações ficam todas no mesmo
+  endereço "/". Testei: depois de passar por 9 seções, o botão Voltar do
+  navegador pulou direto para /conta. O F5 sempre volta ao Panorama e não dá
+  para mandar o link de uma seção para alguém.
+  Como corrigir: dar uma rota para cada seção (/panorama, /mapa, /unidades,
+  /ambientes, /equipamentos, /ocorrencias, /relatorios, /planejamento,
+  /configuracoes) com history.pushState ao trocar de seção e um listener de
+  "popstate" que reabre a seção certa. Ao carregar a página, ler a rota e
+  abrir a seção correspondente.
+
+[ALTA] 1.2 As telas de administração não têm menu nem botão voltar
+  O que acontece: /cadastro-unidades, /usuarios e /conta abrem em outro
+  visual (fundo com foto do lago e barcos), sem o menu lateral. A única saída
+  é o link pequeno "Abrir painel".
+  Como corrigir: abrir essas telas DENTRO do painel, com o mesmo menu lateral
+  e o mesmo cabeçalho. No topo do conteúdo, colocar uma trilha
+  "Painel › Administração › Usuários" e um botão "← Voltar ao painel".
+
+[MÉDIA] 1.3 "Abrir painel" e "Sair" mudam de lugar
+  O que acontece: em /cadastro-unidades e /usuarios ficam no topo; em /conta
+  ficam no meio, entre "Alterar senha" e "Sessões". "Abrir painel" é link e
+  "Sair" é botão.
+  Como corrigir: tirar os dois do conteúdo. "Sair" fica só no menu do avatar
+  (canto superior direito); a volta ao painel fica no menu lateral (item 1.2).
+
+[MÉDIA] 1.4 Duas formas de sair
+  O que acontece: existe o avatar "RO root" no topo e um botão flutuante
+  "Minha conta / Sair" no canto inferior direito, em todas as telas.
+  Como corrigir: remover o botão flutuante. Ao clicar no avatar, abrir um menu
+  com "Minha conta" e "Sair".
+
+[MÉDIA] 1.5 Menu lateral mistura áreas
+  O que acontece: "Cadastro de unidades" e "Usuários" aparecem no topo do
+  menu, em outra cor (ciano), acima do Panorama. O texto "Cadastro de
+  unidades" quase não cabe na largura do menu. Abaixo da linha ficam
+  Planejamento, Exportar dados e Configurações, num estilo diferente.
+  Como corrigir: organizar em 3 grupos com título:
+    CONSULTA: Panorama, Mapa da Rede, Unidades, Ambientes, Equipamentos,
+              Ocorrências, Relatórios
+    GESTÃO: Planejamento, Exportar dados
+    ADMINISTRAÇÃO (só admin/root): Unidades (cadastro), Usuários,
+              Operadores × unidades, Segurança, Configurações
+  Mesmo tamanho de fonte, ícone e destaque em todos os itens. Usar textos
+  curtos ("Cadastro" em vez de "Cadastro de unidades").
+
+[BAIXA] 1.6 Painel abre no Panorama, mas o item "Panorama" não é o primeiro
+  Como corrigir: deixar Panorama como primeiro item do menu (segue o 1.5).
+
+==========================================================================
+2. ADMINISTRAÇÃO: CADASTRO DE UNIDADES
+==========================================================================
+
+[ALTA] 2.1 O formulário perdeu campos importantes
+  O que acontece: durante a revisão o sistema foi atualizado. A primeira
+  versão tinha Nome, Código/INEP, Endereço, Bairro, Latitude, Longitude e
+  Situação. A versão atual tem só Nome, Nome do gestor, Latitude e Longitude.
+  Sem o INEP não há como ligar a unidade ao SIGAE, ao GEDUC, ao Censo e ao
+  Mapa SEMED. Sem bairro, o filtro "Regional" do painel fica sem base.
+  Como corrigir: o formulário precisa ter:
+    Nome da unidade *        Código INEP (8 dígitos; vazio só para núcleos)
+    Tipo de unidade *        (Escola municipal, Escola conveniada,
+                              Núcleo Educa Paço, Núcleo tecnológico,
+                              Unidade administrativa)
+    Polo/Regional            Bairro          Endereço
+    Nome do gestor           Telefone        E-mail
+    Latitude                 Longitude       Situação (Ativa/Inativa)
+  O filtro "Tipo de Unidade" e o "Regional" do painel dependem do Tipo e do
+  Polo; sem eles os filtros não funcionam.
+
+[ALTA] 2.2 Faltam validações
+  Como corrigir:
+  - INEP: só números, 8 dígitos, sem repetir (avisar "INEP já cadastrado
+    em …").
+  - Nome repetido: avisar antes de salvar.
+  - Latitude/Longitude: aceitar vírgula ou ponto; conferir se o ponto cai
+    perto de Paço do Lumiar (latitude entre -2,62 e -2,45; longitude entre
+    -44,20 e -44,02); mostrar o ponto num mini-mapa antes de salvar e
+    permitir clicar no mapa para preencher.
+  - Mostrar o erro embaixo do campo, em vermelho, e não só no topo.
+
+[ALTA] 2.3 Não há cadastro em lote
+  O que acontece: são 110 escolas + 33 núcleos Educa Paço + 6 núcleos
+  tecnológicos. Um por um é lento e sujeito a erro.
+  Como corrigir: botão "Importar planilha (CSV/XLSX)" com modelo para baixar,
+  prévia do que será gravado, linhas com erro destacadas e confirmação final.
+
+[MÉDIA] 2.4 Lista de unidades cadastradas
+  O que acontece: "Nenhuma unidade cadastrada." aparece colado embaixo dos
+  botões, sem título. Quando houver unidades, não há busca, ordenação,
+  edição nem exclusão visíveis.
+  Como corrigir: abaixo do formulário, um bloco "Unidades cadastradas (N)"
+  em tabela: Nome, INEP, Tipo, Polo, Bairro, Situação, Localização (✓/✗),
+  Ações (Editar, Inativar). Busca e filtros por tipo e polo; paginação.
+
+[MÉDIA] 2.5 Seções que sumiram nesta versão
+  O que acontece: a versão anterior tinha as abas "Unidades por operador" e
+  "Segurança" (prazos de sessão, validade das senhas provisórias e as últimas
+  100 ações). Na versão atual as abas são só Cadastro de unidades, Usuários
+  e Minha conta.
+  Como corrigir: devolver "Operadores × unidades" e "Segurança e auditoria"
+  como páginas próprias da Administração (item 1.5). Sem "Operadores ×
+  unidades" não há como mandar o operador a campo.
+
+[BAIXA] 2.6 Botões e espaçamento
+  O que acontece: "Salvar unidade" é grande e "Limpar formulário" é pequeno,
+  com alturas diferentes; há um espaço vazio grande entre o texto
+  "Acesso autenticado…" e os botões; o título "Cadastro de unidades" aparece
+  3 vezes (título da página, aba e título do cartão).
+  Como corrigir: botões com a mesma altura, lado a lado, alinhados à direita
+  ("Limpar" secundário, "Salvar" principal). Um título só por página.
+
+==========================================================================
+3. ADMINISTRAÇÃO: USUÁRIOS E MINHA CONTA
+==========================================================================
+
+[MÉDIA] 3.1 Perfis escritos de formas diferentes
+  O que acontece: no seletor aparecem "Operador", "Visualizador", "admin" e
+  "root" (maiúscula e minúscula misturadas).
+  Como corrigir: "Operador", "Visualizador", "Administrador", "Root
+  (superadministrador)". Explicar em uma linha o que cada perfil pode fazer.
+
+[MÉDIA] 3.2 Lista de usuários pouco legível
+  O que acontece: cada usuário é uma linha de texto "admin • admin • ativo •
+  troca de senha pendente", um seletor e 4 botões soltos.
+  Como corrigir: tabela com Nome, Usuário, Perfil, Situação (selo colorido:
+  Ativo / Senha pendente / Desativado), Último acesso e um menu "⋯" com
+  Salvar perfil, Redefinir senha, Revogar sessões e Desativar.
+
+[MÉDIA] 3.3 Ações perigosas sem confirmação
+  Como corrigir: "Desativar", "Redefinir senha" e "Revogar sessões" devem
+  abrir uma janela de confirmação com o nome do usuário. Bloquear que o root
+  desative ou rebaixe a própria conta.
+
+[BAIXA] 3.4 Texto grudado nas Sessões (/conta)
+  O que acontece: "expira em 28/10/2026, 06:48:00Encerrar" (sem espaço entre
+  a hora e o botão).
+  Como corrigir: botão "Encerrar" alinhado à direita da linha, com espaço;
+  mostrar também navegador/dispositivo de cada sessão.
+
+[BAIXA] 3.5 Informações repetidas no topo das telas de administração
+  O que acontece: "root • root" e "Acesso autenticado. O inventário está sem
+  dados recebidos." aparecem em todas as telas.
+  Como corrigir: remover. O nome já está no avatar; o aviso de "sem dados"
+  pertence ao painel, não à administração. Título "Minha conta SEMED" deve
+  ser só "Minha conta", como as outras telas.
+
+==========================================================================
+4. PANORAMA (TELA INICIAL)
+==========================================================================
+
+[MÉDIA] 4.1 Cartões de resumo inconsistentes
+  O que acontece: "Unidades" mostra 0, os outros mostram "—"; todos dizem
+  "Sem dados recebidos" em verde, que parece mensagem de sucesso.
+  Como corrigir: mostrar 0 em todos; o texto de estado em cinza
+  ("Aguardando coletas"). Verde só para situação boa.
+
+[MÉDIA] 4.2 Cartão "Unidade Selecionada" desalinhado
+  O que acontece: o título fica no meio da altura, à esquerda, e a frase
+  "Nenhuma unidade cadastrada." fica no alto, à direita.
+  Como corrigir: título no topo do cartão; mensagem vazia centralizada no
+  corpo, com uma orientação: "Clique numa unidade no mapa para ver os
+  detalhes".
+
+[BAIXA] 4.3 "Galeria da Coleta" com mensagem fora do centro
+  O que acontece: "Sem fotografias." fica deslocado à esquerda, em duas
+  linhas.
+  Como corrigir: centralizar e usar uma linha só.
+
+[BAIXA] 4.4 Ícones de equipamentos espremidos
+  O que acontece: em "Equipamentos por Unidade" os rótulos se encostam
+  ("NotebooksTablets"), com letras muito pequenas.
+  Como corrigir: rótulos com espaço mínimo entre si, quebra de linha
+  permitida ou dica ao passar o mouse; tamanho mínimo de 11-12 px.
+
+[BAIXA] 4.5 Barra de filtros encostada no cabeçalho
+  Como corrigir: margem de 12-16 px entre o cabeçalho e a barra de filtros,
+  igual ao espaço entre os outros blocos.
+
+[BAIXA] 4.6 Metade de baixo da tela vazia
+  Como corrigir: aumentar a altura do mapa e dos cartões para ocupar a
+  tela, ou adicionar um bloco útil (ex.: "Coletas recentes" / "Unidades sem
+  visita").
+
+==========================================================================
+5. DEMAIS SEÇÕES DO PAINEL
+==========================================================================
+
+[MÉDIA] 5.1 Referência interna aparecendo para o usuário
+  O que acontece: "Contorno V33", "referência cartográfica V33" e
+  "cartografia e contorno fornecidos no HTML V33" aparecem no mapa e no
+  subtítulo. Na tela Configurações aparecem "Cloudflare Workers + D1 + R2" e
+  "inventario-semed-lumiar (ainda não publicado)". No rodapé:
+  "autenticação disponível · catálogo e coletas aguardam integração".
+  Como corrigir: trocar por textos de usuário: botão "Limite do município",
+  subtítulo "Paço do Lumiar". Mover a parte técnica para uma área só de
+  root ("Sobre o sistema"). Rodapé com versão e data, ex.:
+  "Inventário Tecnológico SEMED · v1.0 · atualizado em 28/10/2026".
+
+[MÉDIA] 5.2 Mapa da Rede com título repetido e mapa alto demais
+  O que acontece: "Mapa da Rede Municipal de Educação" aparece como título
+  da página e de novo dentro do cartão do mapa. O mapa passa da altura da
+  tela; os botões Satélite / Ruas / Contorno ficam no fim, fora da vista.
+  Como corrigir: um título só; mapa com altura = tela menos cabeçalho e
+  filtros (ex.: calc(100vh - 220px)); botões de camada no canto superior do
+  mapa.
+
+[MÉDIA] 5.3 Dois botões de filtro na mesma tela
+  O que acontece: no Mapa da Rede há "Alternar contorno" no título e
+  "Filtros avançados" na barra, com o mesmo ícone de filtro.
+  Como corrigir: "Alternar contorno" vai para os controles do mapa, com
+  ícone de camada; ícone de filtro só em "Filtros avançados".
+
+[MÉDIA] 5.4 Ambientes sem escolha de unidade
+  O que acontece: a página "Ambientes da unidade" depende de uma unidade
+  selecionada, mas não tem campo para escolher a unidade.
+  Como corrigir: seletor "Unidade" (com busca por nome ou INEP) no topo da
+  página.
+
+[MÉDIA] 5.5 Aviso do "Exportar dados" coberto
+  O que acontece: ao clicar em "Exportar dados", o aviso "Não há dados de
+  in…" aparece no canto inferior direito por baixo do botão "Minha conta /
+  Sair" e fica cortado.
+  Como corrigir: avisos (toasts) no canto superior direito, ou acima de
+  qualquer botão fixo. Melhor ainda: "Exportar dados" vira uma página com as
+  opções (unidades, equipamentos, ocorrências; CSV ou XLSX) e o botão fica
+  desativado com a explicação quando não há dados.
+
+[BAIXA] 5.6 Páginas vazias sem orientação
+  O que acontece: Unidades, Ocorrências, Relatórios e Planejamento mostram
+  só uma frase pequena ("Nenhuma unidade cadastrada.", "Aguardando
+  indicadores oficiais.") e o resto da tela vazio.
+  Como corrigir: estado vazio padronizado: ícone, frase e um botão de ação.
+  Ex.: em Unidades, "Nenhuma unidade cadastrada · [Cadastrar unidade]"
+  (só para admin/root).
+
+[BAIXA] 5.7 Filtro "Ano" sem sentido no momento
+  Como corrigir: esconder "Ano" enquanto houver só um ano de coleta, ou
+  deixar o ano atual (2026) já selecionado.
+
+[BAIXA] 5.8 Campo de busca cortado
+  O que acontece: o texto de ajuda aparece cortado ("Pesquise uma unidade,
+  equipame").
+  Como corrigir: texto mais curto ("Buscar unidade ou equipamento") ou
+  campo mais largo.
+
+==========================================================================
+6. PADRÃO VISUAL GERAL
+==========================================================================
+
+[MÉDIA] 6.1 Dois visuais diferentes no mesmo sistema
+  O que acontece: painel com fundo escuro e menu; administração com foto do
+  lago e cartão flutuante.
+  Como corrigir: um só layout (o do painel) para tudo. A foto pode ficar
+  só na tela de login.
+
+[BAIXA] 6.2 Letras muito pequenas
+  O que acontece: rótulos de filtros, cartões e legendas abaixo de 11 px,
+  difíceis de ler em notebook.
+  Como corrigir: mínimo de 12 px para rótulos e 14 px para texto corrido;
+  contraste mínimo de 4,5:1 (WCAG AA) nos textos cinza sobre fundo escuro.
+
+[BAIXA] 6.3 Celular
+  Não testado nesta revisão. Conferir: menu lateral recolhível (☰),
+  formulários em uma coluna e tabelas com rolagem horizontal própria.
+
+==========================================================================
+ORDEM SUGERIDA PARA O DESENVOLVEDOR
+==========================================================================
+  1º  Rotas e botão Voltar (1.1, 1.2, 1.3, 1.4)
+  2º  Formulário de unidades completo + validações + lista (2.1, 2.2, 2.4)
+  3º  Devolver "Operadores × unidades" e "Segurança" (2.5)
+  4º  Importação em lote (2.3)
+  5º  Menu lateral reorganizado e um só visual (1.5, 6.1)
+  6º  Usuários: perfis, tabela e confirmações (3.1, 3.2, 3.3)
+  7º  Textos internos fora da tela (5.1) e demais ajustes visuais
+
+Observação: o sistema foi atualizado enquanto eu revisava (a tela de
+Administração mudou de formulário e de abas). Os itens acima descrevem a
+versão que estava no ar às 06:00-06:10 de 28/10/2026.

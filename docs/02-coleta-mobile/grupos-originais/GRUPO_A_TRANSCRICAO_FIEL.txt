@@ -1,0 +1,7 @@
+4.A. GRUPO A — IDENTIFICAÇÃO DA UNIDADE E VISTORIA
+- Preenchimento híbrido: dados da unidade, login do coletor, identificadores
+  e marcas de data/hora vêm automaticamente do sistema.
+- Exibir resumo ao coletor.
+- Disponibilizar observações opcionais.
+- Responsável/cargo informado pela escola: campos opcionais.
+- Unidade escolhida obrigatoriamente no cadastro oficial do administrador.

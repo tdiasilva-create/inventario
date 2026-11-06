@@ -1,0 +1,1 @@
+CREATE TABLE visit_answers(inspection_id TEXT PRIMARY KEY REFERENCES inspections(id),data_json TEXT NOT NULL DEFAULT '{}',version INTEGER NOT NULL DEFAULT 1,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL);

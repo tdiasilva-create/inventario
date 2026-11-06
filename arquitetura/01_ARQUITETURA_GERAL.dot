@@ -1,0 +1,21 @@
+digraph G {
+ graph [label="SEMED — arquitetura geral (síntese técnica, não design aprovado)",labelloc=t,fontsize=22,fontname="DejaVu Sans",fontcolor="#edf8ff",bgcolor="#061d30",ranksep=0.9,nodesep=0.5,pad=0.3,compound=true];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=13,color="#3382a3",fontcolor="#f2f8fd",fillcolor="#0b2b43",penwidth=1.5,margin="0.22,0.18"];
+ edge [color="#51bbea",fontname="DejaVu Sans",fontcolor="#e0f2fa",arrowsize=0.75,penwidth=1.7];
+ mobile [label="ETAPA 1\nColeta Mobile\nWizard + cartões + fotos",fillcolor="#103d6a"];
+ desktop [label="ETAPA 2\nPainel Desktop\nMapa + matriz + unidade",fillcolor="#173f62"];
+ admin [label="Administração\nUsuários, unidades, versões",fillcolor="#24455b"];
+ offline [label="Armazenamento local protegido\nRascunho + fila offline",fillcolor="#2a4354"];
+ workers [label="Cloudflare Workers / API\nAutenticação + validação\npermissões + auditoria",fillcolor="#095779"];
+ d1 [label="Cloudflare D1\nDados e relacionamentos",fillcolor="#175f55"];
+ r2 [label="Cloudflare R2\nFotos e miniaturas",fillcolor="#175f55"];
+ {rank=same; mobile;desktop;admin}
+ {rank=same; d1;r2}
+ mobile -> workers [label="cadastro / sync"];
+ desktop -> workers [label="consultas"];
+ admin -> workers [label="gestão"];
+ mobile -> offline [label="quando sem conexão",dir=both,color="#ffca49",fontcolor="#ffca49"];
+ offline -> workers [label="reenvio seguro",color="#ffca49",fontcolor="#ffca49"];
+ workers -> d1 [label="transações / vínculos"];
+ workers -> r2 [label="fotos protegidas"];
+}

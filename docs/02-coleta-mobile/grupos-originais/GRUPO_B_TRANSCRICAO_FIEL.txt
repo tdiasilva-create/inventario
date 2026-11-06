@@ -1,0 +1,9 @@
+4.B. GRUPO B — AMBIENTES / SETORES
+- Modelo híbrido: contar tipos de salas/ambientes e identificar
+  individualmente ambientes relevantes que possuam equipamentos.
+- Tipos padronizados e nomes personalizáveis, incluindo Outro ambiente.
+- Equipamentos devem ser vinculados ao ambiente em que estão localizados.
+- Ambiente NÃO é uma nova escola/unidade.
+- Geolocalização/GPS: OPCIONAL; não realizar rastreamento contínuo.
+- Informações dos ambientes alimentam seleções em internet, rede, energia,
+  equipamentos, impactos e necessidades gerais.

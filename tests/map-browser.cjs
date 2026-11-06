@@ -1,0 +1,50 @@
+const {join}=require('node:path');let pw;try{pw=require('playwright');}catch{pw=require(join(process.env.USERPROFILE||process.env.HOME,'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'));}
+const {spawn}=require('node:child_process');const {mkdirSync,writeFileSync}=require('node:fs');const assert=require('node:assert/strict');
+const out='docs/05-qualidade/evidencias/mapa-v33';mkdirSync(out,{recursive:true});let server,browser,page;
+(async()=>{
+ server=spawn(process.execPath,['scripts/serve.mjs'],{windowsHide:true,env:{...process.env,PORT:'4176'},stdio:['ignore','pipe','pipe']});
+ await new Promise((resolve,reject)=>{server.stdout.once('data',resolve);server.once('error',reject);server.stderr.once('data',d=>reject(Error(String(d))));});
+ browser=await pw.chromium.launch({headless:true,channel:'chrome'});page=await browser.newPage({viewport:{width:1672,height:941},deviceScaleFactor:1});page.setDefaultTimeout(10000);
+ const jsErrors=[],requests=[];page.on('pageerror',e=>jsErrors.push(e.message));page.on('request',r=>requests.push(r.url()));
+ await page.goto('http://127.0.0.1:4176/');await page.locator('#municipal-map[data-map-ready="true"]').waitFor();
+ let satelliteLoaded=true;try{await page.locator('.leaflet-tile-loaded').first().waitFor({timeout:20000});}catch{satelliteLoaded=false;}
+ await page.evaluate(()=>Promise.all([...document.images].filter(i=>!i.classList.contains('leaflet-tile')).map(i=>i.decode().catch(()=>{}))));
+ assert.equal(await page.locator('.matrix tbody tr').count(),10);
+ assert.equal(await page.locator('#municipal-map').getAttribute('data-marker-count'),'0');
+ assert.equal(await page.locator('#municipal-map').getAttribute('data-example-count'),'4');
+ assert.equal(await page.locator('.institutional-marker').count(),4);
+ await page.getByRole('button',{name:'Locais',exact:true}).click();assert.equal(await page.locator('.institutional-marker').count(),0);
+ await page.getByRole('button',{name:'Locais',exact:true}).click();assert.equal(await page.locator('.institutional-marker').count(),4);
+ await page.locator('.institutional-marker[title="SEMED"]').focus();await page.keyboard.press('Enter');
+ await page.locator('.institutional-popup').waitFor();assert.match(await page.locator('.institutional-popup').innerText(),/UNIDADE ADMINISTRATIVA/);
+ assert.equal(await page.locator('.institutional-popup a').getAttribute('href'),'https://docs.google.com/spreadsheets/d/1FTNJJwNQkJtNONheGevNgLBJypwFRzhFcfoY3PsoR6s/edit?gid=1835004469');
+ await page.waitForFunction(()=>document.querySelector('.leaflet-popup').getBoundingClientRect().left>document.querySelector('.map-tools').getBoundingClientRect().right);
+ await page.screenshot({path:out+'/05-local-institucional-semed.png',fullPage:true});await page.locator('.leaflet-popup-close-button').click();
+ assert.equal(await page.locator('.leaflet-overlay-pane path').count(),1);
+ await page.waitForFunction(()=>document.querySelector('#municipal-map').dataset.mapLoading==='false',{},{timeout:20000});
+ assert.equal(await page.locator('.leaflet-control-scale-line').isVisible(),true);
+ await page.screenshot({path:out+'/01-painel-com-mapa-v33-1672.png',fullPage:true});
+ const z=Number(await page.locator('#municipal-map').getAttribute('data-map-zoom'));
+ await page.getByRole('button',{name:'Ampliar mapa',exact:true}).click();await page.waitForFunction(z=>Number(document.querySelector('#municipal-map').dataset.mapZoom)>z,z);
+ await page.getByRole('button',{name:'Enquadrar mapa'}).click();
+ await page.getByRole('button',{name:'Contorno V33',exact:true}).click();assert.equal(await page.locator('.leaflet-overlay-pane path').count(),0);
+ await page.getByRole('button',{name:'Contorno V33',exact:true}).click();assert.equal(await page.locator('.leaflet-overlay-pane path').count(),1);
+ await page.getByRole('button',{name:'Ruas',exact:true}).click();assert.equal(await page.locator('#municipal-map').getAttribute('data-map-base'),'streets');
+ let streetsLoaded=true;try{await page.locator('.leaflet-tile-loaded').first().waitFor({timeout:20000});}catch{streetsLoaded=false;}
+ await page.getByRole('button',{name:'Sobre os dados do mapa'}).click();assert.match(await page.getByRole('dialog').innerText(),/não foi homologado/);await page.getByRole('button',{name:'Fechar janela'}).click();
+ await page.getByRole('button',{name:'Ampliar área do mapa'}).click();await page.locator('#municipal-map[data-map-ready="true"]').waitFor();
+ await page.screenshot({path:out+'/02-mapa-ampliado-v33-1672.png',fullPage:true});
+ await page.getByRole('combobox',{name:'Regional',exact:true}).selectOption('Zona Norte');assert.equal(await page.locator('.unit-list-item').count(),2);await page.locator('#municipal-map[data-map-ready="true"]').waitFor();
+ assert.equal(await page.locator('#municipal-map').getAttribute('data-map-base'),'streets');
+ const target=page.locator('#municipal-map');await target.focus();const oldZoom=Number(await target.getAttribute('data-map-zoom'));await page.keyboard.press('+');await page.waitForFunction(z=>Number(document.querySelector('#municipal-map').dataset.mapZoom)>z,oldZoom);
+ await page.route('**/MapServer/tile/**',route=>route.abort());
+ await page.getByRole('button',{name:'Satélite',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.cartography-status').classList.contains('error'));
+ await page.screenshot({path:out+'/03-falha-base-explicita.png',fullPage:true});
+ await page.unroute('**/MapServer/tile/**');await page.getByRole('button',{name:'Ruas',exact:true}).click();
+ await page.locator('[data-page="Panorama"]').click();await page.locator('#municipal-map[data-map-ready="true"]').waitFor();
+ await page.setViewportSize({width:390,height:844});await page.locator('.leaflet-tile-loaded').first().waitFor().catch(()=>{});
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:out+'/04-painel-mapa-v33-390.png',fullPage:true});
+ assert.deepEqual(jsErrors,[]);assert.equal(requests.some(u=>/script\.google\.com|tile\.googleapis\.com/.test(u)),false);
+ writeFileSync(out+'/resultado.json',JSON.stringify({status:'PASS',browser:'Chrome desktop',satelliteTilesObserved:satelliteLoaded,streetTilesObserved:streetsLoaded,jsErrors,otherApplicationApiCalled:false,checks:['Leaflet inicializa','contorno V33','sem coordenadas fabricadas','matriz preservada','zoom real','enquadramento','contorno alterna','satélite/ruas alternam','origem informada','mapa ampliado','filtro preservado','base preservada ao renderizar','zoom por teclado','erro de base visível','mobile sem overflow','API e Google da outra aplicação não chamados']},null,2));
+ console.log(JSON.stringify({status:'PASS',satelliteLoaded,streetsLoaded,checks:16}));
+})().catch(async e=>{console.error(e);try{await page.screenshot({path:out+'/failure.png',fullPage:true});}catch{}process.exitCode=1;}).finally(async()=>{await browser?.close();server?.kill();});

@@ -1,0 +1,23 @@
+4.E. GRUPO E — ENERGIA ELÉTRICA E INSTALAÇÕES
+
+E.1. Tomadas suficientes? OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado; indicar ambientes afetados.
+E.2. Extensões, adaptadores ou irregularidades elétricas aparentes:
+     OBRIGATÓRIO; quando presentes, tipo, ambiente e descrição.
+E.3. Proteções de energia: OBRIGATÓRIO.
+     Sim / Parcialmente / Não / Não avaliado.
+     Se presentes, identificar nobreak, filtro de linha, estabilizador etc.,
+     quantidade, ambientes e condições; não misturar os tipos.
+E.4. Cabos elétricos expostos/danificados, sobrecargas e improvisações:
+     INCORPORAR AO ITEM E.2, sem pergunta duplicada.
+E.5. Equipamentos guardados aguardando instalação: OBRIGATÓRIO.
+     Se houver, registrar tipo, quantidade, local, motivo e condição.
+     Evitar duplicação com os registros individuais do Grupo F.
+E.6. Necessidade de avaliação por especialista elétrico:
+     CONDICIONAL quando houver problemas nos itens anteriores.
+     Respostas: Sim / Não / Não foi possível determinar.
+     Identificar ambiente, tipo e descrição.
+     O coletor fará apenas observação visual; não executar ensaios elétricos
+     perigosos nem alegar laudo especializado.
+E.7. Fotografias: condicionais a problemas elétricos visíveis;
+     caso seja inseguro fotografar, justificar; opcionais no restante.

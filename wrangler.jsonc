@@ -1,0 +1,20 @@
+{
+ "$schema":"node_modules/wrangler/config-schema.json",
+ "name":"painel-semed-paco",
+ "account_id":"ce059c2b3e50037922a441a66814090d",
+ "compatibility_date":"2026-10-27",
+ "main":"server/worker.mjs",
+ "workers_dev":true,
+ "preview_urls":false,
+ "vars":{"PHOTO_STORAGE_PROVIDER":"google-drive","GOOGLE_LOGIN_HINT":"admin@pacodolumiar.edu.ma.gov.br","AGENTES_EXIGIR_AUTORIZACAO":"nao"},
+ "assets":{"directory":"./dist/painel","binding":"ASSETS","run_worker_first":true,"html_handling":"none","not_found_handling":"404-page"},
+ "d1_databases":[{"binding":"DB","database_name":"semed-inventario-auth","database_id":"acb9a3dc-f667-44cf-a4f3-127641860f3e","migrations_dir":"migrations"}],
+ // Proposta D-053 (revisão 04/11): manutenção diária do módulo de agentes (retenção/expurgo), só no Worker do painel para não duplicar.
+ // Só passa a valer no próximo deploy aprovado; política de retenção em docs/06-entregas/claude-v2-qr-2026-11-04/MIGRACOES_E_PUBLICACAO.txt.
+ "triggers":{"crons":["23 3 * * *"]}
+ // D-048 (ativada em 03/11/2026): fotografias no Google Drive via PHOTO_STORAGE_PROVIDER=google-drive acima; os segredos
+ // GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET e GOOGLE_TOKEN_KEY existem no Worker via `wrangler secret put` (nunca aqui).
+ // Proposta D-053 (agente/QR): sem segredos novos; variáveis opcionais AGENTES_INTERVALO_HEARTBEAT, AGENTES_EXIGIR_VISTORIA,
+ // AGENTES_LOTE_MAX_MAQUINAS e AGENTES_LOTE_MAX_HORAS têm padrão no código (server/agentes/index.mjs) e só entram após aprovação.
+}
+

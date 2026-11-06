@@ -1,0 +1,43 @@
+RELATÓRIO DE NAVEGAÇÃO REAL — COLETOR SEMED
+Data: 03/11/2026
+Unidade existente utilizada: unidade teste
+Vistoria: f427db5a-f2ab-4e89-9a83-efea46e0d546
+Operador exibido: estagio
+
+RESULTADO
+A, C, D, E, F, G e H preenchidos/concluídos pela interface.
+B já estava concluído antes do teste; ambiente disponível: Sala teste 2.
+Todos os cartões A–H aparecem como Concluído na revisão.
+A vistoria permanece Rascunho no servidor. Não foi acionada a confirmação final, para não publicar dados fictícios nos indicadores oficiais.
+
+CENÁRIO FICTÍCIO
+A: responsável e cargo explicitamente fictícios; observação informa que não representa inventário real.
+C: internet presente, funcionando, um link fibra, provedor fictício, 100 Mbps, teste de velocidade não realizado, estabilidade boa por relato, sem ambientes sem conectividade e sem falhas.
+D: sem rede cabeada, Wi-Fi, roteadores, APs, switches ou racks; organização não avaliada e sem danos visíveis.
+E: tomadas suficientes, sem irregularidades, um filtro de linha fictício em local descrito, conservação boa e sem equipamentos aguardando instalação.
+F: notebook individual no ambiente Sala teste 2. Patrimônio TESTE-FICTICIO-20261103-01, série TESTE-NOTEBOOK-001, marca/modelo fictícios; bom estado, funcionando e em uso; detalhes técnicos demonstrativos e observação identificando o teste.
+G: cenário sem recursos audiovisuais; cartão concluído sem fichas adicionais.
+H: complemento fictício sobre utilização, sem carência de equipamentos ou demandas adicionais.
+Ficha do notebook salva e listada após retorno ao inventário; 1 ficha e 1 equipamento.
+
+FOTOGRAFIAS — BLOQUEIO CONFIRMADO
+Na etapa 6 de 6 da ficha do notebook, título Fotografias do equipamento, aparece:
+O armazenamento de fotografias ainda não foi habilitado. O envio de fotos está indisponível nesta etapa. Falhas visíveis precisam de fotografia ou justificativa de impossibilidade.
+Não aparecem os botões de câmera ou galeria.
+Nenhuma fotografia foi capturada ou enviada neste teste.
+No painel, logado como root, Configurações > Armazenamento de fotografias mostra Não conectado e informa que o recebimento permanece desabilitado até a autorização. Existe o botão Conectar Google Drive.
+Conclusão: a autorização efetiva da integração Drive está pendente. A existência da etapa não significa que a captura/envio estejam operacionais.
+
+OBSERVAÇÃO DE USABILIDADE
+Texto no campo Descrição dos problemas, quando houver, mesmo dizendo sem problemas, acionou exigência de ocorrência. Ao deixar o campo vazio para o cenário sem falhas, o cartão C concluiu. Não houve alteração de código durante este teste.
+
+COBERTURA E LIMITES
+Percorrido um cenário completo aplicável por A–H; não foram exercitados todos os ramos condicionais possíveis, lotes ou falhas que exigem foto/justificativa.
+Capturas reais da etapa de fotografias e da revisão exibidas na conversa.
+Não testadas câmera física de celular, upload ao Drive, leitura no painel ou conclusão oficial com fotografias.
+
+ACESSOS
+Coletor / revisão:
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/?vistoria=f427db5a-f2ab-4e89-9a83-efea46e0d546&tela=review
+Painel / configuração da integração:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/configuracoes

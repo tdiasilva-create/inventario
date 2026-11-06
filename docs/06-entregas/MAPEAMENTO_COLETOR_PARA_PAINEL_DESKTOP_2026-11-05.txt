@@ -1,0 +1,1002 @@
+﻿SEMED — ONDE CADA INFORMAÇÃO DO COLETOR APARECE NO PAINEL DESKTOP
+Leitura técnica da implementação atual — 05/11/2026
+Secretaria Municipal de Educação de Paço do Lumiar
+
+FINALIDADE
+Este arquivo permite revisar a organização da página desktop sabendo quais dados
+já chegam, onde são consultados e quais ainda não têm apresentação adequada.
+É um retrato do que o código faz hoje, não uma proposta de novo questionário.
+Nenhuma alteração foi realizada no coletor, no painel, nas contas ou nos dados.
+
+ESCOPO E GRAU DE CERTEZA
+- Questionário atual: acompanhante, internet, Wi-Fi, ambientes, computadores,
+  impressoras, outros equipamentos e problemas; inclui fotos e vínculo QR.
+- Foram conferidos o catálogo de campos, renderização do coletor, persistência,
+  APIs de consulta e componentes do desktop. Os campos não foram deduzidos de
+  mockups nem de perguntas antigas que já saíram da interface.
+- Foram exercitadas funções de apresentação com amostras exclusivamente em
+  memória. Nenhuma amostra foi enviada ao ambiente real.
+- Versão ativa do desktop confirmada por consulta somente leitura à Cloudflare:
+  827d6900-aa3a-450c-974d-ac13fd2ecca5, com 100% do tráfego.
+- Oito módulos centrais do desktop conferem por SHA-256 com o build local
+  preservado: desktop.js, desktop-inventory.js, desktop-results.js,
+  desktop-progress.js, desktop-progress-photos.js, desktop-agents.js,
+  panel-shell.js e desktop-map.js.
+- A identificação da versão publicada e essa comparação não substituem abrir
+  cada ficha autenticada em produção. Esta auditoria não verificou os valores
+  de cada unidade nem realizou novo teste real de câmera, Drive ou instalador.
+- "Armazenado" abaixo descreve a estrutura que recebe o dado quando há envio
+  válido; não afirma que todas as máquinas/unidades já enviaram esse dado.
+
+COMO LER AS CLASSIFICAÇÕES
+EXIBIDO: existe apresentação específica no desktop.
+EXIBIDO NA FICHA: fica dentro de uma área expansível, não em coluna principal.
+EXIBIÇÃO PARCIAL: só parte do conteúdo ou do contexto é apresentada.
+SEM APRESENTAÇÃO: não há componente atual para mostrar aquele conteúdo.
+NÃO COLETADO ATUALMENTE: a pergunta não existe na interface atual; não é perda
+na transferência para o desktop.
+LIMITAÇÃO IDENTIFICADA: comportamento incompleto ou incorreto observado no código
+e, quando indicado, reproduzido com amostra local.
+
+ÍNDICE
+1. Caminho dos dados e momento em que ficam visíveis
+2. Endereços e caminhos de navegação no desktop
+3. Mapeamento de cada resposta dos assuntos
+4. Ambientes
+5. Mapeamento de cada campo dos equipamentos
+6. Fotografias: seis contextos de envio
+7. QR e informações automáticas do agente Windows
+8. Estados, autoria e histórico
+9. Como os dados entram em números, mapa e ocorrências
+10. Lacunas e inconsistências encontradas
+11. Informações antigas, removidas ou ainda não coletadas
+12. Ordem sugerida para futura revisão do desktop
+13. Fontes técnicas e conferências realizadas
+14. Espaço para as decisões do responsável
+
+==========================================================================
+1. CAMINHO DOS DADOS E MOMENTO EM QUE FICAM VISÍVEIS
+==========================================================================
+
+COLETOR -> Worker/API -> D1 compartilhado -> PAINEL DESKTOP
+                    -> Drive privado, no caso dos arquivos de fotografia
+
+Não existe uma cópia manual que precise ser importada no desktop. Os dois
+ambientes consultam a mesma persistência, mas usam consultas diferentes para
+rascunhos e para inventário oficialmente concluído.
+
+1.1 Enquanto a visita está aberta
+Destino: Coletas em andamento -> Ver dados parciais.
+
+As respostas de acompanhante/internet/Wi-Fi/problemas aparecem após o salvamento
+confirmado no servidor. A digitação que ainda está apenas na aba não aparece.
+Equipamentos aparecem após uma gravação confirmada da ficha: salvar equipamento,
+rascunho mínimo necessário à foto ou ao QR, ou atualização equivalente aceita.
+Assim, pode existir ficha parcial ainda incompleta. Foto só é recebida depois
+que o servidor confirma o arquivo; prévia no aparelho não é evidência recebida.
+
+A tela distingue PARCIAL, fichas novas, atualizações de bens já publicados,
+assuntos pendentes/em andamento/concluídos, autor e última atividade.
+Atualização automática a cada 15 segundos enquanto a página está visível,
+além do botão Atualizar agora. Não é transmissão instantânea a cada tecla.
+
+1.2 Concluir um assunto não publica a visita inteira
+Marcar Computadores, Internet ou outro assunto como concluído mantém a visita
+em andamento. Ela só passa ao inventário oficial após Confirmar conclusão,
+validação e confirmação do servidor.
+
+1.3 Depois de concluir a visita
+- Respostas por assunto: detalhe da unidade -> Questionário recebido.
+- Fichas de bens: Consultar equipamentos recebidos -> Ver ficha publicada.
+- Quantidades: Panorama, matriz de Equipamentos e resumo da unidade.
+- Fotos: galeria da unidade e áreas de evidências do Panorama.
+- Problemas derivados: Ocorrências e resumo Alertas e Insights.
+
+O cadastro corrente da ficha fica em data_json. A publicação mantém a cópia
+oficial em published_json. Editar uma ficha durante nova visita não deve fazer
+a alteração parcial substituir silenciosamente o último resultado oficial.
+As respostas gerais exibidas no detalhe são da última visita concluída. O
+inventário de equipamentos é contínuo, por ID permanente, e não apenas uma
+lista dos itens da última visita.
+
+1.4 Quem pode consultar
+Root, admin e visualizador têm consulta gerencial. Operador atua no coletor,
+sem acesso ao painel gerencial. Configurações de agentes/Drive são do root.
+Fotos parciais têm rota própria de leitura autorizada aos perfis desktop.
+
+1.5 Atualização do painel oficial
+O acompanhamento parcial tem ciclo de 15 segundos. Alguns resumos de resultados
+também consultam a cada 15 segundos. Matriz, cadastro e detalhe oficial usam
+carregamento/cache da página e não possuem o mesmo mecanismo universal.
+Ao testar uma nova publicação, recarregue o desktop para evitar consultar uma
+ficha antiga mantida em memória. Não interpretar toda área estática como falha
+de gravação no banco.
+
+==========================================================================
+2. ENDEREÇOS E CAMINHOS DE NAVEGAÇÃO NO DESKTOP
+==========================================================================
+
+Painel:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+P1 — Dados parciais de qualquer assunto:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/coletas-em-andamento
+Clique em Ver dados parciais na visita desejada.
+O detalhe reúne Respostas salvas, Ambientes cadastrados na unidade,
+Últimas atividades registradas, Equipamentos salvos nesta coleta e fotografias.
+
+P2 — Respostas oficiais:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/unidades
+Clique na unidade -> Questionário recebido -> abra o assunto desejado.
+O detalhe utiliza /unidade?id=IDENTIFICADOR_REAL_DA_UNIDADE.
+O identificador deve vir do cadastro; este documento não inventa um ID oficial.
+
+P3 — Ficha parcial de equipamento:
+P1 -> Equipamentos salvos nesta coleta -> Ver ficha parcial.
+
+P4 — Ficha publicada de equipamento:
+P2 -> Consultar equipamentos recebidos -> Ver ficha publicada.
+Também acessível pela matriz em:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+Clique em uma célula para abrir a lista de equipamentos daquela unidade.
+ATENÇÃO: o clique atual abre todos os bens da unidade, sem aplicar a categoria
+da célula clicada. A paginação oferece grupos de 50.
+
+P5 — Ambientes publicados:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/ambientes
+Escolha a unidade. Também aparecem no detalhe da unidade e no Panorama.
+
+P6 — Problemas recebidos e derivados:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/ocorrencias
+Escolha uma unidade, se necessário. Página de 50 registros.
+
+P7 — Fotos publicadas:
+P2 -> Galeria da Coleta -> Ver todas -> clicar na fotografia.
+Também há Galeria da Coleta e Evidência da Última Coleta no Panorama.
+
+P8 — Dados automáticos de um computador:
+P4 -> Dados do agente (quando há agente ativo vinculado).
+Alternativa do root: Configurações -> Agentes e vínculos -> Dados.
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/configuracoes
+
+P9 — Panorama e indicadores:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+P10 — Localização geográfica da unidade:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/mapa
+
+Os códigos P1–P10 são atalhos explicativos deste documento, não nomes novos
+de páginas nem identificadores gravados no sistema.
+
+==========================================================================
+3. MAPEAMENTO DE CADA RESPOSTA DOS ASSUNTOS
+==========================================================================
+
+Todos os 16 campos abaixo têm rótulo de exibição no desktop. Campos vazios não
+são desenhados; portanto, a ausência visual de uma resposta opcional não prova
+falha de transmissão. Links, redes e problemas admitem vários registros.
+
+Persistência comum: inspection_sections.data_json, por vistoria e assunto.
+Parcial: P1 -> Respostas salvas -> assunto.
+Oficial: P2 -> Questionário recebido -> assunto.
+As listas de campos são compartilhadas entre o catálogo atual e a apresentação
+do desktop. As notas abaixo indicam destinos adicionais e limitações.
+
+ASSUNTO A — ACOMPANHANTE
+
+01. Nome completo do acompanhante
+    Chave: A.name
+    Durante a coleta: P1 -> Respostas salvas -> A · Acompanhante.
+    Após conclusão: P2 -> Questionário recebido -> A · Acompanhante.
+    Situação: EXIBIDO.
+    Observação: Apenas consulta da resposta. Não substitui o nome do gestor do cadastro mestre nem o usuário que executou a coleta.
+
+02. Cargo ou função
+    Chave: A.role
+    Durante a coleta: P1 -> Respostas salvas -> A · Acompanhante.
+    Após conclusão: P2 -> Questionário recebido -> A · Acompanhante.
+    Situação: EXIBIDO.
+    Observação: A função do acompanhante fica junto ao nome. Não existe indicador ou filtro gerencial específico para esse campo.
+
+ASSUNTO C — INTERNET
+
+03. A unidade possui serviço de internet?
+    Chave: C.exists
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet.
+    Situação: EXIBIDO.
+    Observação: Exibido como resposta. Não altera automaticamente cor do marcador do mapa nem cria uma classificação de conectividade da rede.
+
+04. Quantos links foram identificados?
+    Chave: C.linkCount
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet.
+    Situação: EXIBIDO.
+    Observação: É a quantidade declarada de links. Não é quantidade de escolas nem equipamento contado na matriz.
+
+05. Provedor (ou Não soube informar)
+    Chave: C.links[].provider
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Mostrado dentro de cada link. Também compõe o texto de origem de problemas/quedas derivados em Ocorrências.
+
+06. Tipo de conexão
+    Chave: C.links[].type
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Exibido por link. Ainda não há gráfico ou mapa de fibra/rádio/cabo/4G–5G/satélite.
+
+07. Velocidade contratada em Mbps (ou Não soube informar)
+    Chave: C.links[].contracted
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Exibido por link com o rótulo de Mbps. Não existe somatório de banda da rede nem comparação automatizada com velocidade medida no questionário atual.
+
+08. Há quedas frequentes?
+    Chave: C.links[].drops
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Quando Sim, gera registro derivado de queda em Ocorrências após publicação, acompanhado da frequência informada.
+
+09. Frequência das quedas
+    Chave: C.links[].frequency
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Aparece na resposta e no texto do registro de quedas. A pergunta é condicional à resposta Sim para quedas.
+
+10. Avaliação do coletor
+    Chave: C.links[].quality
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Avaliação declarada, exibida na resposta. No roteiro atual, qualidade Ruim isoladamente não gera o registro de ocorrência derivado; problemas escritos/queda geram.
+
+11. Satisfação informada pela unidade
+    Chave: C.links[].satisfaction
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Exibida por link. Não existe gráfico, média ou ranking de satisfação implementado.
+
+12. Problemas observados neste link
+    Chave: C.links[].problems
+    Durante a coleta: P1 -> Respostas salvas -> C · Internet -> Links de internet.
+    Após conclusão: P2 -> Questionário recebido -> C · Internet -> Links de internet.
+    Situação: EXIBIDO.
+    Observação: Além da resposta, gera ocorrência do tipo Internet após publicação. O mesmo texto não precisa ser redigitado no assunto Problemas.
+
+ASSUNTO D — REDES WI-FI
+
+13. Nome da rede (ou Não identificado)
+    Chave: D.networks[].ssid
+    Durante a coleta: P1 -> Respostas salvas -> D · Redes Wi-Fi -> Redes Wi-Fi identificadas.
+    Após conclusão: P2 -> Questionário recebido -> D · Redes Wi-Fi -> Redes Wi-Fi identificadas.
+    Situação: EXIBIDO.
+    Observação: Exibido por rede. Também identifica a origem do texto de problema derivado. Não é uma senha.
+
+14. Observações / problemas da rede
+    Chave: D.networks[].notes
+    Durante a coleta: P1 -> Respostas salvas -> D · Redes Wi-Fi -> Redes Wi-Fi identificadas.
+    Após conclusão: P2 -> Questionário recebido -> D · Redes Wi-Fi -> Redes Wi-Fi identificadas.
+    Situação: EXIBIDO.
+    Observação: Exibido por rede e transformado em registro Rede/Wi-Fi em Ocorrências após publicação. Mesmo texto de simples observação é tratado como registro; não há classificação semântica.
+
+ASSUNTO H — PROBLEMAS
+
+15. Categoria
+    Chave: H.occurrences[].type
+    Durante a coleta: P1 -> Respostas salvas -> H · Problemas -> Problemas adicionais.
+    Após conclusão: P2 -> Questionário recebido -> H · Problemas -> Problemas adicionais.
+    Situação: EXIBIDO.
+    Observação: Exibido no questionário. Na lista Ocorrências: Internet -> Internet; Wi-Fi -> Rede/Wi-Fi; Energia que afeta TI -> Energia; Computador, Impressora e Outro -> Demanda geral. Essa redução perde a distinção da categoria nessa lista.
+
+16. Descrição
+    Chave: H.occurrences[].description
+    Durante a coleta: P1 -> Respostas salvas -> H · Problemas -> Problemas adicionais.
+    Após conclusão: P2 -> Questionário recebido -> H · Problemas -> Problemas adicionais.
+    Situação: EXIBIDO.
+    Observação: Exibida no questionário e em Ocorrências após publicação. A foto opcional desse registro pode aparecer junto da ocorrência. Não cria automaticamente ordem de serviço, responsável ou prazo.
+
+==========================================================================
+4. AMBIENTES
+==========================================================================
+
+4.1 Nome do ambiente
+Origem: Ambientes -> Nome do ambiente; ou nome digitado na ficha do computador/
+impressora. Nomes normalizados exatamente iguais na mesma unidade reutilizam
+o ambiente existente; nomes diferentes não são fundidos por aproximação.
+Gravação: environments (ID estável + nome + unidade).
+Parcial: P1 -> Ambientes cadastrados na unidade; P3 -> Ambiente / posição.
+Oficial: P5; P2 -> Ambientes individualizados; P4 -> Ambiente / posição.
+Na conclusão é criado um retrato dos ambientes em inspection_environments.
+Indicador: Ambientes Mapeados usa a contagem desse retrato publicado.
+
+4.2 Tipo do ambiente
+O questionário atual não pede tipo. Cadastros antigos podem ter esse valor.
+O desktop exibe nome e tipo quando existente. Não preencher tipo fictício para
+evitar espaço vazio. A pergunta do assunto B é apenas o nome, além da foto.
+
+4.3 Fotografia do ambiente
+Opcional, vinculada ao ID do ambiente. Consulte a seção 6.
+
+4.4 Limites da apresentação atual
+A página Ambientes é uma lista de ambientes da unidade e uma galeria geral.
+Não há detalhe interativo de uma sala com seus equipamentos e suas fotos já
+filtrados. Os equipamentos mostram ambiente na tabela, mas é preciso consultá-los
+na lista de bens. O bloco B dentro de Questionário recebido pode dizer Sem
+respostas nesta visita: o nome está na entidade environments, não em respostas
+do cartão B. Isso não significa que nenhum ambiente tenha sido cadastrado.
+
+==========================================================================
+5. MAPEAMENTO DE CADA CAMPO DOS EQUIPAMENTOS
+==========================================================================
+
+Destinos comuns:
+P3 = ficha parcial, durante a visita; P4 = ficha publicada, após conclusão.
+Persistência: equipments para computadores/impressoras; miscellaneous_equipments
+para novos Outros equipamentos; consulta unificada inventory_equipment_all.
+Cada ficha atual representa uma unidade física (quantity=1), com ID permanente.
+
+O operador editar a mesma ficha em outra visita não deve criar outro equipamento
+nos totais. Campos de versões antigas continuam preservados quando não enviados
+pela edição atual. Ver ficha pode mostrar esses dados históricos adicionais.
+
+A seguir estão os 22 campos por contexto: 11 no computador, 10 na impressora,
+1 em Outros. Ambiente, funcionamento e problemas aparecem em mais de um contexto;
+essa contagem não significa 22 perguntas em cada equipamento.
+
+COMPUTADORES
+
+Tipo de computador (opcional)
+    Chave da ficha: category
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: A tabela identifica Desktop, Notebook ou Computador (tipo não informado). Na matriz: desktop e computer entram em Computadores; notebook entra em Notebooks. Não há identificação automática do tipo da ficha apenas por ler o agente.
+
+Cadastro
+    Chave da ficha: registration
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: A ficha informa Agente Windows + QR Code ou Cadastro manual simplificado. A tabela também tenta mostrar o estado do vínculo. Ver a limitação da consulta parcial na seção 10.
+
+Motivo da ausência do agente
+    Chave da ficha: manualReason
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha e no sinalizador de cadastro manual. Só é perguntado quando o cadastro é manual.
+
+Qual ambiente?
+    Chave da ficha: environmentName
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Ambiente / posição e dentro da ficha. O servidor resolve esse nome para o ID do ambiente da unidade.
+
+Posição no ambiente (ex.: Bancada 2 / PC 7)
+    Chave da ficha: position_label
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Ambiente / posição, na ficha e no diálogo Dados do agente. Mudança em visita aberta é distinguida da localização oficial publicada.
+
+AnyDesk (opcional)
+    Chave da ficha: anydesk
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro de Ver ficha parcial/publicada. Não há coluna própria, botão de acesso remoto nem busca global por AnyDesk. É texto numérico opcional e mantém zeros à esquerda.
+
+RustDesk (opcional)
+    Chave da ficha: rustdesk
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro de Ver ficha parcial/publicada. Não há coluna própria, botão de acesso remoto nem busca global por RustDesk. É texto numérico opcional e mantém zeros à esquerda.
+
+Situação do patrimônio
+    Chave da ficha: assetStatus
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. A coluna antiga Patrimônio / Série usa os campos asset/serial, não este estado; pode ficar vazia mesmo com Possui patrimônio preenchido.
+
+Origem do equipamento
+    Chave da ficha: computerOrigin
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. Ainda não há relatório ou agrupamento por origem de aquisição dos computadores.
+
+Funcionamento observado
+    Chave da ficha: operation
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Conservação / Funcionamento e na ficha. Alimenta os números funcionando, parcialmente, sem funcionar e não testados. Parcialmente/Não funciona também faz o equipamento entrar em Ocorrências.
+
+Descrição dos problemas
+    Chave da ficha: problems
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Problemas e ação e na ficha. Texto não vazio gera registro Equipamento com problema em Ocorrências, mesmo se Funcionamento estiver Funcionando. Não gera automaticamente chamado ou alerta de troca de peça.
+
+IMPRESSORAS
+
+Qual ambiente?
+    Chave da ficha: environmentName
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Ambiente / posição e na ficha. O nome é resolvido para o ID do ambiente da unidade.
+
+Marca (ou Não identificado)
+    Chave da ficha: brand
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha; também participa do resumo Impressoras por marca e funcionamento no detalhe da unidade. Em ocorrência de equipamento pode aparecer com o funcionamento.
+
+Modelo (ou Não identificado)
+    Chave da ficha: model
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha, sem coluna principal ou agrupamento de modelos.
+
+Funcionamento observado
+    Chave da ficha: operation
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na tabela/ficha e no agrupamento por marca e funcionamento. Parcialmente/Não funciona inclui a impressora em Ocorrências.
+
+Descrição dos problemas
+    Chave da ficha: problems
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido na coluna Problemas e ação, na ficha e como Equipamento com problema em Ocorrências depois da publicação.
+
+Origem do equipamento
+    Chave da ficha: origin
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. É o campo de origem da impressora; não confundir com computerOrigin do computador.
+
+Aquisição ou disponibilização
+    Chave da ficha: acquisition
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. Compra, locação, comodato etc. ainda não possuem relatório comparativo próprio.
+
+Quem fornece os suprimentos?
+    Chave da ficha: supplies
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. Não existe controle de estoque/consumo de toner ou fluxo de solicitação de suprimentos.
+
+Conexão da impressora
+    Chave da ficha: connection
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha. USB, cabo de rede, Wi-Fi etc. não alimentam uma topologia ou diagrama automático.
+
+Endereço IP, quando identificado
+    Chave da ficha: ip
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: Exibido dentro da ficha quando preenchido; perguntado para cabo de rede/Wi-Fi. Não é faixa de IP da escola nem o IP de um computador.
+
+OUTROS EQUIPAMENTOS
+
+Qual equipamento? (opcional)
+    Chave da ficha: customCategory
+    Parcial: P3 -> Ver ficha parcial.
+    Oficial: P4 -> Ver ficha publicada.
+    Apresentação adicional/limites: A descrição livre é usada como nome do item na tabela e aparece na ficha. Sua quantidade entra em Outros na matriz. Não há classificação automática: escrever Projetor aqui continua sendo a categoria técnica other, sem alimentar automaticamente Projetores.
+
+Identificadores e campos automáticos das fichas
+- ID permanente: primeira coluna da tabela de bens em P3/P4. É o elo da foto,
+  do histórico, do ambiente, da visita e do agente.
+- Unidade: determinada pela unidade escolhida antes da coleta; não é texto livre
+  que precise ser redigitado em cada equipamento.
+- Quantidade: 1 por ficha atual. A tabela ainda suporta lotes históricos.
+- Autor/data da última edição: explícitos na tabela parcial; a ficha publicada
+  comum não oferece uma trilha completa de autores/versões.
+- Marca/modelo/série do agente: não são copiados automaticamente para os campos
+  manuais de computadores. Consulte Dados do agente, seção 7.
+- Foto do computador: opcional, tanto manual quanto vinculado por QR.
+- Foto inicial da impressora: exigida para conclusão quando ainda não existe
+  evidência válida anterior; revisitas podem aproveitar o histórico.
+- Outros equipamentos: somente descrição livre opcional e fotografia opcional
+  na interface atual. Não há pergunta de ambiente, quantidade, estado, modelo
+  ou origem nessa ficha nova.
+
+==========================================================================
+6. FOTOGRAFIAS — SEIS CONTEXTOS DE ENVIO
+==========================================================================
+
+Arquivo binário: Google Drive institucional privado, pelo provedor configurado.
+Metadados e vínculo: collection_photos no D1 (unidade, visita, tipo de destino,
+ID do destino, autor, data, estado e referência do arquivo).
+A imagem é servida por rota autenticada do Worker; não é um link público do Drive.
+
+6.1 Fachada
+Origem: logo após escolher a unidade; também acessível pelo botão Fachada.
+Vínculo: target_kind=facade; target_id=ID da unidade.
+Parcial: P1 -> Fotografias recebidas nesta coleta, legenda Fachada da unidade.
+Oficial: P7, misturada às demais fotos publicadas da unidade; pode aparecer no
+Panorama como evidência se for a primeira foto retornada.
+LACUNA: o espaço principal school-photo no cabeçalho do detalhe da unidade não
+usa a fotografia de fachada. Chama um placeholder fixo que diz não haver fotos
+de vistorias concluídas, mesmo quando a galeria pode conter essas imagens.
+
+6.2 Ambiente
+Origem: assunto Ambientes, em cada ambiente cadastrado.
+Vínculo: environment + ID do ambiente.
+Parcial: P1 -> galeria, legenda Ambiente + nome quando disponível.
+Oficial: P7. A página Ambientes também mostra a galeria geral da unidade.
+LACUNA: não há galeria filtrada por sala diretamente no cartão do ambiente.
+
+6.3 Computador
+Origem: ficha do computador, depois de ambiente e posição; opcional.
+Vínculo: equipment + ID permanente do computador.
+Parcial: P1 -> galeria; não fica embutida na linha de Ver ficha parcial.
+Oficial: P7; se o computador tiver problema, a foto também pode aparecer no
+registro correspondente em Ocorrências.
+LACUNA: falta um botão Fotos deste equipamento na própria ficha. A galeria
+parcial usa categoria/patrimônio como legenda, sem uma descrição completa da
+posição; várias fotos de computadores podem ficar difíceis de distinguir.
+
+6.4 Impressora
+Origem: ficha da impressora, junto ao contexto do ambiente.
+Vínculo: equipment + ID permanente da impressora.
+Parcial: P1 -> galeria; oficial: P7 e, quando há problema, Ocorrências.
+Mesma lacuna de associação visual direta à ficha do computador.
+
+6.5 Outros equipamentos
+Origem: ficha de Outro equipamento; opcional.
+Vínculo: equipment + ID permanente do item.
+Parcial: P1 -> galeria; oficial: P7.
+LACUNA: a legenda parcial usa a categoria técnica other, não necessariamente
+o nome livre customCategory. A galeria oficial também não identifica bem o item.
+
+6.6 Problema adicional
+Origem: assunto Problemas, em cada ocorrência adicional; opcional.
+Vínculo: occurrence + ID estável do registro.
+Parcial: P1 -> galeria com legenda Ocorrência.
+Oficial: P7 e P6 junto do registro que tem o mesmo ID de destino.
+
+6.7 Limites gerais das galerias
+- Galeria parcial: paginação de 50; total recebido e total pendente; autor/data;
+  ampliação; consulta vinculada à visita aberta selecionada.
+- Galeria oficial: a API retorna até 50 fotos mais recentes de todas as visitas
+  concluídas da unidade. Não é só a última visita e não há botão de próxima página
+  nessa consulta. Ver todas mostra todas as fotos retornadas, não todo o arquivo
+  histórico quando houver mais de 50.
+- No Panorama/detalhe, a faixa inicial mostra só quatro dessas imagens.
+- Evidência da Última Coleta usa a primeira foto retornada, sem escolher fachada
+  nem garantir uma classificação do conteúdo da imagem.
+- A janela oficial apresenta a imagem com legenda genérica, sem autor, data,
+  ambiente, ID do equipamento ou pergunta associada visíveis.
+- Na coleta atual, Internet e Wi-Fi não possuem controle próprio de fotografia.
+  A evidência relacionada pode ser anexada a um problema adicional contextual,
+  mas não se deve anunciar foto vinculada a cada link/SSID como algo já entregue.
+- Imagem removida do rascunho deixa de aparecer. Preview não enviada ou upload
+  pendente não é mostrado como fotografia recebida.
+
+==========================================================================
+7. QR E INFORMAÇÕES AUTOMÁTICAS DO AGENTE WINDOWS
+==========================================================================
+
+O QR vincula uma instalação ao ID permanente da ficha da escola. O QR não é
+um documento de hardware que deva permanecer sendo exibido no desktop.
+O agente envia mensagens assinadas ao servidor. Sua telemetria tem atualização
+independente da conclusão da visita; a localização patrimonial continua separada
+entre publicada e parcial. A simples leitura do QR não garante que um inventário
+técnico completo já tenha sido enviado/aceito.
+
+7.1 Destino disponível
+P4 -> Dados do agente para ficha publicada com vínculo ativo.
+Root também encontra P8 -> Configurações -> Agentes e vínculos -> Dados, inclusive
+para ficha ainda não publicada. O diálogo informa quando ainda não há snapshot.
+Na lista parcial P3, esse botão não é habilitado atualmente.
+
+7.2 Dados que o diálogo técnico apresenta quando enviados
+1) Nome do computador (hostname).
+2) Fabricante e modelo.
+3) Número de série reportado pelo agente, com confiabilidade quando informada.
+4) Tipo de gabinete (chassis_kind).
+5) Nome de cada processador, núcleos e processadores lógicos.
+6) Memória instalada total e quantidade de módulos de memória.
+7) Armazenamento: modelo, capacidade e tipo, SE vierem em storage.disks ou
+   storage.drives. Ver incompatibilidade do formato physical_disks abaixo.
+8) Nomes dos adaptadores de vídeo.
+9) Nome/descrição e MAC de até quatro adaptadores de rede.
+10) Sistema operacional, versão, build e arquitetura.
+11) Último boot informado.
+12) Participação em domínio e nome do domínio quando enviado.
+13) Data/hora em que o inventário foi coletado na máquina e recebido no servidor.
+14) Qualidade de leitura para algumas seções e lacunas de fila quando informadas.
+
+7.3 Comunicação e vínculo apresentados
+- Situação: Comunicando; Comunicando com falha de leitura; Sem comunicação recente;
+  Desligamento informado; Suspensão informada; Nunca comunicou; Revogado etc.
+- Última comunicação recebida e última observação coletada.
+- Versão do agente e estado da instalação/dispositivo.
+- Data de vínculo, confirmação da máquina e encerramento, quando existente.
+- Localização oficial: ambiente/posição e estado de confirmação.
+- Localização parcial: mudança da visita aberta, em bloco separado.
+- Histórico resumido de localização/vínculo, até dez eventos retornados.
+
+Não interpretar Sem comunicação recente como certeza de máquina desligada.
+Ausência de rede e serviço interrompido também podem explicar silêncio.
+
+7.4 Dados aceitos/possíveis no contrato que não têm apresentação completa
+- Contagens de contas locais habilitadas/desabilitadas e sessões interativas,
+  console/remotas: accounts está no contrato/snapshot, mas o diálogo não o mostra.
+  Nomes individuais de contas não são permitidos por esse contrato: não são
+  dados existentes que estejam apenas ocultos na tela.
+- Detalhes individuais dos módulos RAM e memória visível: não há tabela de
+  slots/módulos, fabricante, série, frequência ou capacidade por módulo.
+- Frequência máxima do processador: pode constar no payload, mas a apresentação
+  usa nome, núcleos e lógicos.
+- Detalhes adicionais de vídeo e interfaces de rede/IPs, quando enviados:
+  o resumo atual usa principalmente nome de GPU e nome/MAC de rede (até quatro).
+- Armazenamento em storage.physical_disks: o validador aceita esse campo, mas
+  o frontend só lê disks/drives. Reproduzido localmente: um snapshot contendo
+  apenas physical_disks não mostra o disco. Não foi presumido qual formato cada
+  instalador real enviou; é uma incompatibilidade possível e verificável.
+- Linha de base do hardware, lista completa de snapshots e comparação de peças:
+  há dados/rotas do módulo de agentes, mas não uma tela completa de comparação.
+- Indicadores contínuos de uso de CPU/RAM: não há gráfico ou painel desses valores.
+  O contrato de heartbeat aceitar performance não comprova persistência e
+  apresentação integral desses números; não classificar como função pronta.
+- Alerta automático de troca de peça/notificação: não há apresentação operacional
+  desse fluxo no painel atual. Alertas e Insights recebe problemas de coleta,
+  não um monitor completo de alterações de hardware.
+
+7.5 Limitação no estado do agente durante a coleta
+A API in-progress-equipment não inclui agent_linked. O renderizador reutilizado
+interpreta uma ficha em modo Agente sem esse sinal como Vínculo do agente pendente.
+Portanto, uma ficha realmente vinculada pode aparentar pendência em P3. A lista
+oficial tem consulta de vínculo; a administração do root também. Essa ausência
+de informação na consulta parcial foi identificada no código e reproduzida com
+a mesma forma de objeto em memória; não foi alterada nesta auditoria.
+
+==========================================================================
+8. ESTADOS, AUTORIA E HISTÓRICO
+==========================================================================
+
+Dado gerado pelo sistema                     Destino atual
+------------------------------------------- --------------------------------
+Unidade e visita selecionadas                Título do acompanhamento/detalhe
+Quem iniciou a visita e quando               Lista/detalhe de P1
+Última atividade da visita                   Lista/detalhe de P1
+Assunto Pendente/Em andamento/Concluído       Badges de P1
+Fichas novas / bens publicados alterados     Contadores de P1/P3
+Último autor e horário de cada ficha parcial Tabela de equipamentos de P3
+Últimas atividades registradas               Lista de até 20 eventos em P1
+ID permanente de equipamento                Primeira coluna de P3/P4
+Dados salvos mas não publicados              Rótulo PARCIAL; fora dos totais
+Data da última visita concluída              Resumo/detalhe da unidade
+Foto pronta / envio pendente                 Galeria de P1
+Duplicidade sinalizada                       Aviso na ficha parcial
+Não localizado de conferências antigas      Sinalizador na ficha e detalhe
+Localização anterior/vínculo do agente      Diálogo Dados do agente (resumo)
+
+Limitações:
+- Os 20 eventos de atividade não equivalem a um histórico completo de diferenças
+  campo a campo. O D1 mantém registros de antes/depois, mas o acompanhamento
+  mostra principalmente tipo de evento, autor e horário.
+- Não existe, no detalhe comum da unidade, seletor para comparar todas as visitas
+  concluídas. A consulta normal escolhe a última.
+- Fichas históricas podem carregar conservação, patrimônio/série, não localizado
+  e ações de versões anteriores. Esses campos continuam sendo mostrados onde
+  existirem, sem transformar a interface atual em um novo questionário.
+- Finalização da visita não declara que todos os equipamentos da escola foram
+  recenseados. A própria revisão atual informa esse limite.
+- Segurança/auditoria administrativa tem finalidade própria; não substitui uma
+  linha do tempo de inventário organizada por unidade e equipamento.
+
+==========================================================================
+9. COMO OS DADOS ENTRAM EM NÚMEROS, MAPA E OCORRÊNCIAS
+==========================================================================
+
+9.1 Panorama — cinco indicadores
+Unidades: quantidade do cadastro mestre no filtro, não respostas do coletor.
+Equipamentos: soma de quantidades publicadas por categoria/unidade.
+Ambientes Mapeados: soma da contagem de ambientes da última publicação por unidade.
+Coletas Concluídas: soma das visitas confirmadas; revisitas contam como visitas.
+Pendentes: atualmente exibe traço e Critério pendente. Não é contagem pronta de
+problemas, visitas ou bens que faltam cadastrar.
+
+9.2 Matriz Equipamentos por Unidade
+Desktop e computador sem tipo -> Computadores.
+Notebook -> Notebooks.
+Impressora -> Impressoras.
+Outros equipamentos do formulário atual -> Outros.
+Categorias antigas tablet/projetor/TV/roteador/AP/switch continuam compatíveis
+com colunas próprias. Escrever um desses nomes como texto livre de Outro
+equipamento não o reclassifica automaticamente.
+A cor compara quantidade relativa; não representa risco, conservação ou urgência.
+Unidades sem vistoria publicada podem existir no cadastro/mapa sem linha oficial
+na matriz. Há diferenças entre contar equipamentos e contar visitas.
+
+9.3 Funcionamento
+Panorama: Computadores e impressoras recebidos.
+Detalhe: Funcionamento e impressoras da unidade.
+Computadores são agrupados em Funcionando, Funciona parcialmente, Não funciona
+e Não testado/Não foi possível testar. Impressoras têm total e resumo por marca
+e funcionamento. Não é diagnóstico técnico de saúde feito pelo agente.
+
+9.4 Ocorrências e necessidades recebidas
+Origem C: descrição do problema de um link e indicação de quedas.
+Origem D: observações/problemas da rede Wi-Fi.
+Origem H: ocorrências adicionais, pela classificação descrita na seção 3.
+Origem fichas: problema escrito ou funcionamento parcial/não funciona.
+Dados de versões antigas podem incluir necessidades/prioridades que não são
+perguntadas no roteiro atual. Por isso o painel ainda tem rótulos antigos.
+Uma ocorrência derivada não é automaticamente uma pendência aberta, ordem de
+serviço ou diagnóstico confirmado. O mesmo assunto pode aparecer em registros
+distintos se foi digitado em mais de um contexto.
+
+9.5 Alertas e Insights
+Resume contagens dos achados e prioridades que realmente vierem dos dados.
+Não calcula criticidade da escola, não cria prioridade para campos que não a
+perguntam e não implementa alertas de alteração de RAM/disco.
+
+9.6 Mapa
+Nome, latitude, longitude, regional e situação vêm do cadastro mestre do root,
+não das perguntas de internet/equipamentos. Os marcadores selecionam a unidade.
+O mapa atual não altera a cor da unidade automaticamente pela qualidade da
+internet, satisfação, situação dos computadores ou estado de comunicação do agente.
+Ruas é a base inicial; limite municipal é camada opcional.
+
+9.7 Relatórios, planejamento e exportação
+Relatórios: tela de espera; não há relatório completo dessas respostas pronto.
+Planejamento: não há fluxo completo de organização das visitas implementado.
+Exportar dados: exporta cadastro mestre de unidades em CSV/XLSX. Opções de
+equipamentos e ocorrências estão desabilitadas. O botão Exportar matriz encaminha
+à página de exportação; embora exista função auxiliar de CSV no código, o fluxo
+do botão atual não entrega uma exportação completa do inventário.
+
+9.8 Busca e filtros
+A busca global é anunciada como Buscar unidade ou equipamento, mas a seleção
+do catálogo procura nome da unidade, código/INEP e gestor. Ela não consulta
+AnyDesk/RustDesk, série, hostname ou todas as fichas de equipamentos.
+Filtros regionais/tipo/situação atuam sobre o catálogo e a matriz. Nem todos os
+blocos seguem exatamente o mesmo recorte: o resumo de equipamentos filtra IDs,
+mas contadores agregados de achados podem permanecer globais quando várias
+unidades são selecionadas. O filtro próprio da página Ocorrências é separado.
+
+==========================================================================
+10. LACUNAS E INCONSISTÊNCIAS ENCONTRADAS
+==========================================================================
+
+São resultados da leitura; NÃO foram corrigidos nesta entrega.
+
+01. A fachada não preenche a imagem principal da unidade.
+    A função photo() devolve mensagem vazia fixa. A galeria pode ter fotos reais.
+
+02. Fotografias não ficam acessíveis diretamente pela ficha de cada bem.
+    O vínculo existe nos metadados, mas a apresentação principal é uma galeria
+    geral. Falta identificar claramente computador/impressora, ambiente e posição.
+
+03. Galeria oficial limitada a 50, sem próxima página.
+    Ver todas não garante acesso a todo o histórico de fotos de uma unidade.
+
+04. Estado do agente incompleto em Coletas em andamento.
+    agent_linked não vem na consulta parcial e Dados do agente não é habilitado
+    nessa tabela. Pode aparecer vínculo pendente incorretamente.
+
+05. Formato de disco parcialmente incompatível com a apresentação.
+    physical_disks é aceito no contrato, mas o diálogo lê disks/drives.
+
+06. Informações do agente parcialmente escondidas.
+    Contagens de contas/sessões, detalhes de RAM, rede e histórico técnico não
+    têm visualização completa. Não são sinônimos de dados não recebidos.
+
+07. A matriz não filtra a lista pela categoria da célula clicada.
+    A lista abre todos os equipamentos publicados da unidade.
+
+08. Tabela principal conserva colunas do questionário antigo.
+    Patrimônio / Série, Conservação e Problemas e ação podem ficar vazios ou
+    incompletos para fichas novas. Situação do patrimônio, AnyDesk/RustDesk,
+    origem e dados de impressora ficam escondidos em Ver ficha.
+
+09. Assuntos B/F/G/O podem mostrar Sem respostas nesta visita.
+    A seção de respostas está vazia porque ambientes/bens ficam em entidades
+    próprias; a mensagem pode induzir a pensar que a coleta não chegou.
+
+10. Ocorrências adicionais perdem categorias na lista gerencial.
+    Computador/Impressora/Outro do assunto H viram Demanda geral. A categoria
+    original continua consultável na resposta de H.
+
+11. Ambientes não possuem visão própria de equipamentos/fotos por sala.
+    A associação está disponível, mas a navegação por sala não está completa.
+
+12. Atualização automática não é uniforme em todo o painel.
+    Acompanhamento atualiza em 15s; matriz/detalhe têm cache na página. Há risco
+    de interpretar conteúdo desatualizado como dado que não chegou.
+
+13. Busca/filtros não abrangem todos os campos anunciados.
+    Busca global não procura ID remoto, hostname ou série. Recortes do catálogo,
+    resultados e ocorrências não são um filtro único universal.
+
+14. Relatórios/exportação/pendências/notificações não estão completos.
+    Não basta existir a opção no menu para aquela função estar implementada.
+
+15. Não há visão de histórico completa para o gestor.
+    Última visita, últimos 20 eventos e últimos dez eventos de localização não
+    substituem comparar visitas, bens e componentes ao longo do tempo.
+
+As limitações 04, 05 e 10 foram também reproduzidas com chamadas locais às
+funções do projeto, sem gravar dados. As demais são leituras diretas do fluxo
+de renderização/consulta. Não se afirmou que cada efeito foi observado em uma
+conta autenticada de produção nesta rodada.
+
+==========================================================================
+11. INFORMAÇÕES ANTIGAS, REMOVIDAS OU AINDA NÃO COLETADAS
+==========================================================================
+
+Não confundir pergunta ausente com falha no painel:
+- Nome/função do acompanhante são coletados; telefone/presença/outra função
+  em campo separado pertencem a roteiro anterior.
+- Internet atual: não pergunta download/upload medidos, data/hora do teste,
+  ferramenta ou teste pelo Wi-Fi. Velocidade contratada continua.
+- Wi-Fi atual: nome e observações. Não existe campo operacional de senha;
+  não se deve gravar senhas nas observações. Armazenamento protegido de segredos
+  continua sem integração final nessa interface.
+- Não existe seção dedicada completa de rede cabeada, faixa de IP ou energia
+  no roteiro atual. Energia pode ser categoria de problema adicional.
+- Computador atual não pergunta número de patrimônio; pergunta a situação.
+  Não pergunta manualmente CPU/RAM/disco/série: dados técnicos são do agente.
+  Cadastro manual sem agente não obtém esses dados automaticamente.
+- Conservação física e situação de uso não são perguntas atuais do computador,
+  embora existam valores históricos e colunas antigas no desktop.
+- Impressora atual não pergunta patrimônio/série, fornecedor nominal, SSID,
+  senha administrativa ou alteração física relevante em campo próprio.
+- Problemas atuais pedem categoria/descrição e foto opcional. Prioridade,
+  impacto, responsável, prazo e quantidade de compra não são perguntas atuais.
+- Outros equipamentos não recebem formulário técnico detalhado; nome e foto.
+
+Dados de vistorias antigas são preservados e podem continuar sendo apresentados
+por catálogos compatíveis com suas versões. A coluna ou rótulo existir no
+desktop não significa que a pergunta continue no coletor.
+
+Cadastro mestre não é questionário de visita:
+Nome oficial, gestor, tipo, INEP, regional, bairro, endereço, telefone, e-mail,
+coordenadas e situação são mantidos no Cadastro pelo root. A seleção de unidade
+no coletor apenas vincula a vistoria. Esses valores abastecem mapa/filtros/
+identificação; não são substituídos pelo acompanhante da visita.
+
+==========================================================================
+12. ORDEM SUGERIDA PARA FUTURA REVISÃO DO DESKTOP
+==========================================================================
+
+PROPOSTA PARA DISCUSSÃO, sem implementação nem aprovação presumida:
+
+1. Organizar a unidade por Recebimento em andamento e Inventário publicado,
+   com indicação clara da data da última consulta e atualização manual.
+2. Mostrar fachada no cabeçalho; separar fotos de fachada/ambiente/equipamento/
+   ocorrência, com vínculo, autor, data e paginação.
+3. Criar ficha de computador legível: ambiente, posição, estado, AnyDesk,
+   RustDesk, foto, dados do agente e origem; distinguir declaração e telemetria.
+4. Corrigir o estado do vínculo na consulta parcial e permitir consulta técnica
+   a quem já tem permissão desktop, sem precisar procurar Configurações.
+5. Fazer célula da matriz abrir a categoria certa; permitir filtrar por ambiente,
+   tipo, funcionamento e identificadores reais.
+6. Dar à sala/ambiente uma lista de seus equipamentos e suas evidências.
+7. Exibir integralmente os campos técnicos necessários, alinhar formatos de disco
+   e planejar comparação de peças/histórico antes de prometer alertas.
+8. Definir quais relatórios e exportações são úteis; implementar um de cada vez
+   usando dados reais, sem converter ocorrência em chamado automaticamente.
+
+O coletor permanece congelado conforme a orientação do responsável. Essas
+propostas tratam da consulta desktop e de suas APIs; qualquer necessidade de
+mudar perguntas deve ser discutida separadamente.
+
+==========================================================================
+13. FONTES TÉCNICAS E CONFERÊNCIAS REALIZADAS
+==========================================================================
+
+Documentos considerados:
+- 00_LEIA_ANTES_DE_TUDO.md; AGENTS.md.
+- docs/00-governanca/REGRAS_DE_PRECEDENCIA.md; DECISOES.md
+  (especialmente D-045, D-046, D-048, D-057, D-059, D-060, D-061, D-062).
+- PENDENCIAS.md e CONFLITOS_DOCUMENTAIS.md, incluindo atualizações posteriores.
+- docs/03-painel-desktop/02_TELAS_E_INTERACOES.md,
+  03_INDICADORES_E_CRITERIOS.md e 04_ESPECIFICACAO_SETORES.md.
+- docs/04-dados-apis/02_FLUXO_DE_INTEGRACAO.md e MODELO_CONCEITUAL.md:
+  são conceituais/históricos; menções antigas a somente R2/dois perfis não
+  substituem as decisões posteriores nem descrevem toda a implantação atual.
+- docs/05-qualidade/FOTOS_PARCIAIS_2026-11-04.md,
+  FOTO_COMPUTADOR_E_APRESENTACAO_2026-11-05.md e evidências de publicação.
+
+Pontos de código para localizar cada caminho:
+- web/collector-v3-schema.js: 16 campos de assuntos e campos de cada equipamento.
+- web/collector-v2-schema.js e collector-schema.js: rótulos herdados, opções,
+  campos AnyDesk/RustDesk e compatibilidade de respostas anteriores.
+- web/collector-v3.js: fotos, ambiente, QR, formulários e ações efetivamente visíveis.
+- server/collector-v3.mjs: criação/resolução de ambientes e revisão da visita.
+- server/collector.mjs: salvar, publicar e consultas summary/unit/equipment.
+- server/in-progress.mjs: consultas de rascunhos, estados, eventos e equipamentos.
+- server/in-progress-photos.mjs: galeria parcial paginada e proxy autorizado.
+- server/inventory-results.mjs: contagens e transformação em ocorrências.
+- web/desktop-inventory.js: answerDetails, fieldList, equipmentTable e matriz.
+- web/desktop.js: páginas, galerias, cabeçalho, resumo, diálogos e agente técnico.
+- web/desktop-results.js: funcionamento, marcas e lista de ocorrências.
+- web/desktop-progress.js / desktop-progress-photos.js: acompanhamento e fotos.
+- web/desktop-agents.js: administração root de agentes e vínculos.
+- web/panel-shell.js: páginas e menus; web/desktop-map.js: marcadores do cadastro.
+- server/agentes/nucleo/worker.mjs: agentStatus/current_inventory e histórico.
+- server/agentes/nucleo/validate.mjs: seções técnicas aceitas, contas e formato.
+- server/agentes/nucleo/d1-store.mjs e migrations/0014_agentes.sql:
+  snapshots e eventos de comunicação persistidos.
+
+APIs de leitura mais relevantes:
+/api/inventory/in-progress
+/api/inventory/in-progress-detail?id=ID_DA_VISITA
+/api/inventory/in-progress-equipment?id=ID_DA_VISITA
+/api/inventory/in-progress-photos?id=ID_DA_VISITA
+/api/inventory/in-progress-photo?id=ID_DA_VISITA&photoId=ID_DA_FOTO
+/api/inventory/summary
+/api/inventory/unit?unitId=ID_DA_UNIDADE
+/api/inventory/equipment?unitId=ID_DA_UNIDADE&offset=0
+/api/inventory/results
+/api/inventory/findings?unitId=ID_DA_UNIDADE&offset=0
+/api/inventory/agent-status?equipmentId=ID_DO_EQUIPAMENTO
+/api/collector/photo?id=ID_DA_FOTO
+
+Esses caminhos são documentação técnica. O usuário deve usar os menus/links
+das páginas; as APIs exigem sessão e não são links públicos para compartilhar fotos.
+
+Conferência específica deste levantamento:
+- 16 rótulos de respostas encontrados no renderizador do questionário recebido.
+- 22 rótulos por contexto de equipamento encontrados tanto na ficha parcial
+  quanto na publicada, incluindo AnyDesk/RustDesk e campos de impressora.
+- Não foi verificado só se o dado existe no banco: conferiu-se o ponto que o
+  renderiza, ou a ausência desse ponto.
+- Reprodução local: sinalizador parcial sem agent_linked mostra pendência;
+  physical_disks não renderiza; problema H Computador vira Demanda geral.
+- Oito módulos centrais iguais ao build desktop preservado.
+- Consulta de deployments somente leitura confirma versão ativa informada.
+- Nenhum deploy, migration, seed, upload, exclusão ou mudança funcional.
+
+Evidência técnica complementar:
+docs/06-entregas/mapeamento-coletor-desktop-2026-11-05/conferencia.json
+Inclui catálogo extraído, resultados e hashes dos arquivos analisados.
+Este TXT não contém credenciais, respostas pessoais reais ou dados exportados
+do banco institucional.
+
+==========================================================================
+14. ESPAÇO PARA AS DECISÕES DO RESPONSÁVEL
+==========================================================================
+
+O que quero ver primeiro ao abrir o desktop:
+
+__________________________________________________________________________
+
+O que quero ver imediatamente ao abrir uma unidade:
+
+__________________________________________________________________________
+
+Como quero consultar computadores, impressoras e outros equipamentos:
+
+__________________________________________________________________________
+
+Quais dados devem ser colunas visíveis, sem abrir Ver ficha:
+
+__________________________________________________________________________
+
+Como quero organizar fotos e ambientes:
+
+__________________________________________________________________________
+
+Quais informações técnicas do agente são prioritárias:
+
+__________________________________________________________________________
+
+Quais relatórios/exportações precisamos primeiro:
+
+__________________________________________________________________________
+
+Observações sobre as limitações apontadas:
+
+__________________________________________________________________________
+
+FIM DO LEVANTAMENTO — somente leitura e documentação.

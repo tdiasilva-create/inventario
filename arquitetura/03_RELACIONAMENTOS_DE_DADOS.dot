@@ -1,0 +1,23 @@
+digraph G {
+ graph [label="Relacionamentos conceituais — D1 + R2 (sem SQL definitivo)",labelloc=t,fontsize=20,fontname="DejaVu Sans",fontcolor="#f5faff",bgcolor="#061d30",ranksep=0.7,nodesep=0.5,pad=0.3];
+ node [shape=box,style="rounded,filled",fontname="DejaVu Sans",fontsize=12,fillcolor="#0d304b",color="#2e809c",fontcolor="#ffffff"];
+ edge [color="#66c9df",fontname="DejaVu Sans",fontcolor="#ddeff4",arrowsize=0.75];
+ users [label="USUÁRIOS\nAdmin / Coletor"];
+ permission [label="PERMISSÕES\npor unidade/grupo"];
+ unit [label="UNIDADE ESCOLAR\ncatálogo oficial",fillcolor="#0a4e7b"];
+ environment [label="AMBIENTES\ntipo + nome"];
+ equip [label="EQUIPAMENTOS\nID estável + categoria",fillcolor="#115b56"];
+ inspection [label="VISTORIAS\nversão do questionário"];
+ sections [label="SEÇÕES A–H\nrespostas / estados"];
+ verify [label="VERIFICAÇÕES\nsem alteração / não localizado"];
+ findings [label="PROBLEMAS E NECESSIDADES\norigem / impacto / prioridade"];
+ photom [label="FOTOS — METADADOS D1\nregistro/ID/estado upload"];
+ r2 [label="OBJETOS R2\nfotos / miniaturas",fillcolor="#4b3c72"];
+ audit [label="AUDITORIA / CONFLITOS\nhistórico + alterações"];
+ users->permission->unit;
+ unit->environment;unit->equip; unit->inspection;
+ environment->equip; inspection->sections; inspection->verify;equip->verify;
+ sections->findings;equip->findings;
+ equip->photom;findings->photom; photom->r2 [label="chave segura"];
+ users->audit; equip->audit; inspection->audit;
+}

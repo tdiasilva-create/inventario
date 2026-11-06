@@ -1,0 +1,102 @@
+ROTEIRO DE TESTES — FOTOGRAFIAS VIA GOOGLE DRIVE (proposta D-047)
+Sistema de Inventário Tecnológico SEMED — Paço do Lumiar
+Versão do roteiro: 28/10/2026
+
+PRÉ-REQUISITOS (nenhum executado até esta data)
+- Migração 0013 aplicada no D1 do ambiente testado (preferir semed-auth-validacao primeiro).
+- Segredos GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_TOKEN_KEY e variável
+  PHOTO_STORAGE_PROVIDER=google-drive nos Workers do ambiente testado; Workers publicados
+  com autorização explícita do responsável.
+- Autorização concluída pelo root em Configurações, com a conta institucional.
+- Fotografias de teste CLARAMENTE identificadas (ex.: folha com o texto "TESTE SEMED" e a
+  data). Não usar fotos de pessoas. Não criar unidades fictícias no cadastro oficial; se o
+  teste for no ambiente oficial, usar uma unidade real autorizada por escrito pelo
+  responsável e remover as fotos de teste ao final (remoção própria em rascunho).
+- Registrar para cada cenário: aparelho, sistema, navegador e versão, data/hora, resultado
+  esperado, resultado observado, captura de tela (sem senhas, cookies ou tokens).
+
+LEGENDA DE RESULTADO: APROVADO / REPROVADO / NÃO EXECUTADO / BLOQUEADO (motivo)
+
+A. PAINEL (root, desktop Chrome)
+A1  Configurações mostra "Armazenamento de fotografias" com "Não conectado" e o URI de
+    redirecionamento exato. Esperado: sem botões de teste/desconectar antes de conectar.
+A2  Conectar Google Drive → tela oficial do Google (accounts.google.com) → conta
+    institucional → Permitir. Esperado: página "Google Drive conectado" com e-mail e pasta;
+    nenhuma senha solicitada pelo sistema; link "Voltar às Configurações" funciona.
+A3  Configurações após voltar: "Conectado", conta, pasta com link "abrir no Drive",
+    recebimento "habilitado". Evento authorization_connected na lista.
+A4  Testar envio. Esperado: toast "Teste concluído … ms"; último teste "ok"; na pasta do
+    Drive NÃO permanece arquivo TESTE_CONEXAO (foi removido).
+A5  Abrir novamente o link do callback usado (histórico do navegador). Esperado: página
+    "Autorização não reconhecida" (estado consumido); nada muda no estado.
+A6  Perfil admin acessa /configuracoes. Esperado: bloco de armazenamento NÃO aparece e
+    GET /api/root/google/status responde 403.
+
+B. COLETOR — CÂMERA E GALERIA (Chrome Android E Safari iPhone, registrar modelos)
+B1  Login no coletor; /api/collector/capabilities (DevTools remoto ou tela de unidades
+    sem o aviso "Fotografias aguardam a habilitação"). Esperado: photosEnabled true.
+B2  Roteiro de visita (/visita) em unidade autorizada → Fachada → "Câmera". Esperado:
+    câmera traseira abre; prévia aparece "nesta aba"; botão Enviar habilitado.
+B3  Enviar fotografia da fachada. Esperado: "Fotografia recebida pelo servidor"; miniatura
+    carrega de /api/collector/photo?id=…; no Drive aparece
+    Inventário Tecnológico SEMED / <unidade> / facade_<id>.jpg.
+B4  Galeria: escolher imagem existente (foto de teste). Esperado: igual a B3.
+B5  Legibilidade: fotografar etiqueta de patrimônio e detalhe de falha. Esperado: após a
+    compressão (1600 px, JPEG 0,85) os números continuam legíveis na miniatura ampliada
+    do painel. Registrar tamanho final (Content-Length) < 3 MB.
+B6  Arquivo não permitido (PDF/vídeo renomeado, ou PNG > 3 MB). Esperado: recusa clara;
+    nenhuma linha "ready".
+B7  Sexta foto no mesmo equipamento/ocorrência. Esperado: "Limite de cinco fotos".
+
+C. PERSISTÊNCIA E REPETIÇÃO
+C1  Sair e entrar novamente no coletor; abrir a mesma visita. Esperado: fotos enviadas
+    continuam listadas e carregam.
+C2  Enviar, ativar modo avião no meio do envio, voltar a rede e repetir o envio da mesma
+    prévia. Esperado: UMA única foto no Drive e no painel (idempotência por X-Photo-Id);
+    resposta reused/repeated, sem duplicata.
+C3  Repetir a mesma imagem como nova prévia (novo id). Esperado: segunda foto distinta
+    (comportamento esperado; não é duplicidade indevida).
+C4  Remover foto própria em rascunho. Esperado: some do coletor e do Drive. Outro
+    operador tentando remover: "Somente fotos próprias de rascunho…".
+
+D. PAINEL — LEITURA
+D1  Concluir a visita de teste. Detalhe da unidade: Galeria da Coleta e Evidência da
+    Última Coleta exibem as fotos; clique abre em tamanho maior.
+D2  Fotos vinculadas ao equipamento aparecem na tabela/detalhe do equipamento publicado.
+D3  Coletas em andamento (PARCIAL) listam fotos pendentes/prontas sem publicá-las.
+D4  Perfil visualizador: vê fotos de vistoria concluída; GET de foto de rascunho → 403.
+
+E. ACESSO SEM AUTENTICAÇÃO E PRIVACIDADE
+E1  Em aba anônima, abrir /api/collector/photo?id=<id válido>. Esperado: 401.
+E2  No Drive (como dono), abrir "Compartilhar" do arquivo. Esperado: restrito, sem link
+    público; proprietário = conta institucional; "Inventário Tecnológico SEMED" aparece
+    como app conectado em myaccount.google.com → Segurança → Conexões de terceiros, com
+    acesso somente a "arquivos que o app criou".
+E3  Inspecionar respostas de /api/root/google/status e do callback. Esperado: nenhum
+    token, client secret ou cookie exibido.
+
+F. AUTORIZAÇÃO REVOGADA E FALTA DE ESPAÇO
+F1  Em myaccount.google.com, remover o acesso do app. Tentar enviar foto no coletor.
+    Esperado: erro "autorização … revogada ou expirou"; capabilities volta a false;
+    Configurações mostra "Não conectado / revogada"; evento authorization_revoked.
+F2  Reautorizar. Esperado: mesma pasta reutilizada (folder_id igual); fotos antigas
+    voltam a abrir no painel.
+F3  Falta de espaço (simular com conta de teste cheia ou registrar NÃO EXECUTADO).
+    Esperado: "Sem espaço disponível no Google Drive institucional. Nenhuma foto foi
+    gravada."; linha permanece pending; prévia preservada na aba.
+F4  Desconectar pelo painel. Esperado: leitura/gravação indisponíveis (503), fotos
+    continuam na pasta do Drive; evento authorization_disconnected.
+
+G. EXCLUSÃO DE UNIDADE (somente ambiente de validação ou unidade de teste autorizada)
+G1  Prévia de exclusão mostra contagem de fotos. Excluir. Esperado: recibo com
+    photosPendingDeletion; POST /api/root/photo-cleanup zera a fila e os arquivos somem
+    da pasta da unidade no Drive.
+
+NÃO HOMOLOGAR SEM TESTE REAL: compatibilidade de aparelhos, câmera no iPhone, offline.
+Declarar explicitamente os cenários NÃO EXECUTADOS no relatório.
+
+REGISTRO (copiar por cenário)
+Cenário: ___  Aparelho/SO/navegador/versão: ____________________  Data/hora: __________
+Resultado esperado: __________________________________________________________________
+Resultado observado: _________________________________________________________________
+Captura: ________________  Resultado: APROVADO / REPROVADO / NÃO EXECUTADO / BLOQUEADO

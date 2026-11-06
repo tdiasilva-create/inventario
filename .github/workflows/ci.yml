@@ -1,0 +1,35 @@
+name: Verificação do projeto
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  local:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --global pnpm@11.25.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:repository
+      - run: pnpm test
+      - run: pnpm build:desktop
+      - run: pnpm build:collector
+      - run: pnpm check:docs
+      - run: pnpm docs:txt
+      - run: git diff --exit-code -- docs/07-operacao/TRANSFERENCIA_E_MIGRACAO.txt
+      - run: pnpm docs:schema
+      - run: git diff --exit-code -- docs/07-operacao/gerado
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:v3:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:ux:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:identity:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

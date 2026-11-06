@@ -1,0 +1,253 @@
+SEMED — ANÁLISE DO DESEMPENHO E DA NAVEGAÇÃO DO COLETOR
+Data: 05/11/2026
+Pedido: identificar tecnologia, lentidão e cansaço no preenchimento.
+Ponto informado pelo responsável: avançar ou voltar entre perguntas.
+Estado: DIAGNÓSTICO CONCLUÍDO. Correções propostas, ainda não implementadas.
+
+1. CONCLUSÃO
+
+Foi reproduzida a dependência direta entre mudar de pergunta e terminar o
+salvamento. Nas perguntas gerais, Próximo e Voltar aguardam a fila de gravação
+quando existe alteração pendente. Durante a espera, todos os comandos de ação
+ficam bloqueados pelo estado busy, mas só o botão clicado parece desabilitado.
+Não há indicação clara de salvamento em curso. O cabeçalho pode continuar
+mostrando “Rascunho no servidor” enquanto a nova resposta ainda está em envio.
+
+O problema não é simplesmente “banco pesado”. Há pouco volume e foram
+encontrados problemas concretos de coordenação entre interface e rede.
+O tempo completo do salvamento no celular real ainda NÃO foi medido.
+
+2. TECNOLOGIAS ENCONTRADAS
+
+- Interface: HTML, CSS e JavaScript nativo, organizado em módulos ES.
+- Não usa React, Angular ou Vue. Trocar de framework não é pré-requisito
+  para corrigir os problemas encontrados.
+- Servidor: JavaScript em Cloudflare Workers.
+- Dados compartilhados pelo painel e coletor: Cloudflare D1 (SQLite).
+- Fotos: Google Drive institucional, servido por API privada autenticada.
+- Leitura QR: módulo próprio e biblioteca jsQR carregada sob demanda.
+- Publicação: scripts que copiam arquivos estáticos; Wrangler para Workers.
+- ExcelJS serve às planilhas; não é o mecanismo do questionário.
+
+3. ESCOPO E FONTES
+
+Governança consultada: 00_LEIA_ANTES_DE_TUDO.md, AGENTS.md,
+docs/00-governanca/REGRAS_DE_PRECEDENCIA.md, DECISOES.md, PENDENCIAS.md,
+CONFLITOS_DOCUMENTAIS.md e RASTREABILIDADE.md. Consideradas as decisões
+posteriores de V2, publicação real e instalador de referência.
+
+Conferência de entrega: docs/05-qualidade/CONFERENCIA_V2_QR_2026-11-04.md,
+PUBLICACAO_V2_QR_2026-11-04.md, matriz/contrato V2 e testes existentes.
+
+Código inspecionado: package.json, scripts/build-collector.mjs,
+wrangler.collector.jsonc, web/collector.js, web/collector-v2.js,
+web/collector-v2-schema.js, web/collector-schema.js, web/collector-qr.js,
+web/collector.css, server/worker.mjs, server/collector.mjs,
+server/collector-v2.mjs e auxiliares de testes em tests/helpers/.
+
+Este diagnóstico não modifica questionário, obrigatoriedade, Base original,
+dados oficiais, perfis, fotos, credenciais, migrações ou configuração remota.
+Não foi realizado deploy. Os testes de escrita usaram SQLite em memória.
+A Base original não foi revalidada integralmente nesta análise; a leitura
+integral e o cotejo visual exigidos pelo AGENTS continuam necessários antes
+de implementar alterações funcionais mobile.
+
+4. MEDIÇÕES — NÃO CONFUNDIR OS AMBIENTES
+
+4.1 Produção, somente leitura
+
+Consulta agregada ao D1: 71 unidades, 7 vistorias, 7 equipamentos,
+5 registros de fotos e 346 entradas de histórico. Banco: 1.130.496 bytes
+(aproximadamente 1,13 MB). Maior JSON de seção: 1.261 caracteres.
+
+O SELECT agregado registrou 2,5497 ms de execução SQL, 492 linhas lidas
+e zero linhas escritas. Isso NÃO é tempo de rede, salvamento ou de uma
+troca de pergunta. Não permite concluir que todo endpoint é rápido.
+
+A resposta do D1 indicou primary=true, região WEUR, colo LIS. A configuração
+local de publicação não contém placement. Os GETs públicos retornaram
+CF-Ray em GRU. Essa combinação justifica investigar a latência entre Worker
+e banco; os cabeçalhos públicos não provam o local de execução de toda API.
+
+GETs públicos desta estação, três amostras por recurso:
+  /login: 899 / 98 / 80 ms até consumir a resposta.
+  /collector.css: 91 / 124 / 135 ms.
+  /vendor/figtree/Figtree.ttf: 140 / 116 / 153 ms.
+
+Todos retornaram HTTP 200, CF-Cache-Status HIT e Cache-Control: no-store.
+Há cache na infraestrutura para esses arquivos, mas o navegador recebe
+instrução de não armazená-los. Não foram medidos POSTs autenticados reais.
+Essas nove amostras não constituem mediana/p95 representativo de usuários.
+
+Última versão publicada do coletor consultada:
+8c871ce6-4f7a-4874-bef1-e13f2728c568, criada em 05/11/2026 00:15 UTC
+(04/11/2026 21:15 em Fortaleza). Não houve nova publicação nesta análise.
+
+4.2 Reprodução isolada com o frontend e Worker do repositório
+
+Navegador real, SQLite em memória, usuário/unidade de teste identificados,
+sem acesso ao Drive ou banco oficial. Cronometrado clique até mudar a etapa
+visível. Demora artificial aplicada somente à rota section-save.
+
+  Avançar sem alterar:                      34 ms, nenhum POST.
+  Voltar sem alterar:                       18 ms, nenhum POST.
+  Segunda volta sem alterar:               103 ms, nenhum POST.
+  Alterar e avançar, demora injetada 600 ms: 1.721 ms.
+  Alterar e avançar, demora injetada 6 s:    6.160 ms.
+
+São amostras controladas, sujeitas ao custo do computador de diagnóstico.
+NÃO são tempos do celular do responsável nem promessa de desempenho futuro.
+A experiência comprova que a espera da rede se transfere para a navegação.
+
+Instrumentação das chamadas ao adaptador D1 do Worker:
+  section-save: 4 chamadas (6 comandos SQL, incluindo batch transacional).
+  inspection: 9 chamadas SQL na abertura testada.
+
+5. ACHADOS COM REFERÊNCIAS DE CÓDIGO
+
+P1 — Navegação espera rede e bloqueia outras ações.
+web/collector-v2.js:46,140,145,173.
+O debounce de 1 segundo inicia o salvamento automático; o clique também
+aguarda saveChain. Uma gravação já em andamento pode atrasar a navegação.
+Sem mudança pendente, não há POST. A vistoria inteira NÃO é recarregada
+a cada Próximo; há recarga em outras ações, como voltar às categorias.
+Dentro das quatro etapas da ficha de equipamento, item-next é local:
+não atribuir a todas as telas exatamente o mesmo comportamento.
+
+P1 — Estado de salvamento não acompanha a resposta digitada.
+web/collector-v2.js:45,46,56.
+O estado interno muda, mas a digitação e o autosave não atualizam o
+cabeçalho imediatamente. A captura 01 mostra a mensagem antiga e o
+Próximo desabilitado durante uma gravação pendente.
+
+P1 — Sem prazo de espera controlado para as requisições.
+web/collector-v2.js:13.
+Não há AbortController/deadline no helper. Uma conexão que demore a falhar
+mantém a ação aguardando. Abortá-la depois de um prazo não prova que o
+servidor deixou de gravar: a recuperação precisa reconciliar versão/recibo.
+
+P2 — Chamadas sucessivas ao banco e recargas redundantes.
+server/worker.mjs:12; server/collector.mjs:32-48.
+Salvar uma seção passa por sessão, vistoria, seção anterior e transação.
+Abrir a vistoria consulta seções, ambientes, problemas, totais, unidade
+e fotos. O caminho V2 ainda consulta fotos legadas que depois substitui
+por v2Evidence; problemas também são consultados no contexto e totais.
+Não remover verificações de autorização/conflito para ganhar velocidade.
+
+P2 — Entrada V2 repete parte do carregamento.
+web/collector.js:73 e web/collector-v2.js:175.
+A entrada antiga carrega a vistoria e redireciona ao documento V2;
+este busca novamente usuário, capacidades e vistoria em sequência.
+
+P2 — Cache de arquivos estáticos desabilitado no navegador.
+server/worker.mjs:116; assets.run_worker_first em wrangler.collector.jsonc.
+O no-store é aplicado indiscriminadamente. Alguns módulos estáticos passam
+pela autenticação D1. Isso afeta abertura/retorno/reload, não explica sozinho
+a espera em cada Próximo. Dados privados e fotos não devem virar públicos.
+
+P2 — Renderização integral e fotografias.
+web/collector-v2.js:31,37,45,57; server/collector.mjs:82;
+server/collector-v2.mjs:15.
+O HTML de toda a tela é substituído em vez de atualizar só a etapa/status.
+Fotos são reinseridas em várias etapas; o endpoint fornece a imagem completa,
+sem versão de miniatura neste caminho, e a galeria não usa loading=lazy.
+v2Evidence busca todo o histórico elegível de fotos da unidade, sem paginação.
+São riscos de custo em redes/celulares e com maior volume; o impacto real
+das fotos na navegação não foi medido neste ensaio sem fotografias.
+
+P2 — Fragmentação do preenchimento.
+web/collector-v2.js:34; web/collector-v2-schema.js.
+Acompanhante exige normalmente quatro telas: presença, nome, função e
+telefone. Outros trechos concentram muitos subcampos na mesma ficha.
+Essa distribuição irregular aumenta cliques e sensação de trabalho longo.
+Propor agrupamento coerente, preservando perguntas e regras aprovadas.
+
+P3 — Aviso desatualizado na tela de assuntos.
+web/collector-v2.js:33.
+Ainda informa que Agente/QR não está habilitado, apesar da implantação.
+Corrigir a mensagem conforme capacidade real, sem declarar homologação
+física do instalador ou dos celulares que ainda não foi concluída.
+
+6. PLANO PROPOSTO — AINDA NÃO EXECUTADO
+
+Fase 1: navegação e salvamento confiáveis.
+- Guardar rascunhos por vistoria/assunto em memória, separando-os da tela ativa.
+- Capturar identidade, versão e conteúdo em cada trabalho da fila; não ler
+  topic/answers mutáveis depois que o usuário já mudou de assunto.
+- Avançar/voltar localmente quando não depender de confirmação do servidor.
+- Mostrar imediatamente: alterações pendentes, salvando, recebido ou erro.
+- Só confirmar conclusão, vínculo QR e atos dependentes após resposta real.
+- Prazo de espera e recuperação segura de resultado desconhecido; preservar
+  respostas, conflitos explícitos e tentativas que não dupliquem histórico.
+- Evitar cliques silenciosamente ignorados e perda de foco/rolagem.
+- Rascunho em memória não é persistência offline; manter essa distinção.
+
+Fase 2: reduzir ida e volta sem reduzir proteção.
+- Instrumentar tempo total de API, tempo D1 e quantidade de chamadas.
+- Eliminar leituras duplicadas; agrupar leituras independentes quando seguro.
+- Consolidar carregamento inicial; evitar a leitura repetida na transição V2.
+- Cachear somente recursos estáticos versionados e sem dados privados.
+- Medir placement do Worker próximo ao banco antes/depois; não migrar o D1
+  com base apenas nas amostras atuais.
+- Carregar fotos quando necessárias, preservar elementos existentes,
+  paginar histórico e estudar miniaturas privadas.
+
+Fase 3: tornar o preenchimento menos cansativo.
+- Exemplo proposto: nome, função e telefone do acompanhante na mesma etapa,
+  subordinados à resposta de presença. Isso não remove campos aprovados.
+- Organizar equipamentos por tarefas: localização, QR/identificação,
+  condição/evidências, revisão. Evitar etapas que só repetem informação.
+- Manter retorno às categorias, fotos ligadas às respostas e conclusão manual.
+- Corrigir textos desatualizados. Conferir resultados em celular físico.
+
+7. CRITÉRIOS DE ACEITE PARA AS CORREÇÕES
+
+- Medir clique → atualização visível com rede normal e 1/3/6 segundos de atraso.
+  Meta proposta: navegação local em até 200 ms na maioria das interações,
+  sem transformar isso em promessa antes de medir Android/iPhone.
+- Alterar, avançar rapidamente, voltar e trocar assunto sem perder respostas
+  nem enviar valores ao assunto/unidade errados.
+- Confirmar persistência por nova leitura e atualização da página após ACK.
+- Testar perda de conexão antes/depois da gravação, 401, 409 e 503; não exibir
+  “recebido” sem confirmação, nem duplicar registros/histórico ao repetir.
+- Testar dois operadores e revisão concorrente; preservar autoria e versões.
+- Fechar/recarregar com pendências deve avisar as limitações; não alegar offline.
+- Conclusão manual e publicação continuam condicionadas às validações reais.
+- Preservar equipamento, ambiente, foto e vínculo QR durante toda navegação.
+- Testar foto com rede lenta e galeria crescente; não tornar o Drive público.
+- Reexecutar regressões V2/QR/fotos e registrar tempos p50/p95 em amostra
+  adequada, além de testes em Android Chrome e Safari iPhone, se disponível.
+
+8. EVIDÊNCIAS REPRODUZÍVEIS
+
+Pasta: revisoes/desempenho-coletor-2026-11-05/
+- d1-volume.json: SELECT agregado real e metadados completos, zero escritas.
+- consultas-somente-leitura.sql e d1-leitura.json: inspeção inicial somente
+  SELECT. A execução --file mostrou resumo de importação, não as linhas;
+  por isso a conclusão de volume usa d1-volume.json (--command).
+- medir-publico.mjs / http-publico.json: nove GETs públicos cronometrados.
+- servidor-diagnostico.mjs: Worker/frontend atuais com SQLite em memória,
+  escuta somente em loopback, não incluído no build nem no deploy.
+- navegacao-medicoes.json: contagem SQL, HTTP e mudanças de etapa observadas.
+- 01-espera-sem-indicacao.png: pergunta aguardando envio, status antigo.
+- 02-etapa-avancada.png: pergunta seguinte após confirmação do servidor.
+
+Para repetir, executar o servidor de diagnóstico a partir da raiz e usar
+o endereço local emitido por ele. O estado de teste é recriado em memória.
+Os arquivos de medição são sobrescritos: copiar a pasta antes de nova rodada.
+Os tempos publicados nesta análise pertencem exclusivamente à rodada atual.
+
+9. REFERÊNCIAS TÉCNICAS EXTERNAS
+
+Cloudflare explica o custo acumulado de chamadas distantes ao banco e o
+objetivo do placement. É justificativa para medir, não garantia de ganho:
+https://developers.cloudflare.com/workers/configuration/placement/
+
+Localização do primário D1 e hints: não presumir que o banco está no Brasil
+nem que um hint permite mover o banco existente automaticamente:
+https://developers.cloudflare.com/d1/configuration/data-location/
+
+Limites finais: nenhuma medição direta do celular do responsável, nenhuma
+medição autenticada de salvamento em produção, nenhuma homologação adicional
+de câmera/EXE, nenhum teste de volume de fotos nesta rodada. Diagnóstico
+validado no alcance acima; correções e metas ainda aguardam implementação.

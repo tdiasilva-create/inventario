@@ -1,0 +1,47 @@
+ENTREGA — COMPILADO PARA REVISÃO DO FRONTEND DO COLETOR
+Data: 05/11/2026 (America/Fortaleza)
+
+Pedido: preparar arquivos, dados de referência, aparência, funcionalidades e
+orientações detalhadas para um possível novo layout, preservando a lógica.
+Nenhuma alteração de aplicação, dados oficiais ou deploy nesta tarefa.
+
+Artefatos:
+entregas/COMPILADO_FRONTEND_COLETOR_SEMED_2026-11-05.zip
+entregas/COMPILADO_FRONTEND_COLETOR_SEMED_2026-11-05/GUIA_COMPLETO_REDESIGN_COLETOR_SEMED.txt
+entregas/COMPILADO_FRONTEND_COLETOR_SEMED_2026-11-05/ABRIR_GALERIA.html
+
+235 arquivos; ZIP 7.701.333 bytes; guia integral 1.438 linhas; galeria 23 capturas.
+SHA-256 do ZIP: 4027ef266c3d1ffd87fe584b76a6b6d1f5397301d7c1cb6428ba4ee34c6ba9ac
+
+Inclui: frontend atual, Worker, migrações sem dados, testes e visualizador LOCAL,
+catálogo de 38 entradas/definições (incluindo blocos e campos técnicos), esquema de
+57 objetos tabelas/views, índice de rotas/ações, oito exemplos de contrato gerados
+no Worker isolado, guia de telas/estados, propostas de UX/desempenho, prompt para
+implementador e 66 critérios de aceite. Decisões e Base original preservadas.
+
+Produção: consulta somente leitura à conta confirmou coletor
+5a5e96c0-2680-401c-890b-069e87d96dd5 e painel
+827d6900-aa3a-450c-974d-ac13fd2ecca5, ambos a 100%.
+Login público capturado diretamente. Raiz protegida 302 e API sem sessão 401.
+Telas autenticadas reproduzidas pelo Worker/código atual com dados sintéticos;
+explicitamente identificadas, sem exportação de banco ou fotos oficiais.
+
+Verificação: 98 testes passaram dentro da cópia empacotada. Fluxo de navegador
+expandido passou com internet/Wi-Fi, manual/QR, sete fotos isoladas e conclusão.
+Visualizador local abriu, gerou QR local e usa sessão sintética com rede externa
+bloqueada. Galeria carregou 23 imagens, sem erro JS ou overflow em 390 px.
+ZIP testzip + hashes de todos os arquivos conferidos; lista de caminhos proibidos
+e busca de padrões sensíveis não encontraram ocorrências. Sem credenciais reais.
+
+Uma dependência do teste de CSV inicialmente ausente no pacote foi incluída
+(scripts/lib/csv.mjs); a suíte foi reexecutada e passou integralmente. Nenhuma
+mudança no sistema foi necessária para contornar o teste.
+
+Limites: sem login de produção, upload real ao Drive, câmera física ou EXE nesta
+montagem. A cópia de código é do workspace identificado com a última entrega,
+não uma extração binária do Worker remoto. A prévia usa banco/fotos em memória e
+perde tudo ao encerrar; não representa offline durável ou novo ambiente publicado.
+
+Evidências da galeria: docs/05-qualidade/evidencias/compilado-frontend-2026-11-05/.
+Demais evidências e manifesto estão dentro do ZIP. O frontend não foi redesenhado
+nesta tarefa: as sugestões estão separadas do comportamento atual.

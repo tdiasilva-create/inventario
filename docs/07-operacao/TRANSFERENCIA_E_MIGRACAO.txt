@@ -1,0 +1,595 @@
+SEMED · TRANSFERÊNCIA, OPERAÇÃO E MIGRAÇÃO
+Referência: 05/11/2026. Gerado dos guias mantidos em docs/07-operacao/.
+Repositório: https://github.com/tdiasilva-create/inventario
+Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+
+CHECKLIST PARA A EQUIPE RECEPTORA
+[ ] Ler regras, decisões posteriores e limites de homologação.
+[ ] Clonar o commit correto e instalar com Node 24/pnpm 11.25.0/lockfile.
+[ ] Executar testes, builds e conferir esquema das 15 migrações.
+[ ] Obter acesso institucional aos recursos por canal privado.
+[ ] Confirmar chaves/segredos correspondentes, sem publicá-los no Git.
+[ ] Confirmar backup do D1, arquivos do Drive e manifesto de vínculos.
+[ ] Receber fonte/build/EXE exatos do agente Windows e verificar hash.
+[ ] Definir destino, endpoints, OAuth, manutenção, RPO/RTO e retorno.
+[ ] Restaurar em isolamento, conferir integridade e homologar o ciclo completo.
+[ ] Aprovar janela; suspender todos os escritores; copiar estado final.
+[ ] Fazer corte sem duas bases independentes recebendo escrita.
+[ ] Testar quatro perfis, fotos, QR, telemetria, parciais e publicação.
+[ ] Registrar versões, resultados, responsáveis e pendências.
+[ ] Só retirar origem após observação e confirmação dos agentes.
+
+Este documento orienta; não comprova migração executada. Não inclui senhas,
+tokens, dados operacionais ou instaladores. Não executar seeds em produção.
+O diretório gerado/ contém o dicionário físico completo, separado deste TXT.
+
+==============================================================================
+FONTE: 01_ARQUITETURA_ATUAL.md
+==============================================================================
+
+Arquitetura atual
+
+flowchart LR
+  C[Operador · celular] --> CW[Worker coletor + assets]
+  P[Root / admin / visualizador · desktop] --> PW[Worker painel + assets]
+  A[Agente Windows · chave própria] --> CW
+  CW --> D[(D1 compartilhado)]
+  PW --> D
+  CW --> G[Google Drive · fotos privadas]
+  PW --> G
+  PW --> O[Google OAuth · autorização institucional]
+  C -. leitura QR e vínculo autenticado .-> A
+
+Ambas as publicações usam server/worker.mjs. APP_KIND=collector seleciona a coleta e restringe rotas administrativas. Não separar os bancos: o desktop precisa consultar a mesma visita gravada pelo coletor.
+
+| Responsabilidade | Arquivos |
+|---|---|
+| Login, sessão, CSRF, roteamento | server/worker.mjs, server/security.mjs |
+| Unidades, importação, exclusão | server/units.mjs, web/admin-units.js, unit-schema.js |
+| Visitas, respostas, equipamentos, publicação | server/collector.mjs e auxiliares |
+| Imagens/OAuth | server/photo-storage.mjs e módulos Google |
+| Identidade/telemetria | server/agentes/ |
+| Coletor atual | web/collector-v3.*, collector-drafts.js, collector-ui.js, collector-qr.js |
+| Compatibilidade | Esquemas V3, V2, original e visit-schema.js |
+| Consultas desktop | web/desktop*.js, desktop-progress*, desktop-results.js, desktop-inventory.js, desktop-agents.js |
+| Mapa | web/desktop-map.js, map-geography.js, web/data/, Leaflet |
+| Build | scripts/build-desktop.mjs, build-collector.mjs |
+
+HTML/CSS/JS nativos; sem framework de componentes. Os builds copiam listas explícitas de assets. Arquivo novo em web/ não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual.
+
+Resposta → painel
+
+1. Conta autenticada seleciona unidade oficial ativa. Operador não cria escola.
+2. Visita e assunto possuem IDs/versões. Navegação pode avançar enquanto a fila em memória envia alterações.
+3. Worker valida conteúdo, usuário, versão e permissões; D1 recebe dados e histórico.
+4. Desktop consulta parciais já confirmados, rotulados PARCIAL; atualização atual de 15 segundos e ação manual.
+5. Concluir assunto e publicar visita são ações diferentes. Indicadores oficiais dependem da publicação aceita pelo servidor.
+
+Digitação não salva não é dado recebido. A fila da aba não é offline durável.
+
+Foto → painel
+
+Câmera/galeria → preparo no navegador → upload autenticado com visita/alvo → Worker → Drive privado → confirmação e metadados no D1 → consulta autenticada no painel. Prévia local não prova envio. Preservar também a fila de exclusões do provedor ao restaurar.
+
+Computador → unidade
+
+Agente Windows cria identidade assinada e cadastro técnico pendente, recebe QR temporário; operador autenticado associa unidade/ambiente/posição. Depois chegam inventário e heartbeat. Localização é informação humana. Cadastro automático não publica ficha escolar e não dispensa autenticação do vínculo.
+
+Dependências externas
+
+Cloudflare Workers/D1; Google OAuth/Drive; tiles de ruas/satélite em desktop-map.js; API Pwned Passwords para verificar novas senhas por prefixo de hash; navegadores HTTPS/câmera e conectividade dos agentes. Preservar atribuição/licenças dos mapas e bibliotecas.
+
+Falha de tiles não significa perda do banco; login SEMED funcional não prova que OAuth/Drive estejam saudáveis. Monitorar integrações separadamente.
+
+
+==============================================================================
+FONTE: 02_AMBIENTES_E_CONFIGURACAO.md
+==============================================================================
+
+Ambientes e configuração
+
+Inventário da produção
+
+| Item | Identificação atual |
+|---|---|
+| Conta Cloudflare | Secretaria Municipal de Educação de Paço do Lumiar |
+| Account ID | ce059c2b3e50037922a441a66814090d |
+| Painel | painel-semed-paco; wrangler.jsonc |
+| Coletor | inventario-semed-lumiar; wrangler.collector.jsonc |
+| Banco comum | semed-inventario-auth |
+| D1 ID | acb9a3dc-f667-44cf-a4f3-127641860f3e |
+| Binding do banco | DB nos dois Workers |
+| Runtime | Workers, compatibility_date 2026-10-27 |
+| Entrada | server/worker.mjs |
+| Assets | dist/painel e dist/coletor, binding ASSETS |
+| Fotografias | PHOTO_STORAGE_PROVIDER=google-drive |
+| Manutenção | Cron 23 3 * * * no painel, UTC; não duplicar no coletor |
+
+IDs de recursos não são senhas. Os valores secretos não estão neste guia.
+
+Últimas versões registradas e conferidas na organização: painel 827d6900-aa3a-450c-974d-ac13fd2ecca5; coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6. O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+
+Os endereços completos estão no README da raiz (../../README.md). workers.dev pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
+
+Configuração que precisa permanecer coerente
+
+| Nome | Tipo | Requisito |
+|---|---|---|
+| AUTH_PEPPER | Segredo | Mesmo valor usado para os hashes de senha do D1; ambos os Workers |
+| GOOGLE_CLIENT_ID | Configuração OAuth gerida como segredo | Mesmo cliente autorizado para a pasta/imagens |
+| GOOGLE_CLIENT_SECRET | Segredo | Credencial desse cliente OAuth |
+| GOOGLE_TOKEN_KEY | Segredo | Chave AES-GCM, base64 de 32 bytes; descriptografa tokens do D1 |
+| PHOTO_STORAGE_PROVIDER | Variável | google-drive atualmente |
+| GOOGLE_LOGIN_HINT | Variável | Dica de conta institucional; não autentica nem concede permissão |
+| APP_KIND | Variável | collector somente no coletor |
+| AGENTES_EXIGIR_AUTORIZACAO | Variável | nao em produção, conforme D-058 |
+| DB, ASSETS | Bindings | Banco e assets corretos para cada publicação |
+| PHOTOS | Binding opcional | Usado pelo adaptador R2; ausente na configuração atual de produção |
+
+A ausência da variável de autorização de agentes volta ao padrão restritivo do código. Não perdê-la na migração e depois distribuir autorizações por máquina como contorno.
+
+Parâmetros opcionais em server/agentes/index.mjs: AGENTES_INTERVALO_HEARTBEAT (padrão 300 s, faixa 60–3600), AGENTES_EXIGIR_VISTORIA (padrão verdadeiro), AGENTES_GUARDAR_HEARTBEATS (20), AGENTES_SNAPSHOTS_POR_MAQUINA (60). Variáveis legadas de lote: AGENTES_LOTE_MAX_MAQUINAS, AGENTES_LOTE_MAX_HORAS. Não alterar políticas de retenção como parte implícita de mudança de hospedagem.
+
+Segredos e acesso institucional
+
+Guardar valores num cofre sob responsabilidade institucional, com acesso de recuperação por pessoas designadas. Registrar nome, serviço, finalidade e data de rotação; não registrar valores em issues, logs, screenshots ou Git. O export do D1 contém tokens criptografados e hashes: continua sendo material privado.
+
+Ter acesso à conta Google no navegador não substitui cliente OAuth, chave de tokens e autorização persistida. Ter login Cloudflare nesta estação não torna o clone Git autorizado a publicar.
+
+Desenvolvimento e validação
+
+config/wrangler.*.example.jsonc têm identificador fictício local, sem cron, sem Drive e sem conta Cloudflare. Usar apenas com --local. As configurações wrangler.validation*.jsonc preservam referências históricas; a existência e autorização dos recursos devem ser reconferidas antes de usá-las. Não compartilhar D1/Drive reais com uma homologação destrutiva.
+
+URLs embutidas
+
+Revisar scripts/build-desktop.mjs (gera runtime-config.js com URL do coletor), configurações Wrangler, redirecionamentos OAuth, contratos do instalador e scripts de operação. Textos históricos também contêm URLs; mudar um link no README não muda o endpoint nas máquinas instaladas.
+
+Preservar assets.run_worker_first=true, html_handling=none e o comportamento de rotas/404 de cada interface. Servir arquivos protegidos diretamente pelo servidor estático pode contornar a autorização.
+
+
+==============================================================================
+FONTE: 03_BANCO_E_CONTRATOS.md
+==============================================================================
+
+Banco, contratos e compatibilidade
+
+Esquema físico verificável
+
+Catálogo completo de tabelas/colunas (gerado/DICIONARIO_DADOS.md) e JSON com SQL, índices, triggers e hashes (gerado/schema.json), gerados aplicando as 15 migrações num SQLite vazio em memória. Resultado: 56 tabelas, 34 índices explícitos, uma view e 10 triggers. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+
+Regenerar com pnpm docs:schema. As migrações 0001–0015 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+
+| Família | O que preservar |
+|---|---|
+| Contas e acesso | Usuários, IDs, papéis, hashes/salt, versão da credencial, configurações, tentativas e auditoria |
+| Unidades | Identidade, coordenadas, situação e relacionamentos; INEP opcional em núcleos/unidades administrativas |
+| Visitas | Visita, versão do questionário, seções, autor, versões de edição e estados |
+| Ambientes | IDs, unidade, associação à visita e nome informado |
+| Equipamentos | IDs permanentes, ambiente/posição, JSON atual e publicado, origem manual/agente |
+| Outros equipamentos | Tabela aditiva miscellaneous_equipments e view inventory_equipment_all |
+| Históricos e conferências | Autores, revisões, verificações, ocorrências e travas |
+| Fotografias | ID, visita/alvo, estado, provedor, referência do arquivo e fila de exclusão |
+| Publicação | Snapshots e totais derivados das visitas publicadas |
+| Google | Tokens criptografados, pastas, estados OAuth e eventos |
+| Agentes | Instalações, chaves públicas, vínculos, QR/recibos, nonces, inventários, presença e retenção |
+
+Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidades.
+
+Invariantes para restaurar
+
+- Não gerar novos UUIDs ao importar: fotos, telemetria, históricos e QR referenciam os IDs existentes.
+- Manter diferença entre data_json e published_json. Rascunhos não devem se tornar inventário oficial por transformação do dump.
+- Preservar campos históricos removidos da interface e versão da visita. Formulário atual não é esquema universal de todas as visitas antigas.
+- INEP ausente continua NULL; nunca criar código provisório para contornar importação.
+- ID AnyDesk/RustDesk é texto numérico opcional, preservando zeros iniciais; não é inteiro nem senha.
+- A view unifica equipamentos de origens distintas; não duplicar registros copiando a view para uma tabela adicional.
+- Foreign keys, índices únicos, triggers, JSON do SQLite, transações/batches e idempotência fazem parte do contrato, não são otimizações descartáveis.
+- Ao restaurar SQL com triggers e totais materializados, conferir a ordem de carga e os agregados. Não assumir que uma segunda execução do mesmo dump seja idempotente.
+
+Contratos HTTP por família
+
+| Família | Código de referência | Regras |
+|---|---|---|
+| /api/auth/* | server/worker.mjs | Login, sessão, mudança/revogação; humano |
+| /api/root/*, /api/admin/* | Worker, units, google-auth, agentes | Permissão específica no servidor |
+| /api/collector/* | collector, collector-v2/v3, visit-routes | Unidade/visita/versão, autoria, travas e validação |
+| Consulta desktop | in-progress, in-progress-photos, inventory-results | Perfis desktop e separação parcial/publicado |
+| Fotos | collector + photo-storage | Upload e leitura autenticados; contexto/alvo obrigatório |
+| /api/agent/v1/* | agentes/index + nucleo | Algumas rotas são de máquina assinada; outras exigem usuário |
+| /api/inventory/* | agentes/index | Localização/status/histórico conforme perfil |
+
+Não usar a tabela como OpenAPI completa. Implementação e testes especificam parâmetros, respostas, limites e erros. Contratos propostos antigos em docs/04-dados-apis/ devem ser lidos com seu status. O mapeamento desktop (../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) identifica os destinos visuais.
+
+Agentes: rotas que precisam continuar disponíveis
+
+POST de máquina em /api/agent/v1/: enrollment-challenge, enrollments, enrollment-status, enrollment-renew, pairings/confirm-device, heartbeat, inventory, config, rotate-key.
+
+Rotas humanas de pareamento: POST pairings/preview, pairings/claim; GET pairings/catalog, pairings/claim-status. Localização: POST /api/inventory/equipment-location e consulta do recibo em equipment-location-status. Não liberar rotas humanas anonimamente só porque compartilham o prefixo do agente.
+
+Preservar corpo bruto, método, caminho, headers assinados, relógio, nonce, hashes e recibos de idempotência. Um proxy que reescreve corpo/caminho pode quebrar assinatura mesmo retornando HTTP 200 na raiz.
+
+Alteração de banco/provedor
+
+SQLite/D1 usa recursos que não traduzem literalmente para MySQL/PostgreSQL. Uma mudança exige adaptador de persistência e migração validada de tipos, consultas JSON, triggers, índices parciais, transações e resultados retornados por prepare/bind/first/all/run/batch. Não há adaptador genérico pronto neste repositório.
+
+
+==============================================================================
+FONTE: 04_DESENVOLVIMENTO_E_TESTES.md
+==============================================================================
+
+Desenvolvimento e testes numa estação nova
+
+Pré-requisitos
+
+Git, Node 24, pnpm 11.25.0 e navegador para testes. Dependências de execução/build fixadas no lockfile: Wrangler 4.153.0, Playwright 1.62.1, qrcode 1.5.4 e exceljs 4.4.0. Código usa node:sqlite nos testes. Instalação de dependências não requer segredos Cloudflare/Google.
+
+git clone https://github.com/tdiasilva-create/inventario.git
+cd inventario
+npm install --global pnpm@11.25.0
+pnpm install --frozen-lockfile
+pnpm test
+pnpm build:desktop
+pnpm build:collector
+pnpm docs:schema
+
+O lockfile deve permanecer coerente com package.json. Não atualizar dependências durante uma restauração sem necessidade e teste.
+
+Verificações mantidas
+
+| Comando | O que verifica |
+|---|---|
+| pnpm test | Regras, autorização, visitas, inventário, Drive simulado, QR/assinaturas, publicação, parciais |
+| pnpm test:photos | Subconjunto de fotos e integração isolada |
+| pnpm test:v3:browser | Fluxo atual completo, equipamento manual/QR e fotografias simuladas |
+| pnpm test:ux:browser | Busca, foco/cursor, digitação, navegação, upload e validação visível |
+| pnpm test:identity:browser | Layout, larguras, login e estados da interface |
+| pnpm docs:schema | Migrações em SQLite vazio; catálogo físico |
+| pnpm check:repository | Caminhos privados e padrões conhecidos de segredos no índice Git |
+
+Os testes padrão usam SQLite em memória/fixtures sintéticas. Fotos/Drive usados nesses testes são simulados; resultados não comprovam acesso real ao Google nem câmera física. A CI não recebe credenciais.
+
+Os três testes de navegador atuais usam tests/helpers/playwright.cjs. Por padrão mantêm Edge local. Para Chromium instalado pelo Playwright:
+
+pnpm exec playwright install chromium
+$env:SEMED_TEST_BROWSER='chromium'
+pnpm test:v3:browser
+pnpm test:ux:browser
+pnpm test:identity:browser
+
+No Linux/CI: pnpm exec playwright install --with-deps chromium e variável SEMED_TEST_BROWSER=chromium. Evidências geradas ficam ignoradas pelo Git. Redução de viewport não equivale a teste de teclado/câmera no celular real.
+
+Aplicação local completa
+
+pnpm start é prévia estática; não reproduz autenticação/D1. Para serviço completo, usar Wrangler local, dois processos e o mesmo diretório de persistência. Os exemplos abaixo são para um banco vazio isolado:
+
+pnpm build:desktop
+pnpm build:collector
+pnpm exec wrangler d1 migrations apply semed-inventario-local --local --config config/wrangler.painel.example.jsonc --persist-to .wrangler/local-shared
+node scripts/bootstrap-auth.mjs --local
+Copy-Item -LiteralPath .dev.vars -Destination config/.dev.vars
+pnpm exec wrangler d1 execute semed-inventario-local --local --config config/wrangler.painel.example.jsonc --persist-to .wrangler/local-shared --file private-data/local-seed.sql
+pnpm exec wrangler dev --local --config config/wrangler.painel.example.jsonc --persist-to .wrangler/local-shared --port 8787
+
+Segundo terminal, a partir da mesma raiz:
+
+pnpm exec wrangler dev --local --config config/wrangler.coletor.example.jsonc --persist-to .wrangler/local-shared --port 8788
+
+Abrir http://localhost:8787/login e http://localhost:8788/login . As senhas de teste ficam somente em private-data/local-credentials.json; não publicá-las. O usuário pode precisar trocar senha temporária, cuja verificação externa exige internet.
+
+O bootstrap local contém DELETE de contas/sessões/configurações. Usar somente em base nova local. Nunca executar seed em banco remoto, restaurado ou compartilhado com dados que devam sobreviver. O exemplo não tem Drive e não envia fotos reais; para testar fluxo de fotos sem infraestrutura usar os testes isolados.
+
+O build desktop ainda aponta seu atalho de coletor para produção; no ensaio abrir manualmente o endereço localhost:8788. Não utilizar esse atalho para inserir dados de teste. Uma futura parametrização de URL deve ser alteração explícita e testada.
+
+Scripts históricos
+
+scripts/recover-root.mjs, register-requested-semed.mjs, bootstrap-auth.mjs e vários verify-*.mjs foram escritos para operações pontuais. Podem usar caminhos locais, credenciais privadas ou preparar SQL. Não são rotina automática de instalação ou manutenção. Ler integralmente antes de executar e conferir ambiente-alvo.
+
+test:desktop, test:map, test:mobile e outros testes antigos podem refletir fases DEMO, requisitos superados ou caminhos do computador original. Não compõem a CI mantida nesta organização; preservar como histórico até revisão, sem apresentá-los como testes atuais aprovados.
+
+Trabalho futuro
+
+Registrar decisão antes de mudar regra; criar migração aditiva se necessário; executar testes pertinentes; atualizar o manual e rastreabilidade. O coletor foi congelado pelo responsável para esta etapa documental. Não refatorar formulários ou publicar Workers para organizar o repositório.
+
+
+==============================================================================
+FONTE: 05_PUBLICACAO_E_ROLLBACK.md
+==============================================================================
+
+Publicação e rollback
+
+Este é um procedimento para uma publicação futura autorizada. A organização documental não executa estes comandos remotos. GitHub e Cloudflare são entregas diferentes; o workflow atual não faz deploy.
+
+Antes da publicação
+
+1. Identificar commit/revisão, motivo, testes, migrações novas e componentes afetados.
+2. Confirmar conta, Worker e DB por configuração e inspeção somente leitura. Não confiar só no nome da aba.
+3. Registrar versões ativas dos dois Workers e alterações de variáveis/bindings/segredos. Preservar bundle anterior ou capacidade de reproduzi-lo.
+4. Se houver escrita/alteração de esquema, preparar recuperação consistente conforme o guia de backup. Definir janela e critério de retorno.
+5. Instalar com lockfile; executar testes e os dois builds quando o servidor/esquema compartilhado mudar.
+
+Verificações locais:
+
+pnpm test
+pnpm build:desktop
+pnpm build:collector
+pnpm exec wrangler deploy --dry-run --config wrangler.jsonc --outdir private-data/dry-run-painel
+pnpm exec wrangler deploy --dry-run --config wrangler.collector.jsonc --outdir private-data/dry-run-coletor
+
+Dry-run empacota, mas não comprova permissões/segredos/banco no destino. Revisar pacote e destinos. Metadados antigos do manifesto de build podem ainda dizer “future” ou “awaiting official data”; não são a fonte de estado operacional.
+
+Execução aprovada
+
+Se houver migrações: conferir pendentes no único D1 compartilhado, validar compatibilidade com versões antiga/nova e aplicar apenas as incrementais necessárias. Não aplicar sementes. Mudança incompatível exige plano específico; não há ordem universal que elimine esse risco.
+
+Para uma mudança compatível, publicar a API/interface de cada Worker afetado com configuração explícita, registrando cada versão retornada:
+
+pnpm exec wrangler deploy --config wrangler.jsonc
+pnpm exec wrangler deploy --config wrangler.collector.jsonc
+
+Não executar ambos automaticamente quando só o frontend de um foi alterado. Mudanças de servidor devem considerar os dois, pois compartilham banco e recebem operações distintas. Confirmar que o tráfego está na versão desejada e que cron existe uma só vez.
+
+Conferência após publicação
+
+- Login público e assets essenciais carregam; APIs privadas sem sessão retornam recusa apropriada.
+- Root entra no painel; operador fica restrito à coleta; visualizador não escreve.
+- Unidade oficial e visita de verificação autorizada abrem; rascunho salvo reaparece após recarregar.
+- Foto realmente enviada pode ser reaberta pelo coletor e pelo painel autorizado; acesso anônimo não funciona.
+- QR de máquina de teste vincula sem duplicar equipamento; reenvio/resposta perdida não duplica operações.
+- Parcial continua parcial; oficial só muda por publicação confirmada.
+- Conferir logs sem vazar dados; guardar evidências privadas e relatório textual publicável.
+
+Não concluir visita real nem excluir conteúdo para “testar”. Usar unidade/máquina de ensaio autorizadas, identificadas e com plano de limpeza.
+
+Retorno
+
+Rollback de código não desfaz SQL, fotos enviadas, mudanças de OAuth ou dados editados. Antes de retornar, conferir se a versão anterior suporta o esquema/dados atuais. Registrar versão de origem/destino e motivo; usar mecanismo de versões Cloudflare ou bundle anterior validado, com configuração/segredos corretos.
+
+Se houver necessidade de recuperar dados, interromper escritores primeiro, medir perdas desde o backup e aprovar explicitamente a restauração. Não copiar um SQL antigo por cima da produção em funcionamento. Recuperação D1 e Drive precisa ser coerente; evitar que filas de exclusão antigas removam arquivos válidos.
+
+Encerrar registro com commit, versões de ambos os Workers, migrações, testes executados, resultados, horário/fuso, pendências e operador responsável.
+
+
+==============================================================================
+FONTE: 06_BACKUP_E_RESTAURACAO.md
+==============================================================================
+
+Backup e restauração
+
+O que constitui uma cópia recuperável
+
+| Componente | Conteúdo | Destino |
+|---|---|---|
+| Código | Commit, lockfile, migrações, builds e configuração sem valores secretos | Git + pacote de release |
+| D1 | Todas as tabelas/índices/views/triggers e registros necessários | Cofre privado, criptografado |
+| Drive | Arquivos, IDs, hierarquia, metadados e relação com collection_photos | Armazenamento privado institucional |
+| Segredos | Pepper, cliente OAuth/secret, chave de tokens, acessos de recuperação | Cofre de segredos separado |
+| Agentes | Fontes/build exatos, instaladores e hashes; configuração de endpoint | Repositório/arquivo privado |
+| Operação | Versões ativas, horários, migrações aplicadas, hashes e responsável | Manifesto de backup restrito |
+
+Git não é backup do D1. SQL não contém bytes das imagens. Arquivos de foto sem IDs e vínculos não recompõem automaticamente as galerias. Chave privada dos agentes fica no Windows; não centralizar/exportar indiscriminadamente chaves das máquinas.
+
+Preparar uma captura consistente
+
+1. Aprovar janela, destino privado e responsável. Medir espaço e decidir perda de dados/tempo de recuperação toleráveis (RPO/RTO ainda não definidos pelo responsável).
+2. Registrar versões, esquema e timestamp UTC. Pausar novas escritas dos dois Workers, uploads, cron e agentes por mecanismo de manutenção previamente implementado/testado. Não existe neste guia uma variável mágica de manutenção já implantada.
+3. Deixar requisições em voo terminarem ou registrar falhas/pendências e reconciliar. Não declarar consistência só porque os arquivos têm a mesma data.
+4. Exportar D1 e obter manifesto de imagens/referências/estados, copiar arquivos necessários e registrar exclusões pendentes.
+5. Calcular SHA-256 e verificar recuperação antes de descartar cópia anterior. Reabrir escrita de forma controlada.
+
+Exemplo de exportação futura, somente após autorização da janela:
+
+New-Item -ItemType Directory -Force -Path private-data/backup-aprovado
+pnpm exec wrangler d1 export semed-inventario-auth --remote --config wrangler.jsonc --output private-data/backup-aprovado/database.sql
+Get-FileHash -Algorithm SHA256 -LiteralPath private-data/backup-aprovado/database.sql
+
+A documentação Cloudflare informa que a exportação pode bloquear outras requisições ao banco enquanto é produzida; por isso não executar em horário de coleta por conveniência. Import/export não é uma cópia das outras integrações. Cloudflare · importação e exportação (https://developers.cloudflare.com/d1/best-practices/import-export-data/).
+
+O manifesto privado deve conter: data UTC, versão dos Workers, commit, DB de origem, migrações, número de arquivos, tamanho/hash do SQL e dos pacotes, inconsistências encontradas, referências do cofre (sem valores), responsável e resultado do ensaio.
+
+Drive: preservar vínculo e acesso
+
+Se mantiver a mesma conta/pasta/cliente OAuth, confirmar que os IDs persistidos continuam acessíveis. Se copiar para outra conta ou pasta criando novos arquivos, os IDs podem mudar: produzir mapa ID antigo → ID novo, conferir todos os alvos e atualizar referências em transação/plano validado. Não vincular por nome do arquivo.
+
+O escopo drive.file limita acesso aos arquivos autorizados ao aplicativo. Novo cliente OAuth não garante acesso às imagens do cliente anterior. Reautorização e teste de leitura/escrita/exclusão numa pasta de ensaio são necessários. Não tornar a pasta pública como solução.
+
+Preservar integration_tokens, pastas, eventos e GOOGLE_TOKEN_KEY; copiar só refresh token cifrado sem a chave não recupera integração. Manter plano para reautorizar caso o token seja revogado.
+
+Restauração em destino isolado
+
+- Criar base vazia e área de arquivos isolada. Remover cron e bloquear escrita/telemetria externa enquanto se confere.
+- Importar o dump completo ou executar migrações vazias + carga de dados adequada. Não aplicar ambas integralmente sobre o mesmo esquema já criado.
+- Confirmar o registro de migrações do destino: se o export não trouxer controle D1, estabelecer baseline conferida antes de usar migrations apply. Não declarar migrações como aplicadas sem comparar esquema/hashes.
+- Usar configuração/chaves restritas e iguais às necessárias para ler os dados restaurados. Não rodar bootstrap nem gerar outro pepper.
+- Verificar PRAGMA integrity_check, PRAGMA foreign_key_check, contagem por tabela, unicidades e referências órfãs.
+- Comparar totais oficiais com registros publicados e parciais separadamente; verificar triggers e carregamento de agregados.
+- Conferir amostra de visitas antigas/atuais, equipamentos manual/QR, fotos e histórico. Para imagens, manifesto deve demonstrar ausência de arquivos faltantes; amostra visual complementa, não substitui a conferência completa.
+- Testar todos os perfis, troca/revogação de sessão, vínculo/reenvio do agente e salvamento concorrente.
+- Registrar resultado, duração e discrepâncias. Destino só vira produção após aceite.
+
+A restauração real e um backup agendado completo não foram executados por esta organização documental. Diretórios locais de backups anteriores não provam retenção externa nem restauração homologada.
+
+Recuperação pontual D1
+
+Time Travel pode recuperar D1 dentro da janela disponível no plano, mas é restauração do banco e pode cancelar requisições em execução. Não recupera Drive, código ou segredos. Guardar bookmark e plano de retorno e tratar como operação destrutiva explícita. Cloudflare · Time Travel (https://developers.cloudflare.com/d1/reference/time-travel/).
+
+Definir com o responsável periodicidade, retenção, criptografia, responsável substituto e ensaio recorrente. Não prometer RPO zero nem recuperação automática sem infraestrutura e testes que sustentem isso.
+
+
+==============================================================================
+FONTE: 07_MIGRACAO_DE_SERVIDOR.md
+==============================================================================
+
+Migração de servidor
+
+Escolher o tipo de mudança
+
+| Destino | Reaproveitamento | Trabalho adicional |
+|---|---|---|
+| Outra estação de desenvolvimento | Clone, dependências, código, testes | Acessos institucionais separados; não precisa migrar dados |
+| Mesma conta Cloudflare | Workers/D1/Drive atuais | Novos nomes/domínio, configuração, OAuth e endpoints |
+| Outra conta Cloudflare | Mesmo runtime e SQL em princípio | Novo D1, importação, segredos, bindings, Drive/OAuth, URLs e agentes |
+| VPS/outro runtime | Regras JS e assets parcialmente reaproveitáveis | Adaptadores de HTTP, D1, assets, cron, configuração, autenticação e observabilidade |
+| PostgreSQL/MySQL | Modelo lógico | Tradução/teste de SQL/JSON, tipos, índices/triggers, transações e API do banco |
+
+Não há pacote pronto de hospedagem VPS neste projeto. A passagem para Node/Express/Docker não se resume a copiar server/worker.mjs: ele depende de bindings Workers/D1, Request/Response, WebCrypto, assets e agendamento. Um adaptador teria que preservar esses contratos. O protótipo de testes em memória não é backend de produção.
+
+Fase 1 · Levantamento e critérios
+
+- Nomear responsável técnico e institucional, destino, orçamento, janela e autoridade para corte.
+- Inventariar recursos/versões atuais, tamanho de banco/imagens, volume de uso e número de agentes ativos; não inferir contagens dos mockups.
+- Definir RPO/RTO, prazo de observação, critérios de aceite e de retorno.
+- Confirmar domínio/endereço final dos dois ambientes e continuidade do endpoint dos agentes já instalados.
+- Garantir acesso a backups, chaves, OAuth e instaladores/fontes exatos.
+- Preparar projeto isolado com cópia de configuração sem cron e sem escritas no banco antigo.
+
+Fase 2 · Preparar e provar o destino
+
+1. Reproduzir builds e testes a partir do commit, sem arquivos privados implícitos.
+2. Implementar adaptadores se mudar de runtime/banco e comparar contratos usando os mesmos testes.
+3. Restaurar cópia privada isolada de D1/fotos e chaves necessárias; validar conforme guia de recuperação.
+4. Manter banco restaurado sem acesso público e sem receber agentes reais. Dados reais restaurados continuam privados.
+5. Preparar HTTPS, origem, cookies, CSRF, limites de upload, MIME, cache privado e timeouts.
+6. Registrar callback OAuth exato do painel de destino e ensaiar a autorização/pasta. Callback de outro host não será aceito automaticamente.
+7. Ensaiar um Windows e um celular reais: nova instalação, QR, leitura, vínculo, inventário, heartbeat, reinício e reenvio.
+8. Confirmar que um agente já vinculado mantém ID, chave pública, escola, posição e histórico depois da troca.
+
+As URIs OAuth precisam corresponder ao cadastro do cliente, incluindo esquema e caminho. Google · OAuth para aplicações web (https://developers.google.com/identity/protocols/oauth2/web-server).
+
+Fase 3 · Planejar o endpoint instalado
+
+O executável pode conter a URL antiga. Inventariar a configuração efetivamente usada pela versão distribuída. Não supor suporte a atualização remota de endpoint ou a redirecionamento 301/302 em POST assinado. Testar caminho/corpo/assinatura e continuidade dos recibos. Alternativas a decidir: manter endpoint antigo como ponte autenticada para a mesma base, atualizar configuração distribuída ou nova versão do agente. Nenhuma está implantada só por constar neste plano.
+
+Se a ponte for necessária, precisa preservar autenticação e unicidade, não escrever em duas bases. Nunca embutir pepper/segredo Google no EXE. Não reenrolar todos os computadores apagando identidades como estratégia de migração.
+
+Fase 4 · Corte
+
+- Registrar checkpoint e versões. Comunicar a janela aos usuários por canal autorizado.
+- Interromper escritores humanos e de máquina no ambiente antigo; suspender cron. Registrar tentativas em voo.
+- Fazer exportação final consistente e sincronizar arquivos alterados desde o ensaio.
+- Restaurar no destino, aplicar somente migrações incrementais pertinentes e conferir integridade/totais/referências.
+- Ativar configurações, segredos e OAuth, mantendo autorização de agentes nao conforme D-058.
+- Trocar roteamento/links/configuração dos clientes segundo o plano testado.
+- Liberar primeiro uma operação controlada e verificar logs, depois o restante.
+- Ativar manutenção em um único executor e manter origem sem escrita.
+
+Proibido operar duas bases graváveis independentes como se fossem a mesma produção. Dados novos no destino tornam um simples retorno de DNS insuficiente.
+
+Aceite mínimo
+
+| Verificação | Evidência exigida |
+|---|---|
+| Contas/perfis | Login dos quatro perfis e recusas de permissão corretas |
+| Cadastro | Unidade sem INEP quando permitido; IDs preservados |
+| Coleta | Salvar/reabrir rascunho, assunto e publicação manual |
+| Painel | Parcial rotulado; oficial consistente; campos/histórico acessíveis |
+| Fotografias | Enviar, reabrir, visualizar autenticado e negar acesso anônimo |
+| Agente | Identidade antiga preservada; instalação nova sem lote; QR e telemetria |
+| Concorrência | Resposta perdida/reenvio não duplicam; conflito explícito |
+| Recuperação | Restore ensaiado e retorno documentado |
+| Segurança | Sem tokens no frontend/log; cookies, origem e assinatura mantidos |
+
+Retorno após corte
+
+Parar novas escritas no destino. Avaliar dados criados após o corte e reconciliar antes de voltar. Se não houver escrita nova, retorno pode ser mais simples, mas ainda depende do roteamento/segredos/OAuth. Havendo escrita, restauração antiga implica perda e exige decisão explícita. Preservar logs/dumps de ambos os lados para reconciliar; não sobrescrever às cegas.
+
+Só desativar infraestrutura antiga após período de observação aprovado e confirmação de que nenhum agente continua dependendo do endpoint antigo. Guardar configuração e backups segundo retenção institucional.
+
+Entrega para a equipe receptora
+
+Commit, lockfile, manifesto de assets, migrações/hashes, inventário de recursos, nomes de segredos e acesso ao cofre, backup validado, mapa de IDs das fotos se mudou, contratos de agentes, instalador/fontes/build, testes/resultados, pendências e contatos responsáveis. Não enviar esse conjunto privado por repositório público.
+
+
+==============================================================================
+FONTE: 08_SEGURANCA_E_INTEGRACOES.md
+==============================================================================
+
+Segurança e integrações
+
+Contas SEMED
+
+Quatro perfis preservados: root, admin, operador, visualizador. Root gerencia usuários/unidades e operações privilegiadas. Admin possui somente as permissões efetivas do servidor (inclusive reset de operador/visualizador conforme canManage); não confundir o nome com root. Operador coleta em unidades oficiais ativas, sem propriedade permanente. Visualizador consulta sem escrita. Ver D-031/D-035/D-046 e verificações em server/.
+
+A autorização está no Worker, não no botão. Mudanças de host/proxy precisam preservar cookies __Host-semed, Secure/HttpOnly, proteção de origem e token CSRF nas mutações humanas. As sessões dos dois hosts são separadas mesmo compartilhando usuários.
+
+Hash de senha atual: PBKDF2/SHA-512, 100.000 iterações, salt individual e AUTH_PEPPER adicional. Alterar o pepper sem migração apropriada impede validar senhas existentes. Não restaurar senhas em texto nem resetar todos os usuários silenciosamente durante transferência.
+
+Verificação de novas senhas consulta Pwned Passwords por prefixo de hash. Se o destino bloquear essa saída HTTPS, cadastro/reset/troca podem falhar; registrar essa dependência.
+
+Google Drive
+
+Configuração root no painel; callback /api/root/google/callback. Escopo https://www.googleapis.com/auth/drive.file. Arquivos acessados pelo Worker e vinculados no D1. Não expor refresh/access tokens, client secret ou chave de criptografia no frontend.
+
+GOOGLE_TOKEN_KEY protege os tokens com AES-GCM; chaves de 32 bytes em base64, formato cifrado versionado no código. Manter chave e tokens correspondentes. A cópia de segurança da chave fica separada do dump, com acesso de recuperação. Se trocar a chave, precisa recriptografia/reautorização controlada; não basta editar variável.
+
+Dois Workers compartilham integração, DB e segredos necessários. Uma foto pode falhar só no coletor se ele tiver segredo/configuração diferente do painel.
+
+Estados a conferir: cliente configurado, conta autorizada, pasta acessível, renovação do token, upload recebido, registro ready, leitura autenticada. Uma captura antiga de “Conectado” ou uma fixture não comprova estado real atual.
+
+Diagnóstico: conferir código de erro sanitizado, evento da integração, horário e request/target ID. Não copiar URL de autorização com tokens nem payload de segredo para chamados públicos. Correção OAuth não exige tornar a pasta pública.
+
+Agente Windows e QR
+
+- Módulo servidor atual: 0.1.8-semed.2.
+- Produção aceita cadastro automático sem autorização de lote (D-058); vínculo continua humano autenticado.
+- Assinatura ECDSA P-256/SHA-256 no formato P1363, chave pública JWK, timestamp/nonce e hash de corpo. Chave privada individual fica no Windows protegido.
+- QR temporário, uso único, expiração e recibos precisam sobreviver a reenvio/resposta perdida. Código QR não equivale a senha root nem autoriza acesso gerencial.
+- Preservar instalação, dispositivo, chave pública, equipamento e histórico de localização. Relógio do servidor/proxy deve estar correto.
+- Ausência de heartbeat não prova que computador está desligado; pode haver falha de rede/serviço.
+- Não coletar segredos pessoais ou transformar o agente em controle remoto. AnyDesk/RustDesk no formulário são identificadores opcionais, não senhas ou comando de acesso.
+
+Instalador registrado (../04-dados-apis/INSTALADOR_OFICIAL.md): SemedAgente-InstaladorUnico.exe é referência histórica D-056; D-058 registra candidato SemedAgente-Instalador-0.1.8.exe para cadastro automático, com hash. Nenhuma dessas notas equivale a homologação física completa ou substituição silenciosa de binário. Fontes/build/assinatura do EXE precisam integrar a transferência privada.
+
+A manutenção diária expira cadastros automáticos nunca vinculados após 30 dias e aplica retenção. Não ligá-la num banco restaurado de ensaio antes de definir finalidade, datas e cópia segura.
+
+Repositório público
+
+Sem dados operacionais, dumps, credenciais, executáveis ou capturas privadas. .gitignore e scanner reduzem risco; revisão humana continua necessária. Se um segredo for publicado, removê-lo do arquivo não o revoga: revogar/rotacionar e tratar histórico por procedimento específico, preservando recuperação das chaves de criptografia.
+
+Não colocar licença geral nova, alterar políticas institucionais ou permitir acesso público às fotos como parte desta documentação.
+
+
+==============================================================================
+FONTE: 09_ESTADO_E_PENDENCIAS.md
+==============================================================================
+
+Estado e pendências em 05/11/2026
+
+O que existe
+
+- Dois Workers reais, um D1 compartilhado, usuários/perfis e interfaces distintas.
+- Coletor atual por assuntos, fotos vinculadas às respostas/equipamentos, envio automático e campos AnyDesk/RustDesk opcionais.
+- Computador manual com motivo e computador com agente/QR; ambiente/posição informados na coleta.
+- Drive como provedor configurado; integração e upload têm código e testes. O uso real já teve registros de verificação em entregas anteriores, mas esta documentação não realiza novo upload nem nova autorização.
+- Consulta desktop parcial separada da publicação oficial; histórico, IDs e permissões no servidor.
+- Cadastro automático do agente sem lote conforme D-058 e preservação de assinaturas/vínculo autenticado.
+- Identidade visual/UX do coletor publicadas conforme D-061/D-062. Não alteradas nesta organização.
+
+O que não deve ser anunciado como concluído
+
+| Pendência | Implicação / próximo passo |
+|---|---|
+| Restore completo ensaiado | Executar em destino privado isolado, incluindo Drive/chaves/IDs |
+| Política de backup, RPO/RTO e retenção | Responsável deve defini-la e testar recuperação; não há garantia automática |
+| Migração para outro runtime/banco | Exige adaptadores e homologação; não há Docker/VPS pronto |
+| Continuidade de endpoint Windows | Conferir agente real e estratégia de atualização/ponte |
+| Homologação do EXE exato | Instalar em Windows designado, QR no celular, reinício, sincronização e falhas |
+| Offline durável | Fila atual vive na memória da aba; fechar aba pode perder pendências |
+| Teclado/câmera físicos | Testes em navegador desktop não substituem aparelhos reais |
+| Observabilidade operacional | Definir monitoramento/alertas, logs privados e responsáveis |
+| CI em GitHub | A execução remota deve ser conferida; teste local não prova runner remoto |
+| Separação de material privado | Cofre institucional, fontes/instaladores e backup precisam de responsável |
+
+Lacunas de apresentação desktop já identificadas
+
+O mapeamento de respostas (../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) é a referência detalhada. Entre os pontos registrados: áreas genéricas/galeria não cobrem toda navegação desejada; limite de fotos sem paginação completa; detalhes de telemetria e sinalização parcial precisam revisão; diferença entre campo de discos recebido e campo lido por algumas telas; relatórios/exportações ainda não representam todo o escopo. Esta entrega documenta, não corrige silenciosamente essas funções.
+
+Como ler pendências antigas
+
+Listas anteriores de R2 bloqueado, autorização de lote, ausência de fotografia de computador ou navegação V2 podem estar superadas pelas decisões D-048/D-057/D-058/D-060/D-062. Preservar histórico e consultar a decisão posterior antes de reimplementar a solução antiga. O manual atual não apaga lacunas de homologação.
+
+Escopo desta entrega
+
+Documentação, organização Git, exemplos locais, catálogo físico e portabilidade dos três testes de navegador atuais. Nenhuma nova pergunta, regra, tela, migração SQL, credencial ou deploy de produção. Base original preservada. Resultados efetivamente executados ficam no registro da organização (10_REGISTRO_DA_ORGANIZACAO.md).
+
+

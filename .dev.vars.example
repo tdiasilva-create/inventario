@@ -1,0 +1,6 @@
+# Somente nomes; preencher .dev.vars LOCALMENTE. Não usar segredos de produção.
+AUTH_PEPPER=SUBSTITUA_POR_VALOR_LOCAL_ALEATORIO
+# Para desenvolvimento sem fotografias, não configurar Google.
+# GOOGLE_CLIENT_ID=
+# GOOGLE_CLIENT_SECRET=
+# GOOGLE_TOKEN_KEY=BASE64_DE_32_BYTES_LOCAL

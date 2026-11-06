@@ -1,0 +1,35 @@
+{
+  "name": "semed-inventario",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test --test-concurrency=1 tests/security.test.mjs tests/units.test.mjs tests/domain.test.mjs tests/map-geography.test.mjs tests/map-examples.test.mjs tests/collector-schema.test.mjs tests/collector-v2.test.mjs tests/collector-list.test.mjs tests/collector-review-fixes.test.mjs tests/in-progress.test.mjs tests/root-powers.test.mjs tests/inventory-results.test.mjs tests/visit.test.mjs tests/photo-storage.test.mjs tests/google-worker.test.mjs tests/agentes.test.mjs tests/v2-fase2.test.mjs tests/revisao-independente.test.mjs tests/collector-v3.test.mjs tests/in-progress-photos.test.mjs tests/agentes-open-enrollment.test.mjs tests/remote-access-fields.test.mjs",
+    "test:photos": "node --test --test-concurrency=1 tests/in-progress-photos.test.mjs tests/in-progress.test.mjs tests/photo-storage.test.mjs tests/google-worker.test.mjs tests/agentes.test.mjs tests/v2-fase2.test.mjs tests/revisao-independente.test.mjs",
+    "test:desktop": "node tests/desktop.cjs",
+    "test:map": "node tests/map-browser.cjs",
+    "test:mobile": "node tests/browser.cjs",
+    "build:desktop": "node scripts/build-desktop.mjs",
+    "deploy:desktop": "node scripts/build-desktop.mjs && wrangler deploy",
+    "build:collector": "node scripts/build-collector.mjs",
+    "test:v3:browser": "node tests/collector-v3-browser.cjs",
+    "docs:schema": "node scripts/document-schema.mjs",
+    "check:repository": "node scripts/check-repository.mjs",
+    "test:ux:browser": "node tests/collector-ux-browser.cjs",
+    "test:identity:browser": "node tests/collector-identity-browser.cjs",
+    "docs:txt": "node scripts/export-operation-manual.mjs",
+    "check:docs": "node scripts/check-doc-links.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "qrcode": "1.5.4",
+    "wrangler": "4.153.0"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "pnpm@11.25.0"
+}
