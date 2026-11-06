@@ -9,6 +9,7 @@ import {createAgentsAdmin} from './desktop-agents.js';
 import {panelShell,bindPanelShell,pageRoutes} from './panel-shell.js';
 import {icon} from './desktop-icons.js';
 import {metricIcon} from './metric-icons.js';
+import {unitTypes} from './unit-schema.js';
 import {collectorUrl,authEnabled} from './runtime-config.js';
 import {mountMap,unmountMap,zoomMap,fitMap,changeBasemap,toggleMapBoundary,toggleMapExamples} from './desktop-map.js';
 import {sampleUnits,categories,gallery,regionShapes} from './desktop-data.js';
@@ -39,7 +40,22 @@ function ensureSelected(){const units=catalogue;if(!units.some(u=>u.id===state.s
 const hasFilters=()=>state.q||state.region!=='Todas'||state.type!=='Todas'||state.status!=='Todas'||state.year!=='Todos';
 function select(label,key,options){return `<label class="filter"><span>${label}</span><select aria-label="${label}" data-filter="${key}">${options.map(v=>`<option value="${esc(v)}" ${state[key]===v?'selected':''}>${esc(v)}</option>`).join('')}</select></label>`;}
 function filters(){return `<section class="filters" aria-label="Filtros do painel">${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn(icon('sliders')+' Filtros avançados','filters','filter-more')}</section>`;}
-function stats(){const labels=['Unidades','Equipamentos','Ambientes Mapeados','Coletas Concluídas','Pendentes'];return '<section class="stats" aria-label="Indicadores do inventário">'+labels.map((label,i)=>'<article class="metric '+['','green','purple','orange','red'][i]+'">'+metricIcon(['building','monitor','box','clipboard','file'][i])+'<div><strong>'+(i===0?num(filteredCatalogue().length):i===1?num(activeUnits().reduce((n,u)=>n+u.values.reduce((a,b)=>a+b,0),0)):i===2?num(inventory.visits.filter(v=>filteredCatalogue().some(u=>u.id===v.unit_id)).reduce((n,v)=>n+v.environment_count,0)):i===3?num(inventory.visits.filter(v=>filteredCatalogue().some(u=>u.id===v.unit_id)).reduce((n,v)=>n+v.visits,0)):'—')+'</strong><span>'+label+'</span><small>'+(i===0?'Unidades cadastradas':inventoryError?'Consulta indisponível':i===4?'Critério pendente':i===3?'Vistorias confirmadas':i===2?'Ambientes individualizados':'Inventário confirmado')+'</small></div></article>').join('')+'</section>';}
+function unitCategoryStats(units){
+ const labels={'Escola municipal':'Escolas municipais','Escola conveniada':'Escolas conveniadas','Núcleo Educa Paço':'Núcleos Educa Paço','Núcleo tecnológico':'Núcleos tecnológicos','Unidade administrativa':'Unidades administrativas'};
+ const counts=new Map(unitTypes.map(type=>[type,0]));
+ for(const unit of units){const type=counts.has(unit.unit_type)?unit.unit_type:'Sem classificação';counts.set(type,(counts.get(type)||0)+1);}
+ return '<section class="panel unit-category-summary" aria-labelledby="unit-category-title"><div class="unit-category-heading"><h3 id="unit-category-title">Unidades por categoria</h3><small>'+(catalogueLoaded?'Cadastro ativo · conforme os filtros do painel':'Consulta de unidades indisponível')+'</small></div><dl class="unit-category-counts">'+[...counts].map(([type,count])=>'<div data-unit-category="'+esc(type)+'"><dt>'+esc(labels[type]||type)+'</dt><dd>'+(catalogueLoaded?num(count):'—')+'</dd></div>').join('')+'</dl></section>';
+}
+function stats(){
+ const units=filteredCatalogue(),ids=new Set(units.map(u=>u.id)),visits=inventory.visits.filter(v=>ids.has(v.unit_id));
+ const metrics=[
+  ['Equipamentos','monitor','green',activeUnits().reduce((n,u)=>n+u.values.reduce((a,b)=>a+b,0),0),'Inventário confirmado'],
+  ['Ambientes Mapeados','box','purple',visits.reduce((n,v)=>n+v.environment_count,0),'Ambientes individualizados'],
+  ['Coletas Concluídas','clipboard','orange',visits.reduce((n,v)=>n+v.visits,0),'Vistorias confirmadas'],
+  ['Pendentes','file','red',null,'Critério pendente']
+ ];
+ return unitCategoryStats(units)+'<section class="stats inventory-stats" aria-label="Indicadores do inventário">'+metrics.map(([label,glyph,color,value,description])=>'<article class="metric '+color+'">'+metricIcon(glyph)+'<div><strong>'+(value===null?'—':num(value))+'</strong><span>'+label+'</span><small>'+(inventoryError?'Consulta indisponível':description)+'</small></div></article>').join('')+'</section>';
+}
 function mapTitle(){if(state.page==='Mapa da Rede')return '';return '<div class="panel-title"><div><h3>'+icon('pin')+'Mapa da Rede Municipal de Educação</h3><small>Paço do Lumiar</small></div></div>';}
 function mapPanel(){
  return '<section class="panel map-panel" aria-label="Mapa de Paço do Lumiar">'+mapTitle()+'<div class="map-canvas" id="municipal-map" role="region" aria-label="Mapa navegável de Paço do Lumiar" tabindex="0"></div><div class="map-tools"><button class="icon-button" data-action="zoom-in" aria-label="Ampliar mapa">'+icon('plus')+'</button><button class="icon-button" data-action="zoom-out" aria-label="Reduzir mapa">'+icon('minus')+'</button><button class="icon-button" data-action="reset-map" aria-label="Enquadrar mapa">'+icon('target')+'</button></div><div class="cartography-controls" aria-label="Camadas do mapa"><button data-action="map-base" data-map-base="satellite" aria-pressed="false">Satélite</button><button data-action="map-base" data-map-base="streets" aria-pressed="true">Ruas</button><button data-action="map-boundary" aria-pressed="false">Limite do município</button>'+(state.page==='Panorama'?'<button data-action="map-expand" aria-label="Ampliar área do mapa">'+icon('fullscreen')+'</button>':'')+'</div><button class="map-info" data-action="map-info" aria-label="Sobre os dados do mapa">i</button><div class="cartography-status" role="status">Carregando cartografia…</div></section>';

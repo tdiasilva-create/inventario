@@ -5,6 +5,8 @@ const pw=require('./helpers/playwright.cjs');
  const {collectorFixture}=await import('./helpers/collector-db.mjs'),{session}=await import('./helpers/agent-client.mjs'),worker=(await import('../server/worker.mjs')).default;
  const f=collectorFixture(),errors=[],out=process.env.SEMED_TEST_EVIDENCE_DIR||'docs/05-qualidade/evidencias/identidade-painel-2026-11-06';fs.mkdirSync(out,{recursive:true});
  const root=await session(f,f.root);let activeSession=root;
+ // D-066: categorias reais do cadastro; a unidade inativa não entra na consulta do painel.
+ for(const [key,type,region]of [['pending','Escola municipal','Norte'],['progress','Escola municipal','Sul'],['blocked','Escola conveniada','Norte'],['assigned','Unidade administrativa','Sul'],['inactive','Escola municipal','Norte']])f.sqlite.prepare('UPDATE units SET unit_type=?,region=? WHERE id=?').run(type,region,f.ids[key]);
  const visit=crypto.randomUUID(),photo=crypto.randomUUID();
  f.sqlite.prepare('INSERT INTO inspections(id,unit_id,created_by,created_at,updated_at) VALUES(?,?,?,?,?)').run(visit,f.ids.pending,f.operator.id,Date.now(),Date.now());
  f.sqlite.prepare('INSERT INTO collection_photos(id,unit_id,inspection_id,target_kind,target_id,object_key,mime_type,size,sha256,created_by,created_at,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(photo,f.ids.pending,visit,'facade',f.ids.pending,'TEST/PHOTO','image/png',4,'TEST',f.operator.id,Date.now(),'ready');
@@ -23,6 +25,17 @@ const pw=require('./helpers/playwright.cjs');
   await page.goto(origin+'/login');await page.locator('#username').fill('teste-isolado');await page.locator('#password').fill('TEST ONLY');await page.locator('#toggle-password').click();assert.equal(await page.locator('#password').getAttribute('type'),'text');await page.locator('#password').fill('');await screenshot('01-login-desktop');
   assert.equal(await page.locator('.access').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(255, 255, 255)');
   activeSession=root;assert.equal((await fetch(origin+'/fotografias',{redirect:'manual'})).headers.get('location'),'/panorama');
+  const countTypes=['Escola municipal','Escola conveniada','Núcleo Educa Paço','Núcleo tecnológico','Unidade administrativa'];
+  const expectCounts=async expected=>{await page.locator('.unit-category-counts').waitFor();assert.deepEqual(await page.locator('.unit-category-counts>div').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.unitCategory,n.querySelector('dd').textContent]))),Object.fromEntries(countTypes.map((type,i)=>[type,String(expected[i])])));assert.equal(await page.locator('.inventory-stats .metric').count(),4);};
+  await page.goto(origin+'/panorama');await expectCounts([2,1,0,0,1]);
+  const administrativeId=crypto.randomUUID();f.sqlite.prepare('INSERT INTO units(id,name,name_key,unit_type,region,active,created_at,updated_at) VALUES(?,?,?,?,?,1,?,?)').run(administrativeId,'TESTE ISOLADO · Prédio administrativo','test-administrative','Unidade administrativa','Leste',Date.now(),Date.now());
+  await page.reload();await expectCounts([2,1,0,0,2]);await screenshot('categorias-apos-administrativa');
+  await page.locator('[data-filter=region]').selectOption('Norte');await expectCounts([1,1,0,0,0]);
+  await page.locator('[data-filter=region]').selectOption('Todas');await page.locator('[data-filter=type]').selectOption('Unidade administrativa');await expectCounts([0,0,0,0,2]);await screenshot('categorias-filtro-administrativa');
+  await page.locator('[data-filter=type]').selectOption('Todas');await page.locator('.search input').fill('xyz-inexistente');await expectCounts([0,0,0,0,0]);await page.locator('.search input').fill('');
+  f.sqlite.prepare("UPDATE units SET unit_type='' WHERE id=?").run(administrativeId);await page.reload();await page.locator('[data-unit-category="Sem classificação"]').waitFor();assert.equal(await page.locator('[data-unit-category="Sem classificação"] dd').textContent(),'1');assert.equal(await page.locator('[data-unit-category="Escola municipal"] dd').textContent(),'2');
+  f.sqlite.prepare('UPDATE units SET unit_type=? WHERE id=?').run('Unidade administrativa',administrativeId);
+  await page.route('**/api/units',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'TESTE ISOLADO · falha de leitura'})}));await page.reload();await expectCounts(['—','—','—','—','—']);assert.match(await page.locator('.unit-category-heading').textContent(),/indisponível/);await page.unroute('**/api/units');
   const routes=['/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/coletas-em-andamento','/cadastro-unidades','/usuarios','/operadores-unidades','/seguranca','/conta','/configuracoes','/unidade?id='+f.ids.pending];
   for(const route of routes){await page.goto(origin+route);await page.locator('#content').waitFor();await page.evaluate(()=>document.fonts.ready);if(route==='/usuarios')await page.locator('#create-user').waitFor();if(route==='/cadastro-unidades')await page.locator('#unit-form').waitFor();await themeCheck(route);if(['/panorama','/mapa','/equipamentos','/coletas-em-andamento','/cadastro-unidades','/usuarios','/configuracoes'].includes(route))await screenshot(route.slice(1));}
   await page.goto(origin+'/panorama');await page.locator('[data-action=filters]').click();await page.locator('dialog').waitFor();assert.equal(await page.locator('dialog').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(255, 255, 255)');await screenshot('filtros');await page.keyboard.press('Escape');
@@ -31,7 +44,7 @@ const pw=require('./helpers/playwright.cjs');
   await page.goto(origin+'/cadastro-unidades');await page.locator('#unit-form input:not([type=hidden])').first().fill('TESTE VISUAL · não salvo');await screenshot('cadastro-editando');
   await page.setViewportSize({width:390,height:844});for(const route of ['/panorama','/usuarios','/cadastro-unidades']){await page.goto(origin+route);await page.locator('#content').waitFor();await themeCheck(route);await screenshot('mobile-'+route.slice(1));}
   activeSession=null;await page.goto(origin+'/login');await screenshot('login-390');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  fs.writeFileSync(out+'/diagnostico.json',JSON.stringify(diagnostics,null,2));assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,routes:routes.length,photosTabRemoved:true,login:true,forms:true,filters:true,photoContext:true,mobile:true,errors,diagnostics}));
+  fs.writeFileSync(out+'/diagnostico.json',JSON.stringify(diagnostics,null,2));assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,routes:routes.length,categoryCounts:true,photosTabRemoved:true,login:true,forms:true,filters:true,photoContext:true,mobile:true,errors,diagnostics}));
  }catch(e){await screenshot('falha');console.error(e);console.error(JSON.stringify(errors));process.exitCode=1;}
  finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));f.sqlite.close();}
 })();

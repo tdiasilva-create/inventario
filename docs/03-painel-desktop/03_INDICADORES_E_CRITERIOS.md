@@ -4,7 +4,7 @@
 
 | Indicador sugerido no desenho | Fonte candidata | Regra e cautela |
 | --- | --- | --- |
-| Unidades cadastradas | Cadastro oficial `school_units` | 90 unidades informadas, mas catálogo oficial ainda não enviado/importado; total definitivo é a consulta ao banco. |
+| Unidades por categoria (D-066) | Cadastro real `units.unit_type`, consulta autenticada de ativos | Contagens independentes para escolas municipais, conveniadas, núcleos Educa Paço, núcleos tecnológicos e unidades administrativas; respeitar filtros. Sem total geral no indicador do Panorama. Tipo ausente/desconhecido fica em “Sem classificação”; falha de leitura não é zero. |
 | Equipamentos da rede | Itens ativos e lotes físicos sem duplicidade | Contar cada bem real uma vez; visitas repetidas não multiplicam inventário. |
 | Ambientes | Fichas de ambiente por unidade | Não confundir contagem por tipo de sala com ambientes individualizados. |
 | Vistorias concluídas | Inspeções confirmadas API | Definir período; não contar rascunhos/locais. |

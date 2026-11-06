@@ -269,3 +269,11 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 - `web/desktop-theme.css`, HTMLs desktop/login/conta, navegação e integração do viewer existente; build de fontes/assets e allowlist estática. `/fotografias` redireciona ao Panorama; nenhum dado/fotografia excluído. Coletor intocado.
 - 100 testes, build de 63 arquivos e `tests/desktop-identity-browser.cjs` com 17 rotas, login, formulários, filtros, foto contextual e larguras móveis aprovados. CI atualizada.
 - [Relatório, evidências, publicação e limites](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md). Nenhum requisito novo da Base TXT, migração ou escrita de exemplo no banco oficial. Futuras posições das fotos serão definidas separadamente.
+
+## D-066 · unidades por categoria no Panorama — 06/11/2026
+
+- Pedido explícito: não somar escolas e prédios administrativos num indicador geral. Tipos do cadastro atual em `web/unit-schema.js`; origem autenticada `/api/units`.
+- `web/desktop.js`: contagens por `unit_type` e filtros existentes; estados zero/indisponível/sem classificação. `web/desktop-theme.css`: faixa compacta por categoria e quatro indicadores de inventário preservados.
+- Teste integrado em `tests/desktop-identity-browser.cjs`: acrescentar unidade administrativa não muda escolas; consulta de ativos, filtros, busca vazia, tipo ausente e falha HTTP. Sem escrita real, migração ou alteração da Base/coletores.
+- [Relatório e publicação](../05-qualidade/CONTAGENS_CATEGORIAS_2026-11-06.md).
+- Estado desta entrega: implementação/build e teste de 17 rotas aprovados; publicação ainda pendente após três recusas HTTP 503 da API de gerenciamento Cloudflare. O ambiente real mantém D-065; não confundir código enviado ao Git com release publicado.
