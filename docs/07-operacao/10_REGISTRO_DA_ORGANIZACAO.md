@@ -42,3 +42,9 @@ Não houve nova homologação de Drive/câmera/instalador físico. Migração/re
 - CI preparada para executar os mesmos checks locais e testes de navegador com Chromium no GitHub; resultado do runner remoto deve ser observado após o push.
 
 A revisão inicial é consolidada em main; a identificação exata fica no histórico Git e na entrega ao responsável. Datas das publicações anteriores não foram convertidas em commits fictícios.
+
+## Publicação Git e ensaio de instalação local
+
+Primeiro commit publicado: 68a500e059203aeb2cf6d7340a5eb591ea9f115c em main, remoto conferido. O exemplo Wrangler local foi executado em base vazia isolada: 15 migrações, seed somente local, dois processos compartilhando persistência, login root no painel e operador no coletor retornando 200 e troca de senha inicial. Processos de ensaio encerrados.
+
+A primeira CI Linux aprovou dependências, scanner, 98 testes, builds, links e reprodução dos documentos. O teste de galeria QR enviou imagem antes de concluir a inicialização assíncrona do leitor. Ajustado somente o teste: negar câmera física explicitamente e aguardar mensagem de disponibilidade da galeria antes do upload. Sem alteração no leitor da aplicação. A validação remota corrigida deve ser conferida no histórico de Actions.
