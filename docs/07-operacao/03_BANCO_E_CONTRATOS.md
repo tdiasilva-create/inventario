@@ -42,6 +42,7 @@ Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidade
 | `/api/collector/*` | collector, collector-v2/v3, visit-routes | Unidade/visita/versão, autoria, travas e validação |
 | Consulta desktop | in-progress, in-progress-photos, inventory-results | Perfis desktop e separação parcial/publicado |
 | Fotos | collector + photo-storage | Upload e leitura autenticados; contexto/alvo obrigatório |
+| Galeria desktop `/api/inventory/photos`, `/api/inventory/photo` | photo-gallery + photo-storage | GET, root/admin/visualizador; filtros e cursor; `ready`; histórico pausado identificado PARCIAL |
 | `/api/agent/v1/*` | agentes/index + nucleo | Algumas rotas são de máquina assinada; outras exigem usuário |
 | `/api/inventory/*` | agentes/index | Localização/status/histórico conforme perfil |
 

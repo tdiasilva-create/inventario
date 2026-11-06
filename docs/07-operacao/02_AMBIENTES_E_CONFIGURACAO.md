@@ -19,7 +19,7 @@
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas e conferidas na organização: painel `827d6900-aa3a-450c-974d-ac13fd2ecca5`; coletor `5cf137cd-9c34-4e41-806b-d19cf0887bb6`. O [registro de UX](../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões registradas: painel `9b25ccf1-fa98-4ae7-a2dd-7af35e59c991`, atualizado pela [galeria D-064](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md); coletor `5cf137cd-9c34-4e41-806b-d19cf0887bb6`. O [registro de UX](../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. A organização D-063 encontrou o painel na versão anterior `827d6900-aa3a-450c-974d-ac13fd2ecca5`. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no [README da raiz](../../README.md). `workers.dev` pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 

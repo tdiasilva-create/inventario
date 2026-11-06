@@ -32,6 +32,10 @@ A [CI do commit bcf2ebab](https://github.com/tdiasilva-create/inventario/actions
 
 O [mapeamento de respostas](../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) é a referência detalhada. Entre os pontos registrados: áreas genéricas/galeria não cobrem toda navegação desejada; limite de fotos sem paginação completa; detalhes de telemetria e sinalização parcial precisam revisão; diferença entre campo de discos recebido e campo lido por algumas telas; relatórios/exportações ainda não representam todo o escopo. Esta entrega documenta, não corrige silenciosamente essas funções.
 
+## Atualização posterior: fotografias D-064
+
+A lacuna da galeria foi tratada nesta etapa posterior: página `/fotografias`, paginação, filtros por unidade/vínculo/estado e viewer compartilhado com identidade do coletor. Fotos de coletas pausadas permanecem histórico PARCIAL. Leitura de dez arquivos reais no Drive confirmada, sem novo upload ou alteração de dados. Ver [relatório e publicação](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Outras lacunas desktop acima permanecem.
+
 ## Como ler pendências antigas
 
 Listas anteriores de R2 bloqueado, autorização de lote, ausência de fotografia de computador ou navegação V2 podem estar superadas pelas decisões D-048/D-057/D-058/D-060/D-062. Preservar histórico e consultar a decisão posterior antes de reimplementar a solução antiga. O manual atual não apaga lacunas de homologação.

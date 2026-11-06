@@ -108,7 +108,7 @@ Inventário da produção
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas e conferidas na organização: painel 827d6900-aa3a-450c-974d-ac13fd2ecca5; coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6. O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões registradas: painel 9b25ccf1-fa98-4ae7-a2dd-7af35e59c991, atualizado pela galeria D-064 (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md); coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6. O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. A organização D-063 encontrou o painel na versão anterior 827d6900-aa3a-450c-974d-ac13fd2ecca5. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no README da raiz (../../README.md). workers.dev pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 
@@ -196,6 +196,7 @@ Contratos HTTP por família
 | /api/collector/* | collector, collector-v2/v3, visit-routes | Unidade/visita/versão, autoria, travas e validação |
 | Consulta desktop | in-progress, in-progress-photos, inventory-results | Perfis desktop e separação parcial/publicado |
 | Fotos | collector + photo-storage | Upload e leitura autenticados; contexto/alvo obrigatório |
+| Galeria desktop /api/inventory/photos, /api/inventory/photo | photo-gallery + photo-storage | GET, root/admin/visualizador; filtros e cursor; ready; histórico pausado identificado PARCIAL |
 | /api/agent/v1/* | agentes/index + nucleo | Algumas rotas são de máquina assinada; outras exigem usuário |
 | /api/inventory/* | agentes/index | Localização/status/histórico conforme perfil |
 
@@ -586,6 +587,10 @@ O que não deve ser anunciado como concluído
 Lacunas de apresentação desktop já identificadas
 
 O mapeamento de respostas (../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) é a referência detalhada. Entre os pontos registrados: áreas genéricas/galeria não cobrem toda navegação desejada; limite de fotos sem paginação completa; detalhes de telemetria e sinalização parcial precisam revisão; diferença entre campo de discos recebido e campo lido por algumas telas; relatórios/exportações ainda não representam todo o escopo. Esta entrega documenta, não corrige silenciosamente essas funções.
+
+Atualização posterior: fotografias D-064
+
+A lacuna da galeria foi tratada nesta etapa posterior: página /fotografias, paginação, filtros por unidade/vínculo/estado e viewer compartilhado com identidade do coletor. Fotos de coletas pausadas permanecem histórico PARCIAL. Leitura de dez arquivos reais no Drive confirmada, sem novo upload ou alteração de dados. Ver relatório e publicação (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Outras lacunas desktop acima permanecem.
 
 Como ler pendências antigas
 

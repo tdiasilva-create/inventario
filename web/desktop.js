@@ -1,4 +1,7 @@
 import {createResultsView} from './desktop-results.js';
+import {createPhotoGallery} from './desktop-photos.js';
+import {openPhotoViewer} from './photo-viewer.js';
+const photoGallery=createPhotoGallery();
 const receivedResults=createResultsView();
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
@@ -71,6 +74,7 @@ function panorama(){return `<div class="panorama">${filters()}${stats()}<section
 function emptyState(text,action=''){return '<div class="empty">'+icon('box')+'<span>'+esc(text)+'</span>'+action+'</div>';}
 function heading(name,desc,action=''){return `<div class="page-heading"><div><h2>${esc(name)}</h2><p>${esc(desc)}</p></div>${action}</div>`;}
 function pageContent(){
+ if(state.page==='Fotografias')return '<div id="photo-gallery" class="page-view"></div>';
  if(state.page==='Coletas em andamento')return '<div id="progress-content" class="page-view">'+progress.full()+'</div>';
  if(state.page==='Panorama')return panorama();
  if(state.page==='Mapa da Rede')return `<div class="page-view">${heading('Mapa da Rede Municipal de Educação','Paço do Lumiar')}${filters()}<div class="large-map-grid">${mapPanel()}${unitList()}</div></div>`;
@@ -112,6 +116,7 @@ function render(){
  document.title=state.page+' • SEMED';
  unmountMap();ensureSelected();document.querySelector('#content').innerHTML=pageContent();
  receivedResults.attach(filteredCatalogue());
+ photoGallery.attach(catalogue);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.q);
  const mapNode=document.querySelector('#municipal-map');if(mapNode)mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,onSelect:id=>{state.selected=id;render();}});
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
@@ -162,10 +167,10 @@ document.addEventListener('click',e=>{
  if(a==='cell'||a==='inventory-page'){showEquipment(b.dataset.unit,Number(b.dataset.offset)||0);return;}
  if(a==='agent-status'){showAgentStatus(b.dataset.equipment);return;}
  if(a.startsWith('agents-')){agentsAdmin.handle(a,b).catch(e=>toast(e.message));return;}
- if(a==='received-photo'){dialog('Fotografia recebida','<img style="max-width:100%;max-height:75vh;object-fit:contain" alt="Fotografia recebida da coleta" src="'+photoUrl(b.dataset.photo)+'">');return;}
+ if(a==='received-photo'){const photos=(detail()?.photos||[]).map(p=>({...p,unit_id:state.selected,unit_name:chosen()?.name,inspection_state:'completed'}));openPhotoViewer(photos,Math.max(0,photos.findIndex(p=>p.id===b.dataset.photo)),b);return;}
  if(a==='dialog-unit'){document.querySelector('dialog')?.close();navigate('Detalhe da Unidade');return;}
  if(['photo-next','photo-prev','photo-index'].includes(a)){state.photo=a==='photo-index'?Number(b.dataset.index):(state.photo+(a==='photo-next'?1:gallery.length-1))%gallery.length;render();return;}
- if(a==='photos'){const photos=detail()?.photos||[];if(!photos.length){toast('Nenhuma fotografia recebida desta unidade.');return;}dialog('Fotografias recebidas','<div class="gallery-strip">'+photos.map(p=>'<button class="gallery-thumb" data-action="received-photo" data-photo="'+esc(p.id)+'"><img style="width:140px" alt="Fotografia recebida" src="'+photoUrl(p.id)+'"></button>').join('')+'</div>');return;}
+ if(a==='photos'){history.pushState({page:'Fotografias'},'','/fotografias'+(state.selected?'?unitId='+encodeURIComponent(state.selected):''));navigate('Fotografias',false);return;}
  if(a==='open-photo'){if(!gallery.length){toast('Nenhuma fotografia recebida.');return;}
   if(!chosen()){toast('Não há fotografias disponíveis neste recorte.');return;}
   if(a==='open-photo')state.photo=Number(b.dataset.index);

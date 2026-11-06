@@ -383,3 +383,11 @@ Pedido explícito do responsável: criar documentação, alimentar o repositóri
 Manual atual em docs/07-operacao, catálogo físico gerado das 15 migrações, checklist TXT, guias de recuperação, configuração sem segredos e CI sem deploy. Guias antigos da raiz preservados em docs/99-historico. Base original intocada. Playwright declarado no projeto e três testes de navegador atuais passam a usar importação portátil, sem alteração de comportamento da aplicação.
 
 O repositório remoto estava público e sem commits no início da organização. Código e documentação podem ser publicados; dados operacionais, dumps, credenciais, arquivos OAuth, evidências privadas, pacotes recebidos e executáveis são excluídos. Manter transferência privada separada para esses componentes. Migração somente será considerada homologada após restauração completa e testes reais no destino. Registro: docs/07-operacao/10_REGISTRO_DA_ORGANIZACAO.md.
+
+## D-064 — identidade do coletor nas fotografias do desktop, 05/11/2026
+
+Pedido do responsável: aplicar as cores e características do coletor à página de visualização de imagens e conferir a disponibilidade das fotos recolhidas. A identidade D-061/D-062 passa a valer também para a galeria de fotografias e a ampliação no desktop: branco, preto, vermelho, laranja, pêssego, fontes locais e controles compactos. O restante do painel e o coletor permanecem com suas apresentações atuais.
+
+Implementação técnica: entrada Fotografias no desktop, consulta paginada por unidade/tipo/estado, viewer compartilhado com navegação, contexto e erro recuperável. Fotos `ready` de visitas abertas são PARCIAIS; as de visitas pausadas ficam como histórico PARCIAL, identificadas separadamente; somente visitas concluídas aparecem como concluídas. A consulta de histórico pausado não reabre visitas nem as incorpora aos indicadores. Root/admin/visualizador consultam; operador continua sem acesso gerencial. Fotos privadas passam por autorização no Worker, sem links públicos do Drive ou segredos no navegador. Sem migração, mudança de perguntas, envio novo ou exclusão de dados reais.
+
+Verificação desta entrega: testes e publicação registrados em `docs/05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md`. A leitura de arquivos existentes não substitui homologação de novas capturas em celulares.

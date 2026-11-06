@@ -4,6 +4,7 @@ import {unitRoutes} from './units.mjs';
 import {collectorRoutes} from './collector.mjs';
 import {googleRoutes,googleCallback} from './google-auth.mjs';
 import {photoStore} from './photo-storage.mjs';
+import {photoGalleryRead} from './photo-gallery.mjs';
 import {handleAgentMachine,handleAgentHuman,manutencaoAgentes} from './agentes/index.mjs';
 const json=(value,status=200,headers={})=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
 const fail=(message,status=400)=>json({error:message},status);
@@ -51,6 +52,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(path==='/api/auth/revoke'&&request.method==='POST'){const data=await body(request);await db.batch([db.prepare('DELETE FROM sessions WHERE token_hash=? AND user_id=?').bind(String(data.id),user.id),audit(db,user.id,'session_revoked')]);return json({ok:true});}
  // Rotas humanas do módulo de agentes (sessão + CSRF já verificados): antes de collectorRoutes/unitRoutes, que respondem 404 a caminhos desconhecidos.
  const agentHuman=await handleAgentHuman(request,url,user,env);if(agentHuman)return agentHuman;
+ const photoGallery=await photoGalleryRead(request,url,user,env,{json,fail});if(photoGallery)return photoGallery;
  const collectionResponse=await collectorRoutes(request,url,user,env,{json,fail,body});if(collectionResponse)return collectionResponse;
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.
  if(env.APP_KIND!=='collector'){const googleResponse=await googleRoutes(request,url,user,env,{json,fail,audit});if(googleResponse)return googleResponse;}
@@ -104,7 +106,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});
- const pages=['/','/coletas-em-andamento','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
+ const pages=['/','/coletas-em-andamento','/fotografias','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
  const assetUrl=new URL(request.url);if(pages.includes(path))assetUrl.pathname='/index.html';
  const response=await env.ASSETS.fetch(new Request(assetUrl,request));
  return response;

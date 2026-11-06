@@ -255,3 +255,10 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 - Ferramentas: scripts/document-schema.mjs, export-operation-manual.mjs, check-doc-links.mjs e check-repository.mjs; exemplos locais; Playwright do projeto nos três testes atuais; CI sem deploy/segredos.
 - Aceite: instalação com lockfile, testes e builds, migrações em memória, links locais, revisão dos arquivos do índice antes do push. Resultados efetivos em docs/07-operacao/10_REGISTRO_DA_ORGANIZACAO.md.
 - Limites: nenhum deploy, SQL remoto, upload/exclusão de fotos ou migração real nesta organização; nenhuma alteração de formulário. Backup/restauração e EXE/celulares continuam exigindo ensaio próprio.
+
+## D-064 · identidade e disponibilidade das fotografias — 05/11/2026
+
+- Pedido: padronizar a visualização de imagens com a paleta do coletor e conferir fotos recebidas.
+- Entrega: `/fotografias`, filtros/paginação, viewer compartilhado, tema local e leitura protegida. Visitas pausadas consultáveis como histórico PARCIAL, sem mudar seu estado ou indicadores.
+- Base §§7.1/7.5/7.6/7.10/8; D-045/D-048/D-061/D-062 preservados. Nenhuma pergunta, migração, upload ou exclusão real.
+- Evidências e arquivos: [relatório da galeria](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Dez arquivos reais lidos e hashes conferidos; testes de UI usam dados isolados. Câmera física e novas capturas não homologadas nesta rodada.

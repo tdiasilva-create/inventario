@@ -10,6 +10,7 @@ files.push('login.html','login.css','login.js','assets/prefeitura-paco.png','ass
 files.push('desktop-progress.js','desktop-progress-photos.js','desktop-progress-photos.css','desktop-results.js');
 files.push('collector-v3-schema.js','desktop-inventory.js','desktop-agents.js','collector-schema.js','collector-v2-schema.js','visit-schema.js');
 files.push('account.html','account.js','account.css','admin-units.js','panel-shell.js','account-shell.js','panel-refinement.css','unit-schema.js','spreadsheet-io.js','vendor/exceljs/exceljs.min.js','vendor/exceljs/LICENSE.txt');
+files.push('desktop-photos.js','desktop-photos.css','photo-viewer.js','vendor/chakra-petch/ChakraPetch-600.woff2','vendor/chakra-petch/LICENSE','vendor/barlow/Barlow-400.woff2','vendor/barlow/Barlow-600.woff2','vendor/barlow/LICENSE');
 const manifest=[];
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});
