@@ -38,6 +38,6 @@ jobs:
       - run: pnpm test:identity:browser
         env:
           SEMED_TEST_BROWSER: chromium
-      - run: pnpm test:gallery:browser
+      - run: pnpm test:panel:browser
         env:
           SEMED_TEST_BROWSER: chromium

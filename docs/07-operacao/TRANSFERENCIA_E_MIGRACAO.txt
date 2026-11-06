@@ -108,7 +108,7 @@ Inventário da produção
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas: painel 9b25ccf1-fa98-4ae7-a2dd-7af35e59c991, atualizado pela galeria D-064 (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md); coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6. O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. A organização D-063 encontrou o painel na versão anterior 827d6900-aa3a-450c-974d-ac13fd2ecca5. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões registradas em 06/11/2026: painel fb776adf-4b7b-4cac-8aa9-6923bd636144, com identidade em todo o painel D-065 (../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md); coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6, preservado. Ambos conferidos com 100% do tráfego. A versão anterior do painel era 9b25ccf1-fa98-4ae7-a2dd-7af35e59c991 (histórico D-064 (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md)). O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no README da raiz (../../README.md). workers.dev pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 
@@ -554,7 +554,7 @@ Não colocar licença geral nova, alterar políticas institucionais ou permitir 
 FONTE: 09_ESTADO_E_PENDENCIAS.md
 ==============================================================================
 
-Estado e pendências em 05/11/2026
+Estado e pendências — atualizado em 06/11/2026
 
 O que existe
 
@@ -590,7 +590,7 @@ O mapeamento de respostas (../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP
 
 Atualização posterior: fotografias D-064
 
-A lacuna da galeria foi tratada nesta etapa posterior: página /fotografias, paginação, filtros por unidade/vínculo/estado e viewer compartilhado com identidade do coletor. Fotos de coletas pausadas permanecem histórico PARCIAL. Leitura de dez arquivos reais no Drive confirmada, sem novo upload ou alteração de dados. Ver relatório e publicação (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Outras lacunas desktop acima permanecem.
+D-064 criou uma página de fotografias e verificou a leitura de dez arquivos reais no Drive. O escopo visual e a página foram superados por D-065: o responsável deseja a identidade do coletor em todo o painel e não deseja uma aba de fotos. A página foi retirada e seu endereço redireciona ao Panorama. Fotos, leitura protegida e viewer contextual permanecem; fotos de coletas pausadas são histórico PARCIAL. A distribuição futura das fotografias nas telas ainda será definida. Ver histórico D-064 (../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md) e identidade geral D-065 (../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md). Outras lacunas desktop acima permanecem.
 
 Como ler pendências antigas
 

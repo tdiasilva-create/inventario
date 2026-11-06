@@ -19,6 +19,8 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  // Lista fechada em server/agentes/index.mjs; as rotas humanas do módulo seguem o fluxo normal de sessão abaixo.
  if(db){const machine=await handleAgentMachine(request,url,env);if(machine)return machine;}
  if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||!(path==='/api/collector/photo-upload'?['image/jpeg','image/png','image/webp'].includes(request.headers.get('Content-Type')):request.headers.get('Content-Type')?.startsWith('application/json'))))return fail('Origem ou conteúdo inválido.',403);
+ const identityAssets=['/desktop-theme.css','/tokens.css','/assets/paisagem-coleta.jpg',...['400','500','600','700'].flatMap(w=>['/vendor/chakra-petch/ChakraPetch-'+w+'.woff2','/vendor/barlow/Barlow-'+w+'.woff2']),'/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'];
+ if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return env.ASSETS.fetch(request);
  const publicPaths=new Set(['/login','/login.html','/login.css','/login.js','/assets/prefeitura-paco.png','/assets/paisagem-login-v2.png','/assets/login-network.svg','/robots.txt']);
  if(publicPaths.has(path)){const target=new URL(request.url);if(path==='/login'||path==='/login.html')target.pathname=env.APP_KIND==='collector'?'/collector-login.html':'/login.html';if(env.APP_KIND==='collector'&&path==='/login.js')target.pathname='/collector-login.js';return env.ASSETS.fetch(new Request(target,request));}
  if(env.APP_KIND==='collector'&&['/collector.css','/vendor/figtree/Figtree.ttf','/collector-favicon.svg','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'].includes(path))return env.ASSETS.fetch(request);
@@ -106,7 +108,8 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});
- const pages=['/','/coletas-em-andamento','/fotografias','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
+ if(path==='/fotografias')return new Response(null,{status:302,headers:{Location:'/panorama','Cache-Control':'no-store'}});
+ const pages=['/','/coletas-em-andamento','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
  const assetUrl=new URL(request.url);if(pages.includes(path))assetUrl.pathname='/index.html';
  const response=await env.ASSETS.fetch(new Request(assetUrl,request));
  return response;

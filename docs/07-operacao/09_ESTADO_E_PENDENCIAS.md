@@ -1,4 +1,4 @@
-# Estado e pendências em 05/11/2026
+# Estado e pendências — atualizado em 06/11/2026
 
 ## O que existe
 
@@ -34,7 +34,7 @@ O [mapeamento de respostas](../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTO
 
 ## Atualização posterior: fotografias D-064
 
-A lacuna da galeria foi tratada nesta etapa posterior: página `/fotografias`, paginação, filtros por unidade/vínculo/estado e viewer compartilhado com identidade do coletor. Fotos de coletas pausadas permanecem histórico PARCIAL. Leitura de dez arquivos reais no Drive confirmada, sem novo upload ou alteração de dados. Ver [relatório e publicação](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Outras lacunas desktop acima permanecem.
+D-064 criou uma página de fotografias e verificou a leitura de dez arquivos reais no Drive. **O escopo visual e a página foram superados por D-065**: o responsável deseja a identidade do coletor em todo o painel e não deseja uma aba de fotos. A página foi retirada e seu endereço redireciona ao Panorama. Fotos, leitura protegida e viewer contextual permanecem; fotos de coletas pausadas são histórico PARCIAL. A distribuição futura das fotografias nas telas ainda será definida. Ver [histórico D-064](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md) e [identidade geral D-065](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md). Outras lacunas desktop acima permanecem.
 
 ## Como ler pendências antigas
 

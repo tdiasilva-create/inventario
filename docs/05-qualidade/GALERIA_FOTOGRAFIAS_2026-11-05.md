@@ -1,5 +1,7 @@
 # Galeria de fotografias — D-064
 
+**Registro histórico:** D-065, de 06/11/2026, corrigiu o escopo: identidade em todo o painel e retirada da aba/página Fotografias. O endereço antigo redireciona ao Panorama. Os registros abaixo descrevem a entrega anterior; dados, armazenamento e verificação de leitura permanecem preservados. Ver [correção e publicação D-065](IDENTIDADE_PAINEL_2026-11-06.md).
+
 ## Pedido e escopo
 
 Aplicar a identidade atual do coletor à visualização de imagens no desktop e verificar se as fotografias coletadas podem ser exibidas. Cores branco/preto/vermelho/laranja/pêssego, fontes locais Chakra Petch/Barlow, controles compactos, contexto da fotografia e navegação. Nenhuma pergunta ou tela do coletor foi alterada.

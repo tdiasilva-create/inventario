@@ -26,6 +26,7 @@ Leia PRIMEIRO `00_LEIA_ANTES_DE_TUDO.md` e `docs/00-governanca/REGRAS_DE_PRECEDE
 - Offline e múltiplos coletores requerem conflitos explícitos, idempotência, histórico e proteção de arquivos. Não implementar comportamento idealizado sem testar Chrome Android/Safari iPhone.
 - Acesso atual conforme D-031: root, admin, operador e visualizador, com matriz aprovada em DECISOES.md. A regra original de dois papéis ficou superada por decisão explícita posterior. Usuário/senha; criação de usuários e gestão de unidades/atribuições exclusivas do root por D-035; reset administrativo conforme permissões; sem login CPF ou matrícula. Operador corresponde à coleta em unidades autorizadas; não liberar painel gerencial para esse perfil.
 - Desktop dark-tech; preservar mapa, matriz de equipamentos por escola, detalhe da unidade e fotos. A decisão posterior D-023 (27/10/2026) pede fidelidade ao PNG desktop 00, incluindo sua faixa de cinco indicadores, sem substituir as demais áreas.
+- D-065 (06/11/2026) supera a paleta dark-tech acima: TODO o painel usa a identidade D-061/D-062 do coletor (branco/preto/vermelho/laranja/pêssego e fontes compartilhadas). Preservar composição e funções. Não criar aba Fotografias; sua futura distribuição no sistema depende de definição do responsável. Coletor preservado nesta correção desktop.
 - Mockups contêm escolas/brasões/datas/mapas fictícios: jamais usá-los como dados oficiais.
 
 ## Tratamento de questões pendentes

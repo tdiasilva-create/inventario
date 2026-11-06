@@ -262,3 +262,10 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 - Entrega: `/fotografias`, filtros/paginação, viewer compartilhado, tema local e leitura protegida. Visitas pausadas consultáveis como histórico PARCIAL, sem mudar seu estado ou indicadores.
 - Base §§7.1/7.5/7.6/7.10/8; D-045/D-048/D-061/D-062 preservados. Nenhuma pergunta, migração, upload ou exclusão real.
 - Evidências e arquivos: [relatório da galeria](../05-qualidade/GALERIA_FOTOGRAFIAS_2026-11-05.md). Dez arquivos reais lidos e hashes conferidos; testes de UI usam dados isolados. Câmera física e novas capturas não homologadas nesta rodada.
+
+## D-065 · identidade de TODO o painel e retirada da aba de fotos — 06/11/2026
+
+- Correção explícita do responsável e publicação real autorizada. Supera o escopo restrito de D-064; composição desktop mantida, paleta antiga substituída pelos tokens D-061/D-062.
+- `web/desktop-theme.css`, HTMLs desktop/login/conta, navegação e integração do viewer existente; build de fontes/assets e allowlist estática. `/fotografias` redireciona ao Panorama; nenhum dado/fotografia excluído. Coletor intocado.
+- 100 testes, build de 63 arquivos e `tests/desktop-identity-browser.cjs` com 17 rotas, login, formulários, filtros, foto contextual e larguras móveis aprovados. CI atualizada.
+- [Relatório, evidências, publicação e limites](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md). Nenhum requisito novo da Base TXT, migração ou escrita de exemplo no banco oficial. Futuras posições das fotos serão definidas separadamente.

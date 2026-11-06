@@ -19,7 +19,7 @@
     "test:identity:browser": "node tests/collector-identity-browser.cjs",
     "docs:txt": "node scripts/export-operation-manual.mjs",
     "check:docs": "node scripts/check-doc-links.mjs",
-    "test:gallery:browser": "node tests/photo-gallery-browser.cjs"
+    "test:panel:browser": "node tests/desktop-identity-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",
