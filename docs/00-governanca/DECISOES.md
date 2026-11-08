@@ -437,3 +437,11 @@ Numeração corrigida: D-054 já existe; usar D-068. A migração 0015_questiona
 Após receber a entrega local, o responsável determinou: “piblique no ambiente real”. Autoriza backup do D1, migração aditiva 0016 e publicação dos dois Workers com configurações, segredos e Drive existentes. Essa decisão supera o limite “Sem publicar” do pacote inicial. Não autoriza importar planilhas, corrigir vagas negativas, excluir dados ou reclassificar unidades em lote. Registro de execução em docs/05-qualidade/PUBLICACAO_D068_2026-11-06.md.
 
 **Executada:** migração 0016 aplicada; painel 8f38585c-a65e-417a-a499-04d406209149 e coletor 859d0016-755f-4104-94ed-94e4780e2f8e ativos em 100%. Backup privado do D1 conferido, 69 cadastros com campos anteriores idênticos; 61 verificações HTTP e conferência visual root do Panorama/cadastro reais aprovadas. Nenhuma importação, exclusão ou reclassificação de unidades. Configuração Drive preservada, sem novo upload nesta entrega.
+
+## D-069 — consulta direta de equipamentos por unidade, 08/11/2026
+
+Fonte: INSTRUCOES_MODIFICACOES_PAINEL_SEMED_CONSULTA_EQUIPAMENTOS.txt, preservado em docs/06-entregas/consulta-equipamentos-2026-11-08/PEDIDO_ORIGINAL.txt. Nome da unidade abre lista embutida; quantidade abre mesma unidade filtrada pela categoria. Ficha reúne dados oficiais, IDs remotos copiáveis, fotos do próprio equipamento, comunicação e inventário técnico do agente. Reutilizar no Panorama, Equipamentos e detalhe da unidade, preservando matriz, filtros, identidade D-065 e composição D-067.
+
+Filtros/paginação no servidor, contagem distinta de fichas e itens físicos, somente dados publicados; rascunhos separados. API de consulta sem operações de escrita, sem alterações no coletor, perguntas, cadastro mestre, instalador ou protocolo QR. Sem nova aba de fotografias/monitoramento. Fotos protegidas no Drive atual; nenhuma carga ou dado fictício oficial. Regras e limitações em docs/03-painel-desktop/CONSULTA_EQUIPAMENTOS.md.
+
+Autorização explícita posterior nesta etapa: “publique no ambiente real as modificacoes”. Publicar somente o Worker do painel; esta autorização não pede nova publicação do coletor nem operação destrutiva. Resultado em docs/05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md.

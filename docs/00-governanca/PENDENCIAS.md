@@ -117,3 +117,9 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 - [ ] Homologação física das novas telas publicadas. Teste de navegador local e conferência desktop real não confirmam fluxo no celular real nem novo upload ao Drive real.
 
 - [ ] Atualizar roteiros antigos de navegador V2/QR/fotos citados no pacote: esperam entrada, botão ou título de versão removidos por D-060. Falhas e substituição pelo aceite do fluxo atual registradas em docs/05-qualidade/CADASTRO_UNIDADES_2026-11-06.md; não reintroduzir comportamento antigo.
+
+### D-069 — consulta desktop publicada em 08/11/2026
+- [x] Consulta embutida, filtros/paginação no servidor, cópia e fotos por equipamento; publicação do painel autorizada e executada.
+- [ ] Conferência visual autenticada real após renovação da sessão do responsável. Testes isolados, SQL remoto somente leitura e proteção HTTP já aprovados.
+- [ ] Melhoria futura: derivados menores de imagens no servidor; hoje o carregamento é por visibilidade e usa o arquivo otimizado do coletor. Sem nova regra de fotos.
+- [ ] Histórico completo/paginado do agente, se solicitado futuramente; o contrato atual entrega até 10 eventos e a interface declara esse limite.

@@ -1,0 +1,206 @@
+INVENTÁRIO TECNOLÓGICO SEMED
+ESPECIFICAÇÃO PARA O CODEX — REDESIGN DA CONSULTA DE EQUIPAMENTOS POR UNIDADE
+Versão de trabalho: 08/11/2026
+
+1. OBJETIVO E CONTEXTO
+
+Modificar a interface DESKTOP do Painel do Inventário Tecnológico SEMED para transformar a área 'Equipamentos por Unidade' de uma matriz de quantidades em uma porta de entrada rápida para a consulta detalhada dos bens de cada escola.
+
+Problema atual: a matriz mostra a escola e o total de itens por categoria, mas os dados úteis do computador (foto, localização, AnyDesk, RustDesk e inventário técnico obtido pelo agente Windows) exigem navegação pouco intuitiva por janelas, expansão da ficha e abertura de 'Dados do agente'.
+
+Resultado esperado: clicar no NOME de uma escola e visualizar imediatamente os equipamentos vinculados à unidade, com fotografias e um resumo operacional, sem vários cliques. Selecionar um computador deve revelar os dados técnicos completos em uma única área de detalhes.
+
+A mudança é no PAINEL DESKTOP, NÃO no coletor mobile. Não modificar a lógica de instalação do agente, geração/leitura de QR Code, fluxo de coleta, cadastro de equipamentos ou publicação de vistorias nesta tarefa.
+
+2. MATERIAIS DE REFERÊNCIA OBRIGATÓRIOS
+
+- replica-painel-semed.html: réplica da interface, capturas, documentação de páginas, comportamentos e dados.
+- montagem-visual-painel.html: inventário dos blocos das páginas desktop.
+- editor-paginas-painel.html: catálogo de campos, rotas e ações.
+- Captura fornecida do bloco 'Equipamentos por Unidade' com a linha da escola 'Raio de Luz'.
+- Identidade visual debatida: tons coral/laranja, branco e grafite, respeitando o tema efetivamente escolhido para o painel. O objetivo prioritário desta tarefa é a clareza operacional, não uma mudança indiscriminada de todas as cores do sistema.
+
+IMPORTANTE: os HTMLs fornecidos são referências/capturas/réplicas para estudo. Identificar o código de produção e implementar nele. Não tratar a réplica como código-fonte completo da aplicação, não presumir que seus dados demonstrativos vêm do banco real, não substituir dados reais por exemplos estáticos.
+
+3. COMPORTAMENTO ATUAL QUE DEVE SER RECONHECIDO
+
+Segundo a documentação da réplica:
+- A matriz 'Equipamentos por Unidade' usa /api/inventory/summary para totais publicados.
+- O clique no nome da unidade (select-unit) atualmente seleciona a unidade e atualiza seu detalhe via /api/inventory/unit.
+- O clique em células numéricas (cell) pode abrir a janela 'Equipamentos · unidade', consultando /api/inventory/equipment?unitId&offset (paginação de 50).
+- Dentro dessa janela existe 'Ver ficha publicada' e o comando 'Dados do agente', que consulta /api/inventory/agent-status?equipmentId=.
+- AnyDesk e RustDesk foram cadastrados como campos opcionais (anydesk e rustdesk) e tendem a ficar dentro da ficha, em vez de visíveis na lista.
+- Fotografias dos bens estão ligadas ao alvo equipment; há um mecanismo de visualização de foto via /api/collector/photo?id=.
+
+ATENÇÃO: não afirmar no código que as células numéricas são universalmente inertes. O problema principal é a DESCOBERTA, a quantidade de passos e a ausência de resumo visual. Conservar a capacidade de abrir dados existentes e corrigir o fluxo.
+
+4. NOVO FLUXO DE NAVEGAÇÃO — REGRA PRINCIPAL
+
+4.1. Ao clicar no NOME da unidade na matriz:
+- Selecionar visualmente a linha.
+- Mostrar uma área 'Equipamentos — [nome da unidade]' imediatamente, SEM exigir que o usuário clique novamente numa célula numérica ou em 'Consultar equipamentos recebidos'.
+- Exibir o número de equipamentos da unidade com base no inventário oficial publicado; caso haja dados parciais visíveis por autorização, separá-los e identificá-los expressamente.
+- Carregar a primeira página de equipamentos, preservar a paginação e disponibilizar busca/filtros.
+- Apresentar os primeiros itens na mesma área de consulta (preferência: painel amplo embutido abaixo da matriz quando houver espaço ou abertura de painel lateral largo; em telas estreitas, pode usar uma página de detalhe com retorno claro). Não usar vários modais aninhados.
+- Possibilitar voltar à matriz sem perder desnecessariamente os filtros de Regional / Tipo / Situação / ordenação / unidade selecionada.
+
+4.2. Ao clicar em um NÚMERO de categoria da matriz:
+- Manter a seleção da unidade correspondente.
+- Abrir a mesma área de equipamentos já filtrada pela categoria clicada (computadores, notebooks, impressoras, etc.), se a filtragem puder ser feita com dados confiáveis.
+- Caso a categoria tenha quantidade zero, mostrar estado vazio contextual, sem inventar equipamentos.
+
+4.3. ÍCONES DO CABEÇALHO DA MATRIZ:
+- Hoje representam as categorias Comp., Tablets, Proj., Impr., TVs, Rede, Outros, Noteb., Total.
+- Não torná-los botões que abrem dados ambíguos sem unidade selecionada. É aceitável mantê-los como cabeçalhos informativos com dica de ferramenta, ou torná-los filtros de coluna quando houver contexto claro.
+- Garantir que números e nomes clicáveis tenham aparência e estados de foco/hover identificáveis, sejam acessíveis por teclado e tenham rótulos compreensíveis.
+
+5. NOVA ÁREA DE CONSULTA DA UNIDADE
+
+Proposta de organização visual para desktop:
+
+A. Cabeçalho:
+  'Equipamentos — [Nome oficial da escola]'
+  Identificação resumida da unidade (quando disponível); botão 'Ver detalhes da unidade'; indicador explícito da origem dos dados.
+
+B. Barra de consulta:
+  Busca nesta unidade (nome, ID permanente, hostname, posição e demais campos realmente indexados/disponíveis);
+  Filtro por categoria; filtro por vínculo de agente; filtro por disponibilidade de foto; outros filtros apenas após validação dos dados.
+  Botão de limpar filtros e controle de paginação.
+
+C. Lista principal dos equipamentos:
+  Preferir lista visual compacta com cartões horizontais ou tabela com linhas expansíveis, legível em monitor de 1366 px e em telas largas.
+  Cada registro deve ter: miniatura da foto quando existir; tipo de equipamento; identificação estável; unidade/ambiente/posição; funcionamento observado na vistoria; vínculo de agente; AnyDesk; RustDesk; última comunicação do agente quando disponível; ação 'Ver ficha técnica'.
+  Não repetir todas as especificações de hardware nas linhas, para evitar excesso de informação.
+
+D. Detalhes de um equipamento:
+  Abrir painel lateral largo ou região persistente da página, preferencialmente sem sobrepor a lista inteira. Mostrar dados agrupados:
+    Identificação — ID permanente, tipo, ambiente, posição, situação do patrimônio, origem, modo de cadastro;
+    Acesso remoto — AnyDesk e RustDesk, cada um com ação 'Copiar' separada;
+    Inventário técnico do agente — hostname, fabricante, modelo, serial, CPU, RAM, discos/armazenamento, vídeo, rede (IP/MAC quando retornados), Windows/versão, domínio, último boot;
+    Comunicação — último contato, data/hora da leitura e situação da comunicação calculada segundo regra existente;
+    Evidências — fotografias vinculadas ao equipamento, com visualizador/ampliação;
+    Histórico — vínculos e mudanças de localização, quando retornados pelo serviço já existente.
+  Mostrar um aviso 'Dado não informado' ou 'Dado não disponível' em valores ausentes, e jamais substituir campos vazios por valores simulados.
+
+6. REGRAS PARA ANYDESK E RUSTDESK
+
+- Os campos cadastrados na coleta devem ficar visíveis já no RESUMO de cada computador, com rótulos separados.
+- Cada valor deve ter um botão de copiar para a área de transferência (quando autorizado), confirmação breve de cópia e tratamento de falhas.
+- Não transformar automaticamente os identificadores em links de sessão remota sem validar o formato suportado por cada aplicativo e a política de segurança.
+- Não exibir 'Conectado', 'Online' ou 'Acesso disponível' apenas porque existe um ID AnyDesk/RustDesk: o ID não comprova disponibilidade de sessão.
+- Se não informado: 'AnyDesk não cadastrado' / 'RustDesk não cadastrado'. Não exibir zeros fictícios.
+- Reutilizar os campos salvos no inventário. Não solicitar redigitação e não criar campos duplicados.
+- Respeitar perfis e permissões do painel; não expor identificadores remotamente a perfis não autorizados se as regras vigentes restringirem esse acesso.
+
+7. AGENTE WINDOWS, QR CODE E ESTADOS
+
+- O QR Code identifica/vincula o equipamento à ficha; o inventário de hardware e a comunicação vêm do agente Windows e de suas consultas/sincronizações. Não rotular todos os campos como 'dados do QR Code'.
+- O sistema pode ter computadores com agente e computadores cadastrados manualmente; ambos devem ser exibidos.
+- Para cadastro manual, deixar 'Sem agente' evidente e mostrar o motivo da ausência, se informado.
+- Distinguir: 'vínculo do agente', 'última comunicação' e 'funcionamento observado na vistoria'. Não são o mesmo status.
+- Sem comunicação recente NÃO significa automaticamente que a máquina está desligada, com defeito ou sem internet; apresentar 'sem comunicação recente' ou nomenclatura validada pelo projeto.
+- Não inventar monitoramento verdadeiramente em tempo real: mostrar atualização e 'último contato' de acordo com os dados efetivamente recebidos. Caso seja necessário atualizar automaticamente, validar intervalo e custo de consultas.
+- Datas e horários devem usar timezone coerente e indicar claramente o momento da última leitura versus o momento da última vistoria.
+- O vínculo pode ter sido encerrado/trocado; usar relacionamento vigente e preservar o histórico de localização.
+
+8. FOTOGRAFIAS E EVIDÊNCIAS
+
+- Vincular a miniatura à MESMA ficha de equipamento (ID do alvo), não pegar a primeira foto genérica da coleta como se fosse foto do computador.
+- Se não houver foto, usar ilustração/ícone neutro 'Sem foto'. Fotos de computadores são opcionais na coleta.
+- Evitar download de dezenas de imagens originais de alta resolução em uma lista. Preferir miniatura otimizada com carregamento sob demanda; preservar proteção de acesso.
+- Ao clicar na foto, abrir visualizador com próxima/anterior apenas entre fotografias do mesmo equipamento.
+- Mostrar, quando disponível, a origem da fotografia e data. Não rotular uma foto parcial como publicada.
+
+9. DADOS, ENDPOINTS E IMPLEMENTAÇÃO
+
+Pontos encontrados na documentação e que precisam ser CONFERIDOS no repositório real antes da alteração:
+- GET /api/inventory/summary — totais publicados por unidade/categoria;
+- GET /api/inventory/unit?unitId=... — dados/resumo da unidade;
+- GET /api/inventory/equipment?unitId=...&offset=... — registros da unidade, 50 por página na implementação documentada;
+- GET /api/inventory/agent-status?equipmentId=... — dados e histórico do agente;
+- /api/collector/photo?id=... — consulta de foto;
+- Campos documentados anydesk, rustdesk, position_label, operation, environmentName, registration, manualReason e vínculos agent_equipment_links.
+
+Instruções de arquitetura:
+- Reusar endpoints e consultas existentes sempre que possível; não construir nova tabela desnecessariamente.
+- Verificar a estrutura REAL do payload antes de definir os componentes. Não inventar propriedades nem depender de campos que não chegam à interface.
+- Evitar N+1 consultas: não executar agent-status para TODOS os equipamentos ao montar a lista. Preferir um resumo agregado/endpoint otimizado, ou carregar detalhes técnicos sob demanda para o item selecionado. Caso a interface precise mostrar último contato na lista, avaliar inclusão de campos-resumo no endpoint da listagem sem alterar a semântica existente.
+- A paginação/filtragem deve acontecer no servidor quando o volume justificar, com contagem coerente e ordenação estável; não filtrar só os primeiros 50 e informar que a escola tem menos equipamentos.
+- Manter ID permanente da ficha como identificador principal; não usar hostname, AnyDesk, patrimônio ou serial como chave primária, pois podem faltar/mudar/repetir.
+- Não misturar informações das visitas em andamento com indicadores oficiais. Marcar dados parciais com selo específico e respeitar as regras já implantadas de publicação.
+- Garantir autorização por usuário/unidade/equipamento nas chamadas de dados e de fotos; nunca confiar apenas em ocultar botões no front-end.
+
+10. LOCALIZAÇÃO DA NOVA EXPERIÊNCIA
+
+PRIORIDADE 1: integrar a consulta diretamente ao bloco 'Equipamentos por Unidade' no Panorama, como desejado pelo solicitante.
+PRIORIDADE 2: reutilizar a mesma experiência na página '/equipamentos' (matriz expandida) e em 'Detalhe da Unidade' (botão 'Consultar equipamentos recebidos').
+PRIORIDADE 3 (opcional, NÃO implementar sem validação): criar entrada adicional 'Computadores monitorados' para busca geral de todas as máquinas. Não é pré-requisito da melhoria solicitada.
+
+11. DIRETRIZES DE UI/UX
+
+- Desktop-first: otimizar para 1366×768, 1440×900 e monitores maiores; aplicar rolagem natural em vez de espremer textos em fontes minúsculas.
+- Não transformar a página Panorama em uma sequência interminável de cartões grandes. A matriz continua resumida; a área de detalhe aparece após seleção.
+- Mostrar seleção ativa da escola e, quando aplicável, filtro da categoria ativo.
+- Organizar os dados de equipamento com foto à esquerda, identificação e estado no centro e AnyDesk/RustDesk/ações à direita.
+- Ficha detalhada com seções curtas e rótulos consistentes; agrupar hardware, software, rede, acesso remoto e fotos.
+- Ícones devem acompanhar texto ou tooltip; não usar apenas cor como significado.
+- Garantir foco visível, navegação por teclado, contraste e alvos de clique confortáveis.
+- Estados previstos: carregando; sem equipamentos; sem fotos; sem agente; nenhum resultado para filtro; erro de consulta; acesso não autorizado.
+- Os títulos de categoria da matriz não podem parecer botões quebrados: ou são indicativos, ou possuem interatividade real e previsível.
+- Aplicar a identidade visual que for aprovada para o painel sem prejudicar a legibilidade das tabelas ou os sinais de erro/alerta.
+
+12. REGRAS DE NÃO REGRESSÃO
+
+- Não remover a matriz de contagem por categoria ou as opções atuais de ordenação.
+- Não alterar totais publicados, regras de origem do inventário, cadastro mestre, visitas ou coletor mobile.
+- Não perder 'Ver ficha publicada', informações de ficha parcial, fotografia, histórico e 'Dados do agente'. Apenas tornar o acesso mais simples e reutilizar os componentes onde fizer sentido.
+- Não excluir categorias existentes (Computadores, Tablets, Projetores, Impressoras, TVs, Rede, Outros, Notebooks); cuidar para distinguir computadores desktop e notebooks conforme os dados do banco.
+- Não inventar classificação automática de criticidade, disponibilidade de sessão remota ou condição 'online' se não houver regra técnica definida.
+- Respeitar o escopo de permissões do administrador e demais perfis.
+
+13. CRITÉRIOS DE ACEITE / TESTES
+
+[ ] Clicar no nome 'Raio de Luz' (ou qualquer escola) abre imediatamente a consulta de equipamentos daquela escola, sem clicar em outra célula.
+[ ] A escola selecionada é destacada e o cabeçalho do detalhe mostra o nome correto.
+[ ] Clicar na célula 'Computadores' abre o detalhe da MESMA unidade com filtro de computadores aplicado.
+[ ] A matriz continua exibindo corretamente as quantidades por categoria e a ordenação existente.
+[ ] Cada computador mostra identificação, ambiente/posição, foto (se existir), funcionamento observado, vínculo com agente, AnyDesk e RustDesk (se cadastrados).
+[ ] AnyDesk e RustDesk podem ser copiados separadamente com um clique; ausências ficam claras e não geram dados falsos.
+[ ] A ficha técnica completa do agente fica acessível por um único clique no equipamento e usa os dados reais de /api/inventory/agent-status.
+[ ] O computador sem agente aparece corretamente; a falta de heartbeat não é confundida com máquina desligada.
+[ ] Foto de um equipamento nunca mostra foto de outro; faltas de foto são tratadas.
+[ ] Filtragem e paginação funcionam além de 50 registros; totais não se contradizem.
+[ ] Filtros do Panorama e seleção da unidade são preservados ao entrar e voltar.
+[ ] Distingue visualmente dados oficiais publicados e dados parciais.
+[ ] Uma falha de rede não derruba a página e permite repetir a consulta.
+[ ] Permissões de visualização e de fotos são verificadas no servidor.
+[ ] A interface funciona de forma legível em 1366×768 e em monitores maiores, com teclado e mouse.
+[ ] Funcionalidades antigas da matriz, das fichas e do painel continuam funcionando.
+
+14. ORDEM DE EXECUÇÃO SUGERIDA PARA O CODEX
+
+Etapa 1 — INVENTÁRIO TÉCNICO DO REPOSITÓRIO:
+  Identificar componentes da matriz, seleção de unidade, janela de equipamentos, ficha publicada, consulta do agente, serviços de fotos e os perfis. Documentar o fluxo atual e o formato verdadeiro das respostas de API.
+
+Etapa 2 — PROTÓTIPO VISUAL DENTRO DO PAINEL:
+  Implementar seleção da escola e painel de consulta com dados reais; validar legibilidade e comportamento com equipamento com/sem agente e com/sem fotografia.
+
+Etapa 3 — CONSULTA DIRETA E ATALHOS:
+  Adicionar cartões/linhas com foto, ambiente, status de agente, AnyDesk e RustDesk; implementar filtros por categoria; permitir cópia dos IDs de acesso remoto.
+
+Etapa 4 — FICHA TÉCNICA UNIFICADA:
+  Integrar dados do agente existentes em painel de detalhes, evitando a sequência de janelas sobrepostas; tratar atualização, histórico e ausência de dados.
+
+Etapa 5 — TESTES E CONSISTÊNCIA:
+  Validar lista paginada, permissões, fotos, origem de dados, responsividade desktop, usabilidade e regressão.
+
+15. ENTREGÁVEIS SOLICITADOS AO CODEX
+
+1) Relatório curto com os arquivos de código realmente envolvidos e os endpoints reutilizados.
+2) Implementação da nova consulta desktop, prioritariamente a partir de 'Equipamentos por Unidade'.
+3) Evidências (capturas de tela e testes) de uma escola com computador vinculado ao agente, outra com computador manual e exemplo de equipamento sem foto.
+4) Registro das funcionalidades alteradas, preservadas e das limitações de dados da API.
+5) Aviso claro caso algum dado desejado (por exemplo última comunicação ou miniatura por equipamento) não esteja disponível no endpoint atual, com proposta pontual de adequação, sem inventar números.
+
+REGRA FINAL:
+A mudança não é apenas cosmética. A meta é reduzir o número de passos para localizar um computador e seus dados técnicos, aproveitando o inventário já coletado e preservando integralmente a rastreabilidade e as regras do sistema SEMED.

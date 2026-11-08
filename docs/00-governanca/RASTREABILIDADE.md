@@ -297,3 +297,16 @@ Responsável pediu compatibilidade do EXE SemedAgente-Instalador-0.1.8.exe. Hash
 | Publicação/carga | Dois Workers publicados e migração 0016 aplicada por autorização posterior; carga não executada | PUBLICACAO_D068_2026-11-06.md, backup privado e pendências D-068 |
 
 Documentos originais do pacote lidos: 00_LEIA_PRIMEIRO.md, 01_PEDIDO_E_CONTEXTO.md, 02_ESPEC_PARTE1_ESCOLAS_COMUNITARIAS_FORA_DO_INVENTARIO.md, 03_ESPEC_PARTE2_CADASTRO_UNIDADES_AMPLIADO.md, 04_ESPEC_PARTE3_CARD_EQUIPAMENTOS_POR_UNIDADE.md, 05_DICIONARIO_PLANILHA_API_MAPA.md, 06_PLANO_DE_CARGA_DADOS.md e 07_CRITERIOS_DE_ACEITE_E_TESTES.md; também 00_LEIA_PRIMEIRO_2.md externo, referência JS, CSV de 141 nomes e cinco CSVs de importação. Contatos/arquivos recebidos ficam privados. Base de Coleta e PNGs originais preservados.
+
+## D-069 — consulta de equipamentos, 08/11/2026
+
+| Requisito do pedido | Implementação | Aceite |
+|---|---|---|
+| Nome/célula abrem unidade e categoria, sem janelas encadeadas | web/desktop.js; desktop-equipment.js/.css | equipment-consultation-browser.cjs: três rotas, teclado, filtro vazio e retorno |
+| Busca/paginação >50 e totais coerentes | server/inventory-equipment.mjs; collector.mjs | equipment-consultation.test.mjs: 58 fichas, 65 itens físicos, categorias, lote, busca e perfis |
+| Fotos do equipamento e proxy privado | server/photo-gallery.mjs; web/photo-viewer.js | isolamento unidade/alvo, 51 fotos paginadas, galeria e ausências no navegador |
+| ID, posição, funcionamento, AnyDesk/RustDesk | published_json no serviço; desktop-equipment.js | dados de rascunho não promovidos, zeros iniciais e cópia separada |
+| Ficha do agente sem N+1 | agent-status existente, chamado ao abrir detalhe | hardware completo, presença sem inferência de desligamento e manual sem agente |
+| Coletor/QR/cadastro preservados | mudança somente leitura desktop; sem migração | suíte do projeto e regressão de navegador |
+
+Base original: sem perguntas alteradas; esta entrega exibe os equipamentos/fotos/estado já coletados. Limites de miniaturas e histórico documentados em docs/03-painel-desktop/CONSULTA_EQUIPAMENTOS.md. Evidências e publicação: docs/05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md.
