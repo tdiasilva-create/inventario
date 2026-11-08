@@ -120,6 +120,6 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 
 ### D-069 — consulta desktop publicada em 08/11/2026
 - [x] Consulta embutida, filtros/paginação no servidor, cópia e fotos por equipamento; publicação do painel autorizada e executada.
-- [ ] Conferência visual autenticada real após renovação da sessão do responsável. Testes isolados, SQL remoto somente leitura e proteção HTTP já aprovados.
+- [x] Conferência visual autenticada real concluída em 08/11/2026 após entrada do responsável: unidade/categoria, ficha técnica e fotografia ampliada da EM RAIO DE LUZ, sem escrita. Evidências em CONSULTA_EQUIPAMENTOS_2026-11-08.md.
 - [ ] Melhoria futura: derivados menores de imagens no servidor; hoje o carregamento é por visibilidade e usa o arquivo otimizado do coletor. Sem nova regra de fotos.
 - [ ] Histórico completo/paginado do agente, se solicitado futuramente; o contrato atual entrega até 10 eventos e a interface declara esse limite.

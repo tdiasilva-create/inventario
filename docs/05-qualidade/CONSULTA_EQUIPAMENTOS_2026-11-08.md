@@ -35,7 +35,7 @@ O Edge de testes não iniciou neste computador com pouca memória disponível; a
 - Verificação às **18:37:27 de Fortaleza/Brasília (21:37:27 UTC)**: tabelas `units`, `inspections`, `equipments`, `miscellaneous_equipments`, `collection_photos` e `agent_equipment_links` iguais ao backup. No checkpoint: 76 unidades, 8 usuários, 7 vistorias, 1 equipamento, 3 fotos e 5 registros históricos de vínculo. Não são contagens fictícias fixadas na interface.
 - O serviço de leitura foi executado contra o D1 remoto com as novas consultas SQL, somente leitura: uma unidade com uma ficha publicada retornou corretamente. Esse teste comprova compatibilidade do SQL com o D1 real; não substitui a navegação autenticada do usuário.
 - **52 verificações HTTP** de produção: 46 do verificador de release e 6 específicas. Páginas/assets privados redirecionam ao login; APIs de equipamentos, fotos e agentes exigem sessão (401 sem credenciais).
-- A sessão do navegador real expirou; foi solicitada nova entrada ao responsável para conferir visualmente a consulta autenticada. A publicação e os testes acima foram concluídos independentemente. Não declarar captura autenticada real enquanto essa entrada não ocorrer.
+- **Conferência autenticada concluída em 08/11/2026**, depois que o responsável entrou como root. Na EM RAIO DE LUZ, o nome abriu a lista completa e a célula Computadores aplicou a categoria correta. Impressoras (zero) apresentou ausência de registros, e o retorno pelo nome restaurou todas as categorias. Ficha e fotografia do mesmo equipamento carregaram; a ampliação exibiu o ID do alvo e apenas sua foto. Processador, RAM, disco físico, Windows, ambiente/posição e identificadores remotos chegaram corretamente. O serviço retornou “Suspensão informada pelo agente” com datas de 06/11; isso é a última informação recebida, não uma confirmação em tempo real do estado físico da máquina. Seções técnicas preservam sua qualidade de leitura (inclusive contas locais parcial). Nenhum cadastro foi editado, foto enviada ou vínculo alterado nessa conferência.
 
 Backups, snapshots e logs ficam em `private-data/publicacao-d069-2026-11-08/`, fora do Git. Evidências PNG também seguem o ignore do projeto. Nenhuma credencial foi adicionada ao código ou à documentação.
 
@@ -46,3 +46,7 @@ A Base de Coleta original permanece intocada. Foram cobertas a **exibição** da
 Miniaturas usam arquivos já otimizados pelo coletor, baixados apenas quando visíveis; não há derivado reduzido no servidor. Histórico do agente continua limitado aos 10 registros disponibilizados. Atualização do detalhe é manual ou por reabertura; não se infere máquina desligada a partir de ausência de heartbeat. Dados técnicos e fotos ausentes no banco não são gerados pela interface.
 
 Rollback possível para o Worker anterior, com aprovação e conferência do destino; não restaurar o SQL sobre produção automaticamente, pois isso apagaria escritas posteriores. Não há migração a desfazer nesta entrega.
+
+### Evidências autenticadas
+
+Capturas reais preservadas localmente (fora do Git): `docs/05-qualidade/evidencias/consulta-equipamentos-2026-11-08/lista-real-autenticada.png` e `foto-real-ampliada.png`. O teste comprovou leitura de foto já recebida pelo armazenamento, não um novo upload nem operação do instalador nesta data. A aba foi deixada na lista da unidade para o responsável.

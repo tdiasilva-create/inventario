@@ -310,3 +310,5 @@ Documentos originais do pacote lidos: 00_LEIA_PRIMEIRO.md, 01_PEDIDO_E_CONTEXTO.
 | Coletor/QR/cadastro preservados | mudança somente leitura desktop; sem migração | suíte do projeto e regressão de navegador |
 
 Base original: sem perguntas alteradas; esta entrega exibe os equipamentos/fotos/estado já coletados. Limites de miniaturas e histórico documentados em docs/03-painel-desktop/CONSULTA_EQUIPAMENTOS.md. Evidências e publicação: docs/05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md.
+
+D-069: conferência autenticada real concluída após o responsável entrar como root (08/11/2026). Lista por unidade e categoria, categoria vazia, dados técnicos recebidos e foto do mesmo equipamento ampliada; evidências privadas e limites no relatório da entrega. Nenhuma alteração de registro durante a conferência.
