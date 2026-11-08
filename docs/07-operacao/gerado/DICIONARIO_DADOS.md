@@ -18,6 +18,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0014_agentes.sql`
 - `0015_questionario_v3.sql`
 - `0016_unidades_cadastro_ampliado.sql`
+- `0017_agent_monitoring.sql`
 
 ## agent_audit_log
 
@@ -227,6 +228,55 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 | body_hash | TEXT | sim |  | — |
 | ack_json | TEXT | sim |  | — |
 | expires_at | INTEGER | sim |  | — |
+
+## agent_monitor_cursors
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| device_id | TEXT | não | 1 | — |
+| link_id | TEXT | sim |  | — |
+| collected_ms | INTEGER | sim |  | — |
+| components_json | TEXT | sim |  | — |
+| revision | INTEGER | sim |  | 0 |
+| commit_token | TEXT | sim |  | — |
+| updated_at | INTEGER | sim |  | — |
+
+Referências: `device_id` → `agent_devices.device_id` (delete: NO ACTION).
+
+## agent_monitor_health
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| last_success_at | INTEGER | sim |  | — |
+| processed | INTEGER | sim |  | — |
+
+## agent_notification_reads
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| notification_id | TEXT | sim | 1 | — |
+| user_id | TEXT | sim | 2 | — |
+| read_at | INTEGER | sim |  | — |
+
+Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → `agent_notifications.id` (delete: CASCADE).
+
+## agent_notifications
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| event_key | TEXT | sim |  | — |
+| device_id | TEXT | sim |  | — |
+| link_id | TEXT | sim |  | — |
+| equipment_id | TEXT | sim |  | — |
+| unit_id | TEXT | sim |  | — |
+| kind | TEXT | sim |  | — |
+| observed_at | TEXT | sim |  | — |
+| detected_at | INTEGER | sim |  | — |
+| details_json | TEXT | sim |  | — |
+| resolved_at | INTEGER | não |  | — |
+| resolution | TEXT | não |  | — |
 
 ## agent_presence
 

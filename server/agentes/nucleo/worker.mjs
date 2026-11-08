@@ -1,3 +1,4 @@
+import {presenceState} from '../presence.mjs';
 // NÚCLEO da API de agentes SEMED /api/agent/v1 (contrato 1.0) — cópia adaptada ao inventário SEMED.
 // Origem: revisoes/agente-0.1.6-fonte/mock-server/src/worker.mjs (sha256 ab28afb1…). Alterações marcadas com [SEMED] e
 // descritas em docs/04-dados-apis/CONTRATO_QR_E_AGENTE.md (R1–R5 da revisão 0.1.6 e perfis root/admin/operador/visualizador).
@@ -328,15 +329,7 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
     const [device, p] = await Promise.all([store.getDevice(deviceId), store.getPresence(deviceId)]);
     const nowMs = now();
     const thresholdMs = (3 * cfg.heartbeatIntervalSeconds + cfg.presenceToleranceSeconds) * 1000;
-    let state;
-    if (!device) state = 'unknown';
-    else if (device.state === 'revoked') state = 'revoked';
-    else if (!p || !p.last_live_contact_at) state = 'never_communicated';
-    else if (p.last_reason && ['shutdown', 'suspend'].includes(p.last_reason) && p.last_reason_at >= p.last_live_contact_at) {
-      state = p.last_reason === 'shutdown' ? 'reported_shutdown' : 'reported_suspend';
-    } else if (nowMs - Date.parse(p.last_live_contact_at) <= thresholdMs) {
-      state = p.last_health_inventory && ['error', 'timeout'].includes(p.last_health_inventory) ? 'communicating_with_failure' : 'communicating';
-    } else state = 'no_recent_communication';
+    const state = presenceState(device,p,nowMs,thresholdMs/1000);
     return {
       state,
       last_live_contact_at: p?.last_live_contact_at ?? null,

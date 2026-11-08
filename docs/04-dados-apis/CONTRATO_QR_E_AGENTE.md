@@ -158,3 +158,7 @@ O cadastro de novas máquinas em produção não exige SEMED-Install-Grant. AGEN
 Não misturar autorização de instalação (removida) com autenticação do agente ou do usuário (mantidas). Telemetria só após vínculo ativo com ficha existente e usuário autorizado. Revogação, idempotência, proteção contra replay/clonagem e política de localização permanecem. Sem vínculo por 30 dias: cadastro automático nunca vinculado expira por revogação auditada, sem apagar a identidade ou reutilizar seu ID. Cadastros por lote e vínculos antigos preservados. A tela do root deixa de oferecer emissão de lotes; consulta histórica por API continua disponível.
 
 As seções anteriores que exigem grant são históricas para produção e permanecem válidas apenas quando a configuração restritiva for explicitamente selecionada. Registro completo em DECISOES.md D-058; testes/evidências em CADASTRO_AUTOMATICO_2026-11-05.md.
+
+
+## D-070 — monitoramento (08/11/2026)
+Alertas automáticos de hardware e presença acrescentados no painel usando o D1 já alimentado por este contrato. Não modifica mensagens, assinatura ou ACK do agente. Ver MONITORAMENTO_E_NOTIFICACOES.md: qualidade, referência, deduplicação, limites e API de notificações. Cron diário de manutenção preservado; cron de minuto faz análise.

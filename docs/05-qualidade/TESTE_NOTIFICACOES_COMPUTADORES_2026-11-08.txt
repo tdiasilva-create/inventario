@@ -1,0 +1,92 @@
+SEMED — TESTE DAS NOTIFICAÇÕES E DOS ESTADOS DOS COMPUTADORES
+08/11/2026 · D-070
+
+PAINEL REAL
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+PREPARAÇÃO
+Use uma conta root, admin ou visualizador. Escolha um computador destinado
+ao teste, já vinculado por QR a um equipamento de uma unidade cadastrada.
+Deixe o serviço do agente funcionando. A ficha publicada pode ser aberta
+pelo nome da unidade ou pela célula da matriz.
+
+1. COMUNICAÇÃO NORMAL
+Ligue o computador e conecte-o à internet. Aguarde o envio de um heartbeat
+do agente (intervalo atual: cinco minutos). A lista/ficha deve mostrar
+comunicação recente e o horário do último contato. O painel consulta a cada
+15 segundos enquanto a aba está visível. Abrir outra aba pausa essa consulta;
+voltar ao painel consulta novamente.
+
+2. PERDA DE COMUNICAÇÃO
+No computador de teste, interrompa a conexão com a internet mantendo-o ligado.
+Conte mais de 17 minutos a partir do ÚLTIMO CONTATO mostrado no painel.
+O estado deve mudar para “Sem comunicação recente”. O monitor do servidor
+verifica a cada minuto; aguarde também esse ciclo e a atualização da tela.
+O sino deve indicar uma notificação com unidade, ID do equipamento e último
+contato. O texto não deve afirmar que a máquina certamente está desligada.
+Repetidas atualizações não devem multiplicar o mesmo incidente.
+
+3. RETORNO DA CONEXÃO
+Restabeleça a conexão e aguarde um heartbeat novo. O estado deve voltar a
+comunicação recente. No histórico de notificações, o incidente deve registrar
+“Comunicação retomada” e o horário em que o servidor identificou o retorno.
+
+4. SUSPENSÃO INFORMADA
+Se o agente enviar o evento de suspensão/desligamento, o painel deve mostrar
+esse estado específico. Uma suspensão informada não gera o alerta de perda
+inesperada de comunicação. Se o evento não chegar, o servidor conhece somente
+o último contato; após o prazo mostrará ausência de comunicação.
+
+5. MUDANÇA DE PEÇA
+Use uma manutenção previamente autorizada e uma peça compatível. Registre
+a configuração anterior. Depois da alteração, deixe o agente enviar outro
+inventário. O envio periódico atual é de seis horas; o agente pode antecipá-lo
+em seus eventos. O painel não dispara coleta remota imediata nesta entrega.
+Depois de receber e analisar o inventário, o sino deve mostrar “Alteração de
+hardware detectada”, com antes/depois e horários.
+Cobertura: CPU, RAM, discos físicos, placa-mãe e identificadores PCI de vídeo,
+conforme os dados confiáveis disponíveis. Leituras incompletas não são prova
+de retirada. Peças idênticas sem número de série confiável podem não ser
+distinguíveis. O primeiro inventário de cada vínculo estabelece referência;
+não cria um alerta retroativo.
+
+6. LEITURA E NAVEGAÇÃO
+Abra o sino ou “Notificações dos computadores” em Alertas e Insights.
+Expanda o antes/depois e aguarde uma atualização: a comparação deve continuar
+aberta. “Marcar como lida” remove a indicação de não lida para SUA conta;
+o evento continua no histórico. Use o filtro “Somente não lidas”.
+“Ver equipamento” deve abrir a ficha correta. Registros ainda não publicados
+são rotulados PARCIAL e direcionam às coletas em andamento no Planejamento.
+
+7. ATUALIZAÇÃO SEM ATRAPALHAR A CONSULTA
+Digite parte de uma busca sem enviá-la. Aguarde a atualização: texto e cursor
+devem permanecer no lugar. Ao consultar uma ficha, mantenha uma seção técnica
+expandida; o estado e novos dados do agente devem chegar sem fechar a seção.
+
+8. FALHA DE ACESSO
+Se o navegador ficar sem conexão, deve informar status desatualizado ou erro
+de atualização, oferecendo nova tentativa. Na janela de notificações, confira
+“Verificação automática”: uma rodada com mais de três minutos deve mostrar
+aviso de possível atraso dos alertas. “Atualizar agora” consulta o servidor;
+não altera o relógio do agente nem força inventário no computador.
+
+RELATÓRIO PARA DEVOLVER
+Data/hora e fuso:
+Unidade:
+ID do equipamento:
+Versão do agente:
+Navegador:
+Passo testado:
+Horário do último contato mostrado:
+Horário da verificação automática mostrado:
+Resultado esperado:
+Resultado observado:
+Captura de tela, se possível:
+
+VALIDAÇÃO JÁ FEITA
+123 testes automatizados gerais, incluindo oito novos cenários de
+monitoramento, concorrência, falha/retomada, acesso e 200 computadores em
+banco isolado. Navegação automatizada no painel com dados sintéticos locais.
+Esses testes não substituem a manutenção e a perda de rede em equipamento
+físico. Nenhuma troca de peça ou desconexão de computador escolar foi executada
+automaticamente durante a implantação.

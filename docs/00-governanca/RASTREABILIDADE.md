@@ -312,3 +312,7 @@ Documentos originais do pacote lidos: 00_LEIA_PRIMEIRO.md, 01_PEDIDO_E_CONTEXTO.
 Base original: sem perguntas alteradas; esta entrega exibe os equipamentos/fotos/estado já coletados. Limites de miniaturas e histórico documentados em docs/03-painel-desktop/CONSULTA_EQUIPAMENTOS.md. Evidências e publicação: docs/05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md.
 
 D-069: conferência autenticada real concluída após o responsável entrar como root (08/11/2026). Lista por unidade e categoria, categoria vazia, dados técnicos recebidos e foto do mesmo equipamento ampliada; evidências privadas e limites no relatório da entrega. Nenhuma alteração de registro durante a conferência.
+
+
+## D-070 — 08/11/2026
+Pedido direto de notificações de hardware/perda de comunicação e publicação real → server/agent-monitoring.mjs, server/agentes/presence.mjs, migração 0017, scheduled do painel, web/desktop-notifications.js/css, shell e consulta D-069. Oito testes de domínio/API/concorrência/volume + roteiro de navegador em tests/agent-monitoring-browser.cjs. Contrato: docs/04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md. Evidências/publicação: docs/05-qualidade/MONITORAMENTO_2026-11-08.md. Base de Coleta original preservada; nenhum novo campo do questionário.

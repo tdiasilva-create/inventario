@@ -123,3 +123,9 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 - [x] Conferência visual autenticada real concluída em 08/11/2026 após entrada do responsável: unidade/categoria, ficha técnica e fotografia ampliada da EM RAIO DE LUZ, sem escrita. Evidências em CONSULTA_EQUIPAMENTOS_2026-11-08.md.
 - [ ] Melhoria futura: derivados menores de imagens no servidor; hoje o carregamento é por visibilidade e usa o arquivo otimizado do coletor. Sem nova regra de fotos.
 - [ ] Histórico completo/paginado do agente, se solicitado futuramente; o contrato atual entrega até 10 eventos e a interface declara esse limite.
+
+
+### D-070 — monitoramento, 08/11/2026
+- A antiga pendência de notificações no painel é atendida pelo monitor automático D-070; não confundir com homologação física do instalador.
+- [ ] Aceite físico com perda/retorno de rede e manutenção autorizada de peça em PC real, aguardando inventário do agente. Testes locais não substituem esse aceite.
+- [ ] Troca de peças idênticas sem série confiável, periféricos/fonte/bateria e coleta remota imediata não estão cobertos pela telemetria comparável atual. Não inferir implementação.

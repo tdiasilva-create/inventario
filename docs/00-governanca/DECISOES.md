@@ -445,3 +445,14 @@ Fonte: INSTRUCOES_MODIFICACOES_PAINEL_SEMED_CONSULTA_EQUIPAMENTOS.txt, preservad
 Filtros/paginação no servidor, contagem distinta de fichas e itens físicos, somente dados publicados; rascunhos separados. API de consulta sem operações de escrita, sem alterações no coletor, perguntas, cadastro mestre, instalador ou protocolo QR. Sem nova aba de fotografias/monitoramento. Fotos protegidas no Drive atual; nenhuma carga ou dado fictício oficial. Regras e limitações em docs/03-painel-desktop/CONSULTA_EQUIPAMENTOS.md.
 
 Autorização explícita posterior nesta etapa: “publique no ambiente real as modificacoes”. Publicar somente o Worker do painel; esta autorização não pede nova publicação do coletor nem operação destrutiva. Resultado em docs/05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md.
+
+
+## D-070 — notificações de hardware e comunicação no painel, 08/11/2026
+
+Pedido explícito do responsável: implementar notificações de troca de peças e perda de comunicação dos computadores, atualizar status automaticamente e publicar no ambiente real. A autorização cobre a migração aditiva 0017 e o Worker do painel. Não exige alteração de perguntas, EXE, QR ou provedor de fotos. D-069 deixa de ser exclusivamente atualização manual quanto à presença e inventário técnico.
+
+Monitoramento minuto a minuto no servidor; interface a cada 15 segundos quando visível. Preservada a regra do agente: três intervalos de heartbeat mais 120s (17 minutos com os 300s atuais). Ausência não prova desligamento; suspensão/desligamento informados, falha de leitura, nunca comunicou e revogação são estados distintos. Evento único por incidente, com resolução automática no retorno.
+
+Comparação por vínculo, referência confiável por componente e qualidade ok; CPU, RAM, discos, placa-mãe e vídeo PCI. Séries só quando confiáveis. Não comparar IP, contas, driver, BIOS, clock ou espaço livre. Primeira referência sem evento retroativo; listas incompletas não indicam retirada. Eventos têm antes/depois e datas, são diferenças a conferir fisicamente. Detecção depende de novo inventário recebido. Limites e escolhas técnicas reversíveis em docs/04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md.
+
+Sino e acesso em Alertas e Insights, leitura individual e histórico paginado. Root/admin/visualizador, sessão/CSRF no servidor; operador sem consulta gerencial. Coleta em andamento rotulada PARCIAL e sem promoção a indicador oficial. Migração 0017 acrescenta quatro tabelas; histórico, dados publicados, fotos/Drive e credenciais preservados. Publicação e evidências em docs/05-qualidade/MONITORAMENTO_2026-11-08.md.

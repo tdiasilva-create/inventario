@@ -1,3 +1,4 @@
+import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 // D-069: consulta gerencial de fichas publicadas. Nenhuma escrita ou publicação.
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 const categorySql=`CASE json_extract(e.published_json,'$.category') WHEN 'desktop' THEN 0 WHEN 'computer' THEN 0 WHEN 'notebook' THEN 1 WHEN 'tablet' THEN 2 WHEN 'projector' THEN 3 WHEN 'printer' THEN 4 WHEN 'tv' THEN 5 WHEN 'router' THEN 6 WHEN 'ap' THEN 6 WHEN 'switch' THEN 6 ELSE 7 END`;
@@ -15,7 +16,7 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  ${categorySql} AS column_index,
  CASE WHEN json_extract(e.published_json,'$.mode')='Lote' THEN COALESCE(json_extract(e.published_json,'$.quantity'),1) ELSE 1 END AS quantity,
  COALESCE(NULLIF(json_extract(e.published_json,'$.environmentName'),''),(SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie JOIN inspections vi ON vi.id=ie.inspection_id WHERE vi.unit_id=e.unit_id AND vi.state='completed' AND ie.environment_id=json_extract(e.published_json,'$.environment') ORDER BY vi.completed_at DESC,vi.id DESC LIMIT 1)) AS environment_name,
- l.device_id,l.linked_at,l.ended_at,CASE WHEN l.link_id IS NOT NULL AND l.ended_at IS NULL THEN 1 ELSE 0 END AS agent_linked,
+ ap.data_json AS presence_json,l.device_id,l.linked_at,l.ended_at,CASE WHEN l.link_id IS NOT NULL AND l.ended_at IS NULL THEN 1 ELSE 0 END AS agent_linked,
  CASE WHEN l.ended_at IS NULL THEN json_extract(ap.data_json,'$.last_live_contact_at') END AS last_contact_at,
  CASE WHEN l.ended_at IS NULL THEN COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) END AS hostname,
  (SELECT COUNT(*) FROM collection_photos p JOIN inspections pi ON pi.id=p.inspection_id WHERE ${photoWhere}) AS photo_count,
@@ -42,7 +43,7 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
   const data=JSON.parse(r.published_json),position=data.position_label??null,location=data.location_state??'declarada';
   const partial=(data.environment??null)!==(r.current_environment??null)||position!==(r.current_position??null)||location!==r.current_location_state;
   return {id:r.id,data,environment_name:r.environment_name,position_label:position,location_state:location,verified_at:r.verified_at,updated_at:r.updated_at,
-   agent_linked:!!r.agent_linked,agent_history:!!r.device_id,hostname:r.hostname,last_contact_at:r.last_contact_at,link_ended_at:r.ended_at,
+   presence_state:r.agent_linked?presenceState({state:'linked'},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):null,agent_linked:!!r.agent_linked,agent_history:!!r.device_id,hostname:r.hostname,last_contact_at:r.last_contact_at,link_ended_at:r.ended_at,
    photo_count:r.photo_count,photo_id:r.photo_id,missing_open:!!r.missing_open,
    partial:partial?{environment:r.current_environment,position_label:r.current_position,location_state:r.current_location_state,updated_at:r.current_updated_at,inspection_id:r.current_inspection_id}:null};
  });

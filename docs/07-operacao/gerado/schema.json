@@ -64,6 +64,10 @@
     {
       "file": "0016_unidades_cadastro_ampliado.sql",
       "sha256": "c240a02f7c760baa8c1cdf38a2be93c8d7d315673e37b623db58b626e0c17dbe"
+    },
+    {
+      "file": "0017_agent_monitoring.sql",
+      "sha256": "951881d43efc3394ca6366021b1f1160d8ea01577e458661462ed40cc7580025"
     }
   ],
   "tables": [
@@ -1155,6 +1159,262 @@
           "name": "expires_at",
           "type": "INTEGER",
           "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_monitor_cursors",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "link_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "collected_ms",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "components_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "commit_token",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "agent_devices",
+          "from": "device_id",
+          "to": "device_id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "agent_monitor_health",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "last_success_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "processed",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_notification_reads",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "notification_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "read_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "agent_notifications",
+          "from": "notification_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "agent_notifications",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "event_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "link_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "observed_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "detected_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "details_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "resolved_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "resolution",
+          "type": "TEXT",
+          "notnull": 0,
           "dflt_value": null,
           "pk": 0
         }
@@ -4022,6 +4282,24 @@
   "objects": [
     {
       "type": "index",
+      "name": "agent_notifications_equipment",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE INDEX agent_notifications_equipment ON agent_notifications(equipment_id,detected_at DESC)"
+    },
+    {
+      "type": "index",
+      "name": "agent_notifications_open",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE INDEX agent_notifications_open ON agent_notifications(kind,resolved_at,link_id)"
+    },
+    {
+      "type": "index",
+      "name": "agent_notifications_recent",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE INDEX agent_notifications_recent ON agent_notifications(detected_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
       "name": "assignments_unit",
       "tbl_name": "unit_assignments",
       "sql": "CREATE INDEX assignments_unit ON unit_assignments(unit_id)"
@@ -4325,6 +4603,30 @@
       "name": "agent_message_receipts",
       "tbl_name": "agent_message_receipts",
       "sql": "CREATE TABLE agent_message_receipts (\n  device_id    TEXT NOT NULL,\n  message_id   TEXT NOT NULL,\n  body_hash    TEXT NOT NULL,\n  ack_json     TEXT NOT NULL,\n  expires_at   INTEGER NOT NULL,             -- epoch ms\n  PRIMARY KEY (device_id, message_id)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_monitor_cursors",
+      "tbl_name": "agent_monitor_cursors",
+      "sql": "CREATE TABLE agent_monitor_cursors (\n device_id TEXT PRIMARY KEY REFERENCES agent_devices(device_id),\n link_id TEXT NOT NULL,\n collected_ms INTEGER NOT NULL,\n components_json TEXT NOT NULL,\n revision INTEGER NOT NULL DEFAULT 0,\n commit_token TEXT NOT NULL,\n updated_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_monitor_health",
+      "tbl_name": "agent_monitor_health",
+      "sql": "CREATE TABLE agent_monitor_health (id INTEGER PRIMARY KEY CHECK(id=1),last_success_at INTEGER NOT NULL,processed INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "agent_notification_reads",
+      "tbl_name": "agent_notification_reads",
+      "sql": "CREATE TABLE agent_notification_reads (\n notification_id TEXT NOT NULL REFERENCES agent_notifications(id) ON DELETE CASCADE,\n user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n read_at INTEGER NOT NULL,\n PRIMARY KEY(notification_id,user_id)\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_notifications",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE TABLE agent_notifications (\n id TEXT PRIMARY KEY,\n event_key TEXT NOT NULL UNIQUE,\n device_id TEXT NOT NULL,\n link_id TEXT NOT NULL,\n equipment_id TEXT NOT NULL,\n unit_id TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('hardware_change','communication_lost')),\n observed_at TEXT NOT NULL,\n detected_at INTEGER NOT NULL,\n details_json TEXT NOT NULL,\n resolved_at INTEGER,\n resolution TEXT\n)"
     },
     {
       "type": "table",
