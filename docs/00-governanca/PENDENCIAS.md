@@ -129,3 +129,5 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 - A antiga pendência de notificações no painel é atendida pelo monitor automático D-070; não confundir com homologação física do instalador.
 - [ ] Aceite físico com perda/retorno de rede e manutenção autorizada de peça em PC real, aguardando inventário do agente. Testes locais não substituem esse aceite.
 - [ ] Troca de peças idênticas sem série confiável, periféricos/fonte/bateria e coleta remota imediata não estão cobertos pela telemetria comparável atual. Não inferir implementação.
+
+- [x] D-070 publicado no painel real, migração 0017 e cron de minuto confirmados em duas rodadas consecutivas (08/11/2026, 19:22/19:23 Fortaleza). Dados/Drive preservados. Pendente somente o aceite físico descrito acima, sem impedir o monitor de operar com a telemetria recebida.
