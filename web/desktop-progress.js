@@ -1,3 +1,4 @@
+import {deleteEquipment,showDeletedEquipment} from './equipment-deletion.js';
 import {editEquipmentName} from './equipment-name-editor.js';
 import {topics as v3Topics} from './collector-v3-schema.js';
 import {groups} from './collector-schema.js';
@@ -8,7 +9,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const date=v=>v?new Date(v).toLocaleString('pt-BR'):'—';
 const number=v=>Number(v||0).toLocaleString('pt-BR');
 const action=(label,name,attrs='')=>'<button type="button" class="btn" data-progress="'+name+'" '+attrs+'>'+label+'</button>';
-const events={inspection_preserved_for_v3:'Vistoria anterior preservada; nova coleta iniciada',equipment_location_changed:'Localização atualizada',section_saved:'Respostas salvas',section_completed:'Cartão concluído',section_reopened:'Cartão reaberto',environment_created:'Ambiente cadastrado',equipment_created:'Equipamento cadastrado',equipment_updated:'Equipamento atualizado',equipment_duplicate_flagged:'Duplicidade sinalizada para análise',verification:'Conferência registrada',inspection_completed:'Vistoria concluída',photo_received:'Fotografia recebida',inspection_preserved_for_v2:'Vistoria anterior preservada; nova coleta iniciada',inspection_paused_for_new_route:'Coleta pausada para nova rota',visit_answers_saved:'Respostas da visita salvas',agent_linked:'Computador vinculado ao agente'};
+const events={equipment_deleted:'Cadastro de equipamento apagado pelo root',inspection_preserved_for_v3:'Vistoria anterior preservada; nova coleta iniciada',equipment_location_changed:'Localização atualizada',section_saved:'Respostas salvas',section_completed:'Cartão concluído',section_reopened:'Cartão reaberto',environment_created:'Ambiente cadastrado',equipment_created:'Equipamento cadastrado',equipment_updated:'Equipamento atualizado',equipment_duplicate_flagged:'Duplicidade sinalizada para análise',verification:'Conferência registrada',inspection_completed:'Vistoria concluída',photo_received:'Fotografia recebida',inspection_preserved_for_v2:'Vistoria anterior preservada; nova coleta iniciada',inspection_paused_for_new_route:'Coleta pausada para nova rota',visit_answers_saved:'Respostas da visita salvas',agent_linked:'Computador vinculado ao agente'};
 export function createProgressView({onCompleted=async()=>{},canRename=()=>false,csrf=()=>''}={}){
  const photographs=createProgressPhotos();
  let list={items:[],total:0,nextCursor:null},selected=null,detail=null,equipment={items:[],nextCursor:null},listCursors=[null],equipmentCursors=[null],error='',lastChecked=null,loading=false,loaded=false,requestToken=0,filter='',refreshPending=false;
@@ -43,6 +44,7 @@ export function createProgressView({onCompleted=async()=>{},canRename=()=>false,
  }catch(e){error=e.message;}finally{if(token===requestToken){loading=false;draw();if(refreshPending){refreshPending=false;queueMicrotask(()=>refresh(true));}}}}
  function setUrl(id){const url=new URL(location.href);if(id)url.searchParams.set('vistoria',id);else url.searchParams.delete('vistoria');history.replaceState(history.state,'',url.pathname+url.search);}
  document.addEventListener('click',async event=>{const button=event.target.closest('[data-progress]');if(!button||button.disabled)return;const name=button.dataset.progress;try{
+  if(name==='delete-equipment'&&canRename()){button.disabled=true;try{if(await deleteEquipment({id:button.dataset.id,unitId:button.dataset.unit,csrf:csrf()}))await refresh(true);}finally{button.disabled=false;}}
   if(name==='rename-equipment'&&canRename()){button.disabled=true;try{const renamed=await editEquipmentName({id:button.dataset.id,unitId:button.dataset.unit,csrf:csrf()});if(renamed)await refresh(true);}finally{button.disabled=false;}}
   else if(name==='open'){selected=button.dataset.id;detail=null;equipment={items:[],nextCursor:null};setUrl(selected);await refresh(true);}
   else if(name==='list'){selected=null;detail=null;setUrl(null);draw();}

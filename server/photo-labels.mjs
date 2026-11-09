@@ -5,7 +5,7 @@ const parse=s=>{try{return JSON.parse(s||'{}');}catch{return {};}};
 // One bounded metadata query per page, never the image BLOB. Published captions use published data/snapshots.
 export async function describePhotos(db,photos){
  if(!photos.length)return photos;
- const rows=(await db.prepare(`SELECT p.id,p.target_kind,p.target_id,p.unit_id,p.inspection_id,p.created_at,i.state AS inspection_state,u.name AS unit_name,
+ const rows=(await db.prepare(`SELECT p.id,p.target_kind,p.target_id,p.unit_id,p.inspection_id,p.created_at,EXISTS(SELECT 1 FROM equipment_deletions x WHERE x.equipment_id=p.target_id AND p.target_kind='equipment') AS equipment_deleted,i.state AS inspection_state,u.name AS unit_name,
   COALESCE(NULLIF(author.display_name,''),author.username,'Usuário indisponível') AS created_by_name,
   CASE WHEN i.state='completed' THEN eq.published_json ELSE eq.data_json END AS equipment_json,n.name AS display_name,
   COALESCE((SELECT r.name FROM environments r WHERE r.unit_id=p.unit_id AND r.name_version>1 AND r.id=CASE WHEN p.target_kind='environment' THEN p.target_id ELSE json_extract(CASE WHEN i.state='completed' THEN eq.published_json ELSE eq.data_json END,'$.environment') END),CASE WHEN i.state='completed' THEN (SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie WHERE ie.inspection_id=i.id AND ie.environment_id=COALESCE(json_extract(eq.published_json,'$.environment'),e.id) LIMIT 1) ELSE COALESCE(e.name,ee.name) END) AS environment_name,
@@ -28,6 +28,7 @@ export async function describePhotos(db,photos){
    if(occurrence){label=[groups[section.section]||label,occurrence.type,occurrence.description].filter(Boolean).join(' · ');break;}
    if(Object.values(data._photoEvidence||{}).includes(row.target_id)){label+=' · '+(groups[section.section]||section.section);break;}
   }
+  if(row.equipment_deleted)label='Cadastro apagado · '+label;
   return {...photo,label:label.slice(0,300),unit_id:row.unit_id,unit_name:row.unit_name,inspection_id:row.inspection_id,inspection_state:row.inspection_state,created_at:row.created_at,created_by_name:row.created_by_name};
  });
 }

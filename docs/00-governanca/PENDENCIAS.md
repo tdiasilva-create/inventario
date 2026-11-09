@@ -167,3 +167,9 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 
 - [x] Editor root de nomes de computadores e impressoras pelo painel, incluindo parciais; preservação de fotos/agente/unidade, versões e histórico testados. [Registro](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
 - Nome exibido não altera hostname no Windows. União/exclusão/transferência de equipamentos e edição livre de legendas de fotos não fazem parte deste pedido. Fases 4/5 continuam pausadas.
+
+## D-078 — exclusão de cadastro pelo root
+
+- Implementada retirada administrativa com confirmação/histórico/fotos e proteção de IDs; [aceite](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).
+- A escolha de qual registro duplicado manter pertence ao responsável. Não houve exclusão real durante testes.
+- Repareamento testado por protocolo assinado; interação física com o EXE permanece a homologar. Sem fusão/restauração automática ou botão de exclusão para operador. Fases 4/5 continuam pausadas.

@@ -61,3 +61,7 @@ Colunas canônicas: 0 computadores desktop/computer; 1 notebooks; 2 tablets; 3 p
 ## Atualização D-077 — edição do nome, 09/11/2026
 
 Root pode editar nome de exibição na ficha de computador/notebook/impressora, também em Computadores e Coletas em andamento. Nome administrativo independente de hostname, marca/modelo, respostas e localização. Busca e fotos usam o mesmo ID com nome atual; exports acrescentam nome e hostname em colunas finais. Demais permissões e separação oficial/PARCIAL preservadas. Histórico/recibo atômico e conflito explícito em /api/root/equipment-name. [Contrato e aceite](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
+
+## D-078 — ação Apagar cadastro
+
+Root: na ficha do equipamento, além de Editar nome, usar Apagar cadastro. Disponível também em Computadores e nas coletas em andamento. Prévia atual/motivo/confirmação; retirada de listas/contagens com arquivo de ficha, fotos e histórico. Consulta Cadastros apagados na unidade. Agente ativo tem vínculo encerrado e pode renovar QR; não revoga instalação. [Detalhes e testes](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).

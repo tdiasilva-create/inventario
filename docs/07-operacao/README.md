@@ -35,3 +35,7 @@ Os dois ambientes permitem corrigir nomes mantendo o ID: operador no assunto Amb
 ## Nomes de equipamentos — D-077, 09/11/2026
 
 Aplicar as **22 migrações** em nova instalação. A migração 0022 cria nomes administrativos versionados e histórico/recibo separados dos dados do agente e da coleta. Root edita pelo painel, inclusive registros parciais, sem afetar IDs/fotos/vínculos. O coletor já publicado permanece compatível. [Aceite e publicação](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
+
+## D-078 — retirada administrativa de equipamento
+
+Aplicar as **23 migrações** em nova instalação. 0023 conserva a ficha retirada e bloqueia reaproveitamento do ID; fotos e históricos permanecem. Root usa Apagar cadastro no painel. Publicar ambos os Workers para proteger abas antigas do coletor. [Aceite e publicação](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).

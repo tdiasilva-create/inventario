@@ -24,6 +24,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0020_photo_thumbnails.sql`
 - `0021_environment_names.sql`
 - `0022_equipment_names.sql`
+- `0023_equipment_deletions.sql`
 
 ## agent_audit_log
 
@@ -453,6 +454,20 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | name_version | INTEGER | sim |  | 1 |
 
 Referências: `unit_id` → `units.id` (delete: NO ACTION).
+
+## equipment_deletions
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| equipment_id | TEXT | não | 1 | — |
+| unit_id | TEXT | sim |  | — |
+| operation_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| reason | TEXT | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+| snapshot_json | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
 
 ## equipment_locks
 
@@ -920,8 +935,12 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 
 ## Views e triggers
 
+- `equipment_deleted_identity` (trigger, equipments)
+- `equipment_totals_delete` (trigger, equipments)
 - `equipment_totals_insert` (trigger, equipments)
 - `equipment_totals_update` (trigger, equipments)
+- `misc_deleted_identity` (trigger, miscellaneous_equipments)
+- `misc_equipment_totals_delete` (trigger, miscellaneous_equipments)
 - `misc_equipment_totals_insert` (trigger, miscellaneous_equipments)
 - `misc_equipment_totals_update` (trigger, miscellaneous_equipments)
 - `misc_progress_equipment_insert` (trigger, miscellaneous_equipments)

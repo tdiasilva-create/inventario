@@ -88,6 +88,10 @@
     {
       "file": "0022_equipment_names.sql",
       "sha256": "d5132de5d8ca685bfa714022c75dc0947523222f95143f2647b4d9f744c96bd4"
+    },
+    {
+      "file": "0023_equipment_deletions.sql",
+      "sha256": "8b0db185ac9df8bbed4345c7846de7691d19f65a46b38af32f4812df309879bc"
     }
   ],
   "tables": [
@@ -2327,6 +2331,84 @@
           "match": "NONE"
         }
       ]
+    },
+    {
+      "name": "equipment_deletions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "snapshot_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
     },
     {
       "name": "equipment_locks",
@@ -5048,6 +5130,12 @@
     },
     {
       "type": "index",
+      "name": "equipment_deletions_unit",
+      "tbl_name": "equipment_deletions",
+      "sql": "CREATE INDEX equipment_deletions_unit ON equipment_deletions(unit_id,created_at DESC,equipment_id)"
+    },
+    {
+      "type": "index",
       "name": "equipment_name_events_equipment",
       "tbl_name": "equipment_name_events",
       "sql": "CREATE INDEX equipment_name_events_equipment ON equipment_name_events(equipment_id,created_at)"
@@ -5462,6 +5550,12 @@
     },
     {
       "type": "table",
+      "name": "equipment_deletions",
+      "tbl_name": "equipment_deletions",
+      "sql": "CREATE TABLE equipment_deletions (\n equipment_id TEXT PRIMARY KEY,\n unit_id TEXT NOT NULL,\n operation_id TEXT NOT NULL UNIQUE,\n actor_id TEXT NOT NULL,\n actor_name TEXT NOT NULL,\n reason TEXT NOT NULL,\n payload_json TEXT NOT NULL,\n snapshot_json TEXT NOT NULL,\n created_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
       "name": "equipment_locks",
       "tbl_name": "equipment_locks",
       "sql": "CREATE TABLE equipment_locks(equipment_id TEXT PRIMARY KEY REFERENCES equipments(id),user_id TEXT NOT NULL,token TEXT NOT NULL,expires_at INTEGER NOT NULL)"
@@ -5654,6 +5748,18 @@
     },
     {
       "type": "trigger",
+      "name": "equipment_deleted_identity",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER equipment_deleted_identity BEFORE INSERT ON equipments\n WHEN EXISTS(SELECT 1 FROM equipment_deletions WHERE equipment_id=NEW.id)\n BEGIN SELECT RAISE(ABORT,'EQUIPMENT_DELETED'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "equipment_totals_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER equipment_totals_delete AFTER DELETE ON equipments BEGIN\n UPDATE unit_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),problems=problems-(CASE WHEN COALESCE(json_extract(OLD.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END) WHERE unit_id=OLD.unit_id;\n UPDATE inspection_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),new_records=new_records-(OLD.published_json IS NULL),changed_records=changed_records-(OLD.published_json IS NOT NULL) WHERE inspection_id=OLD.inspection_id;\n UPDATE published_equipment_counts SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.published_json,'$.quantity'),1) AS INTEGER) WHERE unit_id=OLD.unit_id AND category=json_extract(OLD.published_json,'$.category') AND OLD.published_json IS NOT NULL;\nEND"
+    },
+    {
+      "type": "trigger",
       "name": "equipment_totals_insert",
       "tbl_name": "equipments",
       "sql": "CREATE TRIGGER equipment_totals_insert AFTER INSERT ON equipments BEGIN\n INSERT INTO unit_collection_totals(unit_id,records,items,problems) VALUES(NEW.unit_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)\n ON CONFLICT(unit_id) DO UPDATE SET records=records+1,items=items+excluded.items,problems=problems+excluded.problems;\nEND"
@@ -5663,6 +5769,18 @@
       "name": "equipment_totals_update",
       "tbl_name": "equipments",
       "sql": "CREATE TRIGGER equipment_totals_update AFTER UPDATE OF data_json ON equipments BEGIN\n UPDATE unit_collection_totals SET items=items+CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER)-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),problems=problems+(CASE WHEN COALESCE(json_extract(NEW.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END)-(CASE WHEN COALESCE(json_extract(OLD.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END) WHERE unit_id=NEW.unit_id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_deleted_identity",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_deleted_identity BEFORE INSERT ON miscellaneous_equipments\n WHEN EXISTS(SELECT 1 FROM equipment_deletions WHERE equipment_id=NEW.id)\n BEGIN SELECT RAISE(ABORT,'EQUIPMENT_DELETED'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "misc_equipment_totals_delete",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER misc_equipment_totals_delete AFTER DELETE ON miscellaneous_equipments BEGIN\n UPDATE unit_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),problems=problems-(CASE WHEN COALESCE(json_extract(OLD.data_json,'$.problems'),'')<>'' THEN 1 ELSE 0 END) WHERE unit_id=OLD.unit_id;\n UPDATE inspection_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),new_records=new_records-(OLD.published_json IS NULL),changed_records=changed_records-(OLD.published_json IS NOT NULL) WHERE inspection_id=OLD.inspection_id;\n UPDATE published_equipment_counts SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.published_json,'$.quantity'),1) AS INTEGER) WHERE unit_id=OLD.unit_id AND category=json_extract(OLD.published_json,'$.category') AND OLD.published_json IS NOT NULL;\nEND"
     },
     {
       "type": "trigger",

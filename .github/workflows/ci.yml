@@ -78,3 +78,7 @@ jobs:
       - run: pnpm test:equipment-edit:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: pnpm test:equipment-delete:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

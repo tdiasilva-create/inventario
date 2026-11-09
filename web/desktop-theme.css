@@ -77,3 +77,6 @@ body.desktop-login{background:linear-gradient(90deg,#16191dd9,#16191d70 70%),url
 @media(max-width:600px){.panorama .progress-preview{grid-template-columns:1fr}.panorama .inventory-totals{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.desktop-login .login-layout{padding:24px 16px}.desktop-login h1{font-size:26px}.desktop-login .access{padding:26px 22px}.desktop-login .description{display:none}.desktop-login .features{display:none}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* D-078: confirmação administrativa compacta. */
+.equipment-delete-dialog input[type=checkbox]{width:auto;min-height:0;margin-right:.5rem}.equipment-delete-dialog code,.equipment-deleted-list code{overflow-wrap:anywhere}.equipment-deleted-list article{border-top:1px solid var(--border,#ddd);padding:1rem 0}.equipment-deleted-list img{border-radius:8px;margin:6px}

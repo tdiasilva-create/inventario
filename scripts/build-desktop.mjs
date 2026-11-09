@@ -17,7 +17,7 @@ files.push('desktop-demand-count.js','operations.html','operations.js','operatio
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
 files.push('environment-editor.js');
-files.push('equipment-name-editor.js');
+files.push('equipment-name-editor.js','equipment-deletion.js');
 files.push('desktop-blocks.js','desktop-exports.js');
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});

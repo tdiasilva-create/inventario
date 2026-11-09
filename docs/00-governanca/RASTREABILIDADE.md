@@ -360,3 +360,7 @@ Pedido do responsável + Base §§4.B, 4.F.1, 7.3–7.4 → `server/environments
 ## D-077 — nomes de computadores/impressoras, 09/11/2026
 
 Pedido explícito atual → Base §§7.3/7.4/9 e ID permanente → migrations/0022_equipment_names.sql, server/equipment-names.mjs, consultas inventory-equipment/in-progress/service-desk/photo-labels e editor desktop compartilhado. Root edita identificação exibida; hostname, coleta, vínculos e fotos intactos. Testes equipment-rename.test.mjs / equipment-rename-browser.cjs; [registro de aceite/publicação](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
+
+## D-078 — exclusão de equipamentos, 09/11/2026
+
+Pedido atual/escopo root no desktop + Base §§9.2/9.5/9.11 → migrations/0023_equipment_deletions.sql; server/equipment-deletions.mjs; web/equipment-deletion.js; consultas oficial/operacional/parcial; proteção em collector.mjs. Histórico/fotos/ID preservados fora do catálogo ativo; testes de ACL, concorrência, idempotência, contagem e repareamento. [Evidências](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md). Nenhuma exclusão real de teste.
