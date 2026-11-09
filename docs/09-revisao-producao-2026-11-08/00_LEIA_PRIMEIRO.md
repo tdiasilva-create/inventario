@@ -2,6 +2,8 @@
 
 **Data:** 08/11/2026 · **Base revisada:** commit `eddba99` (main) · **Finalidade:** entregar à equipe de produção/Codex um compilado de erros, lógicas não aplicadas, causas da lentidão nas fotografias e melhorias, com referência de arquivo e linha, para iniciar as correções.
 
+> **Releitura de 09/11/2026:** a `main` avançou 8 commits (D-068 a D-071 e auditoria) depois desta revisão. [08_ATUALIZACAO_2026-11-09.md](08_ATUALIZACAO_2026-11-09.md) diz item a item o que foi resolvido (ERR-08, LNA-17, LNA-20, ICO-07/09), o que ficou parcial e o que continua aberto (toda a parte de fotografias e todo o coletor V3), traz a tabela de conversão das linhas citadas para o commit `8e59207` e as observações novas N-01…N-08. As migrações propostas passaram a ser `0019_photo_indexes.sql` e `0020_photo_thumbnails.sql`.
+
 Nenhum arquivo de código foi alterado nesta revisão. Nenhum deploy, migração, credencial ou dado de produção foi tocado. As medições de D1/Drive foram feitas com os fixtures do próprio repositório (SQLite em memória + Drive simulado), não contra produção.
 
 ## Como usar esta pasta
@@ -15,7 +17,8 @@ Nenhum arquivo de código foi alterado nesta revisão. Nenhum deploy, migração
 | [05_MELHORIAS_RECOMENDADAS.md](05_MELHORIAS_RECOMENDADAS.md) | Melhorias estruturais: placement do Worker, cache de assets, batch D1, manutenção do código, testes, observabilidade | Arquitetura |
 | [06_PLANO_DE_CORRECAO.md](06_PLANO_DE_CORRECAO.md) | Ordem de execução em 5 fases, arquivos a tocar, riscos, testes de regressão e critérios de aceite por fase | Gestão + desenvolvimento |
 | [07_INSTRUCAO_CODEX.txt](07_INSTRUCAO_CODEX.txt) | Texto pronto para colar como pedido ao Codex, por fase | Responsável |
-| [evidencias/medir-fotos.mjs](evidencias/medir-fotos.mjs) · [evidencias/medicao-2026-11-08.txt](evidencias/medicao-2026-11-08.txt) | Script de medição (SQLite em memória + Drive simulado) e a saída usada nas tabelas; reexecutar com `node docs/08-revisao-producao-2026-11-08/evidencias/medir-fotos.mjs` a partir da raiz | Desenvolvimento |
+| [08_ATUALIZACAO_2026-11-09.md](08_ATUALIZACAO_2026-11-09.md) | Releitura após os commits D-068–D-071: situação de cada item (resolvido/parcial/aberto), observações novas, conversão de linhas e plano ajustado | Todos |
+| [evidencias/medir-fotos.mjs](evidencias/medir-fotos.mjs) · [evidencias/medicao-2026-11-08.txt](evidencias/medicao-2026-11-08.txt) | Script de medição (SQLite em memória + Drive simulado) e a saída usada nas tabelas; reexecutar com `node docs/09-revisao-producao-2026-11-08/evidencias/medir-fotos.mjs` a partir da raiz | Desenvolvimento |
 
 Identificadores usados nos arquivos: `ERR-nn` (erro), `LNA-nn` (lógica não aplicada), `FOTO-nn` (fotografias), `ICO-nn` (ícones/exibição), `MEL-nn` (melhoria). Severidade: **Crítico** (afeta todos os usos, hoje), **Alto** (afeta uso frequente), **Médio** (afeta um fluxo ou cresce com o volume), **Baixo** (qualidade/manutenção).
 
@@ -38,7 +41,7 @@ Medido com os fixtures do repositório: **1 foto lida = 5 consultas D1 + 1 chama
 ## Ordem recomendada (detalhe em 06_PLANO_DE_CORRECAO.md)
 
 1. **Fase 1 — ganhos imediatos, baixo risco (1–2 dias):** cache seletivo no Worker (`no-store` só para HTML/API), cache privado + ETag/304 para fotos, cache do token do Drive em memória, índices em `collection_photos`, upload sem a busca prévia no Drive, imagem de login comprimida, `loading="lazy"` e preservação de `<img>` no painel, Ocorrências sem refazer imagens a cada 15 s.
-2. **Fase 2 — miniaturas (2–4 dias):** cliente gera miniatura de 320 px (~15–25 KB) junto da foto; servidor guarda em D1 (`thumb_blob`, migração aditiva 0016); rotas aceitam `size=thumb`; todas as galerias passam a usar a miniatura; o viewer continua integral.
+2. **Fase 2 — miniaturas (2–4 dias):** cliente gera miniatura de 320 px (~15–25 KB) junto da foto; servidor guarda em D1 (`thumb_blob`, migração aditiva 0020 — a 0016–0018 já existem na main); rotas aceitam `size=thumb`; todas as galerias passam a usar a miniatura; o viewer continua integral.
 3. **Fase 3 — painel sem recriar a tela inteira (2–3 dias):** busca com debounce e atualização só da lista, mapa persistente entre renders, cache de detalhes com botão "Atualizar", correção do clique na célula da matriz, fachada no cabeçalho.
 4. **Fase 4 — coletor V3 (2–3 dias):** indicador global de salvamento, botões de conferência/sinalização na lista, resposta do upload atualiza a galeria sem recarregar a vistoria, HEIC/`createImageBitmap`, tratamento de 401/403.
 5. **Fase 5 — estrutural (medir antes):** Smart Placement do Worker junto ao D1, batch das leituras independentes em `equipment-save`/`inspection`, limpeza de código morto, testes de regressão para fotos e cache.

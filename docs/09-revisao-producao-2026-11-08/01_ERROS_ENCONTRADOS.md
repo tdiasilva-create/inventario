@@ -141,7 +141,7 @@ Cada item traz: onde (arquivo:linha no commit `eddba99`), sintoma para o usuári
 
 **Sintoma:** hoje a tabela é pequena (≈10 fotos em 05/11); com dezenas de unidades × dezenas de fotos cada consulta vira varredura completa e cresce linearmente a cada abertura de vistoria/galeria.
 
-**Correção (migração aditiva 0016):**
+**Correção (migração aditiva `0019_photo_indexes.sql` — 0016 a 0018 já estão ocupadas na `main` por D-068/D-070/D-071):**
 ```sql
 CREATE INDEX collection_photos_inspection ON collection_photos(inspection_id,created_at DESC,id DESC);
 CREATE INDEX collection_photos_unit_status ON collection_photos(unit_id,status,created_at DESC);

@@ -73,7 +73,7 @@ e, nos pontos de `env.ASSETS.fetch` para `/vendor/*`, `/assets/*`, `*.css`, `*.j
 ### FOTO-02 · Miniaturas geradas no cliente e guardadas em D1 (resolve C1) — Fase 2
 Por que D1 e não Drive/R2: evita uma segunda chamada externa por miniatura, mantém tudo sob a mesma autenticação e o mesmo backup, e um JPEG de 320 px com qualidade 0,7 pesa 10–30 KB (limite de linha D1 = 1 MB). Cloudflare Image Resizing não se aplica a `workers.dev` sem zona.
 
-1. **Migração aditiva `0016_photo_thumbnails.sql`:**
+1. **Migração aditiva `0020_photo_thumbnails.sql`** (os índices abaixo vão antes, em `0019_photo_indexes.sql` — FOTO-09; 0016–0018 já existem na `main`):
    ```sql
    ALTER TABLE collection_photos ADD COLUMN thumb_blob BLOB;
    ALTER TABLE collection_photos ADD COLUMN thumb_mime TEXT;
@@ -117,7 +117,7 @@ Após `201`, manter `URL.createObjectURL(blob)` do derivado `thumb` em `previews
 - Uploads do mesmo lote podem ir em paralelo de 2 em 2 (`Promise.all` com limite) — a ordem não importa, o servidor é idempotente por `X-Photo-Id`.
 
 ### FOTO-09 · Índices (resolve C8) — Fase 1
-Ver migração em FOTO-02 (podem ir em 0016 isoladamente antes das miniaturas).
+Ver migração em FOTO-02 (vão em `0019_photo_indexes.sql`, isoladamente, antes das miniaturas).
 
 ### FOTO-10 · Placement do Worker (resolve C9) — Fase 5, medir antes
 `wrangler.jsonc` e `wrangler.collector.jsonc`: `"placement":{"mode":"smart"}`. Hipótese: trocar 5–20 travessias Worker↔D1 por 1 travessia usuário↔Worker. Protocolo: medir p50/p95 de `GET /api/collector/inspection` e `POST equipment-save` em produção (cabeçalho `Server-Timing` com tempo D1 — MEL-07) antes e 48 h depois; manter se melhorar; os *location hints* do D1 não incluem América do Sul na documentação consultada em 05/11, portanto mover o banco não é alternativa imediata. Ver também `docs/05-qualidade/ANALISE_DESEMPENHO_COLETOR_2026-11-05.txt` §9.

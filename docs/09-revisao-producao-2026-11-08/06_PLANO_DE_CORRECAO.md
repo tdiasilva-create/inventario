@@ -16,13 +16,13 @@ Itens marcados **DECISÃO** (LNA-06, LNA-12, LNA-15, LNA-16, ICO-02, ERR-19, MEL
 
 ## Fase 1 — cache, token, índices, upload (publicar em coletor e painel)
 
-**Arquivos:** `server/worker.mjs`, `server/photo-storage.mjs`, `server/collector.mjs`, `server/in-progress-photos.mjs`, `server/photo-gallery.mjs`, `migrations/0016_photo_indexes.sql`, `web/desktop-results.js`, `web/login.css`, `web/assets/`, `tests/security.test.mjs`, `tests/photo-storage.test.mjs`.
+**Arquivos:** `server/worker.mjs`, `server/photo-storage.mjs`, `server/collector.mjs`, `server/in-progress-photos.mjs`, `server/photo-gallery.mjs`, `migrations/0019_photo_indexes.sql`, `web/desktop-results.js`, `web/login.css`, `web/assets/`, `tests/security.test.mjs`, `tests/photo-storage.test.mjs`.
 
 **Passos:**
 1. `worker.mjs:121` → só definir `no-store` quando ausente; função `assetResponse(request,env)` que chama `env.ASSETS.fetch` e aplica `public, max-age=86400, stale-while-revalidate=604800` para `/vendor/`, `/assets/`, `.css`, `.js`, `.svg`, `.woff2`, `.ttf`; HTML e `/api/` continuam `no-store`.
 2. Rotas de leitura de foto: `ETag:"<sha256>"`, `Cache-Control: private, max-age=86400`, `304` quando `If-None-Match` coincidir (antes de `store.get`); repassar `Content-Length` do Drive quando presente.
 3. `photo-storage.mjs`: memo do token por isolate; `accessToken` recebe a linha de `ready()`; `put({retry})` só chama `findByProperty` quando `retry===true`; `collector.mjs:124-128` passa `retry:!!existing` e lê `units` no mesmo batch.
-4. Migração 0016 com os dois índices (`ERR-12`).
+4. Migração `0019_photo_indexes.sql` com os dois índices (`ERR-12`).
 5. `desktop-results.js`: `draw()` compara JSON antes de reescrever; `loading="lazy"`; miniatura abre o viewer.
 6. Converter `paisagem-login-v2.png` para WebP ≤ 250 KB; atualizar `login.css` e `ORIGEM_DOS_ATIVOS.md`.
 
@@ -30,13 +30,13 @@ Itens marcados **DECISÃO** (LNA-06, LNA-12, LNA-15, LNA-16, ICO-02, ERR-19, MEL
 
 **Aceite:** critérios 3, 4 e 6 de `03_DESEMPENHO_FOTOS.md §6`; segundo carregamento do painel < 100 KB.
 
-**Rollback:** reverter o commit; a migração 0016 só adiciona índices (podem ser mantidos).
+**Rollback:** reverter o commit; a migração 0019 só adiciona índices (podem ser mantidos).
 
 ---
 
 ## Fase 2 — miniaturas
 
-**Arquivos:** `migrations/0016` (ou `0017_photo_thumbnails.sql` se a fase 1 já publicou os índices), `server/collector.mjs` (rota `photo-thumb`, parâmetro `size`), `server/in-progress-photos.mjs`, `server/photo-gallery.mjs`, `web/collector-v3.js` (`preparePhotos`, `upload`, `photos`), `web/desktop.js`, `web/desktop-progress-photos.js`, `web/desktop-results.js`, `web/photo-viewer.js`, `web/collector.css`, `web/panorama-layout.css`, `tests/in-progress-photos.test.mjs`, `tests/photo-gallery.test.mjs`, `tests/collector-v3-browser.cjs`.
+**Arquivos:** `migrations/0020_photo_thumbnails.sql` (0019 fica com os índices da fase 1), `server/collector.mjs` (rota `photo-thumb`, parâmetro `size`), `server/in-progress-photos.mjs`, `server/photo-gallery.mjs`, `web/collector-v3.js` (`preparePhotos`, `upload`, `photos`), `web/desktop.js`, `web/desktop-progress-photos.js`, `web/desktop-results.js`, `web/photo-viewer.js`, `web/collector.css`, `web/panorama-layout.css`, `tests/in-progress-photos.test.mjs`, `tests/photo-gallery.test.mjs`, `tests/collector-v3-browser.cjs`.
 
 **Passos:** conforme FOTO-02 (1–6). Ordem segura: migração → rota de leitura com fallback → rota de gravação → cliente coletor → painel → ação root de backfill.
 

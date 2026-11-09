@@ -1,6 +1,6 @@
 INSTRUÇÃO PARA O CODEX — CORREÇÕES DE PRODUÇÃO (coletor, painel, servidor)
-Repositório: https://github.com/tdiasilva-create/inventario · base: commit eddba99 (main)
-Pasta de referência: docs/08-revisao-producao-2026-11-08/
+Repositório: https://github.com/tdiasilva-create/inventario · base da revisão: eddba99 · releitura: 8e59207 (main em 09/11)
+Pasta de referência: docs/09-revisao-producao-2026-11-08/
 
 Copie o bloco da fase desejada. Não misture fases em um mesmo pedido.
 
@@ -8,7 +8,7 @@ Copie o bloco da fase desejada. Não misture fases em um mesmo pedido.
 MENSAGEM INICIAL (enviar uma vez, antes da fase 1)
 ==================================================================
 Leia, nesta ordem: 00_LEIA_ANTES_DE_TUDO.md, AGENTS.md, docs/00-governanca/REGRAS_DE_PRECEDENCIA.md,
-e depois toda a pasta docs/08-revisao-producao-2026-11-08/ (arquivos 00 a 06).
+e depois toda a pasta docs/09-revisao-producao-2026-11-08/ (arquivos 00 a 08; o 08 diz o que já foi resolvido pelos commits D-068–D-071 e traz a conversão das linhas citadas para a main atual — use-o para não refazer o que já existe, em especial reutilizar desktop-request.js e os padrões de desktop-equipment.js).
 
 Essa pasta é uma revisão técnica com defeitos (ERR-nn), lógicas não aplicadas (LNA-nn),
 plano de fotografias (FOTO-nn), ícones/exibição (ICO-nn) e melhorias (MEL-nn), com
@@ -19,7 +19,7 @@ Regras para todas as fases:
   de aceite correspondentes (do arquivo 03 §6 e do arquivo 06), conforme "Forma de execução" do AGENTS.md.
 - Não alterar perguntas, obrigatoriedades, perfis, invariantes do AGENTS.md ou decisões D-0xx.
   Itens marcados DECISÃO ficam fora até eu responder.
-- Migrações apenas aditivas, numeradas a partir de 0016.
+- Migrações apenas aditivas, numeradas a partir de 0019 (0016–0018 já existem na main: D-068, D-070, D-071).
 - Nenhum deploy, segredo, alteração em D1 de produção ou upload real ao Drive. Testes com SQLite
   em memória e Drive simulado (tests/helpers/).
 - Ao terminar: pnpm test, pnpm build:desktop, pnpm build:collector, pnpm check:docs, pnpm docs:schema
@@ -40,7 +40,7 @@ Pontos de atenção:
   HTML e /api/* continuam no-store; /vendor, /assets, .css, .js, .svg, .woff2 recebem cache público.
 - Fotos: ETag = sha256, Cache-Control private max-age=86400, 304 em If-None-Match antes de chamar o Drive.
 - photo-storage.mjs: token do Drive em memória por isolate; findByProperty só quando houver linha pending anterior.
-- Migração 0016 com os dois índices de collection_photos.
+- Migração 0019_photo_indexes.sql com os dois índices de collection_photos.
 - desktop-results.js: não reescrever as imagens a cada 15 s se o JSON não mudou; loading=lazy.
 - Converter web/assets/paisagem-login-v2.png para WebP (≤ 250 KB) e atualizar login.css e ORIGEM_DOS_ATIVOS.md.
 Entregue com os testes novos descritos em MEL-14 (cabeçalhos de cache; contagem D1/Drive por operação).
@@ -93,3 +93,4 @@ DECISÕES QUE EU (responsável) PRECISO RESPONDER
 [ ] ERR-19  Marcadores de exemplo do mapa: botão para ocultar (padrão desligado) ou remover a camada?
 [ ] MEL-12  Primeiro relatório real: "Situação dos computadores por unidade"?
 [ ] MEL-17  Cache de fotos no navegador em estações compartilhadas: 24 h, 1 h, ou limpar no logout?
+[ ] N-02    Clicar numa unidade no panorama deve abrir a consulta de equipamentos (comportamento atual) ou só selecionar, como no layout D-067?

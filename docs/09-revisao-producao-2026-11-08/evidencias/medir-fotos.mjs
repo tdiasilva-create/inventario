@@ -1,5 +1,5 @@
 // Medição isolada (SQLite em memória + Drive simulado): quantas consultas D1 e chamadas ao Drive cada operação de foto gera.
-// Executar a partir da raiz do repositório: node docs/08-revisao-producao-2026-11-08/evidencias/medir-fotos.mjs
+// Executar a partir da raiz do repositório: node docs/09-revisao-producao-2026-11-08/evidencias/medir-fotos.mjs
 import {collectorFixture} from '../../../tests/helpers/collector-db.mjs';
 import {fakeGoogle,testEnv} from '../../../tests/helpers/fake-drive.mjs';
 import {googleRoutes,googleCallback} from '../../../server/google-auth.mjs';
