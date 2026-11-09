@@ -33,4 +33,19 @@ Somente o nome do ambiente foi acrescentado como edição. Outros rótulos segue
 
 ## Publicação
 
-Registro de execução será acrescentado após conferência das versões reais. Migração deve preceder os dois Workers, pois compartilham D1. Retorno de código pode manter a migração aditiva; não restaurar o banco sobre coletas posteriores.
+Publicado em **09/11/2026, 10:54 (Fortaleza)**, código `98e2a33`:
+
+- Painel: `ef797235-6c1a-40bd-8d0d-f64f86799116`, **100%**.
+- Coletor: `18ee2dd6-7f07-48b0-bbc9-2a2bdf763024`, **100%**.
+- Migração 0021 aplicada antes do deploy ao D1 compartilhado, após exportação privada de segurança. As contagens de unidades, ambientes, equipamentos, fotos e usuários permaneceram iguais antes/depois; nenhuma correção de nome de teste foi gravada em produção.
+- Doze verificações HTTP pós-publicação passaram: login, proteção de páginas/APIs/asset privado e novo CSS nos dois hosts. Drive, segredos e crons preservados. Os testes de seleção de ambientes e UX existentes também passaram.
+- A aba real Ambientes foi atualizada e redirecionou ao login porque a sessão já estava expirada. Não houve teste autenticado de alteração em produção; a edição e suas falhas foram exercitadas em SQLite isolado. O responsável pode entrar e corrigir o nome real desejado.
+- Logs, exportação privada e conferência das versões: `private-data/release-editar-ambientes-2026-11-09/`, excluídos do Git. Verificação do índice Git aprovada, sem arquivos privados/assinaturas conhecidas de segredos.
+
+Endereços:
+
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/ambientes
+
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Retorno de código, se necessário: painel anterior `5d92c1e6-99dd-4e74-a11b-164233cc6a76`, coletor anterior `8d5d03f2-6bcd-4df2-bd6e-3fb8b3a078e6`. Manter a migração aditiva; não restaurar o banco sobre coletas posteriores. Não foi executado rollback.

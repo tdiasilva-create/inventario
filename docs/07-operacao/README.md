@@ -28,3 +28,6 @@ Após mudança aprovada, atualizar guias, decisão/rastreabilidade, esquema quan
 ## Materiais privados de transferência
 
 Exportação consistente do D1; imagens e manifesto de vínculos; segredos em cofre; acesso institucional Cloudflare/Google e OAuth; fontes/binários exatos do agente; evidências privadas. Não acompanham o clone público. `.gitignore` ajuda a excluí-los; os exemplos locais não concedem acesso à produção.
+## Correção de ambientes — D-076, 09/11/2026
+
+Os dois ambientes permitem corrigir nomes mantendo o ID: operador no assunto Ambientes de uma visita aberta; root em Ambientes no painel. Migração 0021 adiciona versão e histórico/recibo; consultas exibem o nome corrigido sem reescrever snapshots ou mover equipamentos. [Aceite e versões publicadas](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md). Aplicar todas as 21 migrações em uma nova instalação; a descrição histórica de 20 migrações em materiais anteriores não substitui o diretório atual.
