@@ -41,3 +41,9 @@ A manutenção diária expira cadastros automáticos nunca vinculados após 30 d
 Sem dados operacionais, dumps, credenciais, executáveis ou capturas privadas. `.gitignore` e scanner reduzem risco; revisão humana continua necessária. Se um segredo for publicado, removê-lo do arquivo não o revoga: revogar/rotacionar e tratar histórico por procedimento específico, preservando recuperação das chaves de criptografia.
 
 Não colocar licença geral nova, alterar políticas institucionais ou permitir acesso público às fotos como parte desta documentação.
+
+## Senha definida e reentrada (D-075)
+
+Primeiro acesso e redefinição administrativa exigem trocar a senha provisória. Depois do sucesso, `must_change=0` e `temporary_expires=NULL`; login ou expiração de sessão não tornam a senha provisória novamente. Minha conta exibe alteração voluntária somente sob ação explícita. Em dois POSTs concorrentes, a tentativa cujo UPDATE não ocorreu devolve 409 sem revogar sessões novas ou registrar sucesso. Diagnóstico em [correção de senha](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).
+
+O encaminhamento de operadores do painel ao coletor usa a origem institucional em `server/worker.mjs` (`collectorOrigin`). Atualizá-la se migrar o domínio. Não há transporte de senha/token na URL nem SSO: cada host pede sua sessão e utiliza a mesma senha no D1 compartilhado.

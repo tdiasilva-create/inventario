@@ -578,6 +578,12 @@ Sem dados operacionais, dumps, credenciais, executáveis ou capturas privadas. .
 
 Não colocar licença geral nova, alterar políticas institucionais ou permitir acesso público às fotos como parte desta documentação.
 
+Senha definida e reentrada (D-075)
+
+Primeiro acesso e redefinição administrativa exigem trocar a senha provisória. Depois do sucesso, must_change=0 e temporary_expires=NULL; login ou expiração de sessão não tornam a senha provisória novamente. Minha conta exibe alteração voluntária somente sob ação explícita. Em dois POSTs concorrentes, a tentativa cujo UPDATE não ocorreu devolve 409 sem revogar sessões novas ou registrar sucesso. Diagnóstico em correção de senha (../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).
+
+O encaminhamento de operadores do painel ao coletor usa a origem institucional em server/worker.mjs (collectorOrigin). Atualizá-la se migrar o domínio. Não há transporte de senha/token na URL nem SSO: cada host pede sua sessão e utiliza a mesma senha no D1 compartilhado.
+
 
 ==============================================================================
 FONTE: 09_ESTADO_E_PENDENCIAS.md
@@ -668,5 +674,12 @@ D-072 autoriza miniaturas pequenas no D1; originais continuam no Drive. Fase 2 p
 Publicação mais recente — Fase 3 / D-073, 09/11/2026
 
 Painel por blocos publicado em 100%, versão 104e92dc-7b74-4509-9ad9-24c215f7dbc1; coletor mantido na Fase 2. Busca preserva mapa/DOM, fachada e galeria completa, detalhe com atualização, agente na consulta parcial e exportações CSV/XLSX. Sem migração ou alteração de cadastros. 141 testes e 12 roteiros de navegador; 46 verificações HTTP mais sete negações de acesso; conferência real root e três fotos existentes. Publicação/limites/retorno (../05-qualidade/PUBLICACAO_FASE_3_2026-11-09.md). Fases 4/5 e decisões de locais/Ano continuam pendentes. As anotações de Fases 1/2 acima preservam o histórico.
+Coletor: ambientes compartilhados — D-074, 09/11/2026
+
+Seleção por ID dos ambientes da unidade, com consulta atual ao abrir/atualizar e cadastro novo explícito, publicada somente no coletor (c23eb70f-4541-4007-a125-5cba581ab87f, 100%). Painel preservado na Fase 3, sem migração/dados de teste. 144 testes e três roteiros de navegador; nove verificações HTTP reais. Sessão do coletor expirada no navegador: aceite autenticado físico permanece pendente. Relatório e retorno (../05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md). Fases 4/5 pausadas a pedido do responsável; esta melhoria não as inicia.
+
+Correção de senha e reentrada — D-075, 09/11/2026
+
+Publicada nos dois Workers: painel 5d92c1e6-99dd-4e74-a11b-164233cc6a76, coletor 8d5d03f2-6bcd-4df2-bd6e-3fb8b3a078e6, ambos em 100%. Operador que entra pelo painel é encaminhado ao login do coletor, com a mesma credencial e cookie separado. Minha conta distingue troca obrigatória de alteração voluntária. Troca concorrente vencida não revoga sessão nova nem audita sucesso. 150 testes, roteiro navegador e 56 sondas HTTP; sem migração, reset ou alteração de senhas oficiais. Diagnóstico e limites (../05-qualidade/CORRECAO_SENHAS_2026-11-09.md). Retorno dos usuários em aparelhos físicos pendente; Fases 4/5 permanecem pausadas.
 
 

@@ -49,6 +49,11 @@ Limites: contas e dados são isolados nos testes; não houve troca de senha de p
 
 ## Publicação
 
-Preparada após os testes acima. A confirmação das versões e sondas HTTP será registrada após o deploy dos dois Workers.
+Publicada a partir do commit `fdaba22`, em 09/11/2026 às 09:49 (America/Fortaleza), nos dois Workers reais, ambos confirmados em 100%:
+
+- Painel: `5d92c1e6-99dd-4e74-a11b-164233cc6a76`.
+- Coletor: `8d5d03f2-6bcd-4df2-bd6e-3fb8b3a078e6`.
+
+46 verificações públicas do painel e dez sondas adicionais de autenticação/distribuição passaram: APIs sem sessão recusam com 401, Minha conta redireciona ao login, respostas privadas usam no-store, e os dois login.js publicados correspondem aos arquivos locais. Logs da publicação e sondas em `private-data/release-senhas-2026-11-09/`, fora do Git. Não houve teste autenticado de troca de senha em produção, para preservar as contas das pessoas. A validação funcional completa de troca ocorreu somente no banco isolado.
 
 Rollback: voltar às versões anteriores do painel `104e92dc-7b74-4509-9ad9-24c215f7dbc1` e coletor `c23eb70f-4541-4007-a125-5cba581ab87f` reintroduz os problemas descritos. Não exige reverter D1 ou credenciais, pois não há migração nem alteração de dados neste deploy.

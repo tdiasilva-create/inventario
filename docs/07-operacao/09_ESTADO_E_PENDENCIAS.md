@@ -86,3 +86,7 @@ Painel por blocos publicado em 100%, versão `104e92dc-7b74-4509-9ad9-24c215f7db
 ## Coletor: ambientes compartilhados — D-074, 09/11/2026
 
 Seleção por ID dos ambientes da unidade, com consulta atual ao abrir/atualizar e cadastro novo explícito, publicada somente no coletor (`c23eb70f-4541-4007-a125-5cba581ab87f`, 100%). Painel preservado na Fase 3, sem migração/dados de teste. 144 testes e três roteiros de navegador; nove verificações HTTP reais. Sessão do coletor expirada no navegador: aceite autenticado físico permanece pendente. [Relatório e retorno](../05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md). Fases 4/5 pausadas a pedido do responsável; esta melhoria não as inicia.
+
+## Correção de senha e reentrada — D-075, 09/11/2026
+
+Publicada nos dois Workers: painel `5d92c1e6-99dd-4e74-a11b-164233cc6a76`, coletor `8d5d03f2-6bcd-4df2-bd6e-3fb8b3a078e6`, ambos em 100%. Operador que entra pelo painel é encaminhado ao login do coletor, com a mesma credencial e cookie separado. Minha conta distingue troca obrigatória de alteração voluntária. Troca concorrente vencida não revoga sessão nova nem audita sucesso. 150 testes, roteiro navegador e 56 sondas HTTP; sem migração, reset ou alteração de senhas oficiais. [Diagnóstico e limites](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md). Retorno dos usuários em aparelhos físicos pendente; Fases 4/5 permanecem pausadas.
