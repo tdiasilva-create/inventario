@@ -320,3 +320,5 @@ Pedido direto de notificações de hardware/perda de comunicação e publicaçã
 
 ## D-071 — operacao por unidade e central de demandas
 Pedido explicito de 08/11/2026 -> migracao 0018_service_desk.sql; server/service-desk.mjs; web/operations.*; desktop-demand-count.js; shell/Worker/build -> tests/service-desk.test.mjs e tests/operations-browser.cjs. Documentacao: docs/03-painel-desktop/CENTRAL_DE_DEMANDAS.md, docs/04-dados-apis/CENTRAL_DEMANDAS_API.md e docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md. Base de Coleta original preservada; nao altera perguntas ou fotos.
+
+Correção de 08/11: relato de Consultando permanente → navegação antiga interceptava /computadores e /demandas e mostrava Configurações. Rotas internas separadas em panel-shell.js/desktop.js; consultas GET limitadas e independentes em desktop-request.js/desktop-agents.js. Teste de menu falha antes e passa depois, incluindo voltar/avançar, timeout, filtro e 401. Registro: docs/05-qualidade/NAVEGACAO_PAINEL_2026-11-08.md. Sem alteração de perguntas ou persistência.

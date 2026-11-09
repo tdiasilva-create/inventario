@@ -22,7 +22,8 @@
     "test:panel:browser": "node tests/desktop-identity-browser.cjs",
     "test:catalogue:browser": "node tests/unit-catalogue-browser.cjs",
     "test:equipment:browser": "node tests/equipment-consultation-browser.cjs",
-    "test:operations:browser": "node tests/operations-browser.cjs"
+    "test:operations:browser": "node tests/operations-browser.cjs",
+    "test:panel-navigation:browser": "node tests/panel-navigation-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

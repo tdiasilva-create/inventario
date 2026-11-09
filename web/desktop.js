@@ -9,7 +9,8 @@ import {createProgressView} from './desktop-progress.js';
 const progress=createProgressView({onCompleted:async unitId=>{inventory=await inventorySummary();details.delete(unitId);}});
 import {inventorySummary,matrixUnits,unitInventory,answerDetails,equipmentPage,equipmentTable,presenceLabels} from './desktop-inventory.js';
 import {createAgentsAdmin} from './desktop-agents.js';
-import {panelShell,bindPanelShell,pageRoutes} from './panel-shell.js';
+import {readPanelJson} from './desktop-request.js';
+import {panelShell,bindPanelShell,desktopPageRoutes as pageRoutes} from './panel-shell.js';
 import {icon} from './desktop-icons.js';
 import {metricIcon} from './metric-icons.js';
 import {unitTypes,isOutOfScope} from './unit-schema.js';
@@ -117,7 +118,7 @@ let googleStatus=null,googleLoading=false,googleError='';
 // Administração dos agentes Windows (root) — proposta D-053, item 2 da revisão independente.
 const agentsAdmin=createAgentsAdmin({csrf:()=>authUser?.csrf||'',toast:(...a)=>toast(...a),dialog:(...a)=>dialog(...a),rerender:()=>{if(state.page==='Configurações')render();}});
 const when=ms=>ms?new Date(ms).toLocaleString('pt-BR'):'—';
-async function loadGoogleStatus(){if(googleLoading)return;googleLoading=true;googleError='';try{const r=await fetch('/api/root/google/status');const data=await r.json();if(!r.ok)throw Error(data.error||'Falha ao consultar a integração.');googleStatus=data;}catch(e){googleError=e.message;}finally{googleLoading=false;if(state.page==='Configurações')render();}}
+async function loadGoogleStatus(){if(googleLoading)return;googleLoading=true;googleError='';try{googleStatus=await readPanelJson('/api/root/google/status');}catch(e){googleError=e.message;}finally{googleLoading=false;if(state.page==='Configurações')render();}}
 async function googlePost(path){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':authUser?.csrf||''},body:'{}'});const data=await r.json().catch(()=>({}));if(!r.ok)throw Error(data.error||'Operação não concluída.');return data;}
 function googleBlock(){
  const s=googleStatus;

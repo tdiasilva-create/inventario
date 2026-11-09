@@ -2,7 +2,9 @@ import {icon} from './desktop-icons.js';
 import {startNotifications} from './desktop-notifications.js';
 import {startDemandCount} from './desktop-demand-count.js';
 // Galeria recebida: consulta desktop, sem alterar a interface de coleta.
-export const pageRoutes={'Computadores':'/computadores','Central de demandas':'/demandas','Coletas em andamento':'/coletas-em-andamento','Panorama':'/panorama','Mapa da Rede':'/mapa','Unidades':'/unidades','Ambientes':'/ambientes','Equipamentos':'/equipamentos','Ocorrências':'/ocorrencias','Relatórios':'/relatorios','Planejamento':'/planejamento','Exportar dados':'/exportar','Configurações':'/configuracoes','Detalhe da Unidade':'/unidade'};
+// Only these routes are rendered by desktop.js without loading another document.
+export const desktopPageRoutes={'Coletas em andamento':'/coletas-em-andamento','Panorama':'/panorama','Mapa da Rede':'/mapa','Unidades':'/unidades','Ambientes':'/ambientes','Equipamentos':'/equipamentos','Ocorrências':'/ocorrencias','Relatórios':'/relatorios','Planejamento':'/planejamento','Exportar dados':'/exportar','Configurações':'/configuracoes','Detalhe da Unidade':'/unidade'};
+export const pageRoutes={...desktopPageRoutes,'Computadores':'/computadores','Central de demandas':'/demandas'};
 export const roleNames={root:'Root (superadministrador)',admin:'Administrador',operador:'Operador',visualizador:'Visualizador'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const navItem=(glyph,name,href)=>`<a class="nav-item${location.pathname===href?' active':''}" href="${href}" ${location.pathname===href?'aria-current="page"':''}>${icon(glyph)}<span>${name}</span></a>`;

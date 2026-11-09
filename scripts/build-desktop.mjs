@@ -14,6 +14,7 @@ files.push('desktop-photos.css','photo-viewer.js','vendor/chakra-petch/ChakraPet
 files.push('tokens.css','desktop-theme.css','assets/paisagem-coleta.jpg','vendor/chakra-petch/ChakraPetch-400.woff2','vendor/chakra-petch/ChakraPetch-500.woff2','vendor/chakra-petch/ChakraPetch-700.woff2','vendor/barlow/Barlow-500.woff2','vendor/barlow/Barlow-700.woff2','vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','vendor/jetbrains-mono/LICENSE');
 files.push('desktop-notifications.js','desktop-notifications.css','desktop-equipment.js','desktop-equipment.css','panorama-layout.css','unit-names.js','unit-figures.js','unit-catalogue.css');
 files.push('desktop-demand-count.js','operations.html','operations.js','operations.css');
+files.push('desktop-request.js');
 const manifest=[];
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});
