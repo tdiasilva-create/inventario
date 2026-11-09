@@ -65,6 +65,6 @@ Faltam homologação física Android Chrome/iPhone Safari (câmera, HEIC, orient
 
 ## Publicação e retorno
 
-Preparação local concluída; a publicação, versões e conferência do ambiente real serão registradas em adendo específico. Retorno de código é compatível: colunas novas podem permanecer inertes e os clientes anteriores leem o integral. Nenhuma migração destrutiva é necessária para retornar.
+Publicação real concluída nos dois Workers, com migração 0020 e preparo das três fotografias existentes. Versões, backup, conferências e capturas reais: [registro da publicação](PUBLICACAO_FASE_2_2026-11-09.md). Retorno de código é compatível: colunas novas podem permanecer inertes e os clientes anteriores leem o integral. Nenhuma migração destrutiva é necessária para retornar.
 
 Contrato e operação detalhados: [MINIATURAS_D072.md](../04-dados-apis/MINIATURAS_D072.md).
