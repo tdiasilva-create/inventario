@@ -22,6 +22,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0018_service_desk.sql`
 - `0019_photo_indexes.sql`
 - `0020_photo_thumbnails.sql`
+- `0021_environment_names.sql`
 
 ## agent_audit_log
 
@@ -421,6 +422,22 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | after_json | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
 
+## environment_name_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| environment_id | TEXT | sim |  | — |
+| unit_id | TEXT | sim |  | — |
+| inspection_id | TEXT | não |  | — |
+| actor_id | TEXT | sim |  | — |
+| before_name | TEXT | sim |  | — |
+| after_name | TEXT | sim |  | — |
+| from_version | INTEGER | sim |  | — |
+| to_version | INTEGER | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
 ## environments
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -432,6 +449,7 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | created_at | INTEGER | sim |  | — |
 | created_by | TEXT | sim |  | — |
 | name_key | TEXT | não |  | — |
+| name_version | INTEGER | sim |  | 1 |
 
 Referências: `unit_id` → `units.id` (delete: NO ACTION).
 

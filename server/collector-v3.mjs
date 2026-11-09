@@ -27,7 +27,7 @@ export async function resolveV3Environment(db,i,name,user,history,touch){
   const concurrent=await db.prepare('SELECT * FROM environments WHERE unit_id=? AND name_key=?').bind(i.unit_id,environmentKey(name)).first();
   if(concurrent)return concurrent;throw error;
  }
- return {id,unit_id:i.unit_id,name,type:''};
+ return {id,unit_id:i.unit_id,name,type:'',name_version:1};
 }
 export async function reviewV3(db,i,context){
  const rows=(await db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results,errors={},details={};

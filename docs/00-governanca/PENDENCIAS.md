@@ -157,3 +157,8 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 - [x] Reproduzir e corrigir redirecionamento do operador, alteração voluntária, confirmação, estado restaurado e duas trocas simultâneas; 150 testes e roteiro navegador aprovados. Ver [relatório](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).
 - [ ] Confirmar retorno dos usuários nos celulares reais. Nenhuma senha ou reset legítimo foi alterado durante a investigação.
 - Fases 4/5 da auditoria continuam pausadas.
+## D-076 — edição de ambientes, 09/11/2026
+
+- [x] Correção do nome pelo operador em coleta aberta e pelo root no painel, com concorrência/histórico e sem romper vínculos. [Testes e publicação](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md).
+- [ ] Aceite em celulares físicos pelo responsável. Testes de navegador não substituem teclado/câmera reais.
+- União/exclusão de ambientes e editor de legendas de fotos não fazem parte deste pedido específico. Fases 4/5 continuam pausadas.

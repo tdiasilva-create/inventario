@@ -353,3 +353,6 @@ Pedido atual do responsável supera D-057 ponto 4. Base original §§1.1, 2.2–
 ## D-075 — senha e reentrada (09/11/2026)
 
 Relato de repetição nos dois hosts → Base §8.4–8.7/8.9/8.11–8.12 e D-031 → worker.mjs (direcionamento e batch de senha), páginas Minha conta/login (ação voluntária e restauração) → auth-flow.test.mjs e auth-flow-browser.cjs. Auditoria oficial somente leitura, testes de senha exclusivamente em SQLite isolado. Sem cobertura adicional A–H/fotos/offline. [Evidências e limites](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).
+## D-076 — nome de ambiente corrigível, 09/11/2026
+
+Pedido do responsável + Base §§4.B, 4.F.1, 7.3–7.4 → `server/environments.mjs`, `server/collector.mjs`, migração `0021_environment_names.sql`, `web/environment-editor.js`, `web/collector-v3.js`, `web/desktop.js`; projeção de nomes em `inventory-equipment.mjs` e `photo-labels.mjs`. Testes: `environment-rename.test.mjs`, `environment-rename-browser.cjs`. [Relatório](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md). Não modifica a Base original ou pendências das Fases 4/5.

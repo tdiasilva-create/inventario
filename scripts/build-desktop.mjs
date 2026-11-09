@@ -16,6 +16,7 @@ files.push('desktop-notifications.js','desktop-notifications.css','desktop-equip
 files.push('desktop-demand-count.js','operations.html','operations.js','operations.css');
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
+files.push('environment-editor.js');
 files.push('desktop-blocks.js','desktop-exports.js');
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});

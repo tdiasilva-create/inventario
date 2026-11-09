@@ -8,7 +8,7 @@ export async function describePhotos(db,photos){
  const rows=(await db.prepare(`SELECT p.id,p.target_kind,p.target_id,p.unit_id,p.inspection_id,p.created_at,i.state AS inspection_state,u.name AS unit_name,
   COALESCE(NULLIF(author.display_name,''),author.username,'Usuário indisponível') AS created_by_name,
   CASE WHEN i.state='completed' THEN eq.published_json ELSE eq.data_json END AS equipment_json,
-  CASE WHEN i.state='completed' THEN (SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie WHERE ie.inspection_id=i.id AND ie.environment_id=COALESCE(json_extract(eq.published_json,'$.environment'),e.id) LIMIT 1) ELSE COALESCE(e.name,ee.name) END AS environment_name,
+  COALESCE((SELECT r.name FROM environments r WHERE r.unit_id=p.unit_id AND r.name_version>1 AND r.id=CASE WHEN p.target_kind='environment' THEN p.target_id ELSE json_extract(CASE WHEN i.state='completed' THEN eq.published_json ELSE eq.data_json END,'$.environment') END),CASE WHEN i.state='completed' THEN (SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie WHERE ie.inspection_id=i.id AND ie.environment_id=COALESCE(json_extract(eq.published_json,'$.environment'),e.id) LIMIT 1) ELSE COALESCE(e.name,ee.name) END) AS environment_name,
   (SELECT json_group_array(json_object('section',s.section,'data',json(s.data_json))) FROM inspection_sections s WHERE s.inspection_id=i.id AND p.target_kind IN ('answer','occurrence')) AS sections_json
   FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id JOIN units u ON u.id=p.unit_id
   LEFT JOIN users author ON author.id=p.created_by
@@ -20,7 +20,7 @@ export async function describePhotos(db,photos){
  return photos.map(photo=>{
   const row=byId.get(photo.id);if(!row)return photo;
   let label=kinds[row.target_kind]||'Fotografia da coleta';
-  if(row.target_kind==='equipment'){const data=parse(row.equipment_json);label=[categories[data.category]||label,data.environmentName||row.environment_name,data.position_label].filter(Boolean).join(' · ');}
+  if(row.target_kind==='equipment'){const data=parse(row.equipment_json);label=[categories[data.category]||label,row.environment_name||data.environmentName,data.position_label].filter(Boolean).join(' · ');}
   if(row.target_kind==='environment'&&row.environment_name)label+=' · '+row.environment_name;
   if(['answer','occurrence'].includes(row.target_kind))for(const section of parse(row.sections_json)||[]){
    const data=section.data||{},occurrence=(data.occurrences||[]).find?.(o=>o.id===row.target_id);

@@ -1,3 +1,4 @@
+import {renameEnvironment} from './environments.mjs';
 import {thumbnailResponse} from './photo-thumbnails.mjs';
 import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
@@ -42,7 +43,7 @@ export async function collectorRoutes(request,url,user,env,{json,fail,body}){
  if(p==='/api/collector/environments'&&request.method==='GET'){
   const i=await inspection(url.searchParams.get('inspectionId'));
   if(!i||!editor)return fail('Vistoria não autorizada.',403);
-  const environments=(await db.prepare('SELECT id,name,type FROM environments WHERE unit_id=? ORDER BY name COLLATE NOCASE,id').bind(i.unit_id).all()).results;
+  const environments=(await db.prepare('SELECT id,name,type,name_version FROM environments WHERE unit_id=? ORDER BY name COLLATE NOCASE,id').bind(i.unit_id).all()).results;
   return json({environments});
  }
  if(p==='/api/collector/start'&&write){const data=await body(request),u=await unit(data.unitId);if(!u)return fail('Unidade não autorizada.',403);const now=Date.now(),id=crypto.randomUUID();await db.prepare("INSERT OR IGNORE INTO inspections(id,unit_id,created_by,created_at,updated_at) VALUES(?,?,?,?,?)").bind(id,u.id,user.id,now,now).run();const i=await db.prepare("SELECT * FROM inspections WHERE unit_id=? AND state='open'").bind(u.id).first();const previous=await db.prepare("SELECT id FROM inspections WHERE unit_id=? AND state='completed' ORDER BY completed_at DESC,id DESC LIMIT 1").bind(u.id).first();const rows=previous?(await db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(previous.id).all()).results:[];await db.batch(groups.map(([g])=>db.prepare('INSERT OR IGNORE INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,?,?,?,?)').bind(i.id,g,g==='A'?'{}':rows.find(r=>r.section===g)?.data_json||'{}',user.id,now)));return json({inspection:i});}
@@ -52,6 +53,10 @@ export async function collectorRoutes(request,url,user,env,{json,fail,body}){
   const photos=(await db.prepare("SELECT id,target_kind,target_id,status FROM collection_photos WHERE inspection_id=?").bind(i.id).all()).results;
   const totals=await db.prepare('SELECT records,items,problems FROM unit_collection_totals WHERE unit_id=?').bind(i.unit_id).first()||{records:0,items:0,problems:0};
   return json({inspection:i,unit:await unit(i.unit_id),sections:Object.fromEntries(rows.map(r=>[r.section,{...r,data:parse(r.data_json),data_json:undefined}])),environments:c.environments,photos:isV2(i)?await v2Evidence(db,i):photos,totals});
+ }
+ if(p==='/api/collector/environment-rename'&&write){
+  const data=await body(request),i=await inspection(data.inspectionId);if(!i)return fail('Vistoria não autorizada.',403);
+  return renameEnvironment(db,user,data,{unitId:i.unit_id,inspectionId:i.id,json,fail});
  }
  if(p==='/api/collector/environment-save'&&write){const data=await body(request),i=await inspection(data.inspectionId);if(!i||i.state!=='open')return fail('Vistoria indisponível.',409);const card=await db.prepare("SELECT state FROM inspection_sections WHERE inspection_id=? AND section='B'").bind(i.id).first();if(!isV2(i)&&card?.state==='Concluído')return fail('Confirme a reabertura do cartão B antes de cadastrar ambientes.',409);if(isV3(i)){const environment=await resolveV3Environment(db,i,data.name,user,history,touch);return environment?json({environment},200):fail('Informe o nome do ambiente (até 180 caracteres).');}const name=String(data.name||'').trim(),type=String(data.type||'').trim();if(name.length<1||name.length>180||(!isV2(i)&&!type)||type.length>120)return fail('Informe nome e tipo do ambiente.');const existing=await db.prepare('SELECT * FROM environments WHERE unit_id=? AND name=? COLLATE NOCASE').bind(i.unit_id,name).first();if(existing)return json({environment:existing,existing:true});if(data.confirmSimilar!==true){const similar=similarEnvironments(name,(await db.prepare('SELECT id,name,type FROM environments WHERE unit_id=?').bind(i.unit_id).all()).results);if(similar.length)return json({error:'Já existe ambiente com nome parecido nesta unidade. Reutilize um deles ou confirme o novo cadastro.',similar},409);}const id=crypto.randomUUID(),now=Date.now();const result=await db.batch([touch(i),db.prepare("INSERT INTO environments(id,unit_id,name,type,created_at,created_by) SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM inspections WHERE id=? AND state='open')").bind(id,i.unit_id,name,type,now,user.id,i.id),history(i,id,'environment_created',null,{name,type})]);if(!result[1].meta.changes)return fail('A vistoria foi concluída em outra sessão.',409);return json({environment:{id,unit_id:i.unit_id,name,type}},201);}
  async function checkSection(g,data,i,complete){if(isV2(i)){if(containsSecret(data)||!modernShape(i,g,data))return {data:'Dados inválidos ou segredo enviado em campo comum.'};return complete?(isV3(i)?validateV3Section:validateV2Section)(g,data,await context(i,false)):{};}const c=await context(i,g==='H'),rows=(await db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results;c.hasProblems=c.hasProblems||rows.some(r=>sectionProblems(r.section,r.section===g?data:parse(r.data_json)));const errors=complete?validateFields(sections[g]||[],data,c):{};
@@ -160,7 +165,7 @@ async function inventoryRead(request,url,user,env,{json,fail,unit}){
   // A fachada pode ser mais antiga que as últimas cinquenta fotos de equipamentos.
   const [sectionRows,environmentRows,photoRows,countRows,facadeRows,missingRows]=await db.batch([
    db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(i.id),
-   db.prepare('SELECT data_json FROM inspection_environments WHERE inspection_id=?').bind(i.id),
+   db.prepare('SELECT ie.data_json,e.name AS current_name,e.name_version FROM inspection_environments ie LEFT JOIN environments e ON e.id=ie.environment_id AND e.unit_id=? WHERE ie.inspection_id=?').bind(u.id,i.id),
    db.prepare(photoSelect+photoFrom+' ORDER BY p.created_at DESC,p.id DESC LIMIT 50').bind(u.id),
    db.prepare('SELECT COUNT(*) AS total '+photoFrom).bind(u.id),
    db.prepare(photoSelect+photoFrom+" AND p.target_kind='facade' ORDER BY p.created_at DESC,p.id DESC LIMIT 1").bind(u.id),
@@ -169,7 +174,7 @@ async function inventoryRead(request,url,user,env,{json,fail,unit}){
   const rows=sectionRows.results,environments=environmentRows.results,photos=photoRows.results,photoTotal=countRows.results[0].total,facade=facadeRows.results[0];
   const described=await describePhotos(db,facade&&!photos.some(p=>p.id===facade.id)?[...photos,facade]:photos);
   const visit=i.questionnaire_version===visitVersion?await visitReview(db,i):null;
-  return json({visit,inspection:i,sections:hideContact(Object.fromEntries(rows.map(r=>[r.section,parse(r.data_json)])),user),environments:environments.map(e=>parse(e.data_json)),photos:described.slice(0,photos.length),photoTotal,facade:facade?described.find(p=>p.id===facade.id):null,missing:missingRows.results[0].total});
+  return json({visit,inspection:i,sections:hideContact(Object.fromEntries(rows.map(r=>[r.section,parse(r.data_json)])),user),environments:environments.map(e=>({...parse(e.data_json),...(e.name_version>1?{name:e.current_name}:{})})),photos:described.slice(0,photos.length),photoTotal,facade:facade?described.find(p=>p.id===facade.id):null,missing:missingRows.results[0].total});
  }
  if(p==='/api/inventory/equipment')return equipmentRead(request,url,user,env,{json,fail,unit});
  return fail('Consulta não encontrada.',404);

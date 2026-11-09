@@ -1,3 +1,4 @@
+import {editEnvironmentName} from './environment-editor.js';
 import {updateBlocks} from './desktop-blocks.js';
 import {exportInventory} from './desktop-exports.js';
 import {createThumbnailMaintenance} from './desktop-thumbnails.js';
@@ -83,7 +84,7 @@ function receivedDate(){return detail()?.inspection?new Date(detail().inspection
 function photoUrl(id){return '/api/collector/photo?id='+encodeURIComponent(id);}
 function evidencePanel(){const p=facadePhoto()||detail()?.photos?.[0];return '<section class="panel">'+title('Evidência da Última Coleta','','photos','Ver todas')+(p?'<button class="gallery-thumb" data-action="received-photo" data-photo="'+esc(p.id)+'"><img alt="'+esc(p.label||'Fotografia recebida da unidade selecionada')+'" title="'+esc(p.label||'Fotografia recebida')+'" src="'+photoUrl(p.id)+'&size=thumb" loading="lazy" decoding="async" width="320" height="240"></button>':'<div class="empty">Nenhuma fotografia recebida desta unidade.</div>')+'</section>';}
 function selectedPanel(compact=false){const u=chosen(),v=activeUnits().find(x=>x.id===u?.id);return '<section class="panel selected-panel">'+title('Unidade Selecionada','building','unit-refresh','Atualizar')+'<div class="dialog-body">'+(u?'<h3>'+esc(u.name)+'</h3>'+detailNotice()+'<p>'+esc(u.manager_name?'Gestor: '+u.manager_name:'Gestor não informado')+'</p><p>'+esc(receivedDate())+'</p>'+(compact?'<p>'+(detail()?.inspection?'Inventário confirmado':'Inventário ainda não recebido.')+'</p>':v?'<div class="inventory-totals">'+v.values.map((n,i)=>'<span>'+icon(categories[i][2])+'<b>'+num(n)+'</b>'+esc(categories[i][0])+'</span>').join('')+'</div>':'<p>Inventário ainda não recebido.</p>')+unitFigures(u,true)+btn('Ver detalhes da unidade','unit-detail'):'Selecione uma unidade no mapa.')+'</div></section>';}
-function environmentsPanel(){const envs=detail()?.environments||[];return '<section class="panel environments">'+title('Ambientes individualizados','','environments','Ver todos')+'<div class="environment-grid">'+(envs.length?envs.map(e=>'<div class="environment-tile">'+icon('building')+'<span><strong>'+esc(e.name)+'</strong><small>'+esc(e.type)+'</small></span></div>').join(''):'<div class="empty">Nenhum ambiente recebido desta unidade.</div>')+'</div></section>';}
+function environmentsPanel(){const editable=authUser?.role==='root'&&state.page==='Ambientes',envs=(editable?detail()?.catalogueEnvironments:detail()?.environments)||[];return '<section class="panel environments">'+title(editable?'Ambientes cadastrados':'Ambientes individualizados','','environments','Ver todos')+(editable?'<p class="dialog-body">Cadastro atual, incluindo ambientes de coletas em andamento. Editar o nome preserva os equipamentos e as fotos vinculadas.</p>':'')+'<div class="environment-grid">'+(envs.length?envs.map(e=>'<div class="environment-tile">'+icon('building')+'<span><strong>'+esc(e.name)+'</strong><small>'+esc(e.type)+'</small>'+(editable?btn('Editar nome','rename-environment','','data-id="'+esc(e.id)+'" aria-label="Editar nome de '+esc(e.name)+'"'):'')+'</span></div>').join(''):'<div class="empty">Nenhum ambiente recebido desta unidade.</div>')+'</div></section>';}
 function galleryPanel(){const photos=detail()?.photos||[];return '<section class="panel gallery-panel">'+title('Galeria da Coleta','','photos','Ver todas ('+(detail()?.photoTotal??photos.length)+')')+'<div class="gallery-strip">'+(photos.length?photos.slice(0,4).map(p=>'<button class="gallery-thumb" data-action="received-photo" data-photo="'+esc(p.id)+'"><img src="'+photoUrl(p.id)+'&size=thumb" loading="lazy" decoding="async" width="160" height="120" alt="'+esc(p.label||'Fotografia da coleta')+'" title="'+esc(p.label||'Fotografia da coleta')+'"></button>').join(''):'<div class="empty">Sem fotografias recebidas.</div>')+'</div></section>';}
 const gb=v=>v?(Number(v)/1073741824).toFixed(1)+' GB':'—',whenIso=v=>v?new Date(v).toLocaleString('pt-BR'):'—';
 function agentSections(inv){if(!inv)return '<p>Nenhum inventário técnico recebido do agente até agora.</p>';const sec=inv.sections||{},sys=sec.system?.data||{},cpu=sec.cpu?.data||{},mem=sec.memory?.data||{},os=sec.os?.data||{},sto=sec.storage?.data||{},gpu=sec.gpu?.data||{},net=sec.network?.data||{};const q=k=>sec[k]?.quality?'<small>('+esc(sec[k].quality)+')</small>':'';const rows=[['Nome do computador',sys.hostname,q('system')],['Fabricante / modelo',[sys.manufacturer,sys.model].filter(Boolean).join(' / ')],['Número de série (agente)',sys.serial?.value?sys.serial.value+(sys.serial.reliability&&sys.serial.reliability!=='ok'?' · confiabilidade '+sys.serial.reliability:''):null],['Tipo de gabinete',sys.chassis_kind],['Processador',(cpu.processors||[]).map(p=>p.name+(p.cores?' · '+p.cores+' núcleos / '+p.logical_processors+' lógicos':'')).join('; '),q('cpu')],['Memória instalada',mem.installed_bytes?gb(mem.installed_bytes)+((mem.modules||[]).length?' · '+mem.modules.length+' módulo(s)':''):null,q('memory')],['Armazenamento',(sto.disks||sto.drives||[]).map(d=>[d.model,d.size_bytes?gb(d.size_bytes):null,d.media_type||d.type].filter(Boolean).join(' · ')).join('; ')||(sec.storage&&sec.storage.quality!=='ok'?'não lido ('+esc(sec.storage.quality)+')':null),q('storage')],['Vídeo',(gpu.adapters||[]).map(a=>a.name).join('; '),q('gpu')],['Rede',(net.adapters||[]).filter(a=>a.name||a.description).slice(0,4).map(a=>(a.name||a.description)+(a.mac?' · '+a.mac:'')).join('; '),q('network')],['Sistema operacional',[os.caption,os.version,os.build_number?'build '+os.build_number:null,os.architecture].filter(Boolean).join(' · '),q('os')],['Último boot informado',os.last_boot_at?whenIso(os.last_boot_at):null],['Domínio',os.part_of_domain===true?os.domain_name||'sim':os.part_of_domain===false?'não':null]];return '<p>Coletado em '+esc(whenIso(inv.collected_at))+' · recebido em '+esc(whenIso(inv.received_at))+(inv.queue_gaps?' · lacunas de fila: '+esc(JSON.stringify(inv.queue_gaps)):'')+'</p><dl class="inventory-answers">'+rows.filter(([,v])=>v).map(([k,v,extra])=>'<dt>'+esc(k)+'</dt><dd>'+esc(v)+' '+(extra||'')+'</dd>').join('')+'</dl><p class="muted">Dados reportados pelo agente; a ficha patrimonial (localização, patrimônio, conservação) continua sendo a fonte oficial.</p>';}
@@ -147,7 +148,7 @@ async function loadSelected(force=false){
  const id=state.selected;if(!id||!detailPages.has(state.page)||loadingDetails.has(id)||authUser?.role==='operador')return;
  if(!force&&Date.now()-(detailTimes.get(id)||0)<60000)return;
  loadingDetails.add(id);detailErrors.delete(id);
- try{const data=await unitInventory(id);details.set(id,data);}
+ try{const data=await unitInventory(id);if(authUser?.role==='root')data.catalogueEnvironments=(await readPanelJson('/api/root/environments?unitId='+id)).environments;details.set(id,data);}
  catch(e){detailErrors.set(id,e.message);}
  finally{detailTimes.set(id,Date.now());loadingDetails.delete(id);if(state.selected===id&&detailPages.has(state.page))render();}
 }
@@ -189,6 +190,18 @@ async function showAllPhotos(trigger){
  const unitId=state.selected;if(!unitId)return;trigger.disabled=true;
  try{const path='/api/inventory/photos?'+new URLSearchParams({unitId,scope:'published'}),first=await readPanelJson(path);if(!first.items.length){toast('Nenhuma fotografia de coleta concluída nesta unidade.');return;}
   let cursor=first.nextCursor;openPhotoViewer(first.items,0,trigger,{total:first.published,hasMore:()=>!!cursor,loadMore:async()=>{const next=await readPanelJson(path+'&cursor='+encodeURIComponent(cursor));cursor=next.nextCursor;return next.items;}});
+ }catch(e){toast(e.message);}finally{if(trigger.isConnected)trigger.disabled=false;}
+}
+async function renameSelectedEnvironment(trigger){
+ const unitId=state.selected;trigger.disabled=true;
+ try{
+  const rooms=(await readPanelJson('/api/root/environments?unitId='+unitId)).environments,room=rooms.find(e=>e.id===trigger.dataset.id);
+  if(!room)throw Error('Ambiente não encontrado. Atualize a página.');
+  const renamed=await editEnvironmentName({environment:room,save:async payload=>{
+   const r=await fetch('/api/root/environment-rename',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':authUser.csrf},body:JSON.stringify({...payload,unitId}),signal:AbortSignal.timeout(30000)});
+   const value=await r.json();if(!r.ok)throw Object.assign(Error(value.error||'Alteração não confirmada.'),value);return value;
+  }});
+  if(renamed){detailTimes.delete(unitId);await loadSelected(true);toast('Nome do ambiente atualizado. Equipamentos e fotos preservados.');}
  }catch(e){toast(e.message);}finally{if(trigger.isConnected)trigger.disabled=false;}
 }
 function navigate(page,push=true){if(push&&pageRoutes[page])history.pushState({page},'',pageRoutes[page]+(page==='Detalhe da Unidade'&&state.selected?'?id='+encodeURIComponent(state.selected):''));state.page=page;render();document.querySelector('.sidebar').classList.remove('open');window.scrollTo(0,0);document.querySelector('#live').textContent=`Página ${page}`;}
@@ -243,6 +256,7 @@ document.addEventListener('click',e=>{
  if(a==='google-disconnect-confirm'){b.disabled=true;googlePost('/api/root/google/disconnect').then(r=>toast('Desconectado ('+r.revoked+').')).catch(e=>toast(e.message)).finally(()=>{document.querySelector('dialog')?.close();googleStatus=null;render();});return;}
  if(a==='alerts'){navigate('Ocorrências');return;}
  if(a==='alert-detail'){toast('Nenhum alerta recebido.');return;}
+ if(a==='rename-environment'){renameSelectedEnvironment(b);return;}
  if(a==='environments'){navigate('Ambientes');return;}
  if(a==='environment-detail'){toast('Nenhum ambiente recebido.');return;}
  if(a==='export-data'){runExport(document.querySelector('#export-kind').value,document.querySelector('#export-format').value);return;}

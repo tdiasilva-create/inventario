@@ -10,6 +10,7 @@ import {photoStore} from './photo-storage.mjs';
 import {photoGalleryRead} from './photo-gallery.mjs';
 import {handleAgentMachine,handleAgentHuman,manutencaoAgentes} from './agentes/index.mjs';
 import {runAgentMonitoring,monitoringRoutes} from './agent-monitoring.mjs';
+import {rootEnvironmentRoutes} from './environments.mjs';
 import {serviceDeskRoutes} from './service-desk.mjs';
 const json=(value,status=200,headers={})=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
 const fail=(message,status=400)=>json({error:message},status);
@@ -77,6 +78,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  const collectionResponse=await collectorRoutes(request,url,user,env,{json,fail,body});if(collectionResponse)return collectionResponse;
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.
  if(env.APP_KIND!=='collector'){const googleResponse=await googleRoutes(request,url,user,env,{json,fail,audit});if(googleResponse)return googleResponse;}
+ const environmentResponse=await rootEnvironmentRoutes(request,url,user,env,{json,fail,body});if(environmentResponse)return environmentResponse;
  const importResponse=await importRoutes(request,url,user,db,{json,fail,body,audit});if(importResponse)return importResponse;
  const unitResponse=await unitRoutes(request,url,user,db,{json,fail,body,audit,store:photoStore(env,{db}),collector:env.APP_KIND==='collector'});if(unitResponse)return unitResponse;
  if(path.startsWith('/api/admin/')){
@@ -123,7 +125,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(env.APP_KIND==='collector'){
   if(!['root','admin','operador'].includes(user.role))return fail('Este perfil é somente de visualização. Acesse o painel desktop.',403);
   const target=new URL(request.url);if(['/','/coleta','/coleta.html'].includes(path))target.pathname='/collector.html';if(path==='/visita')target.pathname='/visit.html';if(path==='/coleta-v2')target.pathname='/collector-v2.html';if(path==='/coleta-v3')target.pathname='/collector-v3.html';
-  if(["/photo-prepare.js","/vendor/heic-to/heic-to.min.js","/vendor/heic-to/LICENSE","/vendor/heic-to/ORIGEM.txt","/collector-photo-viewer.js",'/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-environments.js','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
+  if(["/environment-editor.js","/photo-prepare.js","/vendor/heic-to/heic-to.min.js","/vendor/heic-to/LICENSE","/vendor/heic-to/ORIGEM.txt","/collector-photo-viewer.js",'/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-environments.js','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:collectorLogin(),'Cache-Control':'no-store'}});
