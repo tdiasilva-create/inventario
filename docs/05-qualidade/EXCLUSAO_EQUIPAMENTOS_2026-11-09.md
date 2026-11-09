@@ -49,4 +49,20 @@ Não houve teste destrutivo na produção nem teste físico de botão/retomada n
 
 ## Publicação
 
-Preparação local concluída. Registro dos recursos, backup e versões reais será preenchido após execução/verificação da publicação. Artefatos privados em `private-data/release-apagar-equipamentos-2026-11-09/`, fora do Git.
+Publicada em 09/11/2026 às 16:57 (Fortaleza), código **48f6ff5**. Migração 0023 aplicada ao D1 compartilhado; nenhuma migração pendente; foreign_key_check sem violações.
+
+- Painel: **d0198fe9-5bca-46bb-a3e3-705255ea995b**, 100%, 19:57:11 UTC.
+- Coletor: **274ecd9b-002e-4f79-a4b9-325fc26fece1**, 100%, 19:56:52 UTC. Mesma interface, proteção de gravação e leitura histórica no servidor.
+- Backup D1 anterior validado: 2.099.862 bytes, SHA-256 c3817f59d5354843a79f1f70b4be0a0729736f4fd5f8ac53935e87992a212d26. Arquivo privado, nunca no Git.
+- Antes/depois: 76 unidades, 14 fichas legadas, zero Outros, 11 vínculos ativos e 15 usuários. Fotos passaram de 16 para 17 durante a operação concorrente do sistema. **Zero retiradas em equipment_deletions** após publicação; nenhum dado real excluído por teste.
+- 168 testes na execução final; navegador novo e regressão de edição de nomes aprovados. Builds painel 86 arquivos/coletor 54; dry-run dos dois; scanner do índice Git 541 arquivos aprovado.
+- Dez verificações HTTP externas aprovadas: login 200, páginas privadas redirecionadas e APIs sem sessão 401. A confirmação da versão usa os deployments da Cloudflare, não deduz existência de endpoint a partir de 401. Não foi feita exclusão autenticada em produção.
+- Crons, segredos, Drive e protocolo do agente preservados. Publicação não modifica EXE.
+
+URLs reais:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+
+Versões anteriores para referência: painel 9f591a5f-201c-4c45-bffb-dd58d2d25a81; coletor 18ee2dd6-7f07-48b0-bbc9-2a2bdf763024. Rollback de Worker não desfaz exclusões confirmadas; não reverter o coletor sem conservar proteção contra IDs arquivados. Migração aditiva deve permanecer; restauração do banco é procedimento separado, nunca sobrepor dados novos automaticamente.
+
+Artefatos privados: private-data/release-apagar-equipamentos-2026-11-09/ (backup, hashes, testes finais, migrations, deploys, versões, contagens e HTTP).

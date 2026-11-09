@@ -70,3 +70,7 @@ SQLite/D1 usa recursos que não traduzem literalmente para MySQL/PostgreSQL. Uma
 A migração 0016 do cadastro ampliado foi aplicada ao D1 real em 06/11/2026 após backup e autorização do responsável. Conferência remota: nenhuma migração pendente, 32 colunas em units e registros anteriores preservados. Ver [publicação D-068](../05-qualidade/PUBLICACAO_D068_2026-11-06.md). O catálogo gerado continua sendo reproduzido das migrações versionadas; não contém dados de produção.
 
 As migrações 0017 e 0018 foram aplicadas posteriormente, em 08/11/2026: [monitoramento](../05-qualidade/MONITORAMENTO_2026-11-08.md) e [demandas](../05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md). As três publicações são registros distintos; a conferência da 0016 não comprova, sozinha, o estado posterior.
+
+## Estado físico após D-078 — 09/11/2026
+
+A descrição histórica de 19 migrações acima foi superada. Aplicar todas as **23 migrações** versionadas: catálogo regenerado com 68 tabelas, 47 índices explícitos, uma view e 14 triggers. A 0023 cria equipment_deletions, conserva a cópia dos cadastros retirados, bloqueia reutilização dos IDs e mantém contagens ao retirar fichas ativas. Fotografias não são removidas por essa ação. Não ignorar o arquivo histórico numa migração/restauração. A edição de nomes (0021/0022) também faz parte do conjunto atual. [Publicação e aceite D-078](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).
