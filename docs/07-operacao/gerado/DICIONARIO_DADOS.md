@@ -19,6 +19,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0015_questionario_v3.sql`
 - `0016_unidades_cadastro_ampliado.sql`
 - `0017_agent_monitoring.sql`
+- `0018_service_desk.sql`
 
 ## agent_audit_log
 
@@ -387,6 +388,29 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | storage_provider | TEXT | sim |  | 'r2' |
 | storage_ref | TEXT | não |  | — |
 
+## computer_context
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| target_id | TEXT | não | 1 | — |
+| unit_id | TEXT | sim |  | — |
+| kind | TEXT | sim |  | — |
+| value | TEXT | sim |  | — |
+| version | INTEGER | sim |  | 1 |
+| updated_at | INTEGER | sim |  | — |
+| updated_by | TEXT | sim |  | — |
+
+## computer_context_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| target_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| before_json | TEXT | não |  | — |
+| after_json | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
 ## environments
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -680,6 +704,43 @@ Referências: `equipment_id` → `equipments.id` (delete: NO ACTION).
 | impact_json | TEXT | sim |  | — |
 | reason | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
+
+## service_request_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| request_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+| snapshot_json | TEXT | sim |  | — |
+| note | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+Referências: `request_id` → `service_requests.id` (delete: NO ACTION).
+
+## service_requests
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| number | INTEGER | sim |  | — |
+| unit_id | TEXT | sim |  | — |
+| equipment_id | TEXT | não |  | — |
+| context_json | TEXT | sim |  | — |
+| description | TEXT | sim |  | — |
+| kind | TEXT | sim |  | — |
+| source | TEXT | sim |  | — |
+| requester | TEXT | sim |  | '' |
+| status | TEXT | sim |  | — |
+| responsible | TEXT | sim |  | '' |
+| scheduled_date | TEXT | sim |  | '' |
+| version | INTEGER | sim |  | 1 |
+| created_at | INTEGER | sim |  | — |
+| created_by | TEXT | sim |  | — |
+| updated_at | INTEGER | sim |  | — |
+| last_operation | TEXT | sim |  | — |
 
 ## sessions
 

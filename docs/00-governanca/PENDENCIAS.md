@@ -131,3 +131,9 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 - [ ] Troca de peças idênticas sem série confiável, periféricos/fonte/bateria e coleta remota imediata não estão cobertos pela telemetria comparável atual. Não inferir implementação.
 
 - [x] D-070 publicado no painel real, migração 0017 e cron de minuto confirmados em duas rodadas consecutivas (08/11/2026, 19:22/19:23 Fortaleza). Dados/Drive preservados. Pendente somente o aceite físico descrito acima, sem impedir o monitor de operar com a telemetria recebida.
+
+
+### D-071 — 08/11/2026
+- [x] Central de demandas e computadores por unidade/laboratorio publicados no painel; migracao 0018; historico, reenvio, perfis e volume testados. Ver docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md.
+- [ ] Responsavel classificar laboratorios reais existentes e confirmar ausencia de computadores somente quando conhecida. Nao inferir por nomes ou falta de inventario.
+- [ ] Homologacao operacional de um atendimento real e de um laboratorio fisico pelo responsavel. Nenhum exemplo foi gravado em producao.

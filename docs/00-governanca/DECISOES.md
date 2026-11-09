@@ -456,3 +456,12 @@ Monitoramento minuto a minuto no servidor; interface a cada 15 segundos quando v
 Comparação por vínculo, referência confiável por componente e qualidade ok; CPU, RAM, discos, placa-mãe e vídeo PCI. Séries só quando confiáveis. Não comparar IP, contas, driver, BIOS, clock ou espaço livre. Primeira referência sem evento retroativo; listas incompletas não indicam retirada. Eventos têm antes/depois e datas, são diferenças a conferir fisicamente. Detecção depende de novo inventário recebido. Limites e escolhas técnicas reversíveis em docs/04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md.
 
 Sino e acesso em Alertas e Insights, leitura individual e histórico paginado. Root/admin/visualizador, sessão/CSRF no servidor; operador sem consulta gerencial. Coleta em andamento rotulada PARCIAL e sem promoção a indicador oficial. Migração 0017 acrescenta quatro tabelas; histórico, dados publicados, fotos/Drive e credenciais preservados. Publicação e evidências em docs/05-qualidade/MONITORAMENTO_2026-11-08.md.
+
+
+## D-071 — Central de demandas e computadores por unidade/laboratorio, 08/11/2026
+
+Pedido explicito: implementar central de demandas, visualizacao por unidade e laboratorio, incluir unidades sem computadores e hostname no hover, publicar no ambiente real. Root/admin gerenciam, visualizador consulta, operador permanece na coleta. Demanda por unidade com equipamento opcional; cinco estados (Aberta, Em atendimento, Aguardando material, Visita agendada, Concluida), historico e relato para concluir. Comunicacao independente da manutencao: reconexao nao conclui demanda manual. Unidades sem inventario nao equivalem a ausencia confirmada; classificacao de laboratorio explicita, sem inferir por nome. Interface atualiza a cada 15 segundos e preserva estados PARCIAL/oficial.
+
+Autoriza migracao aditiva 0018 e publicacao somente do painel; sem dados ficticios oficiais, mudanca no coletor, agente/QR ou Drive. Detalhes em docs/03-painel-desktop/CENTRAL_DE_DEMANDAS.md e docs/04-dados-apis/CENTRAL_DEMANDAS_API.md. Aceite/publicacao em docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md. Esta decisao supera a restricao original de desktop somente leitura exclusivamente para o gerenciamento operacional aqui aprovado.
+
+D-071 publicada: painel 52ccaadf-0b9d-46be-99ce-4d8ae0b8ef8f em 100%, migracao 0018 aplicada; dados/contas/Drive preservados, coletor sem novo deploy. Conferencia root e evidencia em docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md.

@@ -316,3 +316,7 @@ D-069: conferência autenticada real concluída após o responsável entrar como
 
 ## D-070 — 08/11/2026
 Pedido direto de notificações de hardware/perda de comunicação e publicação real → server/agent-monitoring.mjs, server/agentes/presence.mjs, migração 0017, scheduled do painel, web/desktop-notifications.js/css, shell e consulta D-069. Oito testes de domínio/API/concorrência/volume + roteiro de navegador em tests/agent-monitoring-browser.cjs. Contrato: docs/04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md. Evidências/publicação: docs/05-qualidade/MONITORAMENTO_2026-11-08.md. Base de Coleta original preservada; nenhum novo campo do questionário.
+
+
+## D-071 — operacao por unidade e central de demandas
+Pedido explicito de 08/11/2026 -> migracao 0018_service_desk.sql; server/service-desk.mjs; web/operations.*; desktop-demand-count.js; shell/Worker/build -> tests/service-desk.test.mjs e tests/operations-browser.cjs. Documentacao: docs/03-painel-desktop/CENTRAL_DE_DEMANDAS.md, docs/04-dados-apis/CENTRAL_DEMANDAS_API.md e docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md. Base de Coleta original preservada; nao altera perguntas ou fotos.

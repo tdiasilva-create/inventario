@@ -12,3 +12,6 @@ Nova migração 0016_unidades_cadastro_ampliado.sql, após 0015_questionario_v3.
 
 
 D-070, 08/11/2026: painel publicado com notificações persistentes de hardware/presença, migração 0017, monitor de minuto e leitura automática em 15s. Fonte operacional: docs/04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md; aceite/publicação: docs/05-qualidade/MONITORAMENTO_2026-11-08.md. 123 testes aprovados e navegador real/isolado documentados. Não confundir telemetria com conclusão de visita ou teste físico do EXE.
+
+
+D-071: pnpm test:operations:browser testa central/frota contra Worker e SQLite isolados; pnpm test inclui service-desk.test.mjs. Rotas /computadores e /demandas usam operations.html; migracao 0018 antes do deploy desktop. Nao semear dados de teste em D1 oficial.
