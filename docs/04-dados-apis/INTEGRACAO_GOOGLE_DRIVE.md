@@ -153,3 +153,7 @@ Correção documental: não presumir que Drive compartilhado exige sempre escopo
 
 ## Otimização local — 09/11/2026 (não publicada)
 A Fase 1 reutiliza a linha da integração dentro da requisição, mantém a leitura atual do D1 antes de usar token em memória e pesquisa semedPhotoId somente na retomada de pendência. Não muda escopo OAuth, pasta ou segredos. Leitura com SHA-256 válido usa private, no-cache + ETag/304 após autorização e disponibilidade da integração; hash legado sem formato válido mantém no-store. Recuperação sequencial testada não equivale a trava distribuída. Ver [relatório e limites](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md).
+
+## Publicação da otimização — 09/11/2026
+
+Etapa posterior autorizada: Fase 1 publicada nos dois Workers e migração 0019 aplicada. D1 real confirmou integração conectada, pasta configurada e três registros de fotos preservados. Segredos e escopo OAuth não alterados. Não houve novo envio real nesta rodada: sessão do painel expirada, sem teste autenticado de fotos pós-deploy. Os estados antigos no início do documento são históricos; consultar o [registro desta publicação](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md) para evidências e limites atuais.

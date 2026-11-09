@@ -330,3 +330,7 @@ Pedido explícito de atualizar o repositório para auditar funcionamento e lógi
 
 ## Correções de desempenho — Fase 1 local, 09/11/2026
 Pedido de iniciar correções do pacote externo → cache revalidado de assets/fotos, linha de integração reutilizada, memo de token condicionado à integração atual, primeira tentativa sem busca Drive, índices aditivos 0019, estabilidade DOM de ocorrências e WebP legado. Base §§1.2, 5, 7.5–7.6/7.11 e 8–9 preservadas; D-048/D-057/D-065 mantidas. Evidências, IDs da auditoria, contagens antes/depois e limites: [relatório da Fase 1](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md). 134 testes e dez roteiros de navegador locais. Sem publicação/segredos/D1 remoto/Drive real. Política de 24 h e miniaturas no D1 não adotadas.
+
+## Publicação da Fase 1 — 09/11/2026
+
+Pedido posterior explícito “publique no ambiente real” → código `b96f428` publicado no painel (`e7261a18-7138-4877-b5cb-fbd5a41fbc5f`) e coletor (`9de19a35-cf5d-4172-a894-450995f218ad`), ambos em 100%; migração 0019 aplicada no D1 compartilhado após backup verificado. Cadastros, Drive, perguntas e perfis preservados. 46 verificações públicas do painel e 18 respostas adicionais nos dois endereços aprovadas, incluindo oito revalidações estáticas 304. Registro/limites/rollback: [publicação real](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md). Sem novo upload autenticado: sessão do painel expirada. Demais fases da auditoria continuam pendentes.

@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência: **09/11/2026**. Derivado do código, configurações, 19 migrações locais (0019 ainda não publicada), decisões e registros de publicação. Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md).
+Referência: **09/11/2026**. Derivado do código, configurações, 19 migrações (0019 aplicada no D1 real), decisões e registros de publicação. [Publicação da Fase 1](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md). Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md).
 
 | Guia | Uso |
 |---|---|

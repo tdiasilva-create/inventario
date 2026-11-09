@@ -59,3 +59,5 @@ Pendências relevantes: offline durável; homologação física do EXE exato e c
 ## Correções locais posteriores à fotografia desta auditoria
 
 Em 09/11/2026, a [Fase 1 de desempenho](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md) acrescentou cache revalidado, otimizações de fotos e migração aditiva 0019. Código local: 19 migrações/42 índices; ambiente publicado continua com 18/40. A seção acima mantém a referência de 08/11. Testes locais: 134 e dez roteiros de navegador, sem deploy nem escrita em serviços reais.
+
+**Atualização posterior no mesmo dia:** publicação real autorizada e concluída nos dois Workers; migração 0019 aplicada, com backup anterior e cadastros preservados. A referência vigente passa a 19 migrações e dois índices adicionais também em produção. Ver [publicação da Fase 1](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md). Testes HTTP de acesso/cache aprovados; novo teste autenticado de fotos não realizado, pois a sessão expirou. As demais fases da auditoria não foram publicadas nesta entrega.

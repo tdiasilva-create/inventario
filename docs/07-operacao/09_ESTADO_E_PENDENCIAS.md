@@ -70,3 +70,7 @@ Sem importação automática. A planilha de escolas tem vagas -16 na linha 31; c
 
 ## Alterações locais posteriores — 09/11/2026
 A [Fase 1 de desempenho](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md) está implementada e testada localmente, **sem deploy**. Migração 0019 adiciona dois índices e ainda não foi aplicada no D1 remoto. O catálogo físico gerado passou a descrever 19 migrações/42 índices; produção permanece com 18 migrações/40 índices. Cache privado de fotos exige revalidação, mantendo sessão/permissões; não há retenção fresca de 24 h. Miniaturas, concorrência distribuída de upload, demais fases e homologação física permanecem pendentes.
+
+### Publicação posterior — 09/11/2026
+
+O responsável autorizou o deploy real após a entrega local acima. Fase 1 publicada nos dois Workers, ambos ativos em 100%; migração 0019 aplicada no D1 compartilhado, após backup validado. Produção passa a 19 migrações e dois índices adicionais. Cadastros, integração Drive e agendamento do monitor preservados. Ver [registro da publicação](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md) para versões, rollback, verificações HTTP e limites. A sessão do painel expirou; novo teste autenticado de fotos pós-deploy não foi realizado. Demais fases continuam pendentes.

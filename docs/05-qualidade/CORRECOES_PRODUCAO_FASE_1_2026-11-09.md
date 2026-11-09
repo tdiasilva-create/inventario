@@ -1,5 +1,7 @@
 # Correções de desempenho — Fase 1, 09/11/2026
 
+> Atualização posterior: a Fase 1 foi publicada nos dois ambientes reais em 09/11/2026, com migração 0019 aplicada. Ver [registro da publicação](PUBLICACAO_FASE_1_2026-11-09.md). O texto abaixo preserva a evidência e os limites da etapa local anterior.
+
 **IMPLEMENTADO E TESTADO LOCALMENTE. Sem publicação, migração remota, alteração de segredos ou upload real.** O título identifica o plano recebido de correções de produção; não declara que a versão esteja publicada.
 
 ## Escopo autorizado e fontes

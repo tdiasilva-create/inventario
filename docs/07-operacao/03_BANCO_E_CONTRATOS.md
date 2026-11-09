@@ -24,7 +24,7 @@ Regenerar com `pnpm docs:schema`. As migrações 0001–0019 são a fonte físic
 
 Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidades.
 
-**09/11/2026:** 0019 contém apenas dois índices de fotos, testados localmente e ainda não publicados. O D1 real permanece com 18 migrações; não confundir este catálogo de código com verificação remota.
+**09/11/2026:** 0019 contém apenas dois índices de fotos, testados localmente e aplicados no D1 real. A conferência remota confirmou 19 migrações e os dois índices adicionais (42 no catálogo físico). Ver [publicação e backup](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md).
 
 ## Invariantes para restaurar
 
