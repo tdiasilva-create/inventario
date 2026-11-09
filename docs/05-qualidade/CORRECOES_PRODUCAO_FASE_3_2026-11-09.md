@@ -34,7 +34,7 @@ Cobertos nesta fase: leitura de evidências vinculadas e ampliação (§5); sepa
 
 Permanecem decisões de lugares de referência, Ano, critérios de indicadores e busca global além do escopo aprovado. Fases 4/5, offline durável, testes físicos de câmera/teclado/Windows e medições em rede real continuam pendentes. Esta fase não declara concluída toda a auditoria.
 
-Publicação: registrar versão, verificações e limites em `PUBLICACAO_FASE_3_2026-11-09.md` após execução. Retorno de código previsto para painel `c6a440fb-ae93-4bd2-879c-eaba507e2fbc`; coletor permanece `ef33d619-52da-4726-989c-6a49b551a899`. Não restaurar/apagar D1 ou Drive para retornar código.
+Publicação real concluída: versão final, verificações e limites em [PUBLICACAO_FASE_3_2026-11-09.md](PUBLICACAO_FASE_3_2026-11-09.md). Retorno de código previsto para painel `c6a440fb-ae93-4bd2-879c-eaba507e2fbc`; coletor permanece `ef33d619-52da-4726-989c-6a49b551a899`. Não restaurar/apagar D1 ou Drive para retornar código.
 
 ## Regressão final antes da publicação
 

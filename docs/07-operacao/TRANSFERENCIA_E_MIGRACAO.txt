@@ -587,7 +587,7 @@ Estado e pendências — atualizado em 09/11/2026
 
 Estado mais recente e auditoria
 
-O guia de auditoria (../08-auditoria/README.md) reúne fontes, regras, testes e limites. O esquema atual possui 18 migrações, incluindo monitoramento (0017) e demandas (0018). Resultados da organização de 08/11 estão no registro de verificação (../08-auditoria/VERIFICACAO_2026-11-08.md); resultados de entregas anteriores abaixo continuam históricos.
+O guia de auditoria (../08-auditoria/README.md) reúne fontes, regras, testes e limites. O esquema atual possui 20 migrações, incluindo monitoramento (0017), demandas (0018), índices (0019) e miniaturas (0020). Resultados da organização de 08/11 estão no registro de verificação (../08-auditoria/VERIFICACAO_2026-11-08.md); resultados de entregas anteriores abaixo continuam históricos.
 
 - D-069: consulta embutida por unidade/categoria, ficha técnica, fotos por equipamento, paginação e identificadores remotos. Aceite e conferência real (../05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md).
 - D-070: presença/notificações automáticas implementadas e publicadas, cron de minuto conferido. A antiga ausência de notificações não é pendência atual. Aceite físico de perda/retorno e manutenção de peça continua pendente. Contrato e limites (../04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md).
@@ -663,5 +663,10 @@ O responsável autorizou o deploy real após a entrega local acima. Fase 1 publi
 Auditoria: miniaturas (Fase 2)
 
 D-072 autoriza miniaturas pequenas no D1; originais continuam no Drive. Fase 2 publicada nos dois Workers em 09/11, ambos em 100%, com migração aditiva 0020 aplicada (20 no total). Root dispõe de preparo paginado das fotos antigas em Configurações; as três existentes foram preparadas em produção, totalizando 24.438 bytes, e a leitura da miniatura e ampliação integral foi conferida com sessão real. Publicação/backup/versões (../05-qualidade/PUBLICACAO_FASE_2_2026-11-09.md), contrato (../04-dados-apis/MINIATURAS_D072.md) e aceite/limites (../05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md). Não inferir que todas as fases da auditoria foram concluídas. Fases 3–5 e testes físicos seguem pendentes.
+
+
+Publicação mais recente — Fase 3 / D-073, 09/11/2026
+
+Painel por blocos publicado em 100%, versão 104e92dc-7b74-4509-9ad9-24c215f7dbc1; coletor mantido na Fase 2. Busca preserva mapa/DOM, fachada e galeria completa, detalhe com atualização, agente na consulta parcial e exportações CSV/XLSX. Sem migração ou alteração de cadastros. 141 testes e 12 roteiros de navegador; 46 verificações HTTP mais sete negações de acesso; conferência real root e três fotos existentes. Publicação/limites/retorno (../05-qualidade/PUBLICACAO_FASE_3_2026-11-09.md). Fases 4/5 e decisões de locais/Ano continuam pendentes. As anotações de Fases 1/2 acima preservam o histórico.
 
 
