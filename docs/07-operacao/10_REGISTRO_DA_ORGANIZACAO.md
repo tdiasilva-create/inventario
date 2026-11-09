@@ -60,3 +60,7 @@ Código/ferramentas do commit bcf2ebabdc5e15dd3933a605bf5ee0a29ec6ff1e aprovados
 Uma repetição adicional local teve falha de fetch ao carregar a lista inicial; a repetição seguinte passou sem alteração do código da aplicação. As falhas iniciais da CI e os ajustes de sincronização da automação permanecem registrados acima. Não houve homologação física.
 
 Este complemento altera apenas documentação e o TXT gerado. A verificação final local de links/regeneração é executada antes do envio; não exige repetir os testes da aplicação já aprovados.
+
+## Atualização para auditoria — 08/11/2026
+
+Nova solicitação do responsável: atualizar o repositório para auditoria de funcionamento e lógicas. Manual revisado para 18 migrações e módulos D-069–D-071; preparado [guia independente de revisão](../08-auditoria/README.md) com matriz e roteiro TXT. Suíte local atual: 129 testes e nove roteiros de navegador aprovados; CI expandida para os nove. A única correção de automação troca o seletor da janela antiga pela consulta embutida já existente, mantendo o aceite dos dados. Nenhuma mudança no runtime nem nova implantação. Resultados e limites no [registro atual](../08-auditoria/VERIFICACAO_2026-11-08.md).

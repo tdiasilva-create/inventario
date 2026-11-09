@@ -1,0 +1,245 @@
+SEMED — ROTEIRO PARA AUDITORIA INDEPENDENTE DE FUNCIONAMENTO E LÓGICAS
+Referência: 08/11/2026 · America/Fortaleza
+Repositório: https://github.com/tdiasilva-create/inventario
+Entrada: docs/08-auditoria/README.md
+
+1. OBJETIVO E ESCOPO
+
+Auditar o sistema existente, identificando defeitos reproduzíveis, divergências
+entre regras aprovadas e código, falhas de persistência/consulta e lacunas reais.
+Não redesenhar o questionário nem trocar arquitetura por preferência técnica.
+Não presumir que todo requisito histórico continua vigente, nem que todo teste
+verde garante o funcionamento físico do agente, câmera ou Google Drive.
+
+São duas interfaces com uma persistência compartilhada:
+Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+
+O agente Windows é outro componente. Seu protocolo está no repositório, mas o
+binário e seu processo completo de build/homologação precisam ser conferidos
+separadamente. Nunca apresentar teste de protocolo como execução do EXE.
+
+2. FONTES E PRECEDÊNCIA
+
+Ler primeiro:
+- 00_LEIA_ANTES_DE_TUDO.md e AGENTS.md.
+- docs/00-governanca/REGRAS_DE_PRECEDENCIA.md.
+- DECISOES.md, PENDENCIAS.md, CONFLITOS_DOCUMENTAIS.md e RASTREABILIDADE.md
+  no mesmo diretório de governança.
+- docs/08-auditoria/MATRIZ_DE_LOGICAS.md.
+- docs/07-operacao/README.md e os guias 01 a 10.
+
+Para coleta: ler integralmente a Base original em docs/02-coleta-mobile/
+BASE_DE_COLETA_V1_0_ORIGINAL.txt e confrontar com decisões posteriores,
+especialmente D-045/D-046, D-057–D-062 e D-068. A Base é preservada; o formulário
+atual não é uma reprodução de todas as perguntas antigas.
+
+Para painel: docs/03-painel-desktop/, decisões D-065–D-071, contratos em
+docs/04-dados-apis/ e relatórios de entrega em docs/05-qualidade/.
+Para aparência, abrir referências conforme AGENTS.md; a paleta dark-tech antiga
+foi superada pela identidade compartilhada, sem autorizar dados fictícios reais.
+
+Para agente: docs/04-dados-apis/INSTALADOR_OFICIAL.md e o JSON referenciado;
+contratos em server/agentes/ e testes. Identificar versão e hash do EXE usado.
+Não confundir escolha histórica do instalador com homologação de uma versão nova.
+
+Rotular cada conclusão: DEFEITO REPRODUZIDO, LIMITAÇÃO CONHECIDA, DÚVIDA FUNCIONAL,
+PROPOSTA ou VERIFICADO.
+Decisão posterior explícita prevalece somente em seu escopo; proposta não vira regra.
+
+3. PREPARAR UM CLONE E IDENTIFICAR O ALVO
+
+Registrar commit completo, branch, estado do working tree, sistema operacional,
+versões Node/pnpm/navegador e horário/fuso. Não realizar auditoria sobre uma mistura
+de arquivos recebidos, alterações locais e código remoto sem registrar a origem.
+
+Comandos iniciais:
+git clone https://github.com/tdiasilva-create/inventario.git
+cd inventario
+git rev-parse HEAD
+git status --short
+node --version
+pnpm --version
+pnpm install --frozen-lockfile
+
+Pré-requisitos: Node 24, pnpm 11.25.0. A CI usa Ubuntu 24.04 e Chromium.
+As dependências ficam no lockfile; não atualizar versões durante a reprodução.
+Não é necessário login Cloudflare/Google para executar a suíte isolada.
+
+4. EXECUTAR VERIFICAÇÕES REPRODUZÍVEIS
+
+pnpm check:repository
+pnpm test
+pnpm build:desktop
+pnpm build:collector
+pnpm check:docs
+pnpm docs:schema
+pnpm docs:txt
+git diff --exit-code -- docs/07-operacao/gerado docs/07-operacao/TRANSFERENCIA_E_MIGRACAO.txt
+
+Navegador no Windows com Edge instalado: executar os comandos abaixo diretamente.
+Para Chromium: pnpm exec playwright install chromium
+PowerShell: $env:SEMED_TEST_BROWSER='chromium'
+Linux/CI: export SEMED_TEST_BROWSER=chromium
+Linux: pnpm exec playwright install --with-deps chromium
+
+pnpm test:v3:browser
+pnpm test:ux:browser
+pnpm test:identity:browser
+pnpm test:panel:browser
+pnpm test:catalogue:browser
+pnpm test:equipment:browser
+pnpm test:monitoring:browser
+pnpm test:operations:browser
+pnpm test:panel-navigation:browser
+
+Cada roteiro usa fixtures isoladas. Capturas ficam em docs/05-qualidade/evidencias/
+e não são enviadas automaticamente ao Git. Preservar falhas, stderr e versões.
+Não ocultar falha intermitente apenas porque uma repetição passou.
+
+pnpm start é prévia estática, não servidor completo. Para navegar com API/D1 locais,
+seguir docs/07-operacao/04_DESENVOLVIMENTO_E_TESTES.md usando as configurações de
+exemplo e persistência isolada. O bootstrap contém DELETE: somente base nova local.
+Nunca executar seeds, scripts de recuperação ou --remote em produção por hábito.
+O atalho de coletor do build desktop aponta a produção: no ensaio, abrir o endereço
+local do coletor manualmente. Nenhum teste fictício deve sair da base isolada.
+
+5. CENÁRIOS FUNCIONAIS OBRIGATÓRIOS
+
+A. Autorização
+Criar quatro sessões em fixtures. Verificar login, expiração, revogação e CSRF.
+Operador coleta, mas não acessa consulta gerencial nem demandas; visualizador
+consulta sem alterar unidades/demandas; root mantém cadastro mestre/usuários.
+Admin não recebe automaticamente poderes exclusivos do root.
+Testar chamadas diretas de API, e não apenas visibilidade de botões.
+
+B. Unidades
+Administrativo sem INEP deve ser aceito. Escolas municipais, militares e creches
+exigem INEP. Qualquer INEP preenchido precisa de oito dígitos e unicidade.
+Repetir na importação e edição. Obras no painel, fora da coleta inclusive na API.
+Conveniadas legadas preservadas sem voltar ao escopo por nomes ou importação.
+NULL numérico é ausência; zero informado é zero. Filtros devem manter contagem por
+tipo, sem somar escolas e administrativos num indicador genérico de unidades.
+Ensaiar exclusão root com prévia/confirmar/auditoria somente em banco isolado.
+
+C. Coleta e navegação
+Entrar como operador, receber a lista sem precisar pesquisar e iniciar unidade.
+Fotografar fachada no fluxo simulado, preencher acompanhante opcional, abrir
+assuntos livremente e voltar. Testar avançar/voltar sem modificar respostas,
+reabertura manual de assunto, retomada por URL e por outro operador.
+Validar dependências segundo o formulário atual, sem restaurar perguntas antigas.
+Verificar teclado/foco/cursor e texto novo durante salvamento/upload assíncrono.
+
+D. Equipamentos
+Cadastrar computador manual com motivo e por QR; manter ID permanente.
+AnyDesk/RustDesk vazios aceitos; dígitos e zeros iniciais preservados; letras
+recusadas. Computador pode ser salvo sem foto; foto opcional precisa aparecer
+na própria ficha e manter o modo manual/agente do rascunho.
+Impressoras e outros equipamentos seguem seus próprios campos/condições.
+Testar grandes quantidades paginadas: limite de página não é limite de cadastro.
+Ao revisitar, editar o item existente sem criar outro por engano.
+
+E. Fotos e persistência
+Testar sucesso, rede interrompida, provedor indisponível, resposta perdida,
+remoção, limite de quantidade e tentativa de ler foto de outra unidade/alvo.
+Separar selecionada/local, envio pendente, arquivo confirmado e dado publicado.
+Fotos devem permanecer privadas e acessíveis via Worker autorizado.
+Estado ready só após confirmação do armazenamento, nunca após um sucesso fake.
+Novo teste com Drive real/câmera física requer sessão institucional e unidade de
+teste autorizada; os testes locais simulam o provedor e não comprovam esse acesso.
+
+F. Publicação e consulta
+Salvar respostas → consultar PARCIAL no desktop → verificar que indicadores
+oficiais não mudaram → concluir assuntos/visita conforme validação do servidor →
+verificar published_json, matriz, questionário e fotos no contexto correto.
+Repetir com atualização após publicação: a alteração parcial não substitui a
+ficha oficial até nova conclusão. Não usar só HTTP 200 como prova de persistência.
+Verificar IDs, autoria, histórico, versões e resultado após recarregar.
+
+G. Agente e QR
+Cadastro automático no modo configurado, sem autorização por máquina.
+Verificar assinatura, replay, nonce, chave, revogação, expiração de QR e vinculação
+apenas por usuário autenticado. Simular falha antes e depois do envio e consultar
+recibo: não pode haver dois vínculos/fichas por repetição.
+Cadastro técnico pendente não equivale a equipamento oficial de escola.
+Teste físico separado: instalar EXE identificado, reiniciar Windows, ler QR no
+celular, vincular, receber inventário e heartbeat, interromper/restaurar rede.
+
+H. Presença e peças
+Não comunicar não significa necessariamente desligado. Com intervalo de 300s,
+o limiar é 17min (3 intervalos +120s); cron a cada minuto e UI a cada 15s.
+Testar heartbeat antigo reenviado, suspensão informada, retorno e revogação.
+Um incidente, sem duplicação; retorno resolve e mantém histórico.
+Primeiro inventário cria referência; mudança confiável posterior pode gerar
+alerta. Leitura parcial, lista reordenada ou série ausente não deve fingir troca.
+Comparar CPU, RAM, discos, placa-mãe e vídeo PCI conforme contrato; periféricos
+como teclado/mouse não são detectados por essa comparação.
+Inventário periódico atual pode levar seis horas; não prometer alerta instantâneo.
+Ler notificação em uma conta não deve marcar como lida para todos.
+
+I. Computadores por unidade e demandas
+Unidade sem cadastro de computador deve aparecer como inventário desconhecido,
+não automaticamente como ausência confirmada. Classificar laboratório explicitamente.
+Hover e clique mostram host, unidade, ambiente e posição corretos.
+Abrir demanda por telefone para computador, demanda de toner para impressora e
+visita para unidade sem equipamentos. Alvo opcional deve pertencer à unidade.
+Percorrer Aberta, Em atendimento, Aguardando material, Visita agendada e Concluída;
+última exige relato. Conferir autor, eventos e versão, conflitos e reenvio.
+Reconexão do agente não conclui demanda manual. Contexto original da demanda
+permanece no histórico após mudanças/exclusões autorizadas em base isolada.
+
+J. Rotas e falhas de rede
+Navegar Panorama → Computadores → voltar/avançar → Central de demandas.
+Repetir a partir de Configurações e por URL direta.
+Simular GET sem resposta, sessão 401 e resposta inválida. Configurações deve sair
+de Consultando com erro explícito e permitir nova tentativa; falha de autorizações
+antigas não bloqueia Drive/agentes. Alterar filtro durante chamada pendente:
+resposta antiga não pode substituir o filtro novo.
+
+6. REVISÃO DE CONSISTÊNCIA E MIGRAÇÃO
+
+Confrontar data_json e published_json, contagens por unidade/categoria, IDs de
+fotos, vínculos ativos, históricos e agregados. Analisar transação quando duas
+operações dependem uma da outra, falha entre etapas e conflito de versão.
+
+Aplicar migrações num SQLite vazio verifica estrutura e constraints iniciais.
+Upgrade sobre cópia privada e restauração completa verificam outros riscos:
+FKs, triggers, agregados, versões legadas, fotos Drive, chaves e endpoints do agente.
+Não declarar portabilidade para outro banco apenas por existir dump SQL.
+
+7. LIMITES QUE NÃO DEVEM SER APRESENTADOS COMO RESOLVIDOS
+
+- Offline durável não está implementado; comandos pendentes podem viver só na aba.
+- Emulação de viewport não equivale a câmera/teclado físico Android ou iPhone.
+- A suíte simula Drive; um novo envio real exige teste próprio autenticado.
+- Binário Windows e política de atualização precisam de homologação física.
+- Backup/restore completo, retenção, RPO/RTO e recuperação institucional precisam
+  de decisão/ensaio próprios; testes locais de schema não substituem isso.
+- Relatórios/planejamento e algumas paginações/derivados de imagens possuem
+  escopo parcial. Consultar pendências atuais e contratos, não inferir conclusão.
+- Não há notificação por e-mail/push nem transformação automática do assunto H
+  em demanda manual. Isso não foi aprovado como funcionalidade implementada.
+
+8. MODELO DE RELATO A ENTREGAR
+
+Identificador: AUD-001
+Classificação: defeito reproduzido / limitação conhecida / dúvida / proposta
+Severidade e impacto concreto:
+Commit, ambiente, SO/navegador, horário/fuso:
+Perfil e pré-condições (sem senha/token):
+Regra/decisão aprovada e arquivo/linha:
+Passos mínimos reproduzíveis:
+Esperado:
+Observado:
+Status HTTP e código de erro, quando aplicáveis:
+Evidência sanitizada e caminho privado da evidência completa:
+Persistência/estado antes e depois; IDs sintéticos, sem dados reais públicos:
+Teste automatizado que cobre/falta:
+Hipótese de causa, claramente separada de fato comprovado:
+Correção proposta, impacto de compatibilidade e teste de regressão:
+Dependência de decisão do responsável, se realmente existir:
+
+Entregar matriz de cobertura e resultado por cenário (passou/falhou/não executado),
+lista priorizada de defeitos, limitações conhecidas e plano de correção em etapas.
+Não publicar credenciais ou dados de produção no relatório GitHub. Esta preparação
+do repositório não constitui aprovação independente de toda a aplicação.

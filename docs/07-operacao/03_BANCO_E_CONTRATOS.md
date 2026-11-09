@@ -2,9 +2,9 @@
 
 ## Esquema físico verificável
 
-[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 16 migrações locais num SQLite vazio em memória. Resultado: **56 tabelas, 34 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 18 migrações locais num SQLite vazio em memória. Resultado: **64 tabelas, 40 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
 
-Regenerar com `pnpm docs:schema`. As migrações 0001–0016 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+Regenerar com `pnpm docs:schema`. As migrações 0001–0018 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
 
 | Família | O que preservar |
 |---|---|
@@ -19,6 +19,8 @@ Regenerar com `pnpm docs:schema`. As migrações 0001–0016 são a fonte físic
 | Publicação | Snapshots e totais derivados das visitas publicadas |
 | Google | Tokens criptografados, pastas, estados OAuth e eventos |
 | Agentes | Instalações, chaves públicas, vínculos, QR/recibos, nonces, inventários, presença e retenção |
+| Monitoramento | Referência confiável, cursor transacional, incidentes, leitura individual e saúde do cron (0017) |
+| Demandas e laboratórios | Demanda, contexto original, eventos/recibos e classificação explícita versionada (0018) |
 
 Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidades.
 
@@ -41,6 +43,9 @@ Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidade
 | `/api/root/*`, `/api/admin/*` | Worker, units, google-auth, agentes | Permissão específica no servidor |
 | `/api/collector/*` | collector, collector-v2/v3, visit-routes | Unidade/visita/versão, autoria, travas e validação |
 | Consulta desktop | in-progress, in-progress-photos, inventory-results | Perfis desktop e separação parcial/publicado |
+| `/api/inventory/equipment` | `server/inventory-equipment.mjs`, `server/collector.mjs` | GET com unidade, filtros, paginação e fotos por ID; dados publicados |
+| `/api/inventory/monitoring`, `/api/inventory/notifications/read` | `server/agent-monitoring.mjs` | Consulta/leitura individual, sem liberar operador |
+| `/api/operations/*` | `server/service-desk.mjs` | Consulta root/admin/visualizador; escrita root/admin; proibido no coletor |
 | Fotos | collector + photo-storage | Upload e leitura autenticados; contexto/alvo obrigatório |
 | Galeria desktop `/api/inventory/photos`, `/api/inventory/photo` | photo-gallery + photo-storage | GET, root/admin/visualizador; filtros e cursor; `ready`; histórico pausado identificado PARCIAL |
 | `/api/agent/v1/*` | agentes/index + nucleo | Algumas rotas são de máquina assinada; outras exigem usuário |
@@ -61,3 +66,5 @@ Preservar corpo bruto, método, caminho, headers assinados, relógio, nonce, has
 SQLite/D1 usa recursos que não traduzem literalmente para MySQL/PostgreSQL. Uma mudança exige adaptador de persistência e migração validada de tipos, consultas JSON, triggers, índices parciais, transações e resultados retornados por `prepare/bind/first/all/run/batch`. Não há adaptador genérico pronto neste repositório.
 
 A migração 0016 do cadastro ampliado foi aplicada ao D1 real em 06/11/2026 após backup e autorização do responsável. Conferência remota: nenhuma migração pendente, 32 colunas em units e registros anteriores preservados. Ver [publicação D-068](../05-qualidade/PUBLICACAO_D068_2026-11-06.md). O catálogo gerado continua sendo reproduzido das migrações versionadas; não contém dados de produção.
+
+As migrações 0017 e 0018 foram aplicadas posteriormente, em 08/11/2026: [monitoramento](../05-qualidade/MONITORAMENTO_2026-11-08.md) e [demandas](../05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md). As três publicações são registros distintos; a conferência da 0016 não comprova, sozinha, o estado posterior.

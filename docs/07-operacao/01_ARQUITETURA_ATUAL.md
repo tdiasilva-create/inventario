@@ -25,10 +25,16 @@ Ambas as publicações usam `server/worker.mjs`. `APP_KIND=collector` seleciona 
 | Coletor atual | `web/collector-v3.*`, `collector-drafts.js`, `collector-ui.js`, `collector-qr.js` |
 | Compatibilidade | Esquemas V3, V2, original e `visit-schema.js` |
 | Consultas desktop | `web/desktop*.js`, `desktop-progress*`, `desktop-results.js`, `desktop-inventory.js`, `desktop-agents.js` |
+| Monitoramento e notificações | `server/agent-monitoring.mjs`, `server/agentes/presence.mjs`, `web/desktop-notifications.js` |
+| Computadores/laboratórios e demandas | `server/service-desk.mjs`, `web/operations.html`, `operations.js`, `operations.css` |
 | Mapa | `web/desktop-map.js`, `map-geography.js`, `web/data/`, Leaflet |
 | Build | `scripts/build-desktop.mjs`, `build-collector.mjs` |
 
 HTML/CSS/JS nativos; sem framework de componentes. Os builds copiam listas explícitas de assets. Arquivo novo em `web/` não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual.
+
+`panel-shell.js` compartilha o menu, mas `desktopPageRoutes` contém somente páginas renderizadas por `desktop.js`. `/computadores` e `/demandas` carregam `operations.html` pelo Worker. Interceptar essas duas rotas no roteador antigo produzia Configurações com Consultando permanente; a correção de 08/11 é coberta por `tests/panel-navigation-browser.cjs`.
+
+O painel executa monitoramento de hardware/presença a cada minuto e manutenção diária separada. Notificações automáticas usam telemetria; demandas são registros manuais de atendimento, escritos por root/admin. Essa exceção desktop de escrita é aprovada por D-071. Reconexão resolve incidente automático de comunicação, nunca conclui demanda manual de manutenção.
 
 ## Resposta → painel
 

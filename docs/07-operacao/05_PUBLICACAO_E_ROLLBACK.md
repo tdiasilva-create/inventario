@@ -33,7 +33,7 @@ pnpm exec wrangler deploy --config wrangler.jsonc
 pnpm exec wrangler deploy --config wrangler.collector.jsonc
 ```
 
-Não executar ambos automaticamente quando só o frontend de um foi alterado. Mudanças de servidor devem considerar os dois, pois compartilham banco e recebem operações distintas. Confirmar que o tráfego está na versão desejada e que cron existe uma só vez.
+Não executar ambos automaticamente quando só o frontend de um foi alterado. Mudanças de servidor devem considerar os dois, pois compartilham banco e recebem operações distintas. Confirmar que o tráfego está na versão desejada. Há dois agendamentos no painel: manutenção diária `23 3 * * *` e monitoramento `* * * * *`, ambos UTC; não duplicar no coletor. Conferir saúde da última rodada, não apenas a presença da configuração de cron.
 
 ## Conferência após publicação
 
@@ -43,6 +43,7 @@ Não executar ambos automaticamente quando só o frontend de um foi alterado. Mu
 - Foto realmente enviada pode ser reaberta pelo coletor e pelo painel autorizado; acesso anônimo não funciona.
 - QR de máquina de teste vincula sem duplicar equipamento; reenvio/resposta perdida não duplica operações.
 - Parcial continua parcial; oficial só muda por publicação confirmada.
+- Abrir Computadores e Central de demandas pelo menu e por URL direta; conferir preservação do contexto e erros de rede visíveis. Monitoramento e demandas não podem ser confundidos com indicadores oficiais de visita.
 - Conferir logs sem vazar dados; guardar evidências privadas e relatório textual publicável.
 
 Não concluir visita real nem excluir conteúdo para “testar”. Usar unidade/máquina de ensaio autorizadas, identificadas e com plano de limpeza.

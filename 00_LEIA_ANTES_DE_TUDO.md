@@ -1,4 +1,4 @@
-**Estado operacional atual (05/11/2026):** consultar [manual de operação e migração](docs/07-operacao/README.md). O texto de consolidação abaixo é histórico; decisões D-048/D-057–D-062 registram Drive, questionário atual, agentes e identidade posteriores. Não confundir os requisitos originais preservados com a versão publicada.
+**Estado operacional atual (08/11/2026):** consultar [manual de operação e migração](docs/07-operacao/README.md) e [guia de auditoria](docs/08-auditoria/README.md). O texto de consolidação abaixo é histórico; decisões até D-071 registram Drive, questionário atual, agentes, identidade, monitoramento e demandas posteriores. Não confundir os requisitos originais preservados com a versão publicada.
 
 # INVENTÁRIO TECNOLÓGICO — SEMED | PACOTE ÚNICO PARA O CODEX
 

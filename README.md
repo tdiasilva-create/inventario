@@ -17,6 +17,7 @@ As sessões são separadas. Dados, senhas e tokens de produção não fazem part
 3. [Nova estação e testes](docs/07-operacao/04_DESENVOLVIMENTO_E_TESTES.md).
 4. [Checklist de transferência em TXT](docs/07-operacao/TRANSFERENCIA_E_MIGRACAO.txt).
 5. [Estado comprovado e pendências](docs/07-operacao/09_ESTADO_E_PENDENCIAS.md).
+6. [Auditoria de funcionamento e lógica](docs/08-auditoria/README.md): mapa de regras, roteiro TXT, testes e versões publicadas.
 
 ## Tecnologia atual
 
@@ -40,7 +41,7 @@ Esses comandos são locais. Publicação e banco remoto têm procedimentos próp
 |---|---|
 | `web/` | Interfaces, esquemas, imagens de interface e bibliotecas locais |
 | `server/` | Worker, regras, persistência, fotos e agentes |
-| `migrations/` | SQL incremental 0001–0015 |
+| `migrations/` | SQL incremental 0001–0018 |
 | `tests/` | Testes e auxiliares isolados |
 | `scripts/` | Build, ferramentas e rotinas históricas que exigem revisão |
 | `config/` | Exemplos locais sem recursos reais |
@@ -50,6 +51,7 @@ Esses comandos são locais. Publicação e banco remoto têm procedimentos próp
 | `docs/04-dados-apis/` | Contratos e integrações; observar decisões posteriores |
 | `docs/05-qualidade/`, `docs/06-entregas/` | Relatórios e entregas; capturas privadas não versionadas |
 | `docs/07-operacao/` | Arquitetura atual, operação e migração |
+| `docs/08-auditoria/` | Entrada para revisão independente de funcionamento e lógica |
 | `docs/99-historico/` | Guias antigos preservados |
 | `design/`, `arquitetura/` | Referências e diagramas de origem |
 
@@ -57,4 +59,4 @@ Esses comandos são locais. Publicação e banco remoto têm procedimentos próp
 
 O questionário atual segue decisões posteriores à Base de Coleta original. Rascunho no servidor e consulta parcial são distintos da conclusão oficial. Não há offline durável homologado. Testes automatizados não substituem o ciclo físico de instalador Windows/celular. O clone **não contém bancos, fotos operacionais, segredos ou instaladores privados**. Migração só estará homologada após restauração e testes no destino.
 
-Referência desta organização: **05/11/2026**. Não é uma nova publicação dos Workers. Não foi definida licença geral para redistribuição do projeto; licenças das dependências permanecem junto aos arquivos.
+Atualização documental: **08/11/2026**, incluindo cadastro ampliado, consulta de equipamentos, notificações, computadores por unidade/laboratório, Central de demandas e correção de navegação. O pacote de auditoria distingue código local, publicação real e homologação física. Atualizar o GitHub não publica os Workers. Não foi definida licença geral para redistribuição do projeto; licenças das dependências permanecem junto aos arquivos.

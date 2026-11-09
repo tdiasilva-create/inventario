@@ -1,4 +1,13 @@
-# Estado e pendências — atualizado em 06/11/2026
+# Estado e pendências — atualizado em 08/11/2026
+
+## Estado mais recente e auditoria
+
+O [guia de auditoria](../08-auditoria/README.md) reúne fontes, regras, testes e limites. O esquema atual possui 18 migrações, incluindo monitoramento (0017) e demandas (0018). Resultados da organização de 08/11 estão no [registro de verificação](../08-auditoria/VERIFICACAO_2026-11-08.md); resultados de entregas anteriores abaixo continuam históricos.
+
+- D-069: consulta embutida por unidade/categoria, ficha técnica, fotos por equipamento, paginação e identificadores remotos. [Aceite e conferência real](../05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md).
+- D-070: presença/notificações automáticas implementadas e publicadas, cron de minuto conferido. A antiga ausência de notificações não é pendência atual. Aceite físico de perda/retorno e manutenção de peça continua pendente. [Contrato e limites](../04-dados-apis/MONITORAMENTO_E_NOTIFICACOES.md).
+- D-071: computadores por unidade/laboratório e central de demandas, incluindo contexto de unidade sem inventário. Classificação dos laboratórios e ausência confirmada são ações humanas; atendimento real ainda requer homologação operacional. [Aceite](../05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md).
+- Correção posterior: menus Computadores/Demandas e consultas de Configurações com tempo limite. Painel `e4ac8db6-ea92-42e0-8977-2ea21b9514ba`; coletor preservado. [Registro de produção](../05-qualidade/NAVEGACAO_PAINEL_2026-11-08.md).
 
 ## O que existe
 
@@ -10,7 +19,7 @@
 - Cadastro automático do agente sem lote conforme D-058 e preservação de assinaturas/vínculo autenticado.
 - Identidade visual/UX do coletor publicadas conforme D-061/D-062. Não alteradas nesta organização.
 
-## Verificação desta organização
+## Verificação histórica da organização inicial
 
 A [CI do commit bcf2ebab](https://github.com/tdiasilva-create/inventario/actions/runs/42146235419) passou em Linux/Chromium, incluindo 98 testes, três testes de navegador, builds e reprodução dos documentos. O ensaio de instalação local a partir dos arquivos Git também passou. Isso comprova reprodução do código/testes, não restauração de produção ou homologação física.
 
@@ -25,12 +34,12 @@ A [CI do commit bcf2ebab](https://github.com/tdiasilva-create/inventario/actions
 | Homologação do EXE exato | Instalar em Windows designado, QR no celular, reinício, sincronização e falhas |
 | Offline durável | Fila atual vive na memória da aba; fechar aba pode perder pendências |
 | Teclado/câmera físicos | Testes em navegador desktop não substituem aparelhos reais |
-| Observabilidade operacional | Definir monitoramento/alertas, logs privados e responsáveis |
+| Observabilidade operacional | D-070 já monitora agentes; definir observabilidade de disponibilidade do serviço, integrações, logs privados e responsáveis |
 | Separação de material privado | Cofre institucional, fontes/instaladores e backup precisam de responsável |
 
 ## Lacunas de apresentação desktop já identificadas
 
-O [mapeamento de respostas](../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) é a referência detalhada. Entre os pontos registrados: áreas genéricas/galeria não cobrem toda navegação desejada; limite de fotos sem paginação completa; detalhes de telemetria e sinalização parcial precisam revisão; diferença entre campo de discos recebido e campo lido por algumas telas; relatórios/exportações ainda não representam todo o escopo. Esta entrega documenta, não corrige silenciosamente essas funções.
+O [mapeamento de respostas de 05/11](../06-entregas/MAPEAMENTO_COLETOR_PARA_PAINEL_DESKTOP_2026-11-05.txt) é uma fotografia histórica, anterior a D-069/D-070/D-071. A consulta atual já entrega lista paginada, ficha técnica, fotos do equipamento e notificações. Não reutilizar a lista antiga de ausências como diagnóstico atual sem reproduzir. Derivados menores de imagens e histórico completo/paginado do agente seguem como limitações do [contrato de consulta](../03-painel-desktop/CONSULTA_EQUIPAMENTOS.md); relatórios/exportações e planejamento não representam todo o escopo. A auditoria deve conferir os demais destinos campo a campo.
 
 ## Atualização posterior: fotografias D-064
 
@@ -48,7 +57,7 @@ As 15 lacunas marcadas não decididas pelo responsável continuam pendentes. Nã
 
 Listas anteriores de R2 bloqueado, autorização de lote, ausência de fotografia de computador ou navegação V2 podem estar superadas pelas decisões D-048/D-057/D-058/D-060/D-062. Preservar histórico e consultar a decisão posterior antes de reimplementar a solução antiga. O manual atual não apaga lacunas de homologação.
 
-## Escopo desta entrega
+## Escopo da organização inicial (05/11)
 
 Documentação, organização Git, exemplos locais, catálogo físico e portabilidade dos três testes de navegador atuais. Nenhuma nova pergunta, regra, tela, migração SQL, credencial ou deploy de produção. Base original preservada. Resultados efetivamente executados ficam no [registro da organização](10_REGISTRO_DA_ORGANIZACAO.md).
 

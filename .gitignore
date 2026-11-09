@@ -23,6 +23,7 @@ exports-reais/
 # Arquivos recebidos, binários, evidências privadas e cópias de trabalho
 /revisoes/
 /entregas/
+/pedidos/
 *.zip
 *.exe
 *.msi

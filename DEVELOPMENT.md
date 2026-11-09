@@ -2,7 +2,9 @@
 
 Guia mantido: [04_DESENVOLVIMENTO_E_TESTES.md](docs/07-operacao/04_DESENVOLVIMENTO_E_TESTES.md). Ler [AGENTS.md](AGENTS.md) e a [precedência](docs/00-governanca/REGRAS_DE_PRECEDENCIA.md).
 
-Node 24, pnpm 11.25.0, lockfile, testes isolados e builds separados. Playwright passa a ser dependência do projeto para os três testes de navegador atuais. Não usar credenciais ou seeds de produção em ensaios.
+Node 24, pnpm 11.25.0, lockfile, testes isolados e builds separados. Playwright é dependência do projeto para os nove roteiros de navegador mantidos na CI. Não usar credenciais ou seeds de produção em ensaios.
+
+Preparação para auditoria de 08/11/2026: [guia e matriz de regras](docs/08-auditoria/README.md), [roteiro TXT](docs/08-auditoria/ROTEIRO_AUDITORIA.txt) e [resultados da verificação](docs/08-auditoria/VERIFICACAO_2026-11-08.md). Não equivale a parecer de auditor independente. O histórico das entregas abaixo preserva quantidades e versões da época.
 
 O [manual operacional](docs/07-operacao/README.md) reúne ambientes, chaves necessárias, contratos, backup e migração. A versão anterior foi [preservada como histórico](docs/99-historico/entrada-anterior-a-organizacao-2026-11-05/DEVELOPMENT.md).
 

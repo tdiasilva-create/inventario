@@ -26,12 +26,18 @@ O lockfile deve permanecer coerente com package.json. Não atualizar dependênci
 | `pnpm test:v3:browser` | Fluxo atual completo, equipamento manual/QR e fotografias simuladas |
 | `pnpm test:ux:browser` | Busca, foco/cursor, digitação, navegação, upload e validação visível |
 | `pnpm test:identity:browser` | Layout, larguras, login e estados da interface |
+| `pnpm test:panel:browser` | 17 rotas desktop, matriz, filtros, fotografias e identidade |
+| `pnpm test:catalogue:browser` | Cadastro ampliado, tipos e matriz de unidades |
+| `pnpm test:equipment:browser` | Consulta embutida, filtros, cópia e fotos por equipamento |
+| `pnpm test:monitoring:browser` | Sino, presença, atualização e preservação de foco/filtros |
+| `pnpm test:operations:browser` | Computadores, laboratórios, demandas e histórico |
+| `pnpm test:panel-navigation:browser` | Navegação pelo menu/voltar/avançar e erros de consultas |
 | `pnpm docs:schema` | Migrações em SQLite vazio; catálogo físico |
 | `pnpm check:repository` | Caminhos privados e padrões conhecidos de segredos no índice Git |
 
 Os testes padrão usam SQLite em memória/fixtures sintéticas. Fotos/Drive usados nesses testes são simulados; resultados não comprovam acesso real ao Google nem câmera física. A CI não recebe credenciais.
 
-Os três testes de navegador atuais usam `tests/helpers/playwright.cjs`. Por padrão mantêm Edge local. Para Chromium instalado pelo Playwright:
+Os nove roteiros mantidos na CI usam `tests/helpers/playwright.cjs`. Por padrão mantêm Edge local. Para Chromium instalado pelo Playwright:
 
 ```powershell
 pnpm exec playwright install chromium

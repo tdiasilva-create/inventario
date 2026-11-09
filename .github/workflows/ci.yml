@@ -41,3 +41,18 @@ jobs:
       - run: pnpm test:panel:browser
         env:
           SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:catalogue:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:equipment:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:monitoring:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:operations:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:panel-navigation:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

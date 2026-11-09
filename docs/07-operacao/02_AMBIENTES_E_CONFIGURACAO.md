@@ -16,6 +16,7 @@
 | Assets | `dist/painel` e `dist/coletor`, binding `ASSETS` |
 | Fotografias | `PHOTO_STORAGE_PROVIDER=google-drive` |
 | Manutenção | Cron `23 3 * * *` no painel, UTC; não duplicar no coletor |
+| Monitoramento de agentes | Cron `* * * * *` no painel, adicional ao diário; não duplicar no coletor |
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
