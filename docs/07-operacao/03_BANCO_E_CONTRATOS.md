@@ -2,9 +2,9 @@
 
 ## Esquema físico verificável
 
-[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 18 migrações locais num SQLite vazio em memória. Resultado: **64 tabelas, 40 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 19 migrações locais num SQLite vazio em memória. Resultado: **64 tabelas, 42 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
 
-Regenerar com `pnpm docs:schema`. As migrações 0001–0018 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+Regenerar com `pnpm docs:schema`. As migrações 0001–0019 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
 
 | Família | O que preservar |
 |---|---|
@@ -23,6 +23,8 @@ Regenerar com `pnpm docs:schema`. As migrações 0001–0018 são a fonte físic
 | Demandas e laboratórios | Demanda, contexto original, eventos/recibos e classificação explícita versionada (0018) |
 
 Nomes exatos e FKs estão no catálogo; a tabela acima descreve responsabilidades.
+
+**09/11/2026:** 0019 contém apenas dois índices de fotos, testados localmente e ainda não publicados. O D1 real permanece com 18 migrações; não confundir este catálogo de código com verificação remota.
 
 ## Invariantes para restaurar
 

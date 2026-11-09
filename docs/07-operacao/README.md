@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência: **08/11/2026**. Derivado do código, configurações, 18 migrações, decisões e registros de publicação. Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md).
+Referência: **09/11/2026**. Derivado do código, configurações, 19 migrações locais (0019 ainda não publicada), decisões e registros de publicação. Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md).
 
 | Guia | Uso |
 |---|---|

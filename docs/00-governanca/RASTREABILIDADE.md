@@ -326,3 +326,7 @@ Correção de 08/11: relato de Consultando permanente → navegação antiga int
 ## Organização para auditoria — 08/11/2026
 
 Pedido explícito de atualizar o repositório para auditar funcionamento e lógicas → docs/08-auditoria/README.md, MATRIZ_DE_LOGICAS.md, ROTEIRO_AUDITORIA.txt e VERIFICACAO_2026-11-08.md; manual operacional atualizado para 18 migrações/D-069–D-071. CI ampliada para nove roteiros de navegador, preservando suíte de 129 testes e builds. Teste integrado V3 adaptado à consulta embutida D-069, sem alterar aplicação. Documentos antigos identificados como históricos; pacotes recebidos mantidos privados. Autorização é para atualizar GitHub; esta entrega não executa deploy, escrita D1 ou mudança de questionário.
+
+
+## Correções de desempenho — Fase 1 local, 09/11/2026
+Pedido de iniciar correções do pacote externo → cache revalidado de assets/fotos, linha de integração reutilizada, memo de token condicionado à integração atual, primeira tentativa sem busca Drive, índices aditivos 0019, estabilidade DOM de ocorrências e WebP legado. Base §§1.2, 5, 7.5–7.6/7.11 e 8–9 preservadas; D-048/D-057/D-065 mantidas. Evidências, IDs da auditoria, contagens antes/depois e limites: [relatório da Fase 1](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md). 134 testes e dez roteiros de navegador locais. Sem publicação/segredos/D1 remoto/Drive real. Política de 24 h e miniaturas no D1 não adotadas.

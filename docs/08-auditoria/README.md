@@ -55,3 +55,7 @@ As capturas locais geradas pelos testes ficam em `docs/05-qualidade/evidencias/`
 O rascunho local não versionado `docs/04-dados-apis/MAPA_DADOS_E_ACOES_SISTEMA_2026-11-06.md` não foi incorporado como fonte vigente: contém conclusões anteriores à implementação de monitoramento/demandas. Foi preservado para revisão, sem sobrepor as decisões registradas.
 
 Pendências relevantes: offline durável; homologação física do EXE exato e câmera/teclado no celular; recuperação completa de banco, fotos e chaves; política institucional de backup/retenção; partes de relatórios e planejamento; carga de planilhas e divergências das fontes. Consultar [estado atual](../07-operacao/09_ESTADO_E_PENDENCIAS.md). Testes verdes não eliminam essas pendências.
+
+## Correções locais posteriores à fotografia desta auditoria
+
+Em 09/11/2026, a [Fase 1 de desempenho](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md) acrescentou cache revalidado, otimizações de fotos e migração aditiva 0019. Código local: 19 migrações/42 índices; ambiente publicado continua com 18/40. A seção acima mantém a referência de 08/11. Testes locais: 134 e dez roteiros de navegador, sem deploy nem escrita em serviços reais.

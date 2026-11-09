@@ -149,3 +149,7 @@ Arquivo de cliente OAuth fornecido pelo responsável foi validado sem imprimir s
 Suíte local pnpm test: 48/48 aprovados em 03/11/2026, incluindo Drive/OAuth simulados. Isso não comprova armazenamento real. Nenhuma migração, publicação do novo código, autorização de acesso ao Drive ou fotografia real executada nesta etapa. Ainda é necessário revisar o pacote local, validar separadamente, publicar a integração e concluir consentimento OAuth/autoteste no painel. Credencial possui somente o callback de produção cadastrado; homologação em outro domínio exige callback próprio e banco/segredos isolados.
 
 Correção documental: não presumir que Drive compartilhado exige sempre escopo amplo drive. O fluxo atualmente implementado usa pasta privada no Meu Drive com drive.file. Faturamento não foi ativado.
+
+
+## Otimização local — 09/11/2026 (não publicada)
+A Fase 1 reutiliza a linha da integração dentro da requisição, mantém a leitura atual do D1 antes de usar token em memória e pesquisa semedPhotoId somente na retomada de pendência. Não muda escopo OAuth, pasta ou segredos. Leitura com SHA-256 válido usa private, no-cache + ETag/304 após autorização e disponibilidade da integração; hash legado sem formato válido mantém no-store. Recuperação sequencial testada não equivale a trava distribuída. Ver [relatório e limites](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md).
