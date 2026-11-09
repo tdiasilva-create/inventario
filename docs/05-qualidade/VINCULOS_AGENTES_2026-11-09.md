@@ -27,4 +27,16 @@ Consultados: `00_LEIA_ANTES_DE_TUDO.md`, `AGENTS.md`, `REGRAS_DE_PRECEDENCIA.md`
 
 ## Publicação
 
-Pendente de execução e conferência nesta etapa do registro. Somente painel; dados, Drive, coletor e instalador serão preservados. Não declarar navegação autenticada de produção a partir dos testes isolados.
+Publicada em **09/11/2026**, código **32b6167**. Conferência final às **18:01:40 de Fortaleza (21:01:40 UTC)**.
+
+- Painel ativo em 100%: **ee9c6630-03cd-4d2d-af27-1c8f160f920c**. Versão anterior: d0198fe9-5bca-46bb-a3e3-705255ea995b.
+- Coletor preservado: **274ecd9b-002e-4f79-a4b9-325fc26fece1**. Nenhuma publicação do coletor, migração, exclusão ou alteração cadastral neste trabalho.
+- Configuração de Drive, D1, variáveis e crons preservada. Sem segredos novos. Scanner do índice Git: 547 arquivos aprovados; links de documentação conferidos.
+- Seis verificações HTTP externas aprovadas: login 200, páginas/asset privados redirecionam para login e APIs exigem autenticação (401). A confirmação da publicação vem dos deployments da Cloudflare; 401 isoladamente não comprova funcionamento de consulta autenticada.
+- Nova consulta SELECT no D1 real: 11 computadores vinculados e 1 categoria não aplicável, `rows_written=0`, igual à conferência anterior. Nenhum dado fictício inserido. As capturas são testes isolados do Worker/UI, não uma nova navegação autenticada em produção.
+
+Endereços:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+
+Logs privados: `private-data/release-vinculos-2026-11-09/` (testes, versões antes/depois, contagens SELECT, dry-run, deploy e resultado HTTP). Rollback de Worker pode voltar à versão anterior sem alteração de banco; não restaurar SQL sobre produção. No uso, ausência de contato não prova desligamento, e etiqueta manual não prova duplicidade.
