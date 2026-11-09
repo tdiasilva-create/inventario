@@ -76,6 +76,10 @@
     {
       "file": "0019_photo_indexes.sql",
       "sha256": "cfb43df7b61602da7420af7ea58f9af47d4c02d0a187ff772abf3865aa5d1852"
+    },
+    {
+      "file": "0020_photo_thumbnails.sql",
+      "sha256": "28a96344c4976962fa677bbd161755dd4605e903ccc9e986157f397f7cc25bbf"
     }
   ],
   "tables": [
@@ -1953,6 +1957,70 @@
         {
           "cid": 13,
           "name": "storage_ref",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "thumb_blob",
+          "type": "BLOB",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "thumb_mime",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "thumb_width",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "thumb_height",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "thumb_sha256",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "thumb_source_sha256",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "thumb_created_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "thumb_created_by",
           "type": "TEXT",
           "notnull": 0,
           "dflt_value": null,
@@ -4665,6 +4733,12 @@
     },
     {
       "type": "index",
+      "name": "collection_photos_missing_thumb",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_missing_thumb ON collection_photos(created_at,id) WHERE status='ready' AND thumb_blob IS NULL"
+    },
+    {
+      "type": "index",
       "name": "collection_photos_target",
       "tbl_name": "collection_photos",
       "sql": "CREATE INDEX collection_photos_target ON collection_photos(target_kind,target_id,created_at)"
@@ -5063,7 +5137,7 @@
       "type": "table",
       "name": "collection_photos",
       "tbl_name": "collection_photos",
-      "sql": "CREATE TABLE collection_photos(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,target_kind TEXT NOT NULL,target_id TEXT NOT NULL,object_key TEXT NOT NULL UNIQUE,mime_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'pending', storage_provider TEXT NOT NULL DEFAULT 'r2', storage_ref TEXT)"
+      "sql": "CREATE TABLE collection_photos(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,target_kind TEXT NOT NULL,target_id TEXT NOT NULL,object_key TEXT NOT NULL UNIQUE,mime_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,created_by TEXT NOT NULL,created_at INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'pending', storage_provider TEXT NOT NULL DEFAULT 'r2', storage_ref TEXT, thumb_blob BLOB CHECK(thumb_blob IS NULL OR length(thumb_blob)<=65536), thumb_mime TEXT CHECK(thumb_mime IS NULL OR thumb_mime='image/jpeg'), thumb_width INTEGER CHECK(thumb_width IS NULL OR thumb_width BETWEEN 1 AND 320), thumb_height INTEGER CHECK(thumb_height IS NULL OR thumb_height BETWEEN 1 AND 320), thumb_sha256 TEXT, thumb_source_sha256 TEXT, thumb_created_at INTEGER, thumb_created_by TEXT)"
     },
     {
       "type": "table",

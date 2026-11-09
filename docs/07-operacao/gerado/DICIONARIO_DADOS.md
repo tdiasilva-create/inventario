@@ -21,6 +21,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0017_agent_monitoring.sql`
 - `0018_service_desk.sql`
 - `0019_photo_indexes.sql`
+- `0020_photo_thumbnails.sql`
 
 ## agent_audit_log
 
@@ -388,6 +389,14 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | status | TEXT | sim |  | 'pending' |
 | storage_provider | TEXT | sim |  | 'r2' |
 | storage_ref | TEXT | não |  | — |
+| thumb_blob | BLOB | não |  | — |
+| thumb_mime | TEXT | não |  | — |
+| thumb_width | INTEGER | não |  | — |
+| thumb_height | INTEGER | não |  | — |
+| thumb_sha256 | TEXT | não |  | — |
+| thumb_source_sha256 | TEXT | não |  | — |
+| thumb_created_at | INTEGER | não |  | — |
+| thumb_created_by | TEXT | não |  | — |
 
 ## computer_context
 

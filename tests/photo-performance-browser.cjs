@@ -28,12 +28,12 @@ const pw=require('./helpers/playwright.cjs');
   assert.equal(await page.evaluate(()=>window.savedImage===document.querySelector('[data-result-photo] img')),true);
   assert.equal(await page.evaluate(()=>document.activeElement===window.savedSelect),true);assert.equal(objectReads,before);
   await page.screenshot({path:out+'/ocorrencias-atualizacao.png',fullPage:true});
-  await page.locator('[data-result-photo]').click();await page.locator('.photo-viewer img').evaluate(el=>el.decode());assert.equal(await page.locator('.photo-viewer').count(),1);assert.equal(objectReads,before,'viewer reaproveita imagem após 304');
+  await page.locator('[data-result-photo]').click();await page.locator('.photo-viewer img').evaluate(el=>el.decode());assert.equal(await page.locator('.photo-viewer').count(),1);assert.equal(objectReads,before+1,'foto antiga: URL integral distinta da miniatura carrega uma vez');
   await page.screenshot({path:out+'/foto-ampliada.png'});await page.keyboard.press('Escape');
   // New data must still update; unchanged blocks retain their nodes.
   f.sqlite.prepare('UPDATE inspection_sections SET data_json=? WHERE inspection_id=? AND section=?').run(JSON.stringify({occurrences:[{id:occurrence,description:'TESTE ISOLADO · Registro atualizado',environments:[]}]}),visit,'C');
   await page.locator('[data-results=refresh]').click();await page.getByText('TESTE ISOLADO · Registro atualizado',{exact:true}).waitFor();
-  await page.reload();await page.locator('[data-result-photo] img').scrollIntoViewIfNeeded();await page.locator('[data-result-photo] img').evaluate(el=>el.decode());assert.equal(objectReads,before,'reload faz 304 autenticado');
+  await page.reload();await page.locator('[data-result-photo] img').scrollIntoViewIfNeeded();await page.locator('[data-result-photo] img').evaluate(el=>el.decode());assert.equal(objectReads,before+1,'reload faz 304 autenticado');
   // Removing the server session forbids even a warm cached photo.
   activeSession=null;const forbidden=await page.evaluate(async id=>{const r=await fetch('/api/collector/photo?id='+id);return r.status;},photo);assert.equal(forbidden,401);
   await page.goto(origin+'/login');await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/login-identidade-preservada.png'});const marker=requests.length;

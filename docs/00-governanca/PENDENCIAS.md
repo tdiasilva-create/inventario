@@ -137,3 +137,7 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 - [x] Central de demandas e computadores por unidade/laboratorio publicados no painel; migracao 0018; historico, reenvio, perfis e volume testados. Ver docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md.
 - [ ] Responsavel classificar laboratorios reais existentes e confirmar ausencia de computadores somente quando conhecida. Nao inferir por nomes ou falta de inventario.
 - [ ] Homologacao operacional de um atendimento real e de um laboratorio fisico pelo responsavel. Nenhum exemplo foi gravado em producao.
+
+## Atualização da auditoria — Fase 2, 09/11/2026
+
+A escolha sobre miniaturas no D1 foi resolvida pelo responsável em D-072. Implementação de miniaturas, fallback, metadados e manutenção root registrada em docs/05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md. Permanecem pendentes a homologação física Android/iPhone (câmera, orientação HEIC, preparo de 12 MP), medições p50/p95 em rede real, e Fases 3–5. O aceite de “salvar + duas fotos sem GET inspection” pertence à Fase 4; não foi antecipado nesta fase. O histórico de pendências abaixo/acima não deve ser interpretado como ausência atual de miniaturas.

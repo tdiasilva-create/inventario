@@ -17,7 +17,7 @@ test('fotos: menos consultas, primeiro envio sem busca, reenvio perdido recupera
   const retry=await f.measure(()=>f.upload(secondId));assert.equal(retry.response.status,201);assert.equal((await retry.response.json()).reused,true);assert.equal(retry.drive,1,'retomada pesquisa e recupera sem novo upload');
   assert.equal([...f.google.files.values()].filter(p=>p.appProperties?.semedPhotoId===secondId).length,1);
   for(const gallery of [false,true]){
-   const read=await f.measure(()=>f.read(firstId,null,gallery));assert.equal(read.response.status,200);assert.equal(read.sql,gallery?2:3);assert.equal(read.drive,1);assert.equal(read.integrationReads,1);assert.deepEqual(Buffer.from(await read.response.arrayBuffer()),png);
+   const read=await f.measure(()=>f.read(firstId,null,gallery));assert.equal(read.response.status,200);assert.equal(read.sql,2);assert.equal(read.drive,1);assert.equal(read.integrationReads,1);assert.deepEqual(Buffer.from(await read.response.arrayBuffer()),png);
    const etag=read.response.headers.get('ETag');assert.match(etag,/^"[a-f0-9]{64}"$/);assert.equal(read.response.headers.get('Cache-Control'),'private, no-cache');
    const cached=await f.measure(()=>f.read(firstId,'"other", W/'+etag,gallery));assert.equal(cached.response.status,304);assert.equal(cached.drive,0);assert.equal(await cached.response.text(),'');assert.equal(cached.response.headers.get('Vary'),'Cookie');
    assert.equal((await f.read(firstId,'"different"',gallery)).status,200);

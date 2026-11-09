@@ -1,3 +1,5 @@
+import {thumbnailResponse} from './photo-thumbnails.mjs';
+import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
 // D-064: consulta paginada de fotos recebidas; não publica nem modifica coletas.
 import {photoStore,StorageError} from './photo-storage.mjs';
@@ -14,7 +16,7 @@ export async function photoGalleryRead(request,url,user,env,{json,fail}){
   const id=url.searchParams.get('id');if(!uuid(id))return fail('Fotografia inválida.');
   const row=await env.DB.prepare(`SELECT p.* ${from} WHERE ${eligible} AND p.id=?`).bind(id).first();
   if(!row)return fail('Fotografia recebida não encontrada.',404);
-  try{const store=photoStore(env);if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);if(row.storage_provider&&row.storage_provider!==store.provider)return fail('O provedor desta fotografia não está ativo.',503);const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);return photoResponse(row,object);}catch(e){if(e instanceof StorageError)return fail(e.message,e.status);throw e;}
+  try{const store=photoStore(env);if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);if(row.storage_provider&&row.storage_provider!==store.provider)return fail('O provedor desta fotografia não está ativo.',503);const thumbnail=thumbnailResponse(request,row);if(thumbnail)return thumbnail;const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);return photoResponse(row,object);}catch(e){if(e instanceof StorageError)return fail(e.message,e.status);throw e;}
  }
  const equipment=url.searchParams.get('equipmentId')||'';
  if(equipment&&(!uuid(equipment)||!uuid(url.searchParams.get('unitId'))||!['','equipment'].includes(url.searchParams.get('kind')||'')))return fail('Equipamento ou unidade inválidos.');
@@ -30,5 +32,5 @@ export async function photoGalleryRead(request,url,user,env,{json,fail}){
  ORDER BY p.created_at DESC,p.id DESC LIMIT 49`).bind(...params,...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
  const counts=(await env.DB.prepare(`SELECT i.state,COUNT(*) AS total ${from} ${where} GROUP BY i.state`).bind(...params).all()).results;
  const items=rows.slice(0,48),last=items.at(-1);
- return json({items,published:counts.find(x=>x.state==='completed')?.total||0,partial:counts.find(x=>x.state==='open')?.total||0,paused:counts.find(x=>x.state==='paused')?.total||0,nextCursor:rows.length>48?btoa(JSON.stringify([last.created_at,last.id])):null});
+ return json({items:await describePhotos(env.DB,items),published:counts.find(x=>x.state==='completed')?.total||0,partial:counts.find(x=>x.state==='open')?.total||0,paused:counts.find(x=>x.state==='paused')?.total||0,nextCursor:rows.length>48?btoa(JSON.stringify([last.created_at,last.id])):null});
 }

@@ -1,3 +1,4 @@
+import {thumbnailRoutes} from './photo-thumbnails.mjs';
 import {assetResponse} from './asset-response.mjs';
 import {UnitScopeError} from './unit-scope.mjs';
 import {importRoutes} from './import-units.mjs';
@@ -22,7 +23,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  // Agente Windows (proposta D-053): rotas de MÁQUINA autenticadas por assinatura ECDSA; não usam cookie, CSRF nem Origin.
  // Lista fechada em server/agentes/index.mjs; as rotas humanas do módulo seguem o fluxo normal de sessão abaixo.
  if(db){const machine=await handleAgentMachine(request,url,env);if(machine)return machine;}
- if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||!(path==='/api/collector/photo-upload'?['image/jpeg','image/png','image/webp'].includes(request.headers.get('Content-Type')):request.headers.get('Content-Type')?.startsWith('application/json'))))return fail('Origem ou conteúdo inválido.',403);
+ if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||!(['/api/collector/photo-upload','/api/collector/photo-thumb','/api/root/photo-thumbnails'].includes(path)?['image/jpeg','image/png','image/webp'].includes(request.headers.get('Content-Type')):request.headers.get('Content-Type')?.startsWith('application/json'))))return fail('Origem ou conteúdo inválido.',403);
  const identityAssets=['/desktop-theme.css','/tokens.css','/assets/paisagem-coleta.jpg',...['400','500','600','700'].flatMap(w=>['/vendor/chakra-petch/ChakraPetch-'+w+'.woff2','/vendor/barlow/Barlow-'+w+'.woff2']),'/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'];
  if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return assetResponse(request,env);
  const publicPaths=new Set(['/login','/login.html','/login.css','/login.js','/assets/prefeitura-paco.png','/assets/paisagem-login-v2.webp','/assets/login-network.svg','/robots.txt']);
@@ -60,6 +61,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  const operations=await serviceDeskRoutes(request,url,user,env,{json,fail,body});if(operations)return operations;
  const monitoring=await monitoringRoutes(request,url,user,env,{json,fail,body});if(monitoring)return monitoring;
  const agentHuman=await handleAgentHuman(request,url,user,env);if(agentHuman)return agentHuman;
+ const thumbnail=await thumbnailRoutes(request,url,user,env,{json,fail});if(thumbnail)return thumbnail;
  const photoGallery=await photoGalleryRead(request,url,user,env,{json,fail});if(photoGallery)return photoGallery;
  const collectionResponse=await collectorRoutes(request,url,user,env,{json,fail,body});if(collectionResponse)return collectionResponse;
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.
@@ -110,7 +112,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(env.APP_KIND==='collector'){
   if(!['root','admin','operador'].includes(user.role))return fail('Este perfil é somente de visualização. Acesse o painel desktop.',403);
   const target=new URL(request.url);if(['/','/coleta','/coleta.html'].includes(path))target.pathname='/collector.html';if(path==='/visita')target.pathname='/visit.html';if(path==='/coleta-v2')target.pathname='/collector-v2.html';if(path==='/coleta-v3')target.pathname='/collector-v3.html';
-  if(['/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
+  if(["/photo-prepare.js","/vendor/heic-to/heic-to.min.js","/vendor/heic-to/LICENSE","/vendor/heic-to/ORIGEM.txt","/collector-photo-viewer.js",'/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});

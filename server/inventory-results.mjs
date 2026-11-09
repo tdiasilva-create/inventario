@@ -1,3 +1,4 @@
+import {describePhotos} from './photo-labels.mjs';
 import {questionnaireVersion,problemSummary} from '../web/collector-v2-schema.js';
 const parse=v=>JSON.parse(v||'{}');
 export const latestPublished=`SELECT i.id FROM inspections i WHERE i.state='completed' AND i.id=(SELECT j.id FROM inspections j WHERE j.unit_id=i.unit_id AND j.state='completed' ORDER BY j.completed_at DESC,j.id DESC LIMIT 1)`;
@@ -41,7 +42,9 @@ export async function inventoryResults(request,url,user,env,{json,fail}){
    items.push(...rows.map(r=>{const d=parse(r.published_json);return {id:'equipment:'+r.id,unit_id:r.unit_id,unit_name:r.unit_name,kind:'Equipamento com problema',description:d.problems||d.operation,category:d.category,brand:d.brand,operation:d.operation,asset:d.asset,quantity:d.mode==='Lote'?d.quantity:1,priority:d.priority||null,environment_ids:[d.environment],target_id:r.id,inspection_id:r.inspection_id};}));}
  }
  const environments=(await db.prepare('SELECT e.id,e.name FROM environments e JOIN units u ON u.id=e.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')'+(unitId?' AND u.id=?':'')).bind(...args).all()).results;
- const photos=(await db.prepare(`SELECT p.id,p.target_id FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id JOIN units u ON u.id=p.unit_id WHERE p.status='ready' AND i.state='completed' AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') ${unitId?'AND u.id=?':''}`).bind(...args).all()).results;
+ const photos=(await db.prepare(`SELECT p.id,p.target_id,p.target_kind,p.unit_id FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id JOIN units u ON u.id=p.unit_id WHERE p.status='ready' AND i.state='completed' AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND EXISTS(SELECT 1 FROM json_each(?) target WHERE p.unit_id=json_extract(target.value,'$.unit') AND p.target_id=json_extract(target.value,'$.id') AND p.target_kind=json_extract(target.value,'$.kind'))`).bind(JSON.stringify(items.map(item=>({unit:item.unit_id,id:item.target_id,kind:item.id.startsWith('equipment:')?'equipment':'occurrence'})))).all()).results;
+ const described=await describePhotos(db,photos.filter(p=>items.some(item=>item.unit_id===p.unit_id&&item.target_id===p.target_id&&p.target_kind===(item.id.startsWith('equipment:')?'equipment':'occurrence'))));
+ const itemPhotos=item=>described.filter(p=>p.unit_id===item.unit_id&&p.target_id===item.target_id&&p.target_kind===(item.id.startsWith('equipment:')?'equipment':'occurrence'));
  const total=sectionItems.length+equipmentCount;
- return json({items:items.map(item=>({...item,location:item.location||item.environment_ids.map(id=>environments.find(e=>e.id===id)?.name||'Local não identificado').join(', '),photos:photos.filter(p=>p.target_id===item.target_id).map(p=>p.id)})),total,nextOffset:offset+items.length<total?offset+items.length:null});
+ return json({items:items.map(item=>({...item,location:item.location||item.environment_ids.map(id=>environments.find(e=>e.id===id)?.name||'Local não identificado').join(', '),photos:itemPhotos(item).map(p=>p.id),photo_details:itemPhotos(item)})),total,nextOffset:offset+items.length<total?offset+items.length:null});
 }

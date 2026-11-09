@@ -1,3 +1,5 @@
+import {thumbnailResponse} from './photo-thumbnails.mjs';
+import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
 import {photoStore, StorageError} from './photo-storage.mjs';
 
@@ -14,7 +16,11 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
  if(!['root','admin','visualizador'].includes(user.role))return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Acompanhamento disponível somente para consulta.',405);
  const id=url.searchParams.get('id');if(!uuid(id))return fail('Vistoria inválida.');
- const db=env.DB,inspection=await db.prepare("SELECT i.id,i.unit_id,i.state FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=? AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").bind(id).first();
+ const db=env.DB,photoId=url.searchParams.get('photoId');
+ const binary=url.pathname.endsWith('-photo');if(binary&&!uuid(photoId))return fail('Fotografia inválida.');
+ const joined=binary?await db.prepare("SELECT p.*,i.state AS inspection_state FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id JOIN units u ON u.id=p.unit_id WHERE p.id=? AND i.id=? AND u.active=1 AND u.unit_type<>'Escola conveniada' AND p.status='ready'").bind(photoId,id).first():null;
+ if(binary&&!joined)return fail('Fotografia recebida não encontrada nesta coleta.',404);
+ const inspection=binary?{id,unit_id:joined.unit_id,state:joined.inspection_state}:await db.prepare("SELECT i.id,i.unit_id,i.state FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=? AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").bind(id).first();
  if(!inspection)return fail('Vistoria indisponível.',404);
  if(url.pathname.endsWith('-photos')){
   if(inspection.state!=='open')return json({completed:true,items:[],ready:0,pending:0,nextCursor:null});
@@ -31,17 +37,17 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
     ORDER BY p.created_at DESC,p.id DESC LIMIT 51`).bind(id,inspection.unit_id,...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
   const counts=(await db.prepare('SELECT status,COUNT(*) AS total FROM collection_photos WHERE inspection_id=? AND unit_id=? GROUP BY status').bind(id,inspection.unit_id).all()).results;
   const page=rows.slice(0,50),last=page.at(-1);
-  return json({items:page,ready:counts.find(r=>r.status==='ready')?.total||0,pending:counts.find(r=>r.status==='pending')?.total||0,nextCursor:rows.length>50?btoa(JSON.stringify([last.created_at,last.id])):null});
+  return json({items:await describePhotos(db,page),ready:counts.find(r=>r.status==='ready')?.total||0,pending:counts.find(r=>r.status==='pending')?.total||0,nextCursor:rows.length>50?btoa(JSON.stringify([last.created_at,last.id])):null});
  }
- const photoId=url.searchParams.get('photoId');if(!uuid(photoId))return fail('Fotografia inválida.');
+
  if(inspection.state!=='open')return fail('Vistoria concluída. Consulte a galeria oficial da unidade.',409);
- const row=await db.prepare("SELECT * FROM collection_photos WHERE id=? AND inspection_id=? AND unit_id=? AND status='ready'").bind(photoId,id,inspection.unit_id).first();
+ const row=joined;
  if(!row)return fail('Fotografia recebida não encontrada nesta coleta.',404);
  try{
   const store=photoStore(env);
   if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);
   if(row.storage_provider&&store.provider!==row.storage_provider)return fail('O provedor desta fotografia não está ativo.',503);
-  const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);
+  const thumbnail=thumbnailResponse(request,row);if(thumbnail)return thumbnail;const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);
   return photoResponse(row,object);
  }catch(error){if(error instanceof StorageError)return fail(error.message,error.status);throw error;}
 }

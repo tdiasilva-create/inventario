@@ -334,3 +334,7 @@ Pedido de iniciar correções do pacote externo → cache revalidado de assets/f
 ## Publicação da Fase 1 — 09/11/2026
 
 Pedido posterior explícito “publique no ambiente real” → código `b96f428` publicado no painel (`e7261a18-7138-4877-b5cb-fbd5a41fbc5f`) e coletor (`9de19a35-cf5d-4172-a894-450995f218ad`), ambos em 100%; migração 0019 aplicada no D1 compartilhado após backup verificado. Cadastros, Drive, perguntas e perfis preservados. 46 verificações públicas do painel e 18 respostas adicionais nos dois endereços aprovadas, incluindo oito revalidações estáticas 304. Registro/limites/rollback: [publicação real](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md). Sem novo upload autenticado: sessão do painel expirada. Demais fases da auditoria continuam pendentes.
+
+## D-072 / auditoria Fase 2 — 09/11/2026
+
+FOTO-02, ERR-04, ICO-21 e ICO-23 → decisão explícita de miniaturas no D1 → migração 0020, server/photo-thumbnails.mjs e photo-labels.mjs, rotas de fotos, web/photo-prepare.js, galerias/viewers, manutenção root → tests/photo-thumbnails.test.mjs e photo-thumbnails-browser.cjs. Base §§5.3–5.6 e 7: compressão, evidência vinculada e estados preservados; exceção binária limitada por D-072. Não modifica Base original ou demais perguntas. [Contrato](../04-dados-apis/MINIATURAS_D072.md), [aceite/limites](../05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md).

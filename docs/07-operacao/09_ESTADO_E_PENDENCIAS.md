@@ -1,4 +1,4 @@
-# Estado e pendências — atualizado em 08/11/2026
+# Estado e pendências — atualizado em 09/11/2026
 
 ## Estado mais recente e auditoria
 
@@ -74,3 +74,7 @@ A [Fase 1 de desempenho](../05-qualidade/CORRECOES_PRODUCAO_FASE_1_2026-11-09.md
 ### Publicação posterior — 09/11/2026
 
 O responsável autorizou o deploy real após a entrega local acima. Fase 1 publicada nos dois Workers, ambos ativos em 100%; migração 0019 aplicada no D1 compartilhado, após backup validado. Produção passa a 19 migrações e dois índices adicionais. Cadastros, integração Drive e agendamento do monitor preservados. Ver [registro da publicação](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md) para versões, rollback, verificações HTTP e limites. A sessão do painel expirou; novo teste autenticado de fotos pós-deploy não foi realizado. Demais fases continuam pendentes.
+
+## Auditoria: miniaturas (Fase 2)
+
+D-072 autoriza miniaturas pequenas no D1; originais continuam no Drive. Código local usa 20 migrações (0020 é aditiva). Root dispõe de preparo paginado das fotos antigas em Configurações. [Contrato](../04-dados-apis/MINIATURAS_D072.md) e [aceite/limites](../05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md). Estado da publicação consta do relatório de entrega; não inferir que todas as fases da auditoria foram concluídas. Fases 3–5 e testes físicos seguem pendentes.

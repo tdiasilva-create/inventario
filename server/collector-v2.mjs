@@ -1,3 +1,4 @@
+import {describePhotos} from './photo-labels.mjs';
 import {questionnaireVersion,topics,v2Sections,validateV2Section,v2PhotoErrors,pendingAgentLinks,pendingDrafts} from '../web/collector-v2-schema.js';
 const parse=s=>JSON.parse(s||'{}');
 export const isV2=i=>i?.questionnaire_version===questionnaireVersion;
@@ -15,7 +16,7 @@ export async function startV2(request,user,env,{body,json,fail,unit,history}){
 export async function v2Evidence(db,i){
  // Current plus previously completed evidence, never another draft's photos.
  const photos=(await db.prepare("SELECT p.id,p.target_kind,p.target_id,p.status,p.inspection_id FROM collection_photos p JOIN inspections v ON v.id=p.inspection_id WHERE p.unit_id=? AND p.status='ready' AND (v.state='completed' OR p.inspection_id=?) ORDER BY p.created_at").bind(i.unit_id,i.id).all()).results.map(p=>({...p,current:p.inspection_id===i.id}));
- return photos;
+ return describePhotos(db,photos);
 }
 export async function reviewV2(db,i,context){
  const rows=(await db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results;

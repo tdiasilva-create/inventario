@@ -467,3 +467,9 @@ Autoriza migracao aditiva 0018 e publicacao somente do painel; sem dados fictici
 D-071 publicada: painel 52ccaadf-0b9d-46be-99ce-4d8ae0b8ef8f em 100%, migracao 0018 aplicada; dados/contas/Drive preservados, coletor sem novo deploy. Conferencia root e evidencia em docs/05-qualidade/CENTRAL_DEMANDAS_2026-11-08.md.
 
 Correção posterior de D-071 (08/11): navegação pelo menu para Computadores/Demandas interceptada indevidamente pelo documento antigo, exibindo Configurações com consultas não iniciadas. Corrigida separação de rotas e reforçado tratamento de consultas GET. Publicado painel `e4ac8db6-ea92-42e0-8977-2ea21b9514ba`, sem nova decisão funcional, mudança de banco ou coletor. Testes e conferência real pelo menu: docs/05-qualidade/NAVEGACAO_PAINEL_2026-11-08.md.
+
+## D-072 — miniaturas derivadas no D1, 09/11/2026
+
+O responsável pediu a próxima fase da auditoria e decidiu expressamente: **“Guardar miniaturas no D1, como propõe a Fase 2”**, após apresentação do conflito com a Base §5.6. Autoriza a exceção somente para miniaturas JPEG de até 320 × 320 pixels e 64 KB. Fotos completas permanecem no Drive privado atual. Não altera perguntas, obrigatoriedade, perfis, QR, estados de publicação ou política offline.
+
+Migração aditiva 0020, miniaturas somente após confirmação do original, leitura protegida/ETag próprio com revalidação e fallback integral. Manutenção de fotos antigas pelo root no painel, em lotes, sem reabrir visita ou mudar a autoria original. Detalhes: [contrato](../04-dados-apis/MINIATURAS_D072.md). Validação e limites: [Fase 2](../05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md). Não estende a exceção a arquivos originais, documentos ou vídeos no D1.

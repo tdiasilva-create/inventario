@@ -11,7 +11,7 @@
 | Agentes | Fontes/build exatos, instaladores e hashes; configuração de endpoint | Repositório/arquivo privado |
 | Operação | Versões ativas, horários, migrações aplicadas, hashes e responsável | Manifesto de backup restrito |
 
-Git não é backup do D1. SQL não contém bytes das imagens. Arquivos de foto sem IDs e vínculos não recompõem automaticamente as galerias. Chave privada dos agentes fica no Windows; não centralizar/exportar indiscriminadamente chaves das máquinas.
+Git não é backup do D1. Por D-072, o SQL passa a conter bytes de miniaturas privadas; continua sem os originais do Drive/R2. Verificar BLOBs no ensaio de importação/exportação, incluindo tamanho/hash, e nunca publicar o dump. Arquivos de foto sem IDs e vínculos não recompõem automaticamente as galerias. Chave privada dos agentes fica no Windows; não centralizar/exportar indiscriminadamente chaves das máquinas.
 
 ## Preparar uma captura consistente
 
