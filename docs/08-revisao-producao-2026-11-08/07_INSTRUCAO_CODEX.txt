@@ -1,0 +1,95 @@
+INSTRUÇÃO PARA O CODEX — CORREÇÕES DE PRODUÇÃO (coletor, painel, servidor)
+Repositório: https://github.com/tdiasilva-create/inventario · base: commit eddba99 (main)
+Pasta de referência: docs/08-revisao-producao-2026-11-08/
+
+Copie o bloco da fase desejada. Não misture fases em um mesmo pedido.
+
+==================================================================
+MENSAGEM INICIAL (enviar uma vez, antes da fase 1)
+==================================================================
+Leia, nesta ordem: 00_LEIA_ANTES_DE_TUDO.md, AGENTS.md, docs/00-governanca/REGRAS_DE_PRECEDENCIA.md,
+e depois toda a pasta docs/08-revisao-producao-2026-11-08/ (arquivos 00 a 06).
+
+Essa pasta é uma revisão técnica com defeitos (ERR-nn), lógicas não aplicadas (LNA-nn),
+plano de fotografias (FOTO-nn), ícones/exibição (ICO-nn) e melhorias (MEL-nn), com
+arquivo:linha no commit eddba99. Vamos executar o plano do arquivo 06 por fases.
+
+Regras para todas as fases:
+- Antes de alterar: listar os IDs que vai tratar, os arquivos que pretende tocar e os critérios
+  de aceite correspondentes (do arquivo 03 §6 e do arquivo 06), conforme "Forma de execução" do AGENTS.md.
+- Não alterar perguntas, obrigatoriedades, perfis, invariantes do AGENTS.md ou decisões D-0xx.
+  Itens marcados DECISÃO ficam fora até eu responder.
+- Migrações apenas aditivas, numeradas a partir de 0016.
+- Nenhum deploy, segredo, alteração em D1 de produção ou upload real ao Drive. Testes com SQLite
+  em memória e Drive simulado (tests/helpers/).
+- Ao terminar: pnpm test, pnpm build:desktop, pnpm build:collector, pnpm check:docs, pnpm docs:schema
+  e os testes de navegador da CI (test:v3:browser, test:ux:browser, test:identity:browser,
+  test:panel:browser) verdes; registrar o resultado em docs/05-qualidade/CORRECOES_PRODUCAO_FASE_n_<data>.md
+  e atualizar docs/00-governanca/RASTREABILIDADE.md.
+- Commits pequenos, um por item ou grupo de itens afins, sem reformatação de código junto.
+
+Confirme que leu e apresente o plano da fase 1 antes de alterar qualquer arquivo.
+
+==================================================================
+FASE 1 — cache, token, índices, upload
+==================================================================
+Execute a Fase 1 do arquivo 06_PLANO_DE_CORRECAO.md: itens FOTO-01, FOTO-03, FOTO-04, FOTO-08,
+FOTO-09, ERR-01, ERR-02, ERR-05, ERR-06, ERR-12, ERR-16.
+Pontos de atenção:
+- server/worker.mjs:121 só pode aplicar no-store quando o handler não definiu Cache-Control;
+  HTML e /api/* continuam no-store; /vendor, /assets, .css, .js, .svg, .woff2 recebem cache público.
+- Fotos: ETag = sha256, Cache-Control private max-age=86400, 304 em If-None-Match antes de chamar o Drive.
+- photo-storage.mjs: token do Drive em memória por isolate; findByProperty só quando houver linha pending anterior.
+- Migração 0016 com os dois índices de collection_photos.
+- desktop-results.js: não reescrever as imagens a cada 15 s se o JSON não mudou; loading=lazy.
+- Converter web/assets/paisagem-login-v2.png para WebP (≤ 250 KB) e atualizar login.css e ORIGEM_DOS_ATIVOS.md.
+Entregue com os testes novos descritos em MEL-14 (cabeçalhos de cache; contagem D1/Drive por operação).
+Inclua no relatório da fase a tabela "antes/depois" de D1 e Drive por operação (use o mesmo método da
+tabela de 03_DESEMPENHO_FOTOS.md §2).
+
+==================================================================
+FASE 2 — miniaturas
+==================================================================
+Execute a Fase 2: FOTO-02 completo (migração thumb_blob, rota photo-thumb, parâmetro size=thumb nas três
+rotas de leitura com fallback ao integral, geração no cliente com createImageBitmap + HEIC, galerias do
+coletor e do painel usando miniatura, viewer integral, ação root "Gerar miniaturas pendentes"),
+mais ERR-04, ICO-21 e ICO-23.
+Critérios: 03_DESEMPENHO_FOTOS.md §6 itens 1, 2, 7 e 8. Teste em navegador com Worker real e Drive simulado;
+descreva o roteiro manual para Android Chrome e iPhone Safari que eu vou executar.
+
+==================================================================
+FASE 3 — painel por blocos
+==================================================================
+Execute a Fase 3: FOTO-07, ERR-03, ERR-07, ERR-08, ERR-18, LNA-08, LNA-09 (Tipo; Ano só se eu decidir),
+LNA-11, LNA-13, MEL-06. ERR-19 somente após minha decisão sobre os marcadores de exemplo.
+Preservar a composição D-067 (docs/05-qualidade/LAYOUT_PANORAMA_2026-11-06.md) e a identidade D-065;
+compare capturas antes/depois dos blocos do panorama e do detalhe da unidade.
+
+==================================================================
+FASE 4 — coletor V3
+==================================================================
+Execute a Fase 4: FOTO-05, FOTO-06, ERR-09, ERR-10, ERR-11, ERR-17, LNA-01 (botões de conferência —
+disponível, sem tornar obrigatório), LNA-02, LNA-03, LNA-04, LNA-05, MEL-16.
+Não alterar o catálogo collector-v3-schema.js. Preservar o fluxo de QR/agente (collector-qr.js e os comandos
+congelados de confirmAgentLink/confirmPosition). Testes: collector-v3.test.mjs, collector-v3-browser.cjs,
+collector-ux-browser.cjs atualizados; roteiro manual para aparelhos.
+
+==================================================================
+FASE 5 — estrutural e manutenção
+==================================================================
+Execute a Fase 5 em commits separados e nesta ordem: MEL-07 (Server-Timing e contagem D1),
+MEL-01 (Smart Placement — apenas a alteração de configuração e o protocolo de medição; não publicar),
+MEL-02, MEL-03, MEL-04, MEL-05, MEL-08, ERR-13, ERR-14, ERR-15, ERR-20/MEL-13, MEL-14, MEL-09.
+MEL-11 (formatação) por último, em commit isolado, sem nenhuma outra alteração.
+
+==================================================================
+DECISÕES QUE EU (responsável) PRECISO RESPONDER
+==================================================================
+[ ] LNA-06  Revisita: abrir assuntos como "Em andamento" com respostas anteriores, ou manter "Concluído" + reabertura?
+[ ] LNA-12  Busca global deve procurar equipamentos (ID, AnyDesk/RustDesk, série, hostname) ou só unidades?
+[ ] LNA-15  Critério do indicador "Pendentes" ou retirar o cartão?
+[ ] LNA-16  Ocultar Relatórios/Planejamento/Notificações até existirem, ou marcar "em breve"?
+[ ] ICO-02  Símbolos dos assuntos nas etapas: manter ocultos (e não gerar) ou mover para o cabeçalho?
+[ ] ERR-19  Marcadores de exemplo do mapa: botão para ocultar (padrão desligado) ou remover a camada?
+[ ] MEL-12  Primeiro relatório real: "Situação dos computadores por unidade"?
+[ ] MEL-17  Cache de fotos no navegador em estações compartilhadas: 24 h, 1 h, ou limpar no logout?

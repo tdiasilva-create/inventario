@@ -1,0 +1,8 @@
+upload 1ª foto (fachada) — rota photo-upload               D1=14  Drive= 4  status=201
+upload 2ª foto (mesma unidade, pasta já em cache D1)       D1=13  Drive= 2  status=201
+GET /api/collector/photo (coletor, operador)               D1= 4  Drive= 1  status=200
+GET /api/inventory/in-progress-photo (painel, root)        D1= 4  Drive= 1  status=200
+GET /api/inventory/photo (galeria D-064, root)             D1= 3  Drive= 1  status=200
+GET /api/collector/inspection (abre a coleta; inclui v2Evidence) D1= 8  Drive= 0  status=200
+
+(Não inclui a consulta de sessão feita em worker.mjs:current() nem a de handleAgentMachine; some +1 por requisição autenticada.)
