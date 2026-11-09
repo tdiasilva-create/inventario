@@ -55,3 +55,20 @@
 .photo-open{display:block;border:0;background:#f3f4f5;padding:0;width:100%;min-height:0}.photo-open img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}.collector-photo-viewer{width:min(92vw,900px);max-height:90dvh;border:1px solid var(--border,#ddd);border-radius:14px;padding:16px;overflow:auto}.collector-photo-viewer::backdrop{background:#16191dcc}.collector-photo-viewer img{display:block;max-width:100%;max-height:65dvh;margin:auto;object-fit:contain}.collector-photo-viewer h2{font-size:1.1rem}.collector-photo-viewer p{font-size:.9rem}
 
 .photo-thumb .photo-date{display:block;font:11px Barlow,sans-serif;color:#555;padding-top:5px;text-align:center}
+
+/* D-074: escolha de ambiente sem abrir o teclado automaticamente. */
+.environment-select{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--borda,#ddd);border-radius:8px;background:white;color:var(--texto-principal,#171a1c);font:400 16px var(--font-body,Barlow,sans-serif);text-align:left;overflow-wrap:anywhere}
+.environment-select[aria-invalid=true]{border-color:var(--vermelho)}
+.environment-picker{box-sizing:border-box;width:min(94vw,480px);max-height:86vh;max-height:86dvh;padding:16px;border:1px solid #ddd;border-top:4px solid var(--laranja);border-radius:12px;background:white;color:#171a1c;overflow:auto;font-family:var(--font-body,Barlow,sans-serif)}
+.environment-picker::backdrop{background:#16191db3}
+.environment-picker header,.environment-picker-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.environment-picker h2{font:600 20px var(--font-display);margin:0;outline:none}
+.environment-picker p{font-size:14px;line-height:1.4}
+.environment-picker-toolbar{font-size:12px;color:#555}
+.environment-picker input{box-sizing:border-box;width:100%;min-height:46px;font-size:16px}
+.environment-picker-list{display:grid;gap:8px;margin:12px 0}
+.environment-option{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;background:white;color:#171a1c;text-align:left;font:400 16px var(--font-body,Barlow,sans-serif);overflow-wrap:anywhere}
+.environment-option[aria-pressed=true]{border-color:var(--laranja);background:var(--pessego-suave,#fff1e9)}
+.environment-option small{font-size:12px;color:#6d2510}
+.environment-picker button:focus-visible,.environment-select:focus-visible{outline:3px solid var(--laranja);outline-offset:2px}
+.environment-picker [hidden]{display:none}

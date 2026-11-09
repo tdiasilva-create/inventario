@@ -39,6 +39,12 @@ export async function collectorRoutes(request,url,user,env,{json,fail,body}){
  if(p==='/api/collector/v2-problems'&&!write){const i=await inspection(url.searchParams.get('inspectionId'));if(!i||!editor||!isV2(i))return fail('Visita indisponível.',403);const rows=(await db.prepare("SELECT id,data_json FROM inventory_equipment_all WHERE unit_id=? AND COALESCE(json_extract(data_json,'$.problems'),'')<>'' ORDER BY id LIMIT 101").bind(i.unit_id).all()).results;return json({equipment:rows.slice(0,100).map(r=>({id:r.id,data:parse(r.data_json)})),hasMore:rows.length>100});}
  const visitResponse=await visitRoutes(request,url,user,env,{json,fail,body,unit,inspection,history,touch,store});if(visitResponse)return visitResponse;
  if(p==='/api/collector/capabilities'&&!write)return json({photosEnabled:await store.enabled(),photoProvider:store.provider,offlineEnabled:false});
+ if(p==='/api/collector/environments'&&request.method==='GET'){
+  const i=await inspection(url.searchParams.get('inspectionId'));
+  if(!i||!editor)return fail('Vistoria não autorizada.',403);
+  const environments=(await db.prepare('SELECT id,name,type FROM environments WHERE unit_id=? ORDER BY name COLLATE NOCASE,id').bind(i.unit_id).all()).results;
+  return json({environments});
+ }
  if(p==='/api/collector/start'&&write){const data=await body(request),u=await unit(data.unitId);if(!u)return fail('Unidade não autorizada.',403);const now=Date.now(),id=crypto.randomUUID();await db.prepare("INSERT OR IGNORE INTO inspections(id,unit_id,created_by,created_at,updated_at) VALUES(?,?,?,?,?)").bind(id,u.id,user.id,now,now).run();const i=await db.prepare("SELECT * FROM inspections WHERE unit_id=? AND state='open'").bind(u.id).first();const previous=await db.prepare("SELECT id FROM inspections WHERE unit_id=? AND state='completed' ORDER BY completed_at DESC,id DESC LIMIT 1").bind(u.id).first();const rows=previous?(await db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(previous.id).all()).results:[];await db.batch(groups.map(([g])=>db.prepare('INSERT OR IGNORE INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,?,?,?,?)').bind(i.id,g,g==='A'?'{}':rows.find(r=>r.section===g)?.data_json||'{}',user.id,now)));return json({inspection:i});}
  if(p==='/api/collector/inspection'&&!write){
   const i=await inspection(url.searchParams.get('id'));if(!i||!editor)return fail('Vistoria não autorizada.',403);
@@ -80,7 +86,11 @@ export async function collectorRoutes(request,url,user,env,{json,fail,body}){
     // Validação independente do ambiente antes de criar qualquer catálogo por digitação livre.
     const basic=validateV3Equipment({...data,environment:'pending'},{environments:[{id:'pending'}]},input.draft===true);delete basic.environmentName;
     if(Object.keys(basic).length)return json({error:'Confira a ficha do equipamento.',fields:basic},400);
-    const room=await resolveV3Environment(db,i,data.environmentName,user,history,touch);if(!room)return json({error:'Informe o ambiente.',fields:{environmentName:'Informe o nome do ambiente (até 180 caracteres).'}},400);data.environment=room.id;data.environmentName=room.name;
+    // D-074: seleção explícita usa ID + unidade; nunca cria ambiente a partir do rótulo.
+    // Clientes anteriores ainda abertos mantêm o contrato de digitação livre D-057.
+    const selected=Object.hasOwn(input,'environmentId');
+    const room=selected?(uuid(input.environmentId)?await db.prepare('SELECT id,name FROM environments WHERE id=? AND unit_id=?').bind(input.environmentId,i.unit_id).first():null):await resolveV3Environment(db,i,data.environmentName,user,history,touch);
+    if(!room)return json({error:'Informe o ambiente.',fields:{environmentName:selected?'Selecione um ambiente desta unidade. Atualize a lista se necessário.':'Informe o nome do ambiente (até 180 caracteres).'}},400);data.environment=room.id;data.environmentName=room.name;
    }else data.environment=existingRecord?.storage_kind==='legacy'?existingRecord.environment_id:null;
   }
   const other=isV3(i)&&data.category==='other'&&existingRecord?.storage_kind!=='legacy',table=other?'miscellaneous_equipments':'equipments',locks=other?'miscellaneous_locks':'equipment_locks';

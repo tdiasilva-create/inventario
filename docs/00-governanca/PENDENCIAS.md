@@ -145,3 +145,9 @@ A escolha sobre miniaturas no D1 foi resolvida pelo responsável em D-072. Imple
 ## Atualização da auditoria — Fase 3 / D-073, 09/11/2026
 
 Implementadas consultas por blocos, mapa preservado, fachada e galeria completa, atualização de detalhes, vínculo de agente em andamento e exportações; ver docs/05-qualidade/CORRECOES_PRODUCAO_FASE_3_2026-11-09.md. Publicação real autorizada expressamente nesta etapa. Permanecem sem decisão: botão/camada de locais de referência (ERR-19), filtro Ano (LNA-09), extensão da busca global e interpretação de indicadores. Nenhum dado fictício oficial, exclusão ou alteração no coletor integra esta fase. Fases 4/5 e homologação física continuam pendentes.
+## D-074 — ambientes compartilhados, 09/11/2026
+
+- [x] Seleção dos ambientes da própria unidade, consulta ao abrir/atualizar, novo cadastro explícito, vínculo por ID validado no servidor e reutilização em concorrência. Ver `docs/05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md`.
+- [ ] Homologação em celulares físicos durante a coleta com vários operadores. Teste isolado usa dois navegadores/sessões; não equivale a teste de 40 máquinas reais.
+- [ ] Duplicidades antigas com nomes diferentes permanecem; não há autorização para unificação ou exclusão automática.
+- Fases 4 e 5 pausadas a pedido do responsável. Esta entrega atende somente ao pedido de seleção de ambientes.
