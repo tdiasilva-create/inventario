@@ -11,6 +11,7 @@ import {photoGalleryRead} from './photo-gallery.mjs';
 import {handleAgentMachine,handleAgentHuman,manutencaoAgentes} from './agentes/index.mjs';
 import {runAgentMonitoring,monitoringRoutes} from './agent-monitoring.mjs';
 import {rootEnvironmentRoutes} from './environments.mjs';
+import {equipmentNameRoutes} from './equipment-names.mjs';
 import {serviceDeskRoutes} from './service-desk.mjs';
 const json=(value,status=200,headers={})=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
 const fail=(message,status=400)=>json({error:message},status);
@@ -79,6 +80,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.
  if(env.APP_KIND!=='collector'){const googleResponse=await googleRoutes(request,url,user,env,{json,fail,audit});if(googleResponse)return googleResponse;}
  const environmentResponse=await rootEnvironmentRoutes(request,url,user,env,{json,fail,body});if(environmentResponse)return environmentResponse;
+ const equipmentNameResponse=await equipmentNameRoutes(request,url,user,env,{json,fail,body});if(equipmentNameResponse)return equipmentNameResponse;
  const importResponse=await importRoutes(request,url,user,db,{json,fail,body,audit});if(importResponse)return importResponse;
  const unitResponse=await unitRoutes(request,url,user,db,{json,fail,body,audit,store:photoStore(env,{db}),collector:env.APP_KIND==='collector'});if(unitResponse)return unitResponse;
  if(path.startsWith('/api/admin/')){

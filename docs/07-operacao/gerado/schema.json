@@ -84,6 +84,10 @@
     {
       "file": "0021_environment_names.sql",
       "sha256": "0d4ccf768f6871b68629b9e8e2923514b170551d6c24414c79d1e50a9e05a7e4"
+    },
+    {
+      "file": "0022_equipment_names.sql",
+      "sha256": "d5132de5d8ca685bfa714022c75dc0947523222f95143f2647b4d9f744c96bd4"
     }
   ],
   "tables": [
@@ -2369,6 +2373,175 @@
           "to": "id",
           "on_update": "NO ACTION",
           "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "equipment_name_events",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "before_name",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "after_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "from_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "to_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "equipment_names",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "equipments",
+          "from": "equipment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
           "match": "NONE"
         }
       ]
@@ -4875,6 +5048,18 @@
     },
     {
       "type": "index",
+      "name": "equipment_name_events_equipment",
+      "tbl_name": "equipment_name_events",
+      "sql": "CREATE INDEX equipment_name_events_equipment ON equipment_name_events(equipment_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "equipment_names_unit",
+      "tbl_name": "equipment_names",
+      "sql": "CREATE INDEX equipment_names_unit ON equipment_names(unit_id)"
+    },
+    {
+      "type": "index",
       "name": "equipment_unit_category",
       "tbl_name": "equipments",
       "sql": "CREATE INDEX equipment_unit_category ON equipments(unit_id,category,created_at DESC,id DESC)"
@@ -5280,6 +5465,18 @@
       "name": "equipment_locks",
       "tbl_name": "equipment_locks",
       "sql": "CREATE TABLE equipment_locks(equipment_id TEXT PRIMARY KEY REFERENCES equipments(id),user_id TEXT NOT NULL,token TEXT NOT NULL,expires_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "equipment_name_events",
+      "tbl_name": "equipment_name_events",
+      "sql": "CREATE TABLE equipment_name_events (\n operation_id TEXT PRIMARY KEY,\n equipment_id TEXT NOT NULL,\n unit_id TEXT NOT NULL,\n actor_id TEXT NOT NULL,\n actor_name TEXT NOT NULL,\n before_name TEXT,\n after_name TEXT NOT NULL,\n from_version INTEGER NOT NULL,\n to_version INTEGER NOT NULL,\n payload_json TEXT NOT NULL,\n created_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "equipment_names",
+      "tbl_name": "equipment_names",
+      "sql": "CREATE TABLE equipment_names (\n equipment_id TEXT PRIMARY KEY REFERENCES equipments(id) ON DELETE CASCADE,\n unit_id TEXT NOT NULL REFERENCES units(id),\n name TEXT NOT NULL CHECK(length(name) BETWEEN 1 AND 180),\n version INTEGER NOT NULL CHECK(version>0),\n updated_at INTEGER NOT NULL,\n updated_by TEXT NOT NULL\n)"
     },
     {
       "type": "table",

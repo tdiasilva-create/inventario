@@ -23,6 +23,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0019_photo_indexes.sql`
 - `0020_photo_thumbnails.sql`
 - `0021_environment_names.sql`
+- `0022_equipment_names.sql`
 
 ## agent_audit_log
 
@@ -463,6 +464,35 @@ Referências: `unit_id` → `units.id` (delete: NO ACTION).
 | expires_at | INTEGER | sim |  | — |
 
 Referências: `equipment_id` → `equipments.id` (delete: NO ACTION).
+
+## equipment_name_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| equipment_id | TEXT | sim |  | — |
+| unit_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| before_name | TEXT | não |  | — |
+| after_name | TEXT | sim |  | — |
+| from_version | INTEGER | sim |  | — |
+| to_version | INTEGER | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+## equipment_names
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| equipment_id | TEXT | não | 1 | — |
+| unit_id | TEXT | sim |  | — |
+| name | TEXT | sim |  | — |
+| version | INTEGER | sim |  | — |
+| updated_at | INTEGER | sim |  | — |
+| updated_by | TEXT | sim |  | — |
+
+Referências: `unit_id` → `units.id` (delete: NO ACTION); `equipment_id` → `equipments.id` (delete: CASCADE).
 
 ## equipment_verifications
 

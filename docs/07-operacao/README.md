@@ -31,3 +31,7 @@ Exportação consistente do D1; imagens e manifesto de vínculos; segredos em co
 ## Correção de ambientes — D-076, 09/11/2026
 
 Os dois ambientes permitem corrigir nomes mantendo o ID: operador no assunto Ambientes de uma visita aberta; root em Ambientes no painel. Migração 0021 adiciona versão e histórico/recibo; consultas exibem o nome corrigido sem reescrever snapshots ou mover equipamentos. [Aceite e versões publicadas](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md). Aplicar todas as 21 migrações em uma nova instalação; a descrição histórica de 20 migrações em materiais anteriores não substitui o diretório atual.
+
+## Nomes de equipamentos — D-077, 09/11/2026
+
+Aplicar as **22 migrações** em nova instalação. A migração 0022 cria nomes administrativos versionados e histórico/recibo separados dos dados do agente e da coleta. Root edita pelo painel, inclusive registros parciais, sem afetar IDs/fotos/vínculos. O coletor já publicado permanece compatível. [Aceite e publicação](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).

@@ -5,6 +5,7 @@ const kinds=['Manutenção','Reposição de insumo','Visita técnica','Outro'];
 const sources=['Telefone','Presencial','Painel','Outro'];
 const computerWhere="COALESCE(NULLIF(e.category,''),json_extract(e.data_json,'$.category'),'') IN ('','computer','desktop','notebook')";
 const joins=`FROM inventory_equipment_all e
+ LEFT JOIN equipment_names n ON n.equipment_id=e.id AND n.unit_id=e.unit_id
  LEFT JOIN environments room ON room.id=e.environment_id AND room.unit_id=e.unit_id
  LEFT JOIN agent_equipment_links l ON l.link_id=(SELECT ll.link_id FROM agent_equipment_links ll WHERE ll.equipment_id=e.id AND ll.ended_at IS NULL ORDER BY ll.linked_at DESC,ll.link_id DESC LIMIT 1)
  LEFT JOIN agent_devices d ON d.device_id=l.device_id
@@ -12,7 +13,7 @@ const joins=`FROM inventory_equipment_all e
  LEFT JOIN agent_current_snapshot cs ON cs.device_id=l.device_id
  LEFT JOIN agent_inventory_snapshots si ON si.inventory_id=cs.inventory_id
  LEFT JOIN agent_enrollments en ON en.device_id=l.device_id`;
-const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,(e.published_json IS NULL OR e.published_json!=e.data_json) AS partial,
+const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,n.name AS display_name,(e.published_json IS NULL OR e.published_json!=e.data_json) AS partial,
  COALESCE(room.name,json_extract(e.data_json,'$.environmentName'),'Ambiente não informado') AS environment_name,
  COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) AS hostname,
  l.device_id,d.state AS device_state,p.data_json AS presence_json,
@@ -46,7 +47,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   const room=s.get('environmentId')||'',all=s.get('allEquipment')==='1';if(room&&!uuid(room))return fail('Ambiente inválido.');
   const filters=['e.unit_id=?'],args=[unitId];if(!all)filters.push(computerWhere);if(room){filters.push('e.environment_id=?');args.push(room);}
   const base=`SELECT ${columns} ${joins} WHERE ${filters.join(' AND ')}`;
-  const search=q?' WHERE instr(lower(COALESCE(hostname,\'\')||\' \'||COALESCE(position_label,\'\')||\' \'||environment_name||\' \'||id),lower(?))>0':'';if(q)args.push(q);
+  const search=q?' WHERE instr(lower(COALESCE(display_name,\'\')||\' \'||COALESCE(hostname,\'\')||\' \'||COALESCE(position_label,\'\')||\' \'||environment_name||\' \'||id),lower(?))>0':'';if(q)args.push(q);
   const query='WITH records AS ('+base+') ';
   const [count,page,rooms]=await db.batch([db.prepare(query+'SELECT COUNT(*) AS total FROM records'+search).bind(...args),db.prepare(query+'SELECT * FROM records'+search+' ORDER BY environment_name,position_label,id LIMIT 60 OFFSET ?').bind(...args,offset),db.prepare(`SELECT r.id,r.name,c.value AS classification,c.version AS context_version,COUNT(e.id) AS computers FROM environments r LEFT JOIN computer_context c ON c.target_id=r.id AND c.kind='environment' LEFT JOIN inventory_equipment_all e ON e.environment_id=r.id AND e.unit_id=r.unit_id AND ${computerWhere} WHERE r.unit_id=? GROUP BY r.id ORDER BY r.name,r.id`).bind(unitId)]);
   return json({unit,items:page.results.map(r=>item(r,env)),total:count.results[0].total,offset,nextOffset:offset+page.results.length<count.results[0].total?offset+60:null,environments:rooms.results,server_time:new Date().toISOString()});
@@ -82,7 +83,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   let context,unitId=old?.unit_id,equipmentId=old?.equipment_id;
   if(!old){if(!uuid(a.unitId)||a.equipmentId&&!uuid(a.equipmentId))return fail('Selecione uma unidade e, se necessário, um equipamento.');const unit=await db.prepare("SELECT id,name FROM units WHERE id=? AND active=1 AND unit_type!='Escola conveniada'").bind(a.unitId).first();if(!unit)return fail('Unidade indisponível.',404);
    const eq=a.equipmentId?await db.prepare(`SELECT ${columns} ${joins} WHERE e.id=? AND e.unit_id=?`).bind(a.equipmentId,unit.id).first():null;if(a.equipmentId&&!eq)return fail('O equipamento não pertence à unidade selecionada.',422);
-   unitId=unit.id;equipmentId=eq?.id||null;context={unit_name:unit.name,hostname:eq?.hostname||null,environment:eq?.environment_name||null,position:eq?.position_label||null,category:eq?.category||null};
+   unitId=unit.id;equipmentId=eq?.id||null;context={unit_name:unit.name,display_name:eq?.display_name||null,hostname:eq?.hostname||null,environment:eq?.environment_name||null,position:eq?.position_label||null,category:eq?.category||null};
   }else context=old.context;
   const now=Date.now(),snapshot={description,kind:a.kind,source:a.source,requester,status:a.status,responsible,scheduled_date:scheduled,version:a.version+1,context,unit_id:unitId,equipment_id:equipmentId};
   const stmt=old?db.prepare('UPDATE service_requests SET description=?,kind=?,source=?,requester=?,status=?,responsible=?,scheduled_date=?,version=version+1,updated_at=?,last_operation=? WHERE id=? AND version=?').bind(description,a.kind,a.source,requester,a.status,responsible,scheduled,now,a.operationId,a.id,a.version):db.prepare('INSERT INTO service_requests(id,number,unit_id,equipment_id,context_json,description,kind,source,requester,status,responsible,scheduled_date,created_at,created_by,updated_at,last_operation) SELECT ?,COALESCE(MAX(number),0)+1,?,?,?,?,?,?,?,?,?,?,?,?,?,? FROM service_requests WHERE 1=1 ON CONFLICT(id) DO NOTHING').bind(a.id,unitId,equipmentId,JSON.stringify(context),description,a.kind,a.source,requester,a.status,responsible,scheduled,now,user.id,now,a.operationId);

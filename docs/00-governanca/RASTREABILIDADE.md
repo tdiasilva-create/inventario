@@ -356,3 +356,7 @@ Relato de repetição nos dois hosts → Base §8.4–8.7/8.9/8.11–8.12 e D-03
 ## D-076 — nome de ambiente corrigível, 09/11/2026
 
 Pedido do responsável + Base §§4.B, 4.F.1, 7.3–7.4 → `server/environments.mjs`, `server/collector.mjs`, migração `0021_environment_names.sql`, `web/environment-editor.js`, `web/collector-v3.js`, `web/desktop.js`; projeção de nomes em `inventory-equipment.mjs` e `photo-labels.mjs`. Testes: `environment-rename.test.mjs`, `environment-rename-browser.cjs`. [Relatório](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md). Não modifica a Base original ou pendências das Fases 4/5.
+
+## D-077 — nomes de computadores/impressoras, 09/11/2026
+
+Pedido explícito atual → Base §§7.3/7.4/9 e ID permanente → migrations/0022_equipment_names.sql, server/equipment-names.mjs, consultas inventory-equipment/in-progress/service-desk/photo-labels e editor desktop compartilhado. Root edita identificação exibida; hostname, coleta, vínculos e fotos intactos. Testes equipment-rename.test.mjs / equipment-rename-browser.cjs; [registro de aceite/publicação](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).

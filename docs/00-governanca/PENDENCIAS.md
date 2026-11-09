@@ -162,3 +162,8 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 - [x] Correção do nome pelo operador em coleta aberta e pelo root no painel, com concorrência/histórico e sem romper vínculos. [Testes e publicação](../05-qualidade/EDICAO_AMBIENTES_2026-11-09.md).
 - [ ] Aceite em celulares físicos pelo responsável. Testes de navegador não substituem teclado/câmera reais.
 - União/exclusão de ambientes e editor de legendas de fotos não fazem parte deste pedido específico. Fases 4/5 continuam pausadas.
+
+## D-077 — nomes de equipamentos, 09/11/2026
+
+- [x] Editor root de nomes de computadores e impressoras pelo painel, incluindo parciais; preservação de fotos/agente/unidade, versões e histórico testados. [Registro](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
+- Nome exibido não altera hostname no Windows. União/exclusão/transferência de equipamentos e edição livre de legendas de fotos não fazem parte deste pedido. Fases 4/5 continuam pausadas.

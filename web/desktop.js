@@ -10,7 +10,7 @@ import {openPhotoViewer} from './photo-viewer.js';
 const receivedResults=createResultsView();
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
-const progress=createProgressView({onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});
+const progress=createProgressView({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});
 import {inventorySummary,matrixUnits,unitInventory,answerDetails,equipmentPage,equipmentTable,presenceLabels} from './desktop-inventory.js';
 import {createAgentsAdmin} from './desktop-agents.js';
 import {readPanelJson} from './desktop-request.js';
@@ -30,7 +30,7 @@ if(authUser&&authUser.role!=='operador'){try{inventory=await inventorySummary();
 if(authUser){try{const r=await fetch('/api/units');if(r.ok){catalogue=(await r.json()).units;catalogueLoaded=true;}}catch{}}
 const root=document.querySelector('#dashboard');
 const state={page:Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',q:new URLSearchParams(location.search).get('q')||'',region:'Todas',type:'Todas',status:'Todas',year:'Todos',selected:null,photo:0,zoom:1,demo:false,sort:'default',layers:true};
-const equipmentConsultation=createEquipmentConsultation({refresh:()=>render(),onClose:id=>{requestAnimationFrame(()=>document.querySelector('.matrix [data-action="select-unit"][data-unit="'+CSS.escape(id)+'"]')?.focus());}});
+const equipmentConsultation=createEquipmentConsultation({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',refresh:()=>render(),onClose:id=>{requestAnimationFrame(()=>document.querySelector('.matrix [data-action="select-unit"][data-unit="'+CSS.escape(id)+'"]')?.focus());}});
 const colors={'Em dia':'#45df72','Em andamento':'#179cff','Pendente':'#ffcf3e','Com ocorrências':'#ff4057'};
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const collectorLink=()=>collectorUrl?`<a class="collection-link" href="${esc(collectorUrl)}">Abrir a interface de coleta mobile</a>`:'<span>O coletor terá endereço próprio: inventario-semed-lumiar (ainda não publicado).</span>';

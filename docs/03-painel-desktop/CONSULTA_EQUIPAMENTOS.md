@@ -57,3 +57,7 @@ Colunas canônicas: 0 computadores desktop/computer; 1 notebooks; 2 tablets; 3 p
 3. Integrar consulta embutida, teclado, retorno, cópia, galeria e ficha técnica; testar 1366×768, 1440×900 e 1920×900.
 4. Regressão do sistema; build; publicação somente do painel, sem migração/carga e com configuração/Drive/coletor preservados.
 5. Conferência pública/produção e registro em [CONSULTA_EQUIPAMENTOS_2026-11-08.md](../05-qualidade/CONSULTA_EQUIPAMENTOS_2026-11-08.md).
+
+## Atualização D-077 — edição do nome, 09/11/2026
+
+Root pode editar nome de exibição na ficha de computador/notebook/impressora, também em Computadores e Coletas em andamento. Nome administrativo independente de hostname, marca/modelo, respostas e localização. Busca e fotos usam o mesmo ID com nome atual; exports acrescentam nome e hostname em colunas finais. Demais permissões e separação oficial/PARCIAL preservadas. Histórico/recibo atômico e conflito explícito em /api/root/equipment-name. [Contrato e aceite](../05-qualidade/EDICAO_NOMES_EQUIPAMENTOS_2026-11-09.md).
