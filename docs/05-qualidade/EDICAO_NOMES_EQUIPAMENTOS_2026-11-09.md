@@ -40,4 +40,22 @@ Requisitos cobertos da Base: ID permanente, correções comuns com histórico, i
 
 ## Publicação
 
-Autorizada expressamente nesta solicitação. Registrar abaixo versão ativa, migração, backup e verificações após execução. Testes não alteraram registros oficiais.
+Publicação executada em **09/11/2026, 12:22 (Fortaleza)**, commit **335ba4b**.
+
+- Painel ativo em **100%**: **9f591a5f-201c-4c45-bffb-dd58d2d25a81**. Cron de minuto e diário preservados.
+- Coletor permanece na versão **18ee2dd6-7f07-48b0-bbc9-2a2bdf763024**, confirmada antes/depois, sem novo deploy. Sua coleta e o protocolo do agente continuam compatíveis.
+- Migração **0022_equipment_names.sql** aplicada ao D1 compartilhado após exportação privada de segurança (1.383.451 bytes, hash conferido). Nenhuma migração adicional pendente entrou no lote.
+- Contagens antes/depois idênticas: 76 unidades, 5 ambientes, 6 equipamentos, 8 fotos e 13 usuários. Tabelas novas vazias após publicação: nenhum nome de exemplo gravado em produção. Nenhum arquivo real do Drive foi reenviado ou removido.
+- Dez verificações HTTP públicas aprovadas: login, páginas protegidas, CSS, APIs recusando acesso sem sessão, e disponibilidade do coletor. Versões ativas conferidas por CLI. A edição autenticada foi exercitada no Worker com SQLite isolado; não foi realizada uma alteração de teste nos dados reais.
+- Builds dos dois pacotes e dry-runs dos dois Workers aprovados, schema com integridade/FKs corretos, links documentais e índice Git (535 arquivos) conferidos. Coletor foi somente empacotado para verificar compatibilidade.
+- Logs, backup e manifesto privados em private-data/release-editar-equipamentos-2026-11-09/, fora do Git.
+
+Endereços completos:
+
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores
+
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/coletas-em-andamento
+
+Se houver necessidade de retorno do código: painel anterior ef797235-6c1a-40bd-8d0d-f64f86799116, mantendo a migração aditiva. Não restaurar banco antigo sobre coletas posteriores. Nenhum rollback foi executado.
