@@ -83,3 +83,6 @@ D-072 autoriza miniaturas pequenas no D1; originais continuam no Drive. Fase 2 p
 ## Publicação mais recente — Fase 3 / D-073, 09/11/2026
 
 Painel por blocos publicado em 100%, versão `104e92dc-7b74-4509-9ad9-24c215f7dbc1`; coletor mantido na Fase 2. Busca preserva mapa/DOM, fachada e galeria completa, detalhe com atualização, agente na consulta parcial e exportações CSV/XLSX. Sem migração ou alteração de cadastros. 141 testes e 12 roteiros de navegador; 46 verificações HTTP mais sete negações de acesso; conferência real root e três fotos existentes. [Publicação/limites/retorno](../05-qualidade/PUBLICACAO_FASE_3_2026-11-09.md). Fases 4/5 e decisões de locais/Ano continuam pendentes. As anotações de Fases 1/2 acima preservam o histórico.
+## Coletor: ambientes compartilhados — D-074, 09/11/2026
+
+Seleção por ID dos ambientes da unidade, com consulta atual ao abrir/atualizar e cadastro novo explícito, publicada somente no coletor (`c23eb70f-4541-4007-a125-5cba581ab87f`, 100%). Painel preservado na Fase 3, sem migração/dados de teste. 144 testes e três roteiros de navegador; nove verificações HTTP reais. Sessão do coletor expirada no navegador: aceite autenticado físico permanece pendente. [Relatório e retorno](../05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md). Fases 4/5 pausadas a pedido do responsável; esta melhoria não as inicia.

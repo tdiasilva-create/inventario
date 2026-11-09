@@ -35,4 +35,12 @@ Base §§1.1, 2.2–2.3, 4.B, 4.F.1 e 7.3 atendidas nesta fatia: colaboração, 
 
 ## Publicação
 
-Preparação local e testes concluídos. Versão real e conferências pós-publicação serão registradas aqui após o deploy do coletor.
+Coletor publicado em **09/11/2026 às 08:26:12 (Fortaleza)**, código `14fd191`, versão **`c23eb70f-4541-4007-a125-5cba581ab87f`**, confirmada ativa em **100%** pelo Wrangler. Build (53 arquivos) e dry-run aprovados; três assets atualizados (`collector-v3.js`, `collector-v3.css`, `collector-environments.js`).
+
+Endereço: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Nove verificações HTTP pós-publicação aprovadas: login 200, páginas/assets privados redirecionam e APIs de ambientes/vistoria/foto recusam acesso sem sessão. Navegador real abriu o login; a sessão do coletor não estava ativa, portanto a seleção autenticada em produção não foi exercitada nesta rodada. Não se utilizou credencial antiga, redefinição de senha ou inserção fictícia para contornar isso. Os testes funcionais descritos acima são isolados.
+
+Somente o Worker coletor foi publicado; painel permanece `104e92dc-7b74-4509-9ad9-24c215f7dbc1` da Fase 3. D1, Drive, segredos, protocolo do agente e agendamentos preservados, sem migração ou escrita de teste em produção. Logs e evidências HTTP em `private-data/release-ambientes-2026-11-09/` (fora do Git).
+
+Retorno de código, se necessário: coletor anterior `ef33d619-52da-4726-989c-6a49b551a899`; não exige restaurar banco, excluir ambientes nem desfazer coleta. Nenhum rollback foi executado.
