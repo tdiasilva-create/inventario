@@ -364,3 +364,6 @@ Pedido explícito atual → Base §§7.3/7.4/9 e ID permanente → migrations/00
 ## D-078 — exclusão de equipamentos, 09/11/2026
 
 Pedido atual/escopo root no desktop + Base §§9.2/9.5/9.11 → migrations/0023_equipment_deletions.sql; server/equipment-deletions.mjs; web/equipment-deletion.js; consultas oficial/operacional/parcial; proteção em collector.mjs. Histórico/fotos/ID preservados fora do catálogo ativo; testes de ACL, concorrência, idempotência, contagem e repareamento. [Evidências](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md). Nenhuma exclusão real de teste.
+## D-079 — identificação do vínculo/cadastro, 09/11/2026
+
+Pedido explícito atual + Base §§7.3/7.4/9, D-069/D-070/D-071 → `server/equipment-link-state.mjs`, consultas `inventory-equipment.mjs`, `service-desk.mjs`, `in-progress.mjs`; apresentação compartilhada `web/equipment-link-state.js`, listas/fichas desktop e grid operacional. Filtro antes da paginação; comunicação separada; categorias sem agente não rotuladas como computador manual. Testes `equipment-link-state.test.mjs`, `equipment-link-state-browser.cjs` e regressões. [Registro](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md). Não altera perguntas, persistência, fotos, vínculos ou pendências das Fases 4/5.

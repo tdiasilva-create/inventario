@@ -39,3 +39,6 @@ Aplicar as **22 migrações** em nova instalação. A migração 0022 cria nomes
 ## D-078 — retirada administrativa de equipamento
 
 Aplicar as **23 migrações** em nova instalação. 0023 conserva a ficha retirada e bloqueia reaproveitamento do ID; fotos e históricos permanecem. Root usa Apagar cadastro no painel. Publicar ambos os Workers para proteger abas antigas do coletor. [Aceite e publicação](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).
+## Identificação do vínculo de computadores — D-079, 09/11/2026
+
+Etiquetas e filtro de vínculo/cadastro nas consultas desktop, sem migração ou alteração de registros. Vinculado sem comunicação recente permanece vinculado; histórico encerrado, cadastro manual, pendência e ausência de informação são distintos. Publicação somente do painel. [Aceite e versão ativa](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md).

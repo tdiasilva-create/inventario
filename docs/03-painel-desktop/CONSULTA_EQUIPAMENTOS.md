@@ -65,3 +65,8 @@ Root pode editar nome de exibição na ficha de computador/notebook/impressora, 
 ## D-078 — ação Apagar cadastro
 
 Root: na ficha do equipamento, além de Editar nome, usar Apagar cadastro. Disponível também em Computadores e nas coletas em andamento. Prévia atual/motivo/confirmação; retirada de listas/contagens com arquivo de ficha, fotos e histórico. Consulta Cadastros apagados na unidade. Agente ativo tem vínculo encerrado e pode renovar QR; não revoga instalação. [Detalhes e testes](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).
+## Atualização D-079 — vínculo / cadastro, 09/11/2026
+
+Lista e ficha destacam **Agente vinculado**, **Cadastro manual**, **Aguardando vínculo**, **Vínculo encerrado** ou **Cadastro não informado**. Prevalece o vínculo efetivo; encerramento histórico não é cadastro manual. Comunicação continua separada: um agente sem contato recente mantém a etiqueta de vinculado. Não constitui detector automático de duplicidade.
+
+`GET /api/inventory/equipment` acrescenta `link_state` (linked/manual/pending/ended/unknown/not_applicable) e aceita `agent=manual|pending|ended|unknown` além de linked/unlinked. Filtro antes da paginação, sobre o modo publicado e vínculo atual; unlinked conserva a compatibilidade antiga, incluindo outras categorias sem vínculo. Detalhe aberto atualiza a etiqueta com a consulta periódica de agent-status. Impressoras e demais categorias não recebem etiqueta de computador manual. [Testes e publicação](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md).

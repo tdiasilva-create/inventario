@@ -80,3 +80,13 @@ body.desktop-login{background:linear-gradient(90deg,#16191dd9,#16191d70 70%),url
 
 /* D-078: confirmação administrativa compacta. */
 .equipment-delete-dialog input[type=checkbox]{width:auto;min-height:0;margin-right:.5rem}.equipment-delete-dialog code,.equipment-deleted-list code{overflow-wrap:anywhere}.equipment-deleted-list article{border-top:1px solid var(--border,#ddd);padding:1rem 0}.equipment-deleted-list img{border-radius:8px;margin:6px}
+/* D-079: registration/link badges are independent from presence colors. */
+.equipment-link-badge{display:inline-flex;align-items:center;justify-content:center;gap:6px;max-width:100%;padding:5px 9px;border:1px solid #b9c0c5;border-radius:7px;background:#f3f4f5;color:#32383e;font:600 13px/1.3 Barlow,sans-serif;letter-spacing:0;text-transform:none;white-space:normal;overflow-wrap:anywhere}
+.equipment-link-badge>span{font-size:16px;line-height:1;font-weight:700}
+.equipment-link-badge[data-link-state=linked]{background:#171b1e;color:#fff;border-color:#171b1e}
+.equipment-link-badge[data-link-state=manual]{background:#fff0e8;color:#83320f;border-color:#e9aa8b}
+.equipment-link-badge[data-link-state=pending]{background:#fff8f3;color:#a33613;border:1px dashed #c2491b}
+.equipment-link-badge[data-link-state=ended]{background:#fff0f1;color:#a6142b;border-color:#e7a7b2}
+.equipment-link-explanation{font:400 14px/1.5 Barlow,sans-serif;color:#4c535a;margin:8px 0 14px;max-width:66ch}
+.eq-row-info .equipment-link-badge{margin:5px 0}
+.inventory-items .equipment-link-badge{margin:7px 0;display:flex;width:fit-content}

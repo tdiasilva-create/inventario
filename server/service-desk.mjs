@@ -1,4 +1,5 @@
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
+import {equipmentLinkStateSql,linkFilterValues} from './equipment-link-state.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const states=['Aberta','Em atendimento','Aguardando material','Visita agendada','Concluída'];
 const kinds=['Manutenção','Reposição de insumo','Visita técnica','Outro'];
@@ -14,6 +15,7 @@ const joins=`FROM inventory_equipment_all e
  LEFT JOIN agent_inventory_snapshots si ON si.inventory_id=cs.inventory_id
  LEFT JOIN agent_enrollments en ON en.device_id=l.device_id`;
 const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,n.name AS display_name,(e.published_json IS NULL OR e.published_json!=e.data_json) AS partial,
+ ${equipmentLinkStateSql({json:'e.data_json',linked:'l.link_id IS NOT NULL',history:'EXISTS(SELECT 1 FROM agent_equipment_links history WHERE history.equipment_id=e.id AND history.ended_at IS NOT NULL)'})} AS link_state,
  COALESCE(room.name,json_extract(e.data_json,'$.environmentName'),'Ambiente não informado') AS environment_name,
  COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) AS hostname,
  l.device_id,d.state AS device_state,p.data_json AS presence_json,
@@ -44,10 +46,10 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
  if(path==='/api/operations/computers'&&request.method==='GET'){
   if(!uuid(unitId))return fail('Selecione uma unidade.');
   const unit=await db.prepare("SELECT id,name FROM units WHERE id=? AND unit_type!='Escola conveniada'").bind(unitId).first();if(!unit)return fail('Unidade não encontrada.',404);
-  const room=s.get('environmentId')||'',all=s.get('allEquipment')==='1';if(room&&!uuid(room))return fail('Ambiente inválido.');
+  const room=s.get('environmentId')||'',all=s.get('allEquipment')==='1',agent=s.get('agent')||'';if(room&&!uuid(room))return fail('Ambiente inválido.');if(!linkFilterValues.includes(agent))return fail('Filtro de vínculo inválido.');
   const filters=['e.unit_id=?'],args=[unitId];if(!all)filters.push(computerWhere);if(room){filters.push('e.environment_id=?');args.push(room);}
   const base=`SELECT ${columns} ${joins} WHERE ${filters.join(' AND ')}`;
-  const search=q?' WHERE instr(lower(COALESCE(display_name,\'\')||\' \'||COALESCE(hostname,\'\')||\' \'||COALESCE(position_label,\'\')||\' \'||environment_name||\' \'||id),lower(?))>0':'';if(q)args.push(q);
+  const conditions=[];if(q){conditions.push("instr(lower(COALESCE(display_name,'')||' '||COALESCE(hostname,'')||' '||COALESCE(position_label,'')||' '||environment_name||' '||id),lower(?))>0");args.push(q);}if(agent==='unlinked')conditions.push('device_id IS NULL');else if(agent){conditions.push('link_state=?');args.push(agent);}const search=conditions.length?' WHERE '+conditions.join(' AND '):'';
   const query='WITH records AS ('+base+') ';
   const [count,page,rooms]=await db.batch([db.prepare(query+'SELECT COUNT(*) AS total FROM records'+search).bind(...args),db.prepare(query+'SELECT * FROM records'+search+' ORDER BY environment_name,position_label,id LIMIT 60 OFFSET ?').bind(...args,offset),db.prepare(`SELECT r.id,r.name,c.value AS classification,c.version AS context_version,COUNT(e.id) AS computers FROM environments r LEFT JOIN computer_context c ON c.target_id=r.id AND c.kind='environment' LEFT JOIN inventory_equipment_all e ON e.environment_id=r.id AND e.unit_id=r.unit_id AND ${computerWhere} WHERE r.unit_id=? GROUP BY r.id ORDER BY r.name,r.id`).bind(unitId)]);
   return json({unit,items:page.results.map(r=>item(r,env)),total:count.results[0].total,offset,nextOffset:offset+page.results.length<count.results[0].total?offset+60:null,environments:rooms.results,server_time:new Date().toISOString()});
