@@ -52,9 +52,9 @@ dialog,.root-delete-dialog{background:#fff;color:var(--preto);border:1px solid v
 #agents-grant-form label{color:var(--texto-secundario)}
 .toast{background:var(--preto);color:#fff;border:1px solid var(--laranja);box-shadow:0 5px 25px #16191d30}.demo-ribbon{background:#fff;color:var(--texto-secundario);border-color:var(--borda)}
 /* Gestão e conta: mesmos campos e permissões, com estados legíveis no tema claro. */
-.account-shell{background:#fff;color:var(--preto);border-color:var(--borda);box-shadow:none}.embedded-account section,.account-shell form#password-form{background:#fff!important;border-color:var(--borda)!important}
+.account-shell{background:#fff;color:var(--preto);border-color:var(--borda);box-shadow:none}.account-shell section,.account-shell form#password-form{background:#fff!important;border-color:var(--borda)!important}
 .account-shell p,.account-shell label,.account-shell ul,.account-shell #status{color:var(--texto-secundario)}.account-shell h1,.account-shell h2{color:var(--preto)}
-.embedded-account .input-wrap{background:#fff;border-color:var(--borda)}.embedded-account input{color:var(--preto)}.embedded-account .input-wrap:focus-within{outline-color:var(--vermelho)}
+.account-shell .input-wrap{background:#fff;border-color:var(--borda)}.account-shell input{color:var(--preto)}.account-shell .input-wrap:focus-within{outline-color:var(--vermelho)}
 .account-shell select,.account-shell #settings-form input{background:#fff;color:var(--preto);border-color:var(--borda)}.list-toolbar input,.list-toolbar select{background:#fff!important;color:var(--preto);border-color:var(--borda)!important}
 .account-shell fieldset,.data-table th,.data-table td,.account-shell .user-row,.account-shell .session-row{border-color:var(--borda)}.data-table th{background:var(--cinza-claro);color:var(--texto-secundario);font-family:var(--font-display)}.data-table td{color:var(--preto)}.data-table td button{color:var(--preto)}
 .account-shell #temporary:not(:empty){background:var(--pessego-suave);border-color:var(--pessego);color:var(--preto)}.root-delete-dialog button.danger{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}

@@ -281,3 +281,7 @@ body.qr-open { overflow: hidden; }
   .qr-status { font-size: 12px; letter-spacing: .02em; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* Minha conta: ação de acesso distinta da troca voluntária de senha. */
+.account-content #account-access{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}
+.account-content #account-access a{width:100%;text-decoration:none}

@@ -15,6 +15,10 @@ const json=(value,status=200,headers={})=>new Response(JSON.stringify(value),{st
 const fail=(message,status=400)=>json({error:message},status);
 const cookie=(token,seconds)=>`__Host-semed=${token}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=${seconds}`;
 const audit=(db,id,event)=>db.prepare('INSERT INTO audit(user_id,event,created_at) VALUES(?,?,?)').bind(id,event,Date.now());
+// Hosts have separate cookies. Never carry credentials or session tokens in the redirect.
+const collectorOrigin='https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev';
+const operatorOnPanel=(user,env)=>user.role==='operador'&&env.APP_KIND!=='collector';
+const collectorLogin=()=>collectorOrigin+'/login?origem=painel';
 async function current(request,db){const token=(request.headers.get('Cookie')||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('__Host-semed='))?.slice(13);if(!token||!/^[a-f0-9]{64}$/.test(token))return null;return db.prepare('SELECT u.*,s.token_hash,s.csrf,s.expires_at FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>? AND u.active=1 AND s.credential_version=u.credential_version').bind(await digest(token),Date.now()).first();}
 async function body(request){const path=new URL(request.url).pathname,limit=path.startsWith('/api/operations/')?16384:path==='/api/root/unit-save'?16384:path==='/api/root/import-preview'?262144:path.startsWith('/api/collector/')?65536:path==='/api/root/assignments'?16384:4096;if(Number(request.headers.get('content-length')||0)>limit)throw Error('body');const text=await request.text();if(new TextEncoder().encode(text).length>limit)throw Error('body');return JSON.parse(text);}
 async function config(db){const rows=await db.prepare('SELECT key,value FROM settings').all();const s=Object.fromEntries(rows.results.map(x=>[x.key,x.value]));return s;}
@@ -40,19 +44,26 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   }
   const settings=await config(db);if(!settings.session_seconds)return fail('Prazo de sessão ainda não configurado.',503);
   const token=random(),csrf=random();await db.batch([db.prepare('INSERT INTO sessions(token_hash,user_id,csrf,expires_at,created_at,credential_version,user_agent) VALUES(?,?,?,?,?,?,?)').bind(await digest(token),user.id,csrf,now+settings.session_seconds*1000,now,user.credential_version,(request.headers.get('User-Agent')||'').slice(0,300)),db.prepare('DELETE FROM attempts WHERE key=?').bind(key),db.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),db.prepare('UPDATE users SET last_login_at=? WHERE id=?').bind(now,user.id),audit(db,user.id,'login_success')]);
-  return json({redirect:user.must_change?'/conta':env.APP_KIND==='collector'?'/':canView(user.role)?'/':'/conta'},200,{'Set-Cookie':cookie(token,settings.session_seconds)});
+  return json({redirect:user.must_change?'/conta':operatorOnPanel(user,env)?collectorLogin():'/'},200,{'Set-Cookie':cookie(token,settings.session_seconds)});
  }
  // Retorno do Google: navegação de outro site, sem cookie de sessão; validado por estado + cookie Lax (ver google-auth.mjs).
  if(env.APP_KIND!=='collector'){const callback=await googleCallback(request,url,env,{audit});if(callback)return callback;}
  const user=await current(request,db);
  if(!user){if(path.startsWith('/api/'))return fail('Autenticação necessária.',401);return new Response(null,{status:302,headers:{Location:'/login','Cache-Control':'no-store'}});}
  if(request.method==='POST'&&!equal(request.headers.get('X-CSRF-Token')||'',user.csrf))return fail('Solicitação inválida.',403);
- if(path==='/api/auth/me')return json({username:user.username,role:user.role,mustChange:!!user.must_change,csrf:user.csrf,canView:canView(user.role),displayName:user.display_name});
+ if(path==='/api/auth/me')return json({username:user.username,role:user.role,mustChange:!!user.must_change,csrf:user.csrf,canView:canView(user.role),displayName:user.display_name,homeUrl:operatorOnPanel(user,env)?collectorOrigin+'/':'/'});
  if(path==='/api/auth/logout'&&request.method==='POST'){await db.batch([db.prepare('DELETE FROM sessions WHERE token_hash=?').bind(user.token_hash),audit(db,user.id,'logout')]);return json({ok:true},200,{'Set-Cookie':cookie('',0)});}
  if(path==='/api/auth/password'&&request.method==='POST'){
   const data=await body(request);if(typeof data.currentPassword!=='string'||data.currentPassword.length>256||!equal(await hashPassword(data.currentPassword,user.salt,env.AUTH_PEPPER),user.password_hash))return fail('Senha atual inválida.',403);
   const error=await validatePassword(data.password);if(error)return fail(error);if(data.password===data.currentPassword)return fail('Escolha uma senha diferente da provisória.');const salt=random(),hash=await hashPassword(data.password,salt,env.AUTH_PEPPER);
-  const result=await db.batch([db.prepare('UPDATE users SET credential_version=credential_version+1,password_hash=?,salt=?,must_change=0,temporary_expires=NULL WHERE id=? AND password_hash=?').bind(hash,salt,user.id,user.password_hash),db.prepare('DELETE FROM sessions WHERE user_id=?').bind(user.id),audit(db,user.id,'password_changed')]);if(!result[0].meta.changes)return fail('Credencial alterada em outra sessão. Entre novamente.',409);return json({ok:true,redirect:'/login'},200,{'Set-Cookie':cookie('',0)});
+  // D1 batch is atomic. A stale request must neither revoke newer sessions nor audit a false success.
+  const result=await db.batch([
+   db.prepare('UPDATE users SET credential_version=credential_version+1,password_hash=?,salt=?,must_change=0,temporary_expires=NULL WHERE id=? AND password_hash=? AND active=1').bind(hash,salt,user.id,user.password_hash),
+   db.prepare('DELETE FROM sessions WHERE user_id=? AND EXISTS (SELECT 1 FROM users WHERE id=? AND password_hash=?)').bind(user.id,user.id,hash),
+   db.prepare("INSERT INTO audit(user_id,event,created_at) SELECT id,'password_changed',? FROM users WHERE id=? AND password_hash=?").bind(Date.now(),user.id,hash)
+  ]);
+  if(!result[0].meta.changes)return fail('Credencial alterada em outra sessão. Entre novamente.',409);
+  return json({ok:true,redirect:operatorOnPanel(user,env)?collectorLogin()+'&senha=alterada':'/login?senha=alterada'},200,{'Set-Cookie':cookie('',0)});
  }
  if(user.must_change&&path!=='/conta'&&path!=='/account.js'&&path!=='/account.css'&&!['/desktop-demand-count.js','/desktop-notifications.js','/desktop-notifications.css','/collector-account.js','/collector.css','/vendor/figtree/Figtree.ttf','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/admin-units.js','/panel-shell.js','/account-shell.js','/panel-refinement.css','/desktop-icons.js','/desktop.css','/unit-schema.js','/unit-catalogue.css','/spreadsheet-io.js','/vendor/leaflet/leaflet.js','/vendor/leaflet/leaflet.css'].includes(path))return path.startsWith('/api/')?fail('Troque a senha provisória.',403):new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});
  if(path==='/api/auth/sessions'&&request.method==='GET'){const rows=await db.prepare('SELECT token_hash,created_at,expires_at,user_agent FROM sessions WHERE user_id=? AND expires_at>?').bind(user.id,Date.now()).all();return json({sessions:rows.results.map(s=>({id:s.token_hash,createdAt:s.created_at,expiresAt:s.expires_at,device:s.user_agent||'Dispositivo não informado',current:s.token_hash===user.token_hash}))});}
@@ -115,7 +126,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   if(["/photo-prepare.js","/vendor/heic-to/heic-to.min.js","/vendor/heic-to/LICENSE","/vendor/heic-to/ORIGEM.txt","/collector-photo-viewer.js",'/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-environments.js','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
   return fail('Endereço do coletor não encontrado.',404);
  }
- if(!canView(user.role))return new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});
+ if(!canView(user.role))return new Response(null,{status:302,headers:{Location:collectorLogin(),'Cache-Control':'no-store'}});
  if(['/computadores','/demandas'].includes(path))return assetResponse(new Request(new URL('/operations.html',url),request),env);
  if(path==='/fotografias')return new Response(null,{status:302,headers:{Location:'/panorama','Cache-Control':'no-store'}});
  const pages=['/','/coletas-em-andamento','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];

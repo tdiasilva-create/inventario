@@ -349,3 +349,7 @@ D-073 publicada em produção: código final `1c332b8`, painel `104e92dc-7b74-45
 # D-074 — seleção de ambientes compartilhados (09/11/2026)
 
 Pedido atual do responsável supera D-057 ponto 4. Base original §§1.1, 2.2–2.3, 4.B, 4.F.1 e 7.3: ambientes por unidade, vínculo de equipamento, colaboração e concorrência. Implementação em `web/collector-environments.js`, `web/collector-v3.js`, `web/collector-v3.css`, `server/collector.mjs`; asset incluído em `server/worker.mjs` e `scripts/build-collector.mjs`. Testes: `tests/collector-environments.test.mjs`, `tests/collector-environments-browser.cjs`, regressões V3/UX. [Relatório](../05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md). Mantidos IDs, fotos, histórico e conclusão explícita; sem novos requisitos para outros equipamentos. Não inicia Fases 4/5 nem modifica a Base original.
+
+## D-075 — senha e reentrada (09/11/2026)
+
+Relato de repetição nos dois hosts → Base §8.4–8.7/8.9/8.11–8.12 e D-031 → worker.mjs (direcionamento e batch de senha), páginas Minha conta/login (ação voluntária e restauração) → auth-flow.test.mjs e auth-flow-browser.cjs. Auditoria oficial somente leitura, testes de senha exclusivamente em SQLite isolado. Sem cobertura adicional A–H/fotos/offline. [Evidências e limites](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).

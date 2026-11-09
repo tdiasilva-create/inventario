@@ -151,3 +151,9 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 - [ ] Homologação em celulares físicos durante a coleta com vários operadores. Teste isolado usa dois navegadores/sessões; não equivale a teste de 40 máquinas reais.
 - [ ] Duplicidades antigas com nomes diferentes permanecem; não há autorização para unificação ou exclusão automática.
 - Fases 4 e 5 pausadas a pedido do responsável. Esta entrega atende somente ao pedido de seleção de ambientes.
+
+## D-075 — correção de senha, 09/11/2026
+
+- [x] Reproduzir e corrigir redirecionamento do operador, alteração voluntária, confirmação, estado restaurado e duas trocas simultâneas; 150 testes e roteiro navegador aprovados. Ver [relatório](../05-qualidade/CORRECAO_SENHAS_2026-11-09.md).
+- [ ] Confirmar retorno dos usuários nos celulares reais. Nenhuma senha ou reset legítimo foi alterado durante a investigação.
+- Fases 4/5 da auditoria continuam pausadas.
