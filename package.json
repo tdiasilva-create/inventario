@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs",
-    "test": "node --test --test-concurrency=1 tests/security.test.mjs tests/units.test.mjs tests/domain.test.mjs tests/map-geography.test.mjs tests/map-examples.test.mjs tests/collector-schema.test.mjs tests/collector-v2.test.mjs tests/collector-list.test.mjs tests/collector-review-fixes.test.mjs tests/in-progress.test.mjs tests/root-powers.test.mjs tests/inventory-results.test.mjs tests/visit.test.mjs tests/photo-storage.test.mjs tests/google-worker.test.mjs tests/agentes.test.mjs tests/v2-fase2.test.mjs tests/revisao-independente.test.mjs tests/collector-v3.test.mjs tests/in-progress-photos.test.mjs tests/agentes-open-enrollment.test.mjs tests/remote-access-fields.test.mjs tests/photo-gallery.test.mjs tests/unit-catalogue.test.mjs tests/unit-names.test.mjs tests/unit-files.test.mjs tests/equipment-consultation.test.mjs tests/agent-monitoring.test.mjs tests/service-desk.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/security.test.mjs tests/units.test.mjs tests/domain.test.mjs tests/map-geography.test.mjs tests/map-examples.test.mjs tests/collector-schema.test.mjs tests/collector-v2.test.mjs tests/collector-list.test.mjs tests/collector-review-fixes.test.mjs tests/in-progress.test.mjs tests/root-powers.test.mjs tests/inventory-results.test.mjs tests/visit.test.mjs tests/photo-storage.test.mjs tests/google-worker.test.mjs tests/agentes.test.mjs tests/v2-fase2.test.mjs tests/revisao-independente.test.mjs tests/collector-v3.test.mjs tests/in-progress-photos.test.mjs tests/agentes-open-enrollment.test.mjs tests/remote-access-fields.test.mjs tests/photo-gallery.test.mjs tests/unit-catalogue.test.mjs tests/unit-names.test.mjs tests/unit-files.test.mjs tests/equipment-consultation.test.mjs tests/agent-monitoring.test.mjs tests/service-desk.test.mjs tests/photo-performance.test.mjs",
     "test:photos": "node --test --test-concurrency=1 tests/in-progress-photos.test.mjs tests/in-progress.test.mjs tests/photo-storage.test.mjs tests/google-worker.test.mjs tests/agentes.test.mjs tests/v2-fase2.test.mjs tests/revisao-independente.test.mjs",
     "test:desktop": "node tests/desktop.cjs",
     "test:map": "node tests/map-browser.cjs",
@@ -24,7 +24,9 @@
     "test:equipment:browser": "node tests/equipment-consultation-browser.cjs",
     "test:operations:browser": "node tests/operations-browser.cjs",
     "test:panel-navigation:browser": "node tests/panel-navigation-browser.cjs",
-    "test:monitoring:browser": "node tests/agent-monitoring-browser.cjs"
+    "test:monitoring:browser": "node tests/agent-monitoring-browser.cjs",
+    "test:photo-performance:browser": "node tests/photo-performance-browser.cjs",
+    "measure:photos": "node scripts/measure-photo-performance.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

@@ -56,3 +56,6 @@ jobs:
       - run: pnpm test:panel-navigation:browser
         env:
           SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:photo-performance:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
