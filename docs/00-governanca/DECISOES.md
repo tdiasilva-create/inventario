@@ -473,3 +473,9 @@ Correção posterior de D-071 (08/11): navegação pelo menu para Computadores/D
 O responsável pediu a próxima fase da auditoria e decidiu expressamente: **“Guardar miniaturas no D1, como propõe a Fase 2”**, após apresentação do conflito com a Base §5.6. Autoriza a exceção somente para miniaturas JPEG de até 320 × 320 pixels e 64 KB. Fotos completas permanecem no Drive privado atual. Não altera perguntas, obrigatoriedade, perfis, QR, estados de publicação ou política offline.
 
 Migração aditiva 0020, miniaturas somente após confirmação do original, leitura protegida/ETag próprio com revalidação e fallback integral. Manutenção de fotos antigas pelo root no painel, em lotes, sem reabrir visita ou mudar a autoria original. Detalhes: [contrato](../04-dados-apis/MINIATURAS_D072.md). Validação e limites: [Fase 2](../05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md). Não estende a exceção a arquivos originais, documentos ou vídeos no D1.
+
+## D-073 — auditoria Fase 3, painel por blocos, 09/11/2026
+
+O responsável autorizou expressamente iniciar a Fase 3 e publicar no ambiente real, mantendo a identidade visual e adiando pontos que dependem de decisão. Autoriza a publicação somente do painel com atualizações incrementais, busca com debounce, reutilização do mapa, fachada/galeria paginada, atualização do detalhe, vínculo do agente na consulta parcial e exportações CSV/XLSX. D-065–D-072 permanecem vigentes. Não autoriza mudanças em perguntas, regras de conclusão, EXE/QR, dados oficiais ou credenciais.
+
+Decisões sobre locais de referência, filtro Ano e demais regras em aberto permanecem pendentes. Sem migração de dados nesta fase. Consultas oficiais continuam restritas aos perfis desktop; coletas abertas são PARCIAL. Exportação usa fichas publicadas e não é backup transacional. Implementação, critérios, arquivos e evidências em [Fase 3](../05-qualidade/CORRECOES_PRODUCAO_FASE_3_2026-11-09.md).

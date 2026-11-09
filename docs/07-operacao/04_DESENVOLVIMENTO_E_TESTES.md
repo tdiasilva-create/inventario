@@ -84,3 +84,7 @@ O build desktop ainda aponta seu atalho de coletor para produção; no ensaio ab
 ## Trabalho futuro
 
 Registrar decisão antes de mudar regra; criar migração aditiva se necessário; executar testes pertinentes; atualizar o manual e rastreabilidade. O coletor foi congelado pelo responsável para esta etapa documental. Não refatorar formulários ou publicar Workers para organizar o repositório.
+
+## Painel por blocos — D-073 / Fase 3
+
+`pnpm test:blocks:browser` é o 12º roteiro de navegador da CI: conserva mapa/DOM na busca, verifica expiração/Atualizar, galeria >50 e exportações completas CSV/XLSX. Testes de API em `tests/panel-blocks.test.mjs`, sem base remota. A mudança afeta somente a publicação do painel; não há nova migração. Demais testes antigos continuam históricos, sem obrigação de restaurar comportamento DEMO.

@@ -19,3 +19,5 @@ D-070, 08/11/2026: painel publicado com notificações persistentes de hardware/
 D-071: pnpm test:operations:browser testa central/frota contra Worker e SQLite isolados; pnpm test inclui service-desk.test.mjs. Rotas /computadores e /demandas usam operations.html; migracao 0018 antes do deploy desktop. Nao semear dados de teste em D1 oficial.
 
 Regressão de navegação D-071: executar `pnpm build:desktop` e `pnpm test:panel-navigation:browser`. `desktopPageRoutes` contém somente páginas renderizadas por desktop.js; `pageRoutes` contém todos os links do menu. Páginas de outro documento não devem ser interceptadas pelo roteador interno. Testar sempre entrada pelo menu, além do URL direto.
+
+D-073/Fase 3: `pnpm test:blocks:browser` verifica mapa/DOM preservados, fachada antiga, 57 fotos paginadas, cache/Atualizar e exportação completa de 58 fichas em CSV/XLSX. `pnpm test` inclui permissões/separação parcial e consultas somente leitura. Executar após `pnpm build:desktop`; fixtures somente em memória, imagens sintéticas, sem credenciais reais. [Aceite e escopo](docs/05-qualidade/CORRECOES_PRODUCAO_FASE_3_2026-11-09.md).

@@ -1,15 +1,16 @@
 import {groups,sections,categories,equipmentFields} from './collector-schema.js';
 import {topics,v2Sections,v2EquipmentFields,questionnaireVersion as v2Version,registrationLabels,computerOperationLabels} from './collector-v2-schema.js';
 import {topics as v3Topics,v3Sections,v3EquipmentFields} from './collector-v3-schema.js';
+import {readPanelJson} from './desktop-request.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const isV2=inspection=>[v2Version,'coleta-3.0'].includes(inspection?.questionnaire_version);
 // Rótulos do estado do agente na consulta (nunca inferir ligado/desligado pela ausência de comunicação).
 export const presenceLabels={communicating:'Comunicando',communicating_with_failure:'Comunicando com falha de leitura',no_recent_communication:'Sem comunicação recente',reported_shutdown:'Desligamento informado pelo agente',reported_suspend:'Suspensão informada pelo agente',never_communicated:'Nunca comunicou',revoked:'Agente revogado',unknown:'Desconhecido'};
 export function agentStateLabel(item){const d=item.data||{};if(!['desktop','notebook','computer'].includes(d.category))return '';if(item.agent_linked)return 'Agente vinculado';if(d.registration==='Agente')return 'Vínculo do agente pendente';return 'Sem agente'+(d.manualReason?' · '+d.manualReason:' (cadastro manual)');}
 export const columnFor=category=>({desktop:0,computer:0,notebook:1,tablet:2,projector:3,printer:4,tv:5,router:6,ap:6,switch:6}[category]??7);
-export async function inventorySummary(){const r=await fetch('/api/inventory/summary');if(!r.ok)throw Error('Não foi possível consultar o inventário oficial.');return r.json();}
+export async function inventorySummary(){return readPanelJson('/api/inventory/summary');}
 export function matrixUnits(units,summary){return units.map(u=>{const counts=summary.equipment.filter(e=>e.unit_id===u.id),values=Array(8).fill(0);for(const e of counts)values[columnFor(e.category)]+=e.quantity;return {...u,type:u.unit_type,values,received:summary.visits.some(v=>v.unit_id===u.id)};}).filter(u=>u.received);}
-export async function unitInventory(id){const r=await fetch('/api/inventory/unit?unitId='+encodeURIComponent(id));if(!r.ok)throw Error('Não foi possível receber o detalhe da unidade.');return r.json();}
+export async function unitInventory(id){return readPanelJson('/api/inventory/unit?unitId='+encodeURIComponent(id));}
 export function answerDetails(detail){
  if(detail.visit){const labels={administrative:'Computadores administrativos',laboratory:'Laboratório de informática',printers:'Impressoras',internet:'Internet',wired:'Rede cabeada',wifi:'Wi-Fi',outlets:'Tomadas suficientes',irregular:'Irregularidades elétricas',specialist:'Avaliação elétrica necessária',lack:'Faltam equipamentos',responsible:'Responsável presente',role:'Cargo',notes:'Observações',labNoComputers:'Motivo de não haver máquinas no laboratório'};return '<dl class="inventory-answers">'+Object.entries(labels).filter(([key])=>detail.visit.answers[key]).map(([key,label])=>'<dt>'+esc(label)+'</dt><dd>'+esc(detail.visit.answers[key])+'</dd>').join('')+'</dl>'+['problems','needs'].map(key=>'<h4>'+(key==='problems'?'Problemas e demandas':'Necessidades de equipamentos')+'</h4><ul>'+(detail.visit.answers[key]||[]).map(r=>'<li>'+esc(r.description||r.type)+' · '+esc(r.location||'Local não informado')+' · '+esc(r.priority||'Prioridade não informada')+'</li>').join('')+'</ul>').join('');}
  const env=id=>detail.environments.find(e=>e.id===id)?.name||id;

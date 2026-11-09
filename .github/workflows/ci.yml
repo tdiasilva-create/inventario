@@ -63,3 +63,7 @@ jobs:
       - run: pnpm test:thumbnails:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: pnpm test:blocks:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

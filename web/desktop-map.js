@@ -42,24 +42,19 @@ function switchBase(){
  context.container.closest('.map-panel').querySelectorAll('[data-map-base]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapBase===preference.base)));
 }
 export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}}={}){
+ if(current?.container===container){current.onSelect=onSelect;updateMarkers(units,selected);return;}
  const token=++generation;
  try{
   const [data,examples]=await Promise.all([geometryPromise,examplesPromise]);
   if(token!==generation||!container.isConnected)return;
   const L=window.L;if(!L)throw new Error('Biblioteca cartográfica indisponível');
   const map=L.map(container,{zoomControl:false,attributionControl:true,scrollWheelZoom:false,minZoom:8,maxZoom:19,preferCanvas:false});
-  const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup()};current=context;
+  const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup(),markers:new Map(),unitGroup:L.featureGroup().addTo(map),onSelect};current=context;
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   context.boundary=L.polygon(data.ring,{color:'#55cff6',weight:2,opacity:.95,fillColor:'#1aaed1',fillOpacity:.06,dashArray:'5 4'});
   context.boundary.bindTooltip('Área de referência do município',{className:'v33-tooltip',sticky:true});
   if(preference.boundary)context.boundary.addTo(map);
-  const unitGroup=L.featureGroup();
-  for(const {unit,coordinates} of geolocatedUnits(units)){
-   const marker=L.circleMarker(coordinates,{radius:unit.id===selected?9:6,color:'#d9f8ff',weight:2,fillColor:'#0e9fff',fillOpacity:1});
-   const label=document.createElement('span');label.textContent=unit.name||unit.nome||'Unidade sem nome';
-   marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>onSelect(unit.id));marker.addTo(unitGroup);context.markerCount++;
-  }
-  unitGroup.addTo(map);
+  updateMarkers(units,selected);
   for(const {unit:place,coordinates} of geolocatedUnits(examples?.records||[])){
    const marker=L.marker(coordinates,{keyboard:true,title:place.name,alt:place.name,icon:L.divIcon({className:'institutional-marker',html:icon('building'),iconSize:[30,36],iconAnchor:[15,36],popupAnchor:[0,-32]})});
    const tooltip=document.createElement('span');tooltip.textContent=place.name;
@@ -85,6 +80,19 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   container.textContent='Não foi possível inicializar o mapa. Recarregue a página para tentar novamente.';
   container.dataset.mapReady='error';
  }
+}
+export function updateMarkers(units,selected){
+ if(!current)return;const context=current,keep=new Set();
+ for(const {unit,coordinates} of geolocatedUnits(units)){
+  keep.add(unit.id);let entry=context.markers.get(unit.id);
+  if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#d9f8ff',weight:2,fillColor:'#0e9fff',fillOpacity:1});
+   const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>context.onSelect(unit.id));marker.addTo(context.unitGroup);
+   entry={marker,label};context.markers.set(unit.id,entry);
+  }
+  entry.label.textContent=unit.name||unit.nome||'Unidade sem nome';entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
+ }
+ for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);context.markers.delete(id);}
+ context.markerCount=keep.size;context.container.dataset.markerCount=String(keep.size);baseStatus();
 }
 export function zoomMap(direction){if(current)direction>0?current.map.zoomIn():current.map.zoomOut();}
 function frameMunicipality(context){

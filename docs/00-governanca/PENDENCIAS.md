@@ -141,3 +141,7 @@ O responsável escolheu explicitamente cadastro automático SEM lote. A exigênc
 ## Atualização da auditoria — Fase 2, 09/11/2026
 
 A escolha sobre miniaturas no D1 foi resolvida pelo responsável em D-072. Implementação de miniaturas, fallback, metadados e manutenção root registrada em docs/05-qualidade/CORRECOES_PRODUCAO_FASE_2_2026-11-09.md. Permanecem pendentes a homologação física Android/iPhone (câmera, orientação HEIC, preparo de 12 MP), medições p50/p95 em rede real, e Fases 3–5. O aceite de “salvar + duas fotos sem GET inspection” pertence à Fase 4; não foi antecipado nesta fase. O histórico de pendências abaixo/acima não deve ser interpretado como ausência atual de miniaturas.
+
+## Atualização da auditoria — Fase 3 / D-073, 09/11/2026
+
+Implementadas consultas por blocos, mapa preservado, fachada e galeria completa, atualização de detalhes, vínculo de agente em andamento e exportações; ver docs/05-qualidade/CORRECOES_PRODUCAO_FASE_3_2026-11-09.md. Publicação real autorizada expressamente nesta etapa. Permanecem sem decisão: botão/camada de locais de referência (ERR-19), filtro Ano (LNA-09), extensão da busca global e interpretação de indicadores. Nenhum dado fictício oficial, exclusão ou alteração no coletor integra esta fase. Fases 4/5 e homologação física continuam pendentes.

@@ -1,0 +1,53 @@
+// Worker real, SQLite em memória e imagens sintéticas. Nenhum acesso a dados de produção.
+const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),assert=require('node:assert/strict'),pw=require('./helpers/playwright.cjs');
+(async()=>{
+ const {panelBlocksFixture}=await import('./helpers/panel-blocks.mjs'),{session}=await import('./helpers/agent-client.mjs'),worker=(await import('../server/worker.mjs')).default;
+ const f=panelBlocksFixture(),sess=await session(f,f.root),out=process.env.SEMED_TEST_EVIDENCE_DIR||'docs/05-qualidade/evidencias/painel-fase3-2026-11-09';fs.mkdirSync(out,{recursive:true});
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=','base64'),errors=[],requests=[];
+ let failDetail=false,failPage=false;
+ const env={DB:f.db,AUTH_PEPPER:'TEST-ONLY',PHOTOS:{get:async()=>({body:png})},ASSETS:{fetch:async req=>{
+  const file=path.resolve('dist/painel','.'+new URL(req.url).pathname);if(!file.startsWith(path.resolve('dist/painel')+path.sep)||!fs.existsSync(file))return new Response('not found',{status:404});let body=fs.readFileSync(file);
+  if(file.endsWith('leaflet.js'))body=Buffer.concat([body,Buffer.from(';window.__mounts=0;const oldMap=L.map;L.map=function(...a){window.__mounts++;return oldMap.apply(this,a);};')]);
+  return new Response(body,{headers:{'Content-Type':({'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'})[path.extname(file)]||'application/octet-stream'}});
+ }}};
+ const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,'http://127.0.0.1:'+server.address().port);requests.push(url.pathname+url.search);if((failDetail&&url.pathname==='/api/inventory/unit')||(failPage&&url.pathname==='/api/inventory/photos'&&url.searchParams.has('cursor'))){res.writeHead(503,{'Content-Type':'application/json'});res.end(JSON.stringify({error:'TESTE · falha temporária'}));return;}
+  const headers=new Headers(req.headers);headers.set('Cookie',sess.cookie);const r=await worker.fetch(new Request(url,{headers}),env);res.writeHead(r.status,Object.fromEntries(r.headers));res.end(Buffer.from(await r.arrayBuffer()));
+ }catch(e){errors.push(e.stack);res.writeHead(500);res.end('TEST ERROR');}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port,browser=await pw.chromium.launch({headless:true,channel:'msedge'}),page=await browser.newPage({viewport:{width:1672,height:1050}});page.setDefaultTimeout(15000);page.on('pageerror',e=>errors.push(e.stack));
+ await page.route('**/server.arcgisonline.com/**',r=>r.fulfill({contentType:'image/png',body:png}));
+ const screenshot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png',fullPage:false});};
+ const countDetail=()=>requests.filter(p=>p==='/api/inventory/unit?unitId='+f.unit).length;
+ const download=async action=>{const promise=page.waitForEvent('download');await action();const d=await promise;return {name:d.suggestedFilename(),file:await d.path()};};
+ try{
+  await page.goto(origin+'/panorama');await page.locator('#municipal-map[data-map-ready=true]').waitFor();await page.locator('[data-action=select-unit][data-unit="'+f.unit+'"]').click();await page.locator('.gallery-panel [data-action=photos]').filter({hasText:'57'}).waitFor();
+  await page.locator('.panorama-answers summary').first().click();await page.locator('.panorama-answers').scrollIntoViewIfNeeded();await page.evaluate(()=>{window.__map=document.querySelector('#municipal-map');window.__answer=document.querySelector('.panorama-answers details');window.__photo=document.querySelector('.panorama-evidence img');window.__y=scrollY;});
+  const before=countDetail(),beforePhotos=requests.filter(p=>p.startsWith('/api/inventory/photo?')).length;
+  // Dez teclas rápidas: um único filtro efetivo, preservando mapa, foto, foco e detalhes abertos.
+  await page.locator('.search input').focus();await page.locator('.search input').pressSequentially('TESTE ISOL',{delay:12});await page.waitForTimeout(400);
+  assert.deepEqual(await page.evaluate(()=>({mounts:window.__mounts,map:__map===document.querySelector('#municipal-map'),image:__photo===document.querySelector('.panorama-evidence img'),open:__answer.open,focus:document.activeElement.matches('.search input')})),{mounts:1,map:true,image:true,open:true,focus:true});
+  assert.equal(countDetail(),before);assert.equal(requests.filter(p=>p.startsWith('/api/inventory/photo?')).length,beforePhotos);
+  await page.locator('.search input').fill('');await page.waitForTimeout(350);
+  await page.locator('[data-action=filters]').click();assert.equal(await page.locator('dialog [data-filter=type]').count(),1);await page.locator('dialog [data-filter=type]').selectOption('Escola municipal');await page.keyboard.press('Escape');assert.equal(await page.locator('.panorama [data-filter=type]').inputValue(),'Escola municipal');
+  assert.equal(await page.evaluate(()=>window.__mounts),1);await screenshot('01-panorama-preservado');
+  // TTL: expira o relógio do cliente; uma navegação na mesma tela busca o novo detalhe.
+  f.sqlite.prepare('UPDATE inspection_sections SET data_json=? WHERE inspection_id=? AND section=\'A\'').run(JSON.stringify({name:'ALTERADO NO SERVIDOR'}),f.visit);
+  await page.evaluate(()=>{const now=Date.now.bind(Date);Date.now=()=>now()+61000;});await page.locator('[data-sort]').selectOption('name');await page.waitForFunction(()=>document.querySelector('.panorama-answers')?.textContent.includes('ALTERADO NO SERVIDOR'));assert.equal(countDetail(),before+1);assert.equal(await page.evaluate(()=>__map===document.querySelector('#municipal-map')),true);
+  failDetail=true;await page.locator('[data-action=unit-refresh]').click();await page.locator('.selected-panel [role=alert]').waitFor();assert.match(await page.locator('.panorama-answers').textContent(),/ALTERADO NO SERVIDOR/);failDetail=false;
+  f.sqlite.prepare('UPDATE inspection_sections SET data_json=? WHERE inspection_id=? AND section=\'A\'').run(JSON.stringify({name:'RECUPERADO NO SERVIDOR'}),f.visit);await page.locator('[data-action=unit-refresh]').click();await page.waitForFunction(()=>document.querySelector('.panorama-answers')?.textContent.includes('RECUPERADO NO SERVIDOR'));
+  // Galeria completa, erro da segunda página recuperável e integral somente ao ampliar.
+  await page.locator('.gallery-panel [data-action=photos]').click();await page.locator('.photo-position').filter({hasText:'1 de 57'}).waitFor();failPage=true;await page.locator('[data-viewer=more]').click();await page.locator('.photo-load-status').filter({hasText:'Não foi possível'}).waitFor();failPage=false;await page.locator('[data-viewer=more]').click();await page.locator('[data-viewer=more]').waitFor({state:'hidden'});assert.equal(await page.locator('.photo-stage img').getAttribute('src').then(v=>v.includes('size=thumb')),false);await screenshot('02-galeria-paginada');
+  await page.evaluate(()=>{for(let n=1;n<57;n++)document.querySelector('[data-viewer=next]').click();});assert.equal(await page.locator('.photo-position').textContent(),'57 de 57');assert.match(await page.locator('.photo-stage img').getAttribute('src'),new RegExp(f.facade));assert.equal(await page.locator('[data-viewer=next]').isDisabled(),true);await page.keyboard.press('Escape');
+  // Filtro de coluna é preservado (D-069): só a impressora, sem os 55 computadores.
+  await page.locator('[data-action=cell][data-col="4"][data-unit="'+f.unit+'"]').click();await page.locator('[data-equipment-consultation] select[name=category]').waitFor();assert.equal(await page.locator('[data-equipment-consultation] select[name=category]').inputValue(),'4');await page.waitForFunction(()=>document.querySelector('[data-equipment-consultation]')?.textContent.includes('Mesa 57'));
+  // Volta, reabre os detalhes e verifica fachada real mesmo fora das últimas cinquenta fotos.
+  await page.goto(origin+'/unidade?id='+f.unit);await page.locator('.school-photo img').waitFor();assert.match(await page.locator('.school-photo img').getAttribute('src'),new RegExp(f.facade));await screenshot('03-fachada-detalhe');
+  await page.goto(origin+'/equipamentos');const matrix=await download(()=>page.locator('[data-action=export]').click());assert.match(matrix.name,/MATRIZ.*csv/);assert.match(fs.readFileSync(matrix.file,'utf8'),/"65"/);
+  await page.locator('a[href="/exportar"]').click();await page.locator('#export-kind').selectOption('equipment');const csv=await download(()=>page.locator('[data-action=export-data]').click()),csvText=fs.readFileSync(csv.file,'utf8');assert.equal(csvText.trim().split('\r\n').length,59);assert.ok(!csvText.includes('MODELO RASCUNHO'));for(const item of f.items.filter(x=>x.id!==f.draft))assert.ok(csvText.includes(item.id));
+  await page.locator('#export-format').selectOption('XLSX');const xlsx=await download(()=>page.locator('[data-action=export-data]').click()),Excel=require('exceljs'),book=new Excel.Workbook();await book.xlsx.readFile(xlsx.file);assert.equal(book.worksheets[0].rowCount,59);assert.equal(book.worksheets[0].getRow(2).getCell(14).value,'001234567');
+  await page.locator('#export-format').selectOption('CSV');await page.locator('#export-kind').selectOption('findings');const findings=await download(()=>page.locator('[data-action=export-data]').click()),text=fs.readFileSync(findings.file,'utf8');assert.equal(text.trim().split('\r\n').length,59);assert.ok(text.includes("\"'=TESTE()\""));await screenshot('04-exportacoes');
+  // Mesma vinculação aparece na visita aberta com rótulo parcial e botão de dados.
+  await page.goto(origin+'/coletas-em-andamento?vistoria='+f.open);await page.locator('.agent-flag.linked').waitFor();assert.match(await page.locator('#progress-content').textContent(),/PARCIAL/);await page.locator('[data-action=agent-status]').click();await page.locator('dialog').filter({hasText:'TESTE-PC-001'}).waitFor();await screenshot('05-agente-parcial');await page.keyboard.press('Escape');
+  assert.deepEqual(errors,[]);const result={passed:true,mapMountsAfterSearch:1,typedCharacters:10,detailTTL:true,manualRefresh:true,photoTotal:57,equipmentExport:58,findingsExport:58,formats:['CSV','XLSX'],partialAgent:true,errors};fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+ }catch(e){await screenshot('falha');console.error(e);console.error(JSON.stringify(errors));process.exitCode=1;}
+ finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));f.sqlite.close();}
+})();

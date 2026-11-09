@@ -39,7 +39,7 @@ export async function inProgressRead(request,url,user,env,{json,fail}){
  if(path==='/api/inventory/in-progress-equipment'){
   if(inspection.state!=='open')return json({completed:true,items:[],nextCursor:null});
   const cursor=cursorParams(url.searchParams.get('cursor'));if(cursor===false)return fail('Página inválida.');
-  const rows=(await db.prepare(`SELECT e.id,e.data_json,e.published_json IS NULL AS is_new,e.duplicate_flag,e.updated_at,COALESCE(NULLIF(u.display_name,''),u.username,'Usuário indisponível') AS updated_by_name FROM inventory_equipment_all e LEFT JOIN users u ON u.id=e.updated_by WHERE e.inspection_id=? ${cursor?'AND (e.updated_at<? OR (e.updated_at=? AND e.id<?))':''} ORDER BY e.updated_at DESC,e.id DESC LIMIT 51`).bind(id,...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
+  const rows=(await db.prepare(`SELECT e.id,e.data_json,EXISTS(SELECT 1 FROM agent_equipment_links l WHERE l.equipment_id=e.id AND l.ended_at IS NULL) AS agent_linked,e.published_json IS NULL AS is_new,e.duplicate_flag,e.updated_at,COALESCE(NULLIF(u.display_name,''),u.username,'Usuário indisponível') AS updated_by_name FROM inventory_equipment_all e LEFT JOIN users u ON u.id=e.updated_by WHERE e.inspection_id=? ${cursor?'AND (e.updated_at<? OR (e.updated_at=? AND e.id<?))':''} ORDER BY e.updated_at DESC,e.id DESC LIMIT 51`).bind(id,...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
   const page=rows.slice(0,50),last=page.at(-1);
   return json({items:page.map(r=>({...r,data:parse(r.data_json),data_json:undefined})),nextCursor:rows.length>50?btoa(JSON.stringify([last.updated_at,last.id])):null,revision:inspection.revision});
  }

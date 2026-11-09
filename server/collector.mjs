@@ -138,9 +138,29 @@ async function photoRoute(request,url,user,env,{json,fail,body,unit,inspection,s
 }
 
 async function inventoryRead(request,url,user,env,{json,fail,unit}){
+ if(request.method!=='GET')return fail('Consulta disponível somente para leitura.',405);
  if(user.role==='operador')return fail('Consulta gerencial não permitida.',403);const progress=await inProgressRead(request,url,user,env,{json,fail});if(progress)return progress;const results=await inventoryResults(request,url,user,env,{json,fail});if(results)return results;const db=env.DB,p=url.pathname;
  if(p==='/api/inventory/summary'){const rows=(await db.prepare('SELECT c.unit_id,c.category,c.records,c.items AS quantity FROM published_equipment_counts c JOIN units u ON u.id=c.unit_id WHERE u.active=1 AND '+inventoryScopeSql()+' AND c.records>0').all()).results,visits=(await db.prepare('SELECT s.* FROM published_unit_status s JOIN units u ON u.id=s.unit_id WHERE u.active=1 AND '+inventoryScopeSql()).all()).results;return json({equipment:rows,visits,environments:visits.reduce((sum,u)=>sum+u.environment_count,0)});}
- if(p==='/api/inventory/unit'){const u=await unit(url.searchParams.get('unitId'));if(!u)return fail('Unidade indisponível.',403);const i=await db.prepare("SELECT * FROM inspections WHERE unit_id=? AND state='completed' ORDER BY completed_at DESC,id DESC LIMIT 1").bind(u.id).first();if(!i)return json({inspection:null,sections:{},environments:[],photos:[]});const rows=(await db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results,environments=(await db.prepare('SELECT data_json FROM inspection_environments WHERE inspection_id=?').bind(i.id).all()).results;const photos=(await db.prepare("SELECT p.id,p.target_kind,p.target_id,p.created_at,p.inspection_id,COALESCE(NULLIF(author.display_name,''),author.username,'Usuário indisponível') AS created_by_name FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id LEFT JOIN users author ON author.id=p.created_by WHERE p.unit_id=? AND p.status='ready' AND i.state='completed' AND (p.target_kind<>'equipment' OR EXISTS(SELECT 1 FROM inventory_equipment_all e WHERE e.id=p.target_id AND e.published_json IS NOT NULL)) ORDER BY p.created_at DESC LIMIT 50").bind(u.id).all()).results;const missing=await db.prepare("SELECT COUNT(*) AS total FROM missing_equipment_cases m JOIN inspections i ON i.id=m.inspection_id WHERE m.unit_id=? AND m.state='open' AND i.state='completed'").bind(u.id).first();const visit=i.questionnaire_version===visitVersion?await visitReview(db,i):null;return json({visit,inspection:i,sections:hideContact(Object.fromEntries(rows.map(r=>[r.section,parse(r.data_json)])),user),environments:environments.map(e=>parse(e.data_json)),photos:await describePhotos(db,photos),missing:missing.total});}
+ if(p==='/api/inventory/unit'){
+  const u=await unit(url.searchParams.get('unitId'));if(!u)return fail('Unidade indisponível.',403);
+  const i=await db.prepare("SELECT * FROM inspections WHERE unit_id=? AND state='completed' ORDER BY completed_at DESC,id DESC LIMIT 1").bind(u.id).first();
+  if(!i)return json({inspection:null,sections:{},environments:[],photos:[],photoTotal:0,facade:null});
+  const photoFrom="FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id LEFT JOIN users author ON author.id=p.created_by WHERE p.unit_id=? AND p.status='ready' AND i.state='completed' AND (p.target_kind<>'equipment' OR EXISTS(SELECT 1 FROM inventory_equipment_all e WHERE e.id=p.target_id AND e.unit_id=p.unit_id AND e.published_json IS NOT NULL))";
+  const photoSelect="SELECT p.id,p.target_kind,p.target_id,p.created_at,p.inspection_id,COALESCE(NULLIF(author.display_name,''),author.username,'Usuário indisponível') AS created_by_name ";
+  // A fachada pode ser mais antiga que as últimas cinquenta fotos de equipamentos.
+  const [sectionRows,environmentRows,photoRows,countRows,facadeRows,missingRows]=await db.batch([
+   db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(i.id),
+   db.prepare('SELECT data_json FROM inspection_environments WHERE inspection_id=?').bind(i.id),
+   db.prepare(photoSelect+photoFrom+' ORDER BY p.created_at DESC,p.id DESC LIMIT 50').bind(u.id),
+   db.prepare('SELECT COUNT(*) AS total '+photoFrom).bind(u.id),
+   db.prepare(photoSelect+photoFrom+" AND p.target_kind='facade' ORDER BY p.created_at DESC,p.id DESC LIMIT 1").bind(u.id),
+   db.prepare("SELECT COUNT(*) AS total FROM missing_equipment_cases m JOIN inspections i ON i.id=m.inspection_id WHERE m.unit_id=? AND m.state='open' AND i.state='completed'").bind(u.id)
+  ]);
+  const rows=sectionRows.results,environments=environmentRows.results,photos=photoRows.results,photoTotal=countRows.results[0].total,facade=facadeRows.results[0];
+  const described=await describePhotos(db,facade&&!photos.some(p=>p.id===facade.id)?[...photos,facade]:photos);
+  const visit=i.questionnaire_version===visitVersion?await visitReview(db,i):null;
+  return json({visit,inspection:i,sections:hideContact(Object.fromEntries(rows.map(r=>[r.section,parse(r.data_json)])),user),environments:environments.map(e=>parse(e.data_json)),photos:described.slice(0,photos.length),photoTotal,facade:facade?described.find(p=>p.id===facade.id):null,missing:missingRows.results[0].total});
+ }
  if(p==='/api/inventory/equipment')return equipmentRead(request,url,user,env,{json,fail,unit});
  return fail('Consulta não encontrada.',404);
 }
