@@ -6,7 +6,7 @@ if(!destination.startsWith(root+sep)||destination===root||destination!==join(roo
 // Only this verified build directory is replaced; never web/, docs/, or repository files.
 await rm(destination,{recursive:true,force:true});await mkdir(destination,{recursive:true});
 const files=['index.html','desktop.js','desktop.css','desktop-icons.js','desktop-data.js','desktop-map.js','desktop-map.css','desktop-metrics.css','metric-icons.js','map-geography.js','runtime-config.js','data/map-v33.json','data/map-examples.json','vendor/leaflet/leaflet.js','vendor/leaflet/leaflet.css','vendor/leaflet/LICENSE.txt'];
-files.push('login.html','login.css','login.js','assets/prefeitura-paco.png','assets/paisagem-login-v2.png','assets/login-network.svg');
+files.push('login.html','login.css','login.js','assets/prefeitura-paco.png','assets/paisagem-login-v2.webp','assets/login-network.svg');
 files.push('desktop-progress.js','desktop-progress-photos.js','desktop-progress-photos.css','desktop-results.js');
 files.push('collector-v3-schema.js','desktop-inventory.js','desktop-agents.js','collector-schema.js','collector-v2-schema.js','visit-schema.js');
 files.push('account.html','account.js','account.css','admin-units.js','panel-shell.js','account-shell.js','panel-refinement.css','unit-schema.js','spreadsheet-io.js','vendor/exceljs/exceljs.min.js','vendor/exceljs/LICENSE.txt');

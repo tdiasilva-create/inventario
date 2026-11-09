@@ -72,6 +72,10 @@
     {
       "file": "0018_service_desk.sql",
       "sha256": "2441126439522965080ec4e969208ba84788e16de5e3194fe4265da3355ea259"
+    },
+    {
+      "file": "0019_photo_indexes.sql",
+      "sha256": "cfb43df7b61602da7420af7ea58f9af47d4c02d0a187ff772abf3865aa5d1852"
     }
   ],
   "tables": [
@@ -4655,9 +4659,21 @@
     },
     {
       "type": "index",
+      "name": "collection_photos_inspection",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_inspection ON collection_photos(inspection_id,created_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
       "name": "collection_photos_target",
       "tbl_name": "collection_photos",
       "sql": "CREATE INDEX collection_photos_target ON collection_photos(target_kind,target_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "collection_photos_unit_status",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_unit_status ON collection_photos(unit_id,status,created_at DESC)"
     },
     {
       "type": "index",

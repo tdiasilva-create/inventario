@@ -97,7 +97,7 @@ test('coleta com Drive: upload idempotente, leitura proxy sem link público, rem
  const otherPng=Buffer.concat([png,Buffer.from([0])]);assert.equal((await upload(i.id,'facade',f.ids.pending,photoId,f.operator,otherPng)).status,409);
  // Leitura: proxy autenticado; visualizador não vê rascunho; sem link público.
  const read=await collectorRoutes(req('/api/collector/photo?id='+photoId),new URL('http://t/api/collector/photo?id='+photoId),f.operator,env,helpers);
- assert.equal(read.status,200);assert.equal(read.headers.get('Content-Type'),'image/png');assert.equal(read.headers.get('Cache-Control'),'private, no-store');assert.deepEqual(Buffer.from(await read.arrayBuffer()),png);
+ assert.equal(read.status,200);assert.equal(read.headers.get('Content-Type'),'image/png');assert.equal(read.headers.get('Cache-Control'),'private, no-cache');assert.deepEqual(Buffer.from(await read.arrayBuffer()),png);
  assert.equal((await collectorRoutes(req('/api/collector/photo?id='+photoId),new URL('http://t/api/collector/photo?id='+photoId),{...f.root,role:'visualizador'},env,helpers)).status,403);
  assert.ok(!google.calls.some(c=>/permissions|webContentLink|anyone/.test(c.url)),'nenhuma permissão pública criada');
  // D-050: fotografias também pertencem às respostas/ambientes do questionário A–H.

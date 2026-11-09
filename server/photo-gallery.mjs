@@ -1,3 +1,4 @@
+import {photoNotModified,photoResponse} from './photo-response.mjs';
 // D-064: consulta paginada de fotos recebidas; não publica nem modifica coletas.
 import {photoStore,StorageError} from './photo-storage.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
@@ -13,7 +14,7 @@ export async function photoGalleryRead(request,url,user,env,{json,fail}){
   const id=url.searchParams.get('id');if(!uuid(id))return fail('Fotografia inválida.');
   const row=await env.DB.prepare(`SELECT p.* ${from} WHERE ${eligible} AND p.id=?`).bind(id).first();
   if(!row)return fail('Fotografia recebida não encontrada.',404);
-  try{const store=photoStore(env);if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);if(row.storage_provider&&row.storage_provider!==store.provider)return fail('O provedor desta fotografia não está ativo.',503);const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);return new Response(object.body,{headers:{'Content-Type':row.mime_type,'Cache-Control':'private, no-store','Content-Disposition':'inline','X-Content-Type-Options':'nosniff'}});}catch(e){if(e instanceof StorageError)return fail(e.message,e.status);throw e;}
+  try{const store=photoStore(env);if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);if(row.storage_provider&&row.storage_provider!==store.provider)return fail('O provedor desta fotografia não está ativo.',503);const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);return photoResponse(row,object);}catch(e){if(e instanceof StorageError)return fail(e.message,e.status);throw e;}
  }
  const equipment=url.searchParams.get('equipmentId')||'';
  if(equipment&&(!uuid(equipment)||!uuid(url.searchParams.get('unitId'))||!['','equipment'].includes(url.searchParams.get('kind')||'')))return fail('Equipamento ou unidade inválidos.');

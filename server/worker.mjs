@@ -1,3 +1,4 @@
+import {assetResponse} from './asset-response.mjs';
 import {UnitScopeError} from './unit-scope.mjs';
 import {importRoutes} from './import-units.mjs';
 import {random,digest,hashPassword,equal,canManage,canView,validatePassword} from './security.mjs';
@@ -23,10 +24,10 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(db){const machine=await handleAgentMachine(request,url,env);if(machine)return machine;}
  if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||!(path==='/api/collector/photo-upload'?['image/jpeg','image/png','image/webp'].includes(request.headers.get('Content-Type')):request.headers.get('Content-Type')?.startsWith('application/json'))))return fail('Origem ou conteúdo inválido.',403);
  const identityAssets=['/desktop-theme.css','/tokens.css','/assets/paisagem-coleta.jpg',...['400','500','600','700'].flatMap(w=>['/vendor/chakra-petch/ChakraPetch-'+w+'.woff2','/vendor/barlow/Barlow-'+w+'.woff2']),'/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'];
- if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return env.ASSETS.fetch(request);
- const publicPaths=new Set(['/login','/login.html','/login.css','/login.js','/assets/prefeitura-paco.png','/assets/paisagem-login-v2.png','/assets/login-network.svg','/robots.txt']);
- if(publicPaths.has(path)){const target=new URL(request.url);if(path==='/login'||path==='/login.html')target.pathname=env.APP_KIND==='collector'?'/collector-login.html':'/login.html';if(env.APP_KIND==='collector'&&path==='/login.js')target.pathname='/collector-login.js';return env.ASSETS.fetch(new Request(target,request));}
- if(env.APP_KIND==='collector'&&['/collector.css','/vendor/figtree/Figtree.ttf','/collector-favicon.svg','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'].includes(path))return env.ASSETS.fetch(request);
+ if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return assetResponse(request,env);
+ const publicPaths=new Set(['/login','/login.html','/login.css','/login.js','/assets/prefeitura-paco.png','/assets/paisagem-login-v2.webp','/assets/login-network.svg','/robots.txt']);
+ if(publicPaths.has(path)){const target=new URL(request.url);if(path==='/login'||path==='/login.html')target.pathname=env.APP_KIND==='collector'?'/collector-login.html':'/login.html';if(env.APP_KIND==='collector'&&path==='/login.js')target.pathname='/collector-login.js';return assetResponse(new Request(target,request),env);}
+ if(env.APP_KIND==='collector'&&['/collector.css','/vendor/figtree/Figtree.ttf','/collector-favicon.svg','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'].includes(path))return assetResponse(request,env);
  if(!env.AUTH_PEPPER||!db)return fail('Acesso temporariamente indisponível.',503);
  if(path==='/api/auth/login'&&request.method==='POST'){
   const data=await body(request);const username=typeof data.username==='string'?data.username.trim().toLowerCase():'';const password=typeof data.password==='string'?data.password:'';if(!/^[a-z0-9._-]{2,80}$/.test(username)||password.length>256)return fail('Usuário ou senha inválidos.',401);
@@ -102,29 +103,29 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(path==='/administracao')return new Response(null,{status:302,headers:{Location:'/cadastro-unidades'}});
  if(adminPaths.includes(path)&&user.role!=='root')return fail('Sem permissão.',403);
  if(path==='/usuarios'&&!['root','admin'].includes(user.role))return fail('Sem permissão.',403);
- if(path==='/conta'&&env.APP_KIND==='collector')return env.ASSETS.fetch(new Request(new URL('/collector-account.html',url),request));
- if(['/conta','/cadastro-unidades','/usuarios','/operadores-unidades','/seguranca'].includes(path))return env.ASSETS.fetch(new Request(new URL('/account.html',url),request));
+ if(path==='/conta'&&env.APP_KIND==='collector')return assetResponse(new Request(new URL('/collector-account.html',url),request),env);
+ if(['/conta','/cadastro-unidades','/usuarios','/operadores-unidades','/seguranca'].includes(path))return assetResponse(new Request(new URL('/account.html',url),request),env);
  const accountAssets=['/desktop-demand-count.js','/desktop-notifications.js','/desktop-notifications.css','/account.js','/account.css','/admin-units.js','/panel-shell.js','/account-shell.js','/panel-refinement.css','/unit-schema.js','/unit-catalogue.css','/spreadsheet-io.js','/vendor/exceljs/exceljs.min.js','/vendor/leaflet/leaflet.js','/vendor/leaflet/leaflet.css','/desktop-icons.js','/desktop.css'];
- if(accountAssets.includes(path))return env.ASSETS.fetch(request);
+ if(accountAssets.includes(path))return assetResponse(request,env);
  if(env.APP_KIND==='collector'){
   if(!['root','admin','operador'].includes(user.role))return fail('Este perfil é somente de visualização. Acesse o painel desktop.',403);
   const target=new URL(request.url);if(['/','/coleta','/coleta.html'].includes(path))target.pathname='/collector.html';if(path==='/visita')target.pathname='/visit.html';if(path==='/coleta-v2')target.pathname='/collector-v2.html';if(path==='/coleta-v3')target.pathname='/collector-v3.html';
-  if(['/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return env.ASSETS.fetch(new Request(target,request));
+  if(['/collector-v3.html','/collector-v3.js','/collector-v3-schema.js','/collector-v3.css','/collector-drafts.js','/collector-ui.js','/collector-v2.html','/collector-v2.js','/collector-v2-schema.js','/collector-qr.js','/vendor/jsqr/jsQR.js','/visit.html','/visit.js','/visit-schema.js','/collector.html','/collector.js','/collector-schema.js','/collector-unit-list.js','/collector-navigation.js','/collector-errors.js','/collector-favicon.svg','/collector.css','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','/collector-account.js','/desktop-icons.js'].includes(target.pathname))return assetResponse(new Request(target,request),env);
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:'/conta','Cache-Control':'no-store'}});
- if(['/computadores','/demandas'].includes(path))return env.ASSETS.fetch(new Request(new URL('/operations.html',url),request));
+ if(['/computadores','/demandas'].includes(path))return assetResponse(new Request(new URL('/operations.html',url),request),env);
  if(path==='/fotografias')return new Response(null,{status:302,headers:{Location:'/panorama','Cache-Control':'no-store'}});
  const pages=['/','/coletas-em-andamento','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
  const assetUrl=new URL(request.url);if(pages.includes(path))assetUrl.pathname='/index.html';
- const response=await env.ASSETS.fetch(new Request(assetUrl,request));
+ const response=await assetResponse(new Request(assetUrl,request),env);
  return response;
 }
 // Manutenção agendada do módulo de agentes (retenção de snapshots/heartbeats, nonces, recibos, limites, desafios vencidos).
 // Disparada pelo cron do Worker do painel (wrangler.jsonc → triggers.crons); também disponível ao root em POST /api/root/agent-maintenance.
 // Preserva sempre o snapshot atual, a linha de base e o histórico de vínculos/localização/auditoria (ver D1Store.purgeExpired).
 export async function scheduled(event,env,ctx){if(!env.DB)return;const run=event.cron==='23 3 * * *'?manutencaoAgentes(env,Date.now()):runAgentMonitoring(env,Date.now());if(ctx?.waitUntil)ctx.waitUntil(run);return run;}
-export default {scheduled,async fetch(request,env){let response;try{response=await handle(request,env);}catch(error){response=error instanceof UnitScopeError?json({error:error.message,code:error.code},422):error.message==='body'?fail('A requisição excedeu o tamanho permitido.',413):error instanceof SyntaxError?fail('Conteúdo JSON inválido.',400):fail(env.DEBUG_COLLECTION==='1'?String(error.message):'Não foi possível concluir. Tente novamente.',503);}response=new Response(response.body,response);response.headers.set('Cache-Control','no-store');response.headers.set('X-Content-Type-Options','nosniff');response.headers.set('Referrer-Policy','same-origin');response.headers.set('X-Frame-Options','DENY');return response;}};
+export default {scheduled,async fetch(request,env){let response;try{response=await handle(request,env);}catch(error){response=error instanceof UnitScopeError?json({error:error.message,code:error.code},422):error.message==='body'?fail('A requisição excedeu o tamanho permitido.',413):error instanceof SyntaxError?fail('Conteúdo JSON inválido.',400):fail(env.DEBUG_COLLECTION==='1'?String(error.message):'Não foi possível concluir. Tente novamente.',503);}response=new Response(response.body,response);if(!response.headers.has('Cache-Control'))response.headers.set('Cache-Control','no-store');response.headers.set('X-Content-Type-Options','nosniff');response.headers.set('Referrer-Policy','same-origin');response.headers.set('X-Frame-Options','DENY');return response;}};
 
 
 

@@ -1,3 +1,4 @@
+import {photoNotModified,photoResponse} from './photo-response.mjs';
 import {photoStore, StorageError} from './photo-storage.mjs';
 
 const uuid=value=>typeof value==='string'&&/^[a-f0-9-]{36}$/i.test(value);
@@ -40,7 +41,7 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
   const store=photoStore(env);
   if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);
   if(row.storage_provider&&store.provider!==row.storage_provider)return fail('O provedor desta fotografia não está ativo.',503);
-  const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);
-  return new Response(object.body,{headers:{'Content-Type':row.mime_type,'Cache-Control':'private, no-store','Content-Disposition':'inline','X-Content-Type-Options':'nosniff'}});
+  const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);
+  return photoResponse(row,object);
  }catch(error){if(error instanceof StorageError)return fail(error.message,error.status);throw error;}
 }

@@ -26,10 +26,18 @@ export const integrationRow=db=>db.prepare('SELECT * FROM integration_tokens WHE
 export const logIntegration=(db,event,actor,detail)=>db.prepare('INSERT INTO integration_events(provider,event,actor_id,detail,created_at) VALUES(?,?,?,?,?)').bind(DRIVE_PROVIDER,event,actor||null,detail?String(detail).slice(0,1000):null,Date.now());
 
 // ---- Google Drive: token de acesso ----
-export async function accessToken(env,db,{fetchImpl=fetch,now=Date.now()}={}){
+// One decrypted token per DB binding; every request still validates a fresh D1 row.
+// An encrypted-token change, environment/key change, expiry or revocation invalidates it.
+const tokenMemo=new WeakMap();
+export async function accessToken(env,db,{fetchImpl=fetch,now=Date.now(),row:loadedRow}={}){
  if(!driveConfigured(env))throw new StorageError('Integração Google Drive não configurada no servidor.',503,'not_configured');
- const row=await integrationRow(db);if(!row||!row.refresh_token_enc||row.revoked_at)throw new StorageError('Google Drive não autorizado. Solicite ao root a conexão em Configurações.',503,'not_connected');
- if(row.access_token_enc&&row.access_token_expires_at>now+60000)return {token:await open(env,row.access_token_enc),row};
+ const row=loadedRow===undefined?await integrationRow(db):loadedRow;if(!row||!row.refresh_token_enc||row.revoked_at){tokenMemo.delete(db);throw new StorageError('Google Drive não autorizado. Solicite ao root a conexão em Configurações.',503,'not_connected');}
+ if(row.access_token_enc&&row.access_token_expires_at>now+60000){
+  const hit=tokenMemo.get(db),context=[env.GOOGLE_CLIENT_ID,env.GOOGLE_CLIENT_SECRET,env.GOOGLE_TOKEN_KEY,row.refresh_token_enc,row.access_token_enc,row.folder_id];
+  if(hit&&hit.until>now&&context.every((v,i)=>v===hit.context[i]))return {token:hit.token,row};
+  const token=await open(env,row.access_token_enc);tokenMemo.set(db,{context,token,until:Math.min(now+60000,row.access_token_expires_at-60000)});return {token,row};
+ }
+ tokenMemo.delete(db);
  const refresh=await open(env,row.refresh_token_enc);
  const response=await fetchImpl(TOKEN_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:env.GOOGLE_CLIENT_ID,client_secret:env.GOOGLE_CLIENT_SECRET,refresh_token:refresh,grant_type:'refresh_token'})});
  const data=await response.json().catch(()=>({}));
@@ -71,13 +79,13 @@ const ext=mime=>mime==='image/png'?'png':mime==='image/webp'?'webp':'jpg';
 function r2Store(bucket){
  return {provider:R2_PROVIDER,async enabled(){return !!bucket;},async status(){return {provider:R2_PROVIDER,enabled:!!bucket};},
   async put({key,bytes,mime,photoId}){if(!bucket)throw new StorageError('Armazenamento de fotos ainda indisponível. Nenhum upload confirmado.');await bucket.put(key,bytes,{httpMetadata:{contentType:mime},customMetadata:{photoId}});return {ref:null,provider:R2_PROVIDER};},
-  async get(row){if(!bucket)throw new StorageError('Fotografias indisponíveis.');const object=await bucket.get(row.object_key);return object?{body:object.body}:null;},
+  async get(row){if(!bucket)throw new StorageError('Fotografias indisponíveis.');const object=await bucket.get(row.object_key);return object?{body:object.body,contentLength:object.size}:null;},
   async delete(row){if(!bucket)throw new StorageError('Armazenamento indisponível.');if(row.storage_provider&&row.storage_provider!==R2_PROVIDER)throw new StorageError('Arquivo pertence a outro provedor ('+row.storage_provider+').',409,'provider_mismatch');await bucket.delete(row.object_key);return true;}};
 }
 function driveStore(env,db,fetchImpl){
  let cached=null;const row=async()=>cached??=await integrationRow(db);
  const ready=async()=>{if(!driveConfigured(env))return false;const r=await row();return !!(r&&r.refresh_token_enc&&!r.revoked_at&&r.folder_id);};
- const tok=()=>accessToken(env,db,{fetchImpl});
+ const tok=async()=>accessToken(env,db,{fetchImpl,row:await row()});
  async function unitFolder(token,unitId,unitName,rootFolder){
   const hit=await db.prepare('SELECT folder_id FROM integration_folders WHERE provider=? AND scope_key=?').bind(DRIVE_PROVIDER,'unit:'+unitId).first();if(hit)return hit.folder_id;
   const found=await findByProperty(token,fetchImpl,'semedUnitId',unitId,` and mimeType='application/vnd.google-apps.folder'`);
@@ -87,16 +95,17 @@ function driveStore(env,db,fetchImpl){
  }
  return {provider:DRIVE_PROVIDER,enabled:ready,
   async status(){const r=await row();return {provider:DRIVE_PROVIDER,configured:driveConfigured(env),enabled:await ready(),connected:!!(r&&r.refresh_token_enc&&!r.revoked_at),accountEmail:r?.account_email||null,folderId:r?.folder_id||null,folderName:r?.folder_name||null,connectedAt:r?.connected_at||null,lastRefreshAt:r?.last_refresh_at||null,lastTestAt:r?.last_test_at||null,lastTestResult:r?.last_test_result||null,revokedAt:r?.revoked_at||null,lastError:r?.last_error||null};},
-  async put({key,bytes,mime,photoId,unitId,unitName,inspectionId,targetKind,targetId,sha256}){
+  async put({key,bytes,mime,photoId,unitId,unitName,inspectionId,targetKind,targetId,sha256,retry=true}){
    if(!await ready())throw new StorageError('Armazenamento de fotos ainda indisponível. Nenhum upload confirmado.',503,'not_connected');
    const {token,row:r}=await tok();
    // Idempotência: uma tentativa anterior pode ter gravado o arquivo sem confirmar no D1.
-   const existing=await findByProperty(token,fetchImpl,'semedPhotoId',photoId);if(existing[0])return {ref:existing[0].id,provider:DRIVE_PROVIDER,reused:true};
+   // Only the route that just inserted the unique pending row may skip the lookup.
+   if(retry){const existing=await findByProperty(token,fetchImpl,'semedPhotoId',photoId);if(existing[0])return {ref:existing[0].id,provider:DRIVE_PROVIDER,reused:true};}
    const parent=await unitFolder(token,unitId,unitName,r.folder_id);
    const file=await multipartUpload(token,fetchImpl,{name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,semedUnitId:unitId,semedInspectionId:inspectionId,semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});
    return {ref:file.id,provider:DRIVE_PROVIDER,reused:false};
   },
-  async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true');if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body};},
+  async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true');if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body,contentLength:r.headers.get('Content-Length')};},
   async delete(row){if(row.storage_provider&&row.storage_provider!==DRIVE_PROVIDER)throw new StorageError('Arquivo pertence a outro provedor ('+row.storage_provider+').',409,'provider_mismatch');if(!await ready())throw new StorageError('Armazenamento indisponível.',503,'not_connected');if(!row.storage_ref)return true;const {token}=await tok();return deleteFile(token,fetchImpl,row.storage_ref);},
   async selfTest(actor){const {token,row:r}=await tok();const started=Date.now();const png=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aKxkAAAAASUVORK5CYII='),c=>c.charCodeAt(0));const name='TESTE_CONEXAO_SEMED_'+new Date(started).toISOString().replace(/[:.]/g,'-')+'.png';let result;try{const file=await multipartUpload(token,fetchImpl,{name,mime:'image/png',bytes:png,parents:[r.folder_id],appProperties:{semedTest:'1'},description:'Arquivo de teste da integração; pode ser removido.'});await deleteFile(token,fetchImpl,file.id);result={ok:true,fileId:file.id,name,durationMs:Date.now()-started};}catch(error){result={ok:false,error:error.message,durationMs:Date.now()-started};}await db.batch([db.prepare('UPDATE integration_tokens SET last_test_at=?,last_test_result=? WHERE provider=?').bind(started,result.ok?'ok':'erro: '+result.error,DRIVE_PROVIDER),logIntegration(db,result.ok?'self_test_ok':'self_test_failed',actor,result.ok?name:result.error)]);cached=null;return result;}};
 }

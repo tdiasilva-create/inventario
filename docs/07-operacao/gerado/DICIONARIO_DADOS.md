@@ -20,6 +20,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0016_unidades_cadastro_ampliado.sql`
 - `0017_agent_monitoring.sql`
 - `0018_service_desk.sql`
+- `0019_photo_indexes.sql`
 
 ## agent_audit_log
 
