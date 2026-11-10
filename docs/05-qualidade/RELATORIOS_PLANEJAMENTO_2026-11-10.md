@@ -17,4 +17,15 @@ Não houve gravação de demanda, coleta, parecer, equipamento ou imagem na prod
 
 ## Publicação
 
-Em preparação: registrar versão ativa, commit, verificações e manutenção da versão do coletor após publicação.
+Publicação concluída às **15:44:21 de 10/11/2026 (Fortaleza)**. Versão **cf11b18f-1bff-47eb-a504-15f549de6f32**, **100%** do tráfego, commit de implementação **98b78f2**. Painel anterior: 815dfa78-702e-456d-a632-a1da1aabbd81. Coletor confirmado inalterado: 274ecd9b-002e-4f79-a4b9-325fc26fece1. Somente wrangler.jsonc publicado, sem migração ou alterações de segredos/vínculos.
+
+- Build: 83 arquivos, sem aplicativo coletor; dry-run, sintaxe, links, diferenças e índice Git (599 arquivos) aprovados.
+- Cinco consultas derivadas dos endpoints executadas no D1 oficial em modo de leitura: sucesso, 2.667 linhas lidas, **zero escritas**, 8,4395 ms de SQL na amostra. Consultas envolvidas por COUNT; execução via arquivo devolveu metadados. Não é medição de latência HTTP nem garante desempenho em qualquer volume.
+- Quinze verificações HTTP pós-publicação aprovadas: login 200, páginas/novo módulo protegidos com redirecionamento, APIs sem sessão 401. Versão ativa/100% de tráfego confirmados independentemente via deployments list.
+- Fluxos autenticados e screenshots foram testados localmente no Worker real com SQLite isolado. Não foi realizada navegação autenticada na produção nesta entrega; o aceite operacional do responsável permanece pendente.
+
+Relatórios: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/relatorios
+
+Planejamento: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/planejamento
+
+Registro técnico local: private-data/release-relatorios-planejamento-2026-11-10/ (ignorado pelo Git). Reversão de código: versão anterior do painel, sem reversão de banco.
