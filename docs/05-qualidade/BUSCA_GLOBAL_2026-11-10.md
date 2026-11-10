@@ -29,6 +29,10 @@ LOG-08 (fichas vs quantidade física), Pendentes, Relatórios/Planejamento, Ano,
 
 ## Publicação
 
-Preparada somente para `painel-semed-paco`, sem migração ou alterações de segredos/Drive. Versão anterior esperada: `11b90747-7d5a-4585-b2a5-fbe0c3af5f17`. Coletor esperado sem alteração: `274ecd9b-002e-4f79-a4b9-325fc26fece1`. Registro de execução será acrescentado após conferência da versão ativa.
+Publicado em **10/11/2026, 14:52:41 (America/Fortaleza)**, commit de implementação **38e4907**, versão do painel **5d01001e-6718-44c8-8399-c9c47e412d8d**, com 100% do tráfego confirmado pela Cloudflare. Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/busca
+
+Oito verificações HTTP pós-publicação aprovadas: login 200; Panorama, mapa, busca e assets privados 302 sem sessão; APIs da busca/ficha 401 sem autenticação. Sem afirmar navegação visual autenticada em produção: os seis roteiros de interface usaram Worker real em banco isolado.
+
+Somente painel publicado, sem migração, alterações de segredos, upload de fotos ou escritas de teste no banco oficial. Coletor confirmado inalterado em **274ecd9b-002e-4f79-a4b9-325fc26fece1**, 100%. Crons existentes preservados. Logs/versões antes/depois em private-data/release-busca-global-2026-11-10/ (fora do Git). Rollback de código: **11b90747-7d5a-4585-b2a5-fbe0c3af5f17**, sem reversão de dados.
 
 Validação final local: **185/185 testes**, seis roteiros de navegador aprovados (busca, tour, blocos, identidade, consulta oficial e mesa), build desktop de 80 arquivos e dry-run Wrangler aprovados. Links documentais conferidos. Falhas intermediárias de sintaxe/fixture foram corrigidas antes desta rodada; a execução final do navegador ocorreu depois do build, evitando arquivos indisponíveis durante sua reconstrução.
