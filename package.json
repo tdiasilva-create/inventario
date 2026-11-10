@@ -34,7 +34,8 @@
     "test:environment-edit:browser": "node tests/environment-rename-browser.cjs",
     "test:equipment-edit:browser": "node tests/equipment-rename-browser.cjs",
     "test:equipment-delete:browser": "node tests/equipment-deletion-browser.cjs",
-    "test:equipment-links:browser": "node tests/equipment-link-state-browser.cjs"
+    "test:equipment-links:browser": "node tests/equipment-link-state-browser.cjs",
+    "test:mesa:browser": "node tests/panel-mesa-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

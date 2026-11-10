@@ -367,3 +367,7 @@ Pedido atual/escopo root no desktop + Base §§9.2/9.5/9.11 → migrations/0023_
 ## D-079 — identificação do vínculo/cadastro, 09/11/2026
 
 Pedido explícito atual + Base §§7.3/7.4/9, D-069/D-070/D-071 → `server/equipment-link-state.mjs`, consultas `inventory-equipment.mjs`, `service-desk.mjs`, `in-progress.mjs`; apresentação compartilhada `web/equipment-link-state.js`, listas/fichas desktop e grid operacional. Filtro antes da paginação; comunicação separada; categorias sem agente não rotuladas como computador manual. Testes `equipment-link-state.test.mjs`, `equipment-link-state-browser.cjs` e regressões. [Registro](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md). Não altera perguntas, persistência, fotos, vínculos ou pendências das Fases 4/5.
+
+## D-080 — Mesa de dados e login, 10/11/2026
+
+Pacotes e comparações entregues pelo responsável → `web/painel.css`, `panel-shell.js`, `panel-pulse.js`, entradas HTML e login; remoção de injeções de CSS; ajustes de assets no Worker/build. Identidade D-065, composição D-067 e vínculo D-079 preservados. `tests/panel-mesa-browser.cjs` cobre resumo/API, falha/recuperação, teclado/fixação, navegação móvel e login; regressões desktop verificam mapas, filtros, permissões, fotos e operações. Base original intacta: cobertura de apresentação/consulta e acesso (§§7/8/9), sem novas perguntas A–H, offline ou regras de conclusão. [Registro](../05-qualidade/MESA_DADOS_LOGIN_2026-11-10.md).

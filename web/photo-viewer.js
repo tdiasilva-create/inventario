@@ -6,7 +6,6 @@ export const photoDate=v=>v?new Date(v).toLocaleString('pt-BR',{timeZone:'Americ
 export const photoSource=p=>'/api/inventory/photo?id='+encodeURIComponent(p.id);
 export const photoThumbnailSource=p=>photoSource(p)+'&size=thumb';
 export const photoState=p=>p.inspection_state==='paused'?'PARCIAL · COLETA PAUSADA':p.inspection_state==='open'?'PARCIAL · EM ANDAMENTO':'COLETA CONCLUÍDA';
-if(!document.querySelector('link[href="/desktop-photos.css"]')){const style=document.createElement('link');style.rel='stylesheet';style.href='/desktop-photos.css';document.head.append(style);}
 // Uma mesma janela para fotos oficiais, parciais e miniaturas do panorama.
 export function openPhotoViewer(items,index=0,trigger=document.activeElement,options={}){
  items=[...items];let loading=false,closed=false;

@@ -3,7 +3,6 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const date=v=>new Date(v).toLocaleString('pt-BR');
 const labels={facade:'Fachada da unidade',environment:'Ambiente',equipment:'Equipamento',answer:'Evidência da resposta',occurrence:'Ocorrência'};
 const caption=p=>p.label||[labels[p.target_kind]||'Evidência da coleta',p.environment_name||p.asset||p.equipment_category].filter(Boolean).join(' · ');
-const style=document.createElement('link');style.rel='stylesheet';style.href='/desktop-progress-photos.css';document.head.append(style);
 export function createProgressPhotos(){
  let selected=null,page={items:[],ready:0,pending:0,nextCursor:null},cursors=[null],error='',loading=false,sequence=0,held=null,lastMarkup='';
  const imageUrl=id=>'/api/inventory/in-progress-photo?'+new URLSearchParams({id:selected,photoId:id});

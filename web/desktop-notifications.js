@@ -9,7 +9,6 @@ export const monitorLabels={communicating:'Online · comunicando',communicating_
 let stop=null;
 export function startNotifications(user){
  stop?.();if(!user||user.mustChange||!['root','admin','visualizador'].includes(user.role))return;
- if(!document.querySelector('link[href="/desktop-notifications.css"]')){const css=document.createElement('link');css.rel='stylesheet';css.href='/desktop-notifications.css';document.head.append(css);}
  const bell=document.querySelector('[data-action="notifications"]');if(!bell)return;
  let dialog=null,timer=null,busy=false,pending=false,offset=0,unread=false,data=null,error='',lastSignature='',controller=null,closed=false;
  const badge=document.createElement('span');badge.className='monitor-count';badge.hidden=true;bell.append(badge);

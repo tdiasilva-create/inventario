@@ -36,7 +36,7 @@ const pw=require('./helpers/playwright.cjs');
   diagnostics.push({route,legacyPaleText:await page.locator('#content').evaluate(el=>[...el.querySelectorAll('p,small,label,summary,dt,dd,span')].filter(x=>x.checkVisibility()&&x.textContent.trim()).filter(x=>{const c=getComputedStyle(x).color.match(/[\d.]+/g)?.map(Number);return c?.length>=3&&c[0]>130&&c[1]>170&&c[2]>180;}).slice(0,12).map(x=>({tag:x.tagName,cls:x.className,text:x.textContent.slice(0,60),color:getComputedStyle(x).color})))});
  }
  try{
-  activeSession=null;for(const p of ['/desktop-theme.css','/tokens.css','/vendor/barlow/Barlow-400.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2'])assert.equal((await fetch(origin+p)).status,200,p);
+  activeSession=null;assert.equal((await fetch(origin+'/painel.css',{redirect:'manual'})).status,302);for(const p of ['/login.css','/painel-favicon.svg','/tokens.css','/vendor/barlow/Barlow-400.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2'])assert.equal((await fetch(origin+p)).status,200,p);
   await page.goto(origin+'/login');await page.locator('#username').fill('teste-isolado');await page.locator('#password').fill('TEST ONLY');await page.locator('#toggle-password').click();assert.equal(await page.locator('#password').getAttribute('type'),'text');await page.locator('#password').fill('');await screenshot('01-login-desktop');
   assert.equal(await page.locator('.access').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(255, 255, 255)');
   activeSession=root;assert.equal((await fetch(origin+'/fotografias',{redirect:'manual'})).headers.get('location'),'/panorama');

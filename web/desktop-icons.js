@@ -29,5 +29,7 @@ const paths={
  users:'M9 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0M1 20v-4a5 5 0 0 1 10 0v4M21 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0M13 20v-4a5 5 0 0 1 10 0v4',
  clock:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M12 5v7l4 3',close:'m5 5 14 14M5 19 19 5',
  download:'M12 2v13m-5-5 5 5 5-5M3 16v6h18v-6',fullscreen:'M3 9V3h6m6 0h6v6M3 15v6h6m6 0h6v-6',
- bulb:'M8 17v-3a7 7 0 1 1 8 0v3zM9 21h6',cloud:'M6 19a5 5 0 1 1 0-10 7 7 0 0 1 14-1 5 5 0 0 1 0 11M12 12v10m-4-5 4-5 4 5'};
+ bulb:'M8 17v-3a7 7 0 1 1 8 0v3zM9 21h6',
+ menu:'M3 6h18M3 12h18M3 18h18',cpu:'M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3M5 5h14v14H5zM9 9h6v6H9z',tv:'M2 6h20v13H2zM8 22h8M7 2l5 4 5-4',rail:'M3 3h18v18H3zM9 3v18M12 9l3 3-3 3',
+cloud:'M6 19a5 5 0 1 1 0-10 7 7 0 0 1 14-1 5 5 0 0 1 0 11M12 12v10m-4-5 4-5 4 5'};
 export function icon(name,cls=''){return `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[name]||paths.monitor}"/></svg>`;}

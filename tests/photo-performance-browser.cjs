@@ -39,10 +39,9 @@ const pw=require('./helpers/playwright.cjs');
   await page.goto(origin+'/login');await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/login-identidade-preservada.png'});const marker=requests.length;
   await page.reload();await page.evaluate(()=>document.fonts.ready);await page.waitForLoadState('networkidle');
   const repeats=requests.slice(marker).filter(r=>r.path.includes('paisagem-coleta.jpg'));assert.ok(repeats.length>0);assert.ok(repeats.every(r=>r.status===304&&r.bytes===0));
-  // D-065 uses the shared JPEG. The converted WebP remains the legacy CSS fallback.
-  for(let n=0;n<2;n++)assert.equal(await page.evaluate(async()=>{const r=await fetch('/assets/paisagem-login-v2.webp');await r.arrayBuffer();return r.status;}),200);
-  assert.deepEqual(requests.filter(r=>r.path==='/assets/paisagem-login-v2.webp').map(r=>r.status),[200,304]);
+  // 10/11/2026: a tela de acesso usa só a paisagem JPEG compartilhada; o WebP antigo deixou de ser público (polimento do login).
+  assert.ok([302,401,404].includes(await page.evaluate(async()=>{const r=await fetch('/assets/paisagem-login-v2.webp',{redirect:'manual'});return r.status===0?302:r.status;})),'WebP antigo não deve ser público');
   assert.deepEqual(errors,[]);fs.writeFileSync(out+'/requests.json',JSON.stringify(requests,null,2));
-  console.log('OK: polling mantém imagem/foco, atualização real aparece, viewer, revalidação sem objeto, sessão revogada, login JPEG e fallback WebP 304.');
+  console.log('OK: polling mantém imagem/foco, atualização real aparece, viewer, revalidação sem objeto, sessão revogada, login JPEG 304 e WebP antigo não público.');
  }catch(e){await page.screenshot({path:out+'/falha.png',fullPage:true});throw e;}finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));f.sqlite.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
