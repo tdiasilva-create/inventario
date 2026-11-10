@@ -45,4 +45,10 @@ Sem migração, mudanças de credenciais/configuração ou escrita de dados de t
 
 ## Publicação
 
-Autorização explícita no pedido atual. Antes da entrega: painel `45daa7e9-fe21-4853-8ea9-f160b96017a5`, coletor `274ecd9b-002e-4f79-a4b9-325fc26fece1`, ambos em 100%. Publicação/checagem final será registrada abaixo após execução. Rollback pode voltar ao painel anterior, sem operação de banco.
+Autorização explícita no pedido atual. Código e documentação da implementação no commit `f7bb832`. Publicação concluída em 10/11/2026 às 13:18:50 (America/Fortaleza; 16:18:50 UTC): painel `07f8adf1-d733-459d-9826-5ad690b6c21d`, com 100% do tráfego. Endereço de consulta: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores?estado=sem-comunicacao
+
+Conferência após publicação às 13:19:31: nove verificações HTTP aprovadas. Login respondeu 200; páginas protegidas e módulos autenticados redirecionaram ao login (302); as quatro consultas de API sem sessão responderam 401, sem liberar dados. A listagem de deployments confirmou a versão do painel e o coletor inalterado em `274ecd9b-002e-4f79-a4b9-325fc26fece1`, com 100% do tráfego. Crons existentes preservados: `* * * * *` e `23 3 * * *`.
+
+O navegador disponível abriu o login, sem sessão autenticada. Portanto, a navegação interna e as capturas desta entrega comprovam o ambiente isolado; não constituem homologação visual autenticada em produção. Nenhuma credencial ou dado de teste foi gravado no ambiente real. Registros técnicos locais em `private-data/release-tour-logic-2026-11-10/`, fora do Git.
+
+Versão anterior do painel para rollback: `45daa7e9-fe21-4853-8ea9-f160b96017a5`. Como não houve migração ou alteração de dados, a reversão desta entrega não exige operação de banco.
