@@ -32,8 +32,8 @@ export async function hardwareReviewRoutes(request,url,user,env,{json,fail,body}
  if(path.endsWith('/hardware-alerts')){
   if(request.method!=='GET')return fail('Método não permitido.',405);
   const id=url.searchParams.get('id')||'',unit=url.searchParams.get('unitId')||'',offset=Number(url.searchParams.get('offset')||0),state=url.searchParams.get('state')||'active';
-  if(id&&!uuid(id)||unit&&!uuid(unit)||!Number.isSafeInteger(offset)||offset<0||!['active','pending'].includes(state))return fail('Filtro inválido.',422);
-  const where=" WHERE n.kind='hardware_change'"+(id?' AND n.id=?':unit?' AND n.unit_id=?':'')+(state==='pending'?' AND hr.notification_id IS NULL':id?'':" AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'))"),args=id?[id]:unit?[unit]:[];
+  if(id&&!uuid(id)||unit&&!uuid(unit)||!Number.isSafeInteger(offset)||offset<0||!['active','pending','all'].includes(state))return fail('Filtro inválido.',422);
+  const where=" WHERE n.kind='hardware_change'"+(id?' AND n.id=?':unit?' AND n.unit_id=?':'')+(state==='pending'?' AND hr.notification_id IS NULL':id||state==='all'?'':" AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'))"),args=id?[id]:unit?[unit]:[];
   const [list,total]=await Promise.all([db.prepare(`SELECT ${notificationColumns} ${notificationJoins}${where} ORDER BY (hr.notification_id IS NULL) DESC,n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(...args,offset).all(),db.prepare(`SELECT COUNT(*) AS n ${notificationJoins}${where}`).bind(...args).first()]);
   return json({items:list.results.map(notificationItem),total:total.n,nextOffset:offset+list.results.length<total.n?offset+25:null});
  }

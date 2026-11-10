@@ -201,3 +201,10 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [ ] Aceite operacional do responsável após publicação.
 - [ ] Outros relatórios, agenda, atribuição de técnicos e critérios automáticos de prioridade dependem de nova definição. Nenhum foi presumido.
 - LOG-08 (fichas/quantidade física), LNA-09 (Ano), N-02 (destino da matriz), apresentação das escolas offline e Fases 4/5 permanecem pendentes.
+
+## D-088 — notificações e apresentação offline
+
+- [x] Responsável definiu a posição das escolas offline: acima das online no mapa. Supera somente esta pendência nas anotações D-083–D-086 anteriores.
+- [x] Confirmadas 48 HORAS para perda inesperada em log próprio; hardware no sino/mapa. Implementação e aceite em NOTIFICACOES_48H_2026-11-10.md.
+- [ ] Aceite operacional com dados/máquina reais pelo responsável após publicação. Troca física depende do envio do inventário pelo agente; não foi simulada na produção.
+- LOG-08, LNA-09, N-02 e Fases 4/5 permanecem pendentes.

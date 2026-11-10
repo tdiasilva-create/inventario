@@ -142,6 +142,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:collectorLogin(),'Cache-Control':'no-store'}});
  if(['/computadores','/demandas'].includes(path))return assetResponse(new Request(new URL('/operations.html',url),request),env);
+ if(path==='/log-comunicacao')return assetResponse(new Request(new URL('/communication-log.html',url),request),env);
  if(path==='/busca')return assetResponse(new Request(new URL('/panel-search.html',url),request),env);
  if(path==='/coletas-pendentes')return assetResponse(new Request(new URL('/pending-collections.html',url),request),env);
  if(path==='/fotografias')return new Response(null,{status:302,headers:{Location:'/panorama','Cache-Control':'no-store'}});

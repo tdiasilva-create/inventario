@@ -1,5 +1,6 @@
 import {hardwareSummary,notificationJoins,notificationColumns,notificationItem} from './hardware-review.mjs';
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
+import {communicationLog,communicationLossSeconds} from './communication-log.mjs';
 const parse=s=>s?JSON.parse(s):{};
 const clean=v=>typeof v==='string'?v.trim().replace(/\s+/g,' ').toUpperCase():v;
 const serial=v=>v?.reliability==='ok'&&typeof v.value==='string'&&v.value.trim()?clean(v.value):null;
@@ -30,7 +31,7 @@ export function hardwareComponents(sections){
 }
 export const componentNames={gpu:'Adaptadores de vídeo (PCI)',cpu:'Processador',memory_total:'Memória total',memory_types:'Tipos dos módulos de memória',memory_modules:'Módulos de memória',memory_serials:'Séries da memória',storage:'Discos físicos',storage_serials:'Séries dos discos',board:'Placa-mãe',board_serial:'Série da placa-mãe'};
 const active=`FROM agent_equipment_links l JOIN agent_devices d ON d.device_id=l.device_id JOIN equipments e ON e.id=l.equipment_id JOIN units u ON u.id=e.unit_id LEFT JOIN agent_presence p ON p.device_id=d.device_id WHERE l.ended_at IS NULL AND d.state='linked' AND u.active=1`;
-const liveSelect=`SELECT l.link_id,l.device_id,l.equipment_id,l.linked_at,e.unit_id,e.environment_id,e.position_label,e.published_json,e.data_json,u.name AS unit_name,(SELECT name FROM environments WHERE id=e.environment_id AND unit_id=e.unit_id) AS environment_name,(SELECT name FROM equipment_names WHERE equipment_id=e.id AND unit_id=e.unit_id) AS display_name,d.state,p.data_json AS presence_json ${active}`;
+const liveSelect=`SELECT l.link_id,l.device_id,l.equipment_id,l.linked_at,e.unit_id,e.environment_id,e.position_label,e.published_json,e.data_json,u.name AS unit_name,(SELECT name FROM environments WHERE id=e.environment_id AND unit_id=e.unit_id) AS environment_name,(SELECT name FROM equipment_names WHERE equipment_id=e.id AND unit_id=e.unit_id) AS display_name,(SELECT json_extract(s.sections_json,'$.system.data.hostname') FROM agent_current_snapshot c JOIN agent_inventory_snapshots s ON s.inventory_id=c.inventory_id WHERE c.device_id=d.device_id) AS hostname,d.state,p.data_json AS presence_json ${active}`;
 // Uma rodada em lote; sem painel aberto também funciona. Repetições/concorrrência não duplicam eventos.
 export async function runAgentMonitoring(env,now=Date.now()){
  const db=env.DB,threshold=presenceThreshold(env),rows=(await db.prepare(liveSelect).all()).results;
@@ -45,10 +46,10 @@ export async function runAgentMonitoring(env,now=Date.now()){
    statements.push(q('UPDATE agent_notifications SET resolved_at=?,resolution=? WHERE id=? AND resolved_at IS NULL',now,resolution,n.id));
   }
  }
- for(const r of rows){const p=parse(r.presence_json);if(presenceState(r,p,now,threshold)!=='no_recent_communication')continue;
+ for(const r of rows){const p=parse(r.presence_json);if(presenceState(r,p,now,communicationLossSeconds)!=='no_recent_communication')continue;
   const key='loss|'+r.link_id+'|'+p.last_live_contact_at;
   // Confere novamente o contato no momento da escrita: heartbeat concorrente não gera perda falsa.
-  statements.push(q(`INSERT OR IGNORE INTO agent_notifications(id,event_key,device_id,link_id,equipment_id,unit_id,kind,observed_at,detected_at,details_json) SELECT ?,?,?,?,?,?,'communication_lost',?,?,? WHERE EXISTS(SELECT 1 FROM agent_presence p JOIN agent_equipment_links l ON l.device_id=p.device_id JOIN agent_devices d ON d.device_id=l.device_id WHERE l.link_id=? AND l.ended_at IS NULL AND d.state='linked' AND p.data_json=?)`,crypto.randomUUID(),key,r.device_id,r.link_id,r.equipment_id,r.unit_id,p.last_live_contact_at,now,JSON.stringify({threshold_seconds:threshold}),r.link_id,r.presence_json));
+  statements.push(q(`INSERT OR IGNORE INTO agent_notifications(id,event_key,device_id,link_id,equipment_id,unit_id,kind,observed_at,detected_at,details_json) SELECT ?,?,?,?,?,?,'communication_lost',?,?,? WHERE EXISTS(SELECT 1 FROM agent_presence p JOIN agent_equipment_links l ON l.device_id=p.device_id JOIN agent_devices d ON d.device_id=l.device_id WHERE l.link_id=? AND l.ended_at IS NULL AND d.state='linked' AND p.data_json=?)`,crypto.randomUUID(),key,r.device_id,r.link_id,r.equipment_id,r.unit_id,p.last_live_contact_at,now,JSON.stringify({threshold_seconds:communicationLossSeconds,context:{unit_name:r.unit_name,environment_name:r.environment_name||parse(r.data_json).environmentName||null,environment_id:r.environment_id,position_label:r.position_label,display_name:r.display_name,hostname:r.hostname}}),r.link_id,r.presence_json));
  }
  const grouped=new Map();for(const s of snapshots){if(!grouped.has(s.device_id))grouped.set(s.device_id,[]);grouped.get(s.device_id).push(s);}
  for(const [deviceId,list]of grouped){const row=rows.find(r=>r.device_id===deviceId);if(!row)continue;
@@ -67,6 +68,7 @@ export async function runAgentMonitoring(env,now=Date.now()){
  await db.batch(statements);return {devices:rows.length,snapshots:snapshots.length};
 }
 export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
+ if(url.pathname==='/api/inventory/communication-log')return communicationLog(request,url,user,env,{json,fail});
  if(!['/api/inventory/monitoring','/api/inventory/notifications/read'].includes(url.pathname))return null;
  if(env.APP_KIND==='collector'||!['root','admin','visualizador'].includes(user.role))return fail('Consulta disponível somente no painel gerencial.',403);
  const db=env.DB,now=Date.now();
@@ -82,8 +84,8 @@ export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
  const onlyUnread=url.searchParams.get('unread')==='1';
  const joins=notificationJoins+' LEFT JOIN agent_notification_reads r ON r.notification_id=n.id AND r.user_id=?';
  const [page,count,health,statuses]=await Promise.all([
-  db.prepare(`SELECT ${notificationColumns},r.read_at ${joins} ${onlyUnread?'WHERE r.read_at IS NULL':''} ORDER BY n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(user.id,offset).all(),
-  db.prepare(`SELECT COUNT(*) AS total,SUM(r.read_at IS NULL) AS unread,SUM(n.kind='communication_lost' AND n.resolved_at IS NULL) AS communication_lost ${joins}`).bind(user.id).first(),
+  db.prepare(`SELECT ${notificationColumns},r.read_at ${joins} WHERE n.kind='hardware_change' ${onlyUnread?'AND r.read_at IS NULL':''} ORDER BY n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(user.id,offset).all(),
+  db.prepare(`SELECT COUNT(*) AS total,SUM(r.read_at IS NULL) AS unread ${joins} WHERE n.kind='hardware_change'`).bind(user.id).first(),
   db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),
   ids.length?db.prepare(liveSelect+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})
  ]);

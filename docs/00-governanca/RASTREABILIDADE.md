@@ -415,3 +415,7 @@ Publicação D-086 confirmada: cf11b18f-1bff-47eb-a504-15f549de6f32, 100%, commi
 Aprovação da paleta e ajustes vermelho/laranja/amarelo do responsável → unit-map-palette.js, desktop-map.js, desktop.js, admin-units.js, painel.css e build desktop. Legenda, nome/tipo acessível, centro por categoria e halo de hardware. Regressões school-presence-browser.cjs e hardware-review-browser.cjs; conferência local das sete cores e prévia. [Evidências](../05-qualidade/CORES_CATEGORIAS_MAPA_2026-11-10.md). Nenhuma pergunta da Base original alterada.
 
 Publicação D-087: commit 866d8b4, painel 78ca889a-b71b-4c7f-bb20-5f5a09164086 em 100%, 10/11/2026 às 19:20:34 de Fortaleza; sete verificações HTTP aprovadas. Coletor inalterado; sem migração/escrita de teste oficial.
+
+## D-088 — avisos de hardware e log de comunicação
+
+Pedido direto + confirmação 48 horas → server/communication-log.mjs, agent-monitoring.mjs, hardware-review.mjs, worker.mjs; desktop-notifications/hardware-attention; school-presence/desktop/desktop-blocks/panel-shell/painel.css; nova página communication-log.html/js e build. Regra de incidente separada da presença recente, sino por parecer pendente, histórico consultável, offline acima de online. [Contrato](../03-painel-desktop/NOTIFICACOES_E_LOG.md), [testes/capturas/publicação](../05-qualidade/NOTIFICACOES_48H_2026-11-10.md). Nenhuma pergunta da Base original modificada ou nova funcionalidade de coleta declarada.

@@ -22,17 +22,17 @@ export function schoolsPresence(catalogue,fleet){
 
 export function createSchoolPresenceView(){
  let catalogue=[],loaded=false,fleet=null,error=false;
- function content(){
+ function content(state='online'){
   let value='—',subtitle=!loaded?'Cadastro indisponível':error?'Comunicação indisponível':!fleet?'Consultando agentes…':'Comunicação dos agentes · filtros do painel';
-  if(loaded&&fleet&&!error){try{value=schoolsPresence(catalogue,fleet).online.toLocaleString('pt-BR');}catch{subtitle='Comunicação indisponível';}}
-  return '<strong>'+value+'</strong><span>Escolas onlines<small>'+subtitle+'</small></span>';
+  if(loaded&&fleet&&!error){try{value=schoolsPresence(catalogue,fleet)[state].toLocaleString('pt-BR');}catch{subtitle='Comunicação indisponível';}}
+  return '<strong>'+value+'</strong><span>Escolas '+(state==='offline'?'offline':'online')+'<small>'+subtitle+'</small></span>';
  }
  function draw(){
-  const html=content();
-  for(const node of document.querySelectorAll('[data-schools-online]')){
+  for(const node of document.querySelectorAll('[data-schools-online],[data-schools-offline]')){
+   const html=content(node.hasAttribute('data-schools-offline')?'offline':'online');
    if(node.innerHTML!==html)node.innerHTML=html;
    const minutes=Number.isFinite(fleet?.threshold_seconds)?Math.round(fleet.threshold_seconds/60):null;
-   node.title='Escolas municipais, militares e creches ativas. Online: pelo menos um computador com agente comunicando'+(minutes?' no prazo de '+minutes+' minutos':'')+'. Cada escola conta uma vez. Sem comunicação, a classificação é offline; isso não comprova falta de internet.';
+   node.title='Escolas municipais, militares e creches ativas. Online: pelo menos um computador com agente comunicando'+(minutes?' no prazo de '+minutes+' minutos':'')+'. Cada escola conta uma vez. Offline: nenhum agente comunicando, inclusive escolas sem agente cadastrado. Isso não comprova falta de internet. O log registra perdas somente após mais de 48 horas.';
   }
  }
  window.addEventListener('semed:fleet-presence',event=>{

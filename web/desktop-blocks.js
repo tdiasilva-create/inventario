@@ -1,6 +1,6 @@
 // Keep the page shell, map and independently managed widgets alive between updates.
 // Templates are produced by the existing escaped render functions, never by API HTML.
-const islands='.map-panel,[data-equipment-consultation],[data-result-summary],[data-schools-online],[data-result-alerts],[data-monitor-summary],#received-findings,#progress-content,#progress-overview,#computer-report,#work-plan';
+const islands='.map-panel,[data-equipment-consultation],[data-result-summary],[data-schools-online],[data-schools-offline],[data-result-alerts],[data-monitor-summary],#received-findings,#progress-content,#progress-overview,#computer-report,#work-plan';
 const key=node=>node.nodeType===1?(node.id||node.getAttribute('data-layout-block')||
  (node.matches('[data-equipment-consultation]')?'equipment-consultation':null)):null;
 function patch(old,next){

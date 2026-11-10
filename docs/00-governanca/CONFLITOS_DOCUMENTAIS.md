@@ -86,3 +86,7 @@ A escolha 2 resolve LOG-14 no escopo do primeiro relatório de computadores e fi
 ## D-087 — categoria versus alerta no mapa
 
 A decisão posterior de cores por tipo supera D-083 quanto ao roxo uniforme e D-081 quanto à substituição da cor central por estado de alerta. Centro representa categoria; círculo externo representa hardware pendente/verificado com demanda aberta. Preserva animação, clique/modal, métricas e estados existentes. [Paleta e aceite](../05-qualidade/CORES_CATEGORIAS_MAPA_2026-11-10.md).
+
+## D-088 — destino e prazo dos avisos
+
+Decisão posterior supera D-070 quanto a gerar comunicação perdida após 17 min e mostrá-la no sino; agora mais de 48 HORAS, confirmado pelo responsável, e nova aba de log. Os 17 min permanecem só na presença recente/status. O sino usa hardware.pending, não unread; histórico e leitura individual preservados. Não aplicar o novo prazo para encerrar incidentes antigos como se houvesse retorno. A posição das escolas offline, pendente em D-083, foi definida acima de online. Cores D-087 e círculo/clique/modal D-081 preservados. [Contrato](../03-painel-desktop/NOTIFICACOES_E_LOG.md).
