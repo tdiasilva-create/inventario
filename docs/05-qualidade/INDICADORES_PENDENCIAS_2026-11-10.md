@@ -20,6 +20,15 @@ Não houve gravação de coleta, demanda ou parecer na base oficial para testar.
 
 ## Publicação
 
-Em preparação. Versão anterior conferida: painel `5d01001e-6718-44c8-8399-c9c47e412d8d`; coletor `274ecd9b-002e-4f79-a4b9-325fc26fece1`. Publicar apenas `wrangler.jsonc`, preservando vínculos e segredos existentes. Sem migração.
+Publicação concluída às **15:17:54 de 10/11/2026 (Fortaleza)**, versão **815dfa78-702e-456d-a632-a1da1aabbd81** em **100%** do tráfego, commit **102d6fa**. Versão anterior do painel: 5d01001e-6718-44c8-8399-c9c47e412d8d. Coletor confirmado inalterado: 274ecd9b-002e-4f79-a4b9-325fc26fece1. Somente wrangler.jsonc publicado, sem migração e com os vínculos/segredos existentes preservados.
+
+- Dry-run do Worker, links de documentação, verificação do índice Git (593 arquivos) e diferenças sem erro.
+- As três consultas do resumo foram executadas no D1 oficial em modo de leitura: sucesso, 442 linhas lidas, **0 escritas**, 2,7512 ms de SQL na amostra. A execução via arquivo retornou metadados, não os valores dos indicadores; não tratar esse tempo como latência HTTP ou garantia de desempenho.
+- Dez verificações HTTP após publicação aprovadas: login público 200, páginas/novos arquivos protegidos redirecionando ao login, APIs recusando acesso sem sessão (401). Confirmação independente da versão ativa e dos 100% do tráfego via deployments list.
+- Fluxos internos autenticados e screenshots foram validados no Worker real em SQLite isolado. Não foi feita navegação autenticada na produção nesta entrega; permanece o aceite operacional do responsável.
+
+Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+Lista: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/coletas-pendentes
 
 Registro técnico local: `private-data/release-indicadores-pendencias-2026-11-10/`, excluído do Git. Reversão de código: versão anterior do painel, sem reversão de banco.
