@@ -27,7 +27,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   assert.equal(await page.locator('[data-result-working]').count(),0);assert.match(await page.locator('[data-schools-online]').innerText(),/Escolas onlines/);
   assert.match(await page.locator('[data-schools-online]').getAttribute('title'),/17 minutos/);
   const markerColors=await page.locator('#municipal-map path[data-hardware-state=none]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('fill').toUpperCase()));
-  assert.equal(markerColors.length,4,'mapa inclui apenas unidades ativas do catálogo');assert.ok(markerColors.every(c=>c==='#7523C9'));await page.clock.runFor(2000);await shot('panorama-roxo-escolas-online');
+  assert.equal(markerColors.length,4,'mapa inclui apenas unidades ativas do catálogo');assert.deepEqual(markerColors.sort(),['#7523C9','#DB2777','#DC2626','#EAB308'].sort());await page.clock.runFor(2000);await shot('panorama-roxo-escolas-online');
   const map=await page.locator('#municipal-map').elementHandle();
   await page.locator('[data-filter=type]').selectOption('Unidade administrativa');await expect(0);assert.equal(reads,1);
   await page.locator('[data-filter=type]').selectOption('Creche municipal');await expect(1);
@@ -45,6 +45,6 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.unroute('**/api/operations/units');await refresh();await expect(2);
   await page.setViewportSize({width:390,height:844});await shot('panorama-390');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
   f.sqlite.prepare("UPDATE users SET role='visualizador' WHERE id=?").run(f.root.id);await page.reload();await expect(2);
-  assert.deepEqual(h.errors,[]);console.log(JSON.stringify({passed:true,uniqueSchools:true,filters:true,purpleMarkers:true,lossReturn:true,sharedPolling:true,failureRecovery:true,viewer:true,mobile:true}));
+  assert.deepEqual(h.errors,[]);console.log(JSON.stringify({passed:true,uniqueSchools:true,filters:true,categoryMarkers:true,lossReturn:true,sharedPolling:true,failureRecovery:true,viewer:true,mobile:true}));
  }catch(e){await shot('falha');throw e;}finally{await h.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

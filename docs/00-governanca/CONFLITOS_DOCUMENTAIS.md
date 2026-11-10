@@ -82,3 +82,7 @@ A opção 3 aprovada em 10/11/2026 supera o indicador genérico e a pendência L
 ## D-086 — telas sem relatório/planejamento definido
 
 A escolha 2 resolve LOG-14 no escopo do primeiro relatório de computadores e fila por unidade. Supera os avisos de relatório indisponível/planejamento a definir. Não altera D-067 sobre coletas em andamento no Planejamento, nem decide agenda, atribuições ou prioridade. Relatório atual pode mostrar PARCIAL; matriz e indicadores oficiais mantêm escopo publicado. Contagem por ficha continua até decisão LOG-08. [Contrato](../03-painel-desktop/RELATORIOS_E_PLANEJAMENTO.md).
+
+## D-087 — categoria versus alerta no mapa
+
+A decisão posterior de cores por tipo supera D-083 quanto ao roxo uniforme e D-081 quanto à substituição da cor central por estado de alerta. Centro representa categoria; círculo externo representa hardware pendente/verificado com demanda aberta. Preserva animação, clique/modal, métricas e estados existentes. [Paleta e aceite](../05-qualidade/CORES_CATEGORIAS_MAPA_2026-11-10.md).

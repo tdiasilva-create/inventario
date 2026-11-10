@@ -409,3 +409,7 @@ Publicação D-085 confirmada: 815dfa78-702e-456d-a632-a1da1aabbd81, 100%, commi
 Escolha explícita 2 → server/management-views.mjs + worker.mjs; critérios compartilhados de service-desk.mjs e pending-indicators.mjs; web/desktop-management.js + desktop.js/desktop-blocks.js/painel.css; build/CI/package. Testes management-views.test.mjs e management-views-browser.cjs, regressões identity/tour/blocks/pending. [Contrato](../03-painel-desktop/RELATORIOS_E_PLANEJAMENTO.md), [aceite e publicação](../05-qualidade/RELATORIOS_PLANEJAMENTO_2026-11-10.md). Base original e questionário preservados; nenhuma nova regra de coleta inferida.
 
 Publicação D-086 confirmada: cf11b18f-1bff-47eb-a504-15f549de6f32, 100%, commit 98b78f2; 15 verificações HTTP pós-publicação, cinco consultas de leitura no D1 sem escrita e coletor inalterado. 195 testes de servidor e cinco roteiros de navegador aprovados; limites documentados no aceite.
+
+## D-087 — categorias coloridas no mapa
+
+Aprovação da paleta e ajustes vermelho/laranja/amarelo do responsável → unit-map-palette.js, desktop-map.js, desktop.js, admin-units.js, painel.css e build desktop. Legenda, nome/tipo acessível, centro por categoria e halo de hardware. Regressões school-presence-browser.cjs e hardware-review-browser.cjs; conferência local das sete cores e prévia. [Evidências](../05-qualidade/CORES_CATEGORIAS_MAPA_2026-11-10.md). Nenhuma pergunta da Base original alterada.

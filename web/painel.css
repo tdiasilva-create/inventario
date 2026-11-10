@@ -285,6 +285,15 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .map-panel .leaflet-tile{transition:none;filter:none}
 .map-panel .v33-tooltip{background:#fff;color:var(--preto);border-color:#c5c9ce;box-shadow:0 5px 20px #16191d26;font-size:11px}
 .map-panel .v33-tooltip:before{display:none}
+.unit-map-marker{filter:drop-shadow(0 1px 1px #16191d90)}
+.unit-map-legend{position:absolute;top:88px;right:8px;z-index:1001;max-width:calc(100% - 64px);width:max-content;border:1px solid #c5c9ce;border-radius:4px;background:#fffffff5;color:var(--preto);box-shadow:0 1px 4px #16191d1f;font:500 11px/1.4 var(--font-sans)}
+.unit-map-legend summary{padding:7px 10px;cursor:pointer;font-weight:600}
+.unit-map-legend summary:focus-visible{outline:2px solid var(--vermelho);outline-offset:2px}
+.unit-map-legend ul{list-style:none;margin:0;padding:0 10px 5px;display:grid;gap:6px}
+.unit-map-legend li{display:flex;align-items:center;gap:8px}
+.unit-map-swatch{display:inline-block;width:11px;height:11px;flex-shrink:0;border-radius:50%;background:var(--unit-color);border:1px solid #16191d55}
+.unit-map-legend p{max-width:225px;margin:0;padding:7px 10px;border-top:1px solid var(--linha);color:var(--texto-secundario);font-size:10px}
+.large-map-grid .unit-map-legend{top:54px}
 .map-panel .map-canvas:focus-visible{outline:3px solid var(--vermelho);outline-offset:-3px}
 .map-panel .institutional-leaflet-popup .leaflet-popup-content-wrapper,.map-panel .institutional-leaflet-popup .leaflet-popup-tip{background:#fff;color:var(--preto)}
 .map-panel .institutional-popup strong,.map-panel .institutional-popup a{color:var(--vermelho)}
@@ -877,7 +886,7 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 @media(max-width:640px){.hardware-context{grid-template-columns:1fr}.hardware-dialog{padding:16px}.hardware-actions button{flex:1;min-width:180px}.hardware-dialog .monitor-comparison{grid-template-columns:1fr}}
 /* D-081: círculo discreto no ponto; vermelho pendente, âmbar após encaminhamento. */
 .hardware-map-notice{border:0;background:transparent;color:#d70825;cursor:pointer}
-.hardware-map-badge{box-sizing:border-box;position:absolute;left:8px;top:8px;width:16px;height:16px;border:2px solid #fff;border-radius:50%;background:currentColor;box-shadow:0 1px 3px #0005}
+.hardware-map-badge{box-sizing:border-box;position:absolute;left:8px;top:8px;width:16px;height:16px;border:2px solid #fff;border-radius:50%;background:var(--unit-color);box-shadow:0 1px 3px #0005}
 .hardware-map-halo{box-sizing:border-box;position:absolute;inset:4px;border:2px solid currentColor;border-radius:50%;pointer-events:none;animation:hardware-halo 2.4s ease-in-out infinite}
 .hardware-map-notice[data-state=demand]{color:#9a5800}
 .hardware-map-notice[data-state=demand] .hardware-map-halo{animation-duration:3.6s}
