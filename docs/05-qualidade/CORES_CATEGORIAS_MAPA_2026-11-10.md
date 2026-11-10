@@ -36,4 +36,8 @@ Nenhuma nova pergunta/requisito do TXT de coleta implementado nesta mudança. Ba
 
 ## Publicação
 
-Versão anterior do painel conferida: `cf11b18f-1bff-47eb-a504-15f549de6f32`, 100%. Coletor: `274ecd9b-002e-4f79-a4b9-325fc26fece1`, 100%. Sem migração/escrita oficial de teste; rollback somente de código para a versão anterior. Resultado final da publicação será registrado após confirmação do destino.
+Publicado em 10/11/2026 às 19:20:34 (America/Fortaleza), commit `866d8b4`. Painel ativo `78ca889a-b71b-4c7f-bb20-5f5a09164086`, **100% do tráfego**. Cinco assets novos/modificados enviados; crons, bindings e provedor Drive preservados. Sete verificações HTTP pós-publicação aprovadas: login público, páginas/módulos privados redirecionando e API recusando acesso anônimo. Inspeção visual autenticada foi realizada localmente com dados isolados; não se declara nova sessão visual autenticada em produção nesta entrega.
+
+Versão anterior do painel: `cf11b18f-1bff-47eb-a504-15f549de6f32`. Coletor reconferido inalterado: `274ecd9b-002e-4f79-a4b9-325fc26fece1`, 100%. Sem migração/escrita oficial de teste; rollback somente de código para a versão anterior.
+
+Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/mapa
