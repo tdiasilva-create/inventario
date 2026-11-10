@@ -27,4 +27,8 @@ Regressões aprovadas: 181 testes na suíte completa; navegação do novo indica
 
 ## Publicação
 
-A registrar após conclusão das regressões e publicação do painel.
+Publicado em 10/11/2026, 14:03:34 (America/Fortaleza), commit de implementação `08dbf4a`, versão do painel `11b90747-7d5a-4585-b2a5-fbe0c3af5f17` em 100% do tráfego. Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+Seis verificações HTTP pós-publicação aprovadas (login 200, páginas/módulos protegidos 302 e API de presença 401 sem sessão); versão ativa conferida na Cloudflare. Coletor preservado em `274ecd9b-002e-4f79-a4b9-325fc26fece1`, 100%. Crons existentes preservados. Navegação visual autenticada desta entrega testada no ambiente isolado, sem afirmar homologação visual autenticada da produção. Registros em `private-data/release-escolas-online-2026-11-10/`, fora do Git.
+
+Rollback de código: versão anterior do painel `07f8adf1-d733-459d-9826-5ad690b6c21d`; não requer migração ou reversão de banco.

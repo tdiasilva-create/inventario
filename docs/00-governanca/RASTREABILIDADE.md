@@ -389,3 +389,5 @@ Publicação D-082 confirmada em 10/11/2026: commit `f7bb832`, painel `07f8adf1-
 ## D-083 — escolas online e cor do mapa
 
 Mensagens do responsável e liberação “terminei” → web/school-presence.js, panel-pulse.js (evento com consulta existente), desktop.js, desktop-results.js/desktop-blocks.js, desktop-map.js e build. Classificação escolar reutiliza schoolTypes; presença reutiliza API D-071/D-070, sem nova escrita. Testes school-presence.test.mjs e school-presence-browser.cjs; regressões do pulso, mapa/alertas e composição. [Registro](../05-qualidade/ESCOLAS_ONLINE_2026-11-10.md). Nenhuma alteração à Base original ou ao questionário.
+
+Publicação D-083: `11b90747-7d5a-4585-b2a5-fbe0c3af5f17`, 100%, commit `08dbf4a`; coletor inalterado; seis verificações HTTP pós-publicação aprovadas.
