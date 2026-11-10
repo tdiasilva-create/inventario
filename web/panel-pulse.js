@@ -1,46 +1,35 @@
-// Pulso da rede (10/11/2026): uma linha, em todas as páginas do painel, com o que muda ao longo do dia.
-// Lê rotas que já existem (D-070/D-071/D-045); não cria endpoint. Uma leitura por minuto, pausada com a aba oculta.
-// Não mostra total de unidades (D-066: contagens só por tipo, no Panorama).
+// Comunicação: leitura por minuto. Providências: consulta compartilhada de 15 s (D-085).
+import {getPendingState} from './desktop-demand-count.js';
 let stop=null;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=n=>new Intl.NumberFormat('pt-BR').format(n);
-const item=(label,value,tone,href,title)=>`<span class="pulse-item" data-tone="${tone}" ${title?`title="${esc(title)}"`:''}><i></i>${href?`<a href="${href}">`:''}<small>${label}</small><b>${esc(value)}</b>${href?'</a>':''}</span>`;
-async function read(path,signal){const r=await fetch(path,{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error(path);return r.json();}
+const item=(label,value,tone,href,title,hardware=false)=>`<span class="pulse-item" data-tone="${tone}" ${title?`title="${esc(title)}"`:''}><i></i>${hardware?'<button type="button" data-pending-hardware>':href?`<a href="${href}">`:''}<small>${label}</small><b>${esc(value)}</b>${hardware?'</button>':href?'</a>':''}</span>`;
 const count=n=>{if(!Number.isSafeInteger(n)||n<0)throw Error('Contagem indisponível');return n;};
 export function startPulse(user){
  stopPulse();const node=document.querySelector('#panel-pulse');
- if(!node||user?.mustChange||!['root','admin','visualizador'].includes(user?.role))return;let busy=false;const controller=new AbortController(),signal=controller.signal;
- async function readFleet(){
-  try{
-   const fleet=await read('/api/operations/units',signal);
-   if(!Array.isArray(fleet.units))throw Error('Rede indisponível');
-   if(!signal.aborted&&node.isConnected)window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{fleet}}));
-   return fleet;
-  }catch(e){
-   if(!signal.aborted&&node.isConnected)window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{error:true}}));
-   throw e;
-  }
+ if(!node||user?.mustChange||!['root','admin','visualizador'].includes(user?.role))return;
+ let busy=false,sum=null,fleetError=false,at='—';const controller=new AbortController(),signal=controller.signal;
+ function paint(){
+  if(signal.aborted||!node.isConnected)return;const pending=getPendingState(),ready=pending.data&&!pending.error;
+  const focused=node.contains(document.activeElement)?document.activeElement:null,focusHref=focused?.getAttribute('href'),focusHardware=focused?.hasAttribute('data-pending-hardware');
+  const value=k=>ready?num(pending.data[k].total):'—',tone=k=>ready&&pending.data[k].total?'bad':'idle';
+  node.dataset.state=fleetError?'erro':sum?'ok':'loading';
+  node.innerHTML=item('Comunicando',sum?num(sum.online):'—',sum?.online?'ok':'idle','/computadores?estado=comunicando',sum?num(sum.computers)+' computador(es) cadastrado(s)':'Consultando comunicação')
+   +item('Sem comunicação',sum?num(sum.lost):'—',sum?.lost?'bad':'idle','/computadores?estado=sem-comunicacao','Sem contato com o agente no prazo de monitoramento')
+   +item('Sem agente',sum?num(sum.unlinked):'—','idle','/computadores?estado=sem-agente','Computadores sem agente vinculado')
+   +item('Coletas pendentes',value('collections'),tone('collections'),'/coletas-pendentes',pending.error||'Toda a rede · unidades sem conclusão ou com revisita aberta')
+   +item('Demandas abertas',value('demands'),tone('demands'),'/demandas',pending.error||'Toda a rede · atendimentos não concluídos')
+   +item('Hardware aguardando parecer',value('hardware'),tone('hardware'),'',pending.error||'Toda a rede · alterações sem decisão de root ou admin',true)
+   +item('Comunicação',fleetError?'falha ao consultar':at,'idle','',fleetError?'Nova tentativa em até 1 minuto':'Última consulta de comunicação');
+  if(focusHardware)node.querySelector('[data-pending-hardware]')?.focus({preventScroll:true});else if(focusHref)node.querySelector('a[href="'+CSS.escape(focusHref)+'"]')?.focus({preventScroll:true});
  }
  async function update(){
   if(busy||document.hidden||signal.aborted)return;busy=true;
-  try{
-   const [fleet,queue,progress]=await Promise.all([readFleet(),read('/api/operations/queue-summary',signal),read('/api/inventory/in-progress?cursor=',signal)]);
-   if(signal.aborted||!node.isConnected)return;
-   if(!Array.isArray(fleet.units))throw Error('Rede indisponível');count(queue.pending);count(progress.total);
-   const sum=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});
-   const at=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-   node.dataset.state='ok';
-   node.innerHTML=item('Comunicando',num(sum.online),sum.online?'ok':'idle','/computadores?estado=comunicando',num(sum.computers)+' computador(es) cadastrado(s)')
-    +item('Sem comunicação',num(sum.lost),sum.lost?'bad':'idle','/computadores?estado=sem-comunicacao','Sem contato com o agente no prazo de monitoramento')
-    +item('Sem agente',num(sum.unlinked),'idle','/computadores?estado=sem-agente','Computadores sem agente vinculado')
-    +item('Demandas pendentes',num(queue.pending),queue.pending?'bad':'idle','/demandas')
-    +item('Coletas em andamento',num(progress.total),progress.total?'warn':'idle','/coletas-em-andamento','Rascunhos confirmados no servidor, rotulados PARCIAL')
-    +item('Atualizado',at,'idle','',null);
-  }catch(e){if(signal.aborted||!node.isConnected)return;node.dataset.state='erro';node.innerHTML=item('Rede','sem leitura','bad','',null)+item('Atualizado','falha ao consultar · tentando de novo em 1 min','idle','',null);}
-  finally{busy=false;}
+  try{const r=await fetch('/api/operations/units',{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error();const fleet=await r.json();if(!Array.isArray(fleet.units))throw Error();const totals=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});if(signal.aborted||!node.isConnected)return;sum=totals;fleetError=false;at=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{fleet}}));}
+  catch{if(signal.aborted||!node.isConnected)return;sum=null;fleetError=true;window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{error:true}}));}
+  finally{busy=false;paint();}
  }
- const onVisible=()=>{if(!document.hidden)update();};
- const timer=setInterval(update,60000);document.addEventListener('visibilitychange',onVisible,{signal});
- stop=()=>{clearInterval(timer);controller.abort();};update();
+ const timer=setInterval(update,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();},{signal});window.addEventListener('semed:pending-summary',paint,{signal});
+ stop=()=>{clearInterval(timer);controller.abort();};paint();update();
 }
 export function stopPulse(){stop?.();stop=null;}

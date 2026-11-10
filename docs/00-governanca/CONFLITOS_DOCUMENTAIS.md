@@ -74,3 +74,7 @@ A composição D-067 mostrava computadores declarados funcionando, a partir de i
 ## D-084 — busca atual e consulta oficial
 
 O cabeçalho restrito a unidades em D-082 é superado pela escolha 2 (unidades + equipamentos). A busca global usa ficha salva atual com PARCIAL explícito; a matriz e a consulta D-069 continuam no padrão publicado. Fotos abertas/pausadas só entram no escopo atual, com identificação de origem; não são promovidas aos indicadores. Demais decisões do tour continuam pendentes.
+
+## D-085 — “Pendentes” do desenho versus três filas reais
+
+A opção 3 aprovada em 10/11/2026 supera o indicador genérico e a pendência LOG-13. Coleta pendente, demanda aberta e hardware aguardando parecer têm fontes/estados distintos e não formam um total. A nova faixa é de toda a rede, explicitamente rotulada, enquanto os indicadores oficiais anteriores mantêm os filtros do Panorama. [Regras](../03-painel-desktop/INDICADORES_DE_PENDENCIAS.md). Não redefine outras métricas ou pendências.

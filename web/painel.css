@@ -231,7 +231,7 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .unit-category-counts>div:last-child{border-right:0}
 .unit-category-counts dt{font:600 9px/1.15 var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--texto-secundario);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.3em}
 .unit-category-counts dd{font:700 20px/1.1 var(--font-display);color:var(--preto);margin:3px 0 0;font-variant-numeric:tabular-nums}
-.stats,.stats.inventory-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:0;border:0;border-top:1px solid var(--linha);border-radius:0;background:none;min-width:0}
+.stats,.stats.inventory-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:0;border:0;border-top:1px solid var(--linha);border-radius:0;background:none;min-width:0}
 .stats .metric{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:0;padding:8px 10px;border:0;border-right:1px solid var(--linha);border-radius:0;background:none;box-shadow:none;color:var(--preto);--metric-accent:var(--laranja)}
 .stats .metric:last-child{border-right:0}
 .stats .metric::before{display:none}
@@ -892,3 +892,26 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 /* D-082: environment consultation without nested actions. */
 .environment-tile{flex-wrap:wrap}.environment-open{display:flex;align-items:center;gap:10px;flex:1 1 100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;padding:0}.environment-open strong,.environment-open small{display:block}.environment-open:focus-visible{outline:2px solid var(--vermelho);outline-offset:4px}
 .panel-confirm{max-width:min(520px,calc(100vw - 32px));box-sizing:border-box}.panel-confirm p{margin:16px 0}.panel-confirm::backdrop{background:#16191d80}#temporary code{user-select:all;overflow-wrap:anywhere}#temporary button{margin:6px}
+
+/* D-085: providências da rede, separadas dos indicadores publicados e filtrados. */
+.pulse-item button{display:inline-flex;align-items:center;gap:6px;border:0;padding:0;background:none;color:inherit;cursor:pointer}
+.pulse-item button:hover b{color:var(--vermelho)}
+.pending-summary{border-top:1px solid var(--linha);padding:12px 0 0;margin-top:8px}
+.pending-summary header{display:flex;align-items:center;gap:12px;padding:0 12px 10px;flex-wrap:wrap}
+.pending-summary h3{margin:0;font:var(--rotulo);letter-spacing:var(--rotulo-tracking);text-transform:uppercase}
+.pending-summary header small{color:var(--texto-secundario);margin-left:auto}
+.pending-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.pending-metric{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;border:0;border-right:1px solid var(--linha);border-top:1px solid var(--linha);background:var(--branco,#fff);color:var(--preto);padding:12px;text-decoration:none;font:inherit;cursor:pointer;min-width:0}
+.pending-metric:last-child{border-right:0}
+.pending-metric:hover{background:var(--pessego-suave)}
+.pending-metric:focus-visible{outline:2px solid var(--vermelho);outline-offset:-2px}
+.pending-metric strong{font:700 24px/1.2 var(--font-display);color:var(--vermelho)}
+.pending-metric span{font-weight:600}
+.pending-metric small{color:var(--texto-secundario);line-height:1.4}
+.pending-summary [data-pending-error]{margin:10px 12px;color:var(--vermelho)}
+.pending-list{padding:16px}
+.pending-list-filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.pending-list-filters label{display:grid;gap:6px;flex:1;min-width:180px;max-width:400px}
+.pending-list-filters input,.pending-list-filters select{width:100%;border:1px solid var(--linha);border-radius:4px;padding:10px;background:#fff;color:var(--preto);font:inherit}
+.pending-list .table-scroll{overflow:auto}
+@media(max-width:640px){.pending-metrics{grid-template-columns:1fr}.pending-metric{border-right:0}.pending-summary header small{margin-left:0}.pending-list-filters label{max-width:none}}

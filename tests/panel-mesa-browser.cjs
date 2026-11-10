@@ -5,13 +5,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const {seedLinkStates}=await import('./helpers/equipment-link-state.mjs'),s=seedLinkStates(f);
  const out='docs/05-qualidade/evidencias/mesa-dados-2026-11-10';fs.mkdirSync(out,{recursive:true});
  const shot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png',animations:'disabled'});};
- const pulseReady=()=>page.locator('#panel-pulse[data-state=ok]').waitFor();
+ const pulseReady=async()=>{await page.locator('#panel-pulse[data-state=ok]').waitFor();await page.waitForFunction(()=>document.querySelector('#panel-pulse a[href="/coletas-pendentes"] b')?.textContent!=='—');};
  const restartPulse=()=>page.evaluate(async()=>{const m=await import('/panel-pulse.js');m.startPulse({role:'root'});});
  try{
   await page.setViewportSize({width:1440,height:900});await page.goto(origin+'/computadores?unidade='+s.unit);await pulseReady();
   await page.locator('.ops-machine [data-link-state=linked]').first().waitFor();
-  const expected=await page.evaluate(async()=>{const fleet=await (await fetch('/api/operations/units')).json(),queue=await (await fetch('/api/operations/queue-summary')).json(),progress=await (await fetch('/api/inventory/in-progress')).json();return [fleet.units.reduce((n,u)=>n+u.online,0),fleet.units.reduce((n,u)=>n+u.lost,0),fleet.units.reduce((n,u)=>n+u.unlinked,0),queue.pending,progress.total].map(n=>new Intl.NumberFormat('pt-BR').format(n));});
-  assert.deepEqual((await page.locator('#panel-pulse b').allTextContents()).slice(0,5),expected);
+  const expected=await page.evaluate(async()=>{const fleet=await (await fetch('/api/operations/units')).json(),pending=await (await fetch('/api/inventory/pending-summary')).json();return [fleet.units.reduce((n,u)=>n+u.online,0),fleet.units.reduce((n,u)=>n+u.lost,0),fleet.units.reduce((n,u)=>n+u.unlinked,0),pending.collections.total,pending.demands.total,pending.hardware.total].map(n=>new Intl.NumberFormat('pt-BR').format(n));});
+  assert.deepEqual((await page.locator('#panel-pulse b').allTextContents()).slice(0,6),expected);
   const badgeColor=state=>page.locator('.ops-machine [data-link-state='+state+']').first().evaluate(e=>getComputedStyle(e).backgroundColor);
   assert.notEqual(await badgeColor('linked'),await badgeColor('manual'));
   await shot('computadores-1440');
@@ -25,9 +25,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.locator('[data-action=rail-pin]').click();await page.locator('h2').first().click();
   await page.keyboard.press('/');assert.equal(await page.locator('.search input').evaluate(e=>document.activeElement===e),true);
   // Rede indisponível não vira contagem zero nem erro infinito; a próxima leitura recupera.
-  await page.route('**/api/operations/queue-summary',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"Falha isolada de teste"}'}));
-  await restartPulse();await page.locator('#panel-pulse[data-state=erro]').waitFor();assert.match(await page.locator('#panel-pulse').textContent(),/sem leitura/);
-  await page.unroute('**/api/operations/queue-summary');await restartPulse();await pulseReady();
+  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"Falha isolada de teste"}'}));
+  await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});assert.equal(await page.locator('#panel-pulse a[href="/coletas-pendentes"] b').textContent(),'—');assert.equal(await page.locator('#panel-pulse').getAttribute('data-state'),'ok');
+  await page.unroute('**/api/inventory/pending-summary');await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});await pulseReady();
   await page.route('**/api/operations/units',r=>r.fulfill({status:200,contentType:'application/json',body:'{}'}));
   await restartPulse();await page.locator('#panel-pulse[data-state=erro]').waitFor();await page.unroute('**/api/operations/units');
   // Reinstalar a moldura cancela leituras e listeners antigos.

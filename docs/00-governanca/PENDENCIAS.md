@@ -188,3 +188,9 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [x] Escolha LOG-10/LNA-12 resolvida: opção 2, cabeçalho unificado de unidades e equipamentos; implementação e testes em [BUSCA_GLOBAL_2026-11-10.md](../05-qualidade/BUSCA_GLOBAL_2026-11-10.md). Supera as anotações anteriores de busca pendente apenas nesse escopo.
 - [ ] Aceite operacional pelo responsável após publicação. Dados inativos/excluídos e históricos não fazem parte desta busca.
 - LOG-08, LOG-13, LOG-14, LNA-09, N-02, local das escolas offline e Fases 4/5 continuam pendentes.
+
+## D-085 — LOG-13 resolvido: pendências separadas
+
+- [x] Opção 3 aprovada: coletas pendentes, demandas abertas, hardware aguardando parecer. Implementados contador compartilhado, lista de unidades pendentes e modal filtrado; [critérios/aceite](../05-qualidade/INDICADORES_PENDENCIAS_2026-11-10.md). Supera a pendência de critério genérico nos registros anteriores.
+- [ ] Aceite operacional pelo responsável após publicação.
+- Permanecem sem nova decisão: LOG-08 (fichas/quantidade física), LOG-14 (Relatórios/Planejamento), LNA-09 (Ano), N-02 (destino da matriz), apresentação das escolas offline e Fases 4/5.

@@ -40,7 +40,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   setPresence(second);await refresh();await expect(2);
   setPresence(creche,0,'shutdown');await refresh();await expect(1);setPresence(creche);await refresh();await expect(2);
   // Erro de outra seção não invalida comunicação recebida; erro de presença nunca vira zero.
-  await page.route('**/api/operations/queue-summary',r=>r.fulfill({status:503,body:'{}'}));await refresh();await page.locator('#panel-pulse[data-state=erro]').waitFor();await expect(2);await page.unroute('**/api/operations/queue-summary');
+  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,body:'{}'}));await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});await refresh();await page.locator('#panel-pulse[data-state=ok]').waitFor();await expect(2);await page.unroute('**/api/inventory/pending-summary');
   await page.route('**/api/operations/units',r=>r.fulfill({status:503,body:'{}'}));await refresh();await expect('—');assert.match(await page.locator('[data-schools-online]').innerText(),/indisponível/);await shot('falha-consulta');
   await page.unroute('**/api/operations/units');await refresh();await expect(2);
   await page.setViewportSize({width:390,height:844});await shot('panorama-390');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);

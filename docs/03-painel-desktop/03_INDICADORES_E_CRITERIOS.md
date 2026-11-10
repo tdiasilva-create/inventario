@@ -19,3 +19,7 @@
 ## D-068 — números do cadastro, separados dos resultados de vistoria
 
 Rede em números soma students_total, classes_total, seats_available e staff_total das unidades ativas filtradas, excluindo conveniadas e obras. Cada métrica informa cobertura; N de M geral conta unidades com ao menos um desses quatro campos. Nenhum valor informado: —, inclusive conjunto vazio; zero informado: 0. Fontes/datas podem variar e ficam no detalhe. Falha da API: indisponível, não zero. A contagem por categoria mantém sete tipos; não criar total genérico de unidades. Total da matriz soma as oito categorias físicas já publicadas, sem incorporar rascunhos.
+
+## D-085 — substituição do indicador genérico de pendências
+
+Em 10/11/2026 foram aprovados três indicadores separados, de toda a rede: coletas pendentes (unidades), demandas abertas (atendimentos) e hardware aguardando parecer (eventos). Não somar os três nem confundir leitura de notificação com decisão administrativa. Cada um abre a consulta correspondente, com atualização compartilhada de 15 s. [Critérios, exceções e contratos](INDICADORES_DE_PENDENCIAS.md). Esta decisão supera as referências anteriores a “Pendentes” sem critério.
