@@ -531,3 +531,7 @@ Migração aditiva 0024; decisão global imutável, recibo idempotente, autor/da
 ### D-081 — esclarecimento posterior da interação, 10/11/2026
 
 Responsável rejeitou a apresentação inicial e esclareceu: aviso animado sobre a localização da unidade, e modal somente ao clicar para escolher a providência. Supera a abertura automática/adiada e os avisos fixos da entrega inicial. Marcador geográfico com ícone/quantidade, movimento reduzido e acesso por teclado; clique filtra a unidade. Sem alteração de dados, permissões, detecção ou decisões. [Correção e publicação](../05-qualidade/HARDWARE_MAPA_CLIQUE_2026-11-10.md).
+
+### D-081 — círculo discreto e distinção após parecer, 10/11/2026
+
+Responsável considerou o aviso geográfico grande e pediu círculo piscando, com apresentação diferente após o parecer. Substituir o balão/contador por ponto circular de 16 px, halo suave, área de interação de 32 px e quantidade no tooltip. Vermelho pendente (2,4 s), âmbar encaminhado para atendimento (3,6 s); aceitação/conclusão retiram o alerta ativo, mantendo histórico. Se houver outra alteração pendente na mesma unidade, o vermelho prevalece. Modal continua somente por clique/teclado. Não altera decisão ou detecção no servidor. [Aceite e publicação](../05-qualidade/HARDWARE_MAPA_CLIQUE_2026-11-10.md).

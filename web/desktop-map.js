@@ -10,13 +10,11 @@ function paintHardware(){
   entry.label.textContent=entry.name+(pending?' · '+pending+' alteração(ões) de hardware aguardando decisão':'')+(demands?' · '+demands+' demanda(s) de hardware em atendimento':'');
   entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':'#0e9fff'});
   const node=entry.marker.getElement();if(node){node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click');}};}
-  if(pending&&!entry.halo){entry.halo=window.L.circleMarker(entry.marker.getLatLng(),{radius:16,color:'#d70825',weight:3,fill:false,interactive:false,className:'hardware-map-halo'}).addTo(current.unitGroup);entry.marker.bringToFront();}
-  if(entry.halo){if(!pending){current.unitGroup.removeLayer(entry.halo);entry.halo=null;}else entry.halo.setLatLng(entry.marker.getLatLng());}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
   if(pending||demands){
-   const state=pending?'pending':'demand',total=pending||demands;
-   if(!entry.notice){entry.notice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,riseOnHover:true,zIndexOffset:700,icon:window.L.divIcon({className:'hardware-map-notice',iconSize:[64,44],iconAnchor:[32,54],html:'<span class="hardware-map-badge"><span aria-hidden="true">!</span><b></b></span>'})}).addTo(context.unitGroup);entry.notice.on('click',()=>{context.onSelect(id);openHardware(id);});}
-   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();badge.dataset.state=state;badge.dataset.unitId=id;badge.querySelector('b').textContent=String(total);badge.setAttribute('aria-label',entry.label.textContent+' · Clique para escolher a providência');badge.title=entry.label.textContent+' · Clique para escolher a providência';badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click');}};
+   const state=pending?'pending':'demand';
+   if(!entry.notice){entry.notice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,riseOnHover:true,zIndexOffset:700,icon:window.L.divIcon({className:'hardware-map-notice',iconSize:[32,32],iconAnchor:[16,16],html:'<span class="hardware-map-halo" aria-hidden="true"></span><span class="hardware-map-badge" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.notice.on('click',()=>{context.onSelect(id);openHardware(id);});}
+   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();badge.dataset.state=state;badge.dataset.unitId=id;const hint=pending?'Clique para escolher a providência':'Clique para acompanhar o atendimento';badge.setAttribute('aria-label',entry.label.textContent+' · '+hint);badge.title=entry.label.textContent+' · '+hint;badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click');}};
   }else if(entry.notice){context.unitGroup.removeLayer(entry.notice);entry.notice=null;}
  }
 }
@@ -110,7 +108,7 @@ export function updateMarkers(units,selected){
   }
   entry.name=unit.name||unit.nome||'Unidade sem nome';entry.label.textContent=entry.name;entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
  }
- for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.halo)context.unitGroup.removeLayer(entry.halo);if(entry.notice)context.unitGroup.removeLayer(entry.notice);context.markers.delete(id);}
+ for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.notice)context.unitGroup.removeLayer(entry.notice);context.markers.delete(id);}
  context.markerCount=keep.size;context.container.dataset.markerCount=String(keep.size);baseStatus();
  paintHardware();
 }

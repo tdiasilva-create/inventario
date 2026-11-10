@@ -1,5 +1,7 @@
 # D-081 — correção da interação no mapa
 
+**Refinamento posterior:** o balão/contador descrito na primeira correção foi substituído por círculo pequeno; ver o registro ao final desta página.
+
 Pedido posterior do responsável em 10/11/2026: o aviso deve ficar sobre a localização da unidade, com animação, abrindo o modal para escolher a providência somente ao clicar. Esta orientação supera a abertura automática e os avisos fixos da entrega inicial D-081.
 
 ## Fontes e aceite
@@ -31,3 +33,14 @@ Build/dry-run aprovados, scanner de 563 arquivos e links documentais aprovados. 
 Autorização contínua da sessão para corrigir o painel real. Retorno somente do Worker; não restaurar banco ou remover decisões. Usuários com página antiga aberta precisam recarregar para receber os novos scripts.
 
 https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+## Refinamento posterior — círculos e estado após parecer
+
+Novo pedido: reduzir o aviso e usar círculo piscando, distinguindo o estado após parecer. Fontes: mesmas regras e imagens consultadas na correção anterior, adendo explícito D-081 e especificações atuais. Mudança limitada a desktop-map.js/painel.css e teste existente; sem servidor, migração ou dados reais.
+
+- Ponto visual de 16 px, halo suave até aproximadamente 29 px e área clicável transparente de 32 px. Removidos caixa, ponta, exclamação e contador do mapa; tooltip/aria mantêm unidade, quantidade e estado.
+- Vermelho pulsando a cada 2,4 s enquanto aguarda parecer. Âmbar com pulsação mais lenta (3,6 s) depois de encaminhado, até concluir a demanda. Aceitação ou conclusão retorna ao ponto normal; novos eventos na unidade continuam sinalizados. Movimento reduzido desativa a animação.
+- Modal somente por clique/teclado, com a mesma decisão e histórico. Zoom/camadas/filtros preservados.
+- Teste de navegador completo aprovado: diâmetro, ancoragem antes/depois do zoom, ausência de abertura automática, teclado, redução de movimento, envio com resposta perdida sem duplicar, demanda, aceitação, visualizador e 390 px. Capturas reais do Worker/SQLite isolado em `evidencias/hardware-circulos-2026-11-10/`: `aviso-na-unidade.png`, `encaminhado-ambar.png`, `parecer-aceito.png`. Conferidas visualmente. Build 76 arquivos.
+
+Publicação deste refinamento: aguardando registro da versão ativa.

@@ -838,16 +838,13 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .hardware-dialog{width:min(820px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;padding:24px;border:1px solid #d9dde1;border-top:5px solid #d70825;border-radius:10px;background:white;color:#16191d;box-sizing:border-box}
 .hardware-dialog::backdrop{background:#16191d99}.hardware-dialog header,.hardware-dialog footer,.hardware-card-title,.hardware-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
 .hardware-dialog h2{margin:4px 0;font-size:24px}.hardware-eyebrow{font-size:12px;color:#bc0022;font-weight:700;letter-spacing:.08em}.hardware-dialog button,.hardware-dialog .ops-btn{padding:10px 14px;border:1px solid #ccd0d4;border-radius:5px;background:#fff;font:inherit;cursor:pointer;min-height:40px}.hardware-dialog button[data-decision=demand]{background:#16191d;color:white;border-color:#16191d}.hardware-dialog button[data-decision=accepted]{border-color:#a4001d;color:#a4001d}.hardware-dialog button:disabled{opacity:.5;cursor:wait}.hardware-dialog :focus-visible{outline:3px solid #ff4b1e;outline-offset:3px}.hardware-card{border:1px solid #d9dde1;padding:18px;margin:14px 0;border-radius:6px}.hardware-card h3{font-size:20px;margin:12px 0}.hardware-card-title{font-size:12px;color:#5e656b}.hardware-state{background:#fff0ed;color:#a4001d;padding:5px 8px;font-weight:700}.hardware-state[data-state=accepted],.hardware-state[data-state=completed]{background:#e5f4e9;color:#1c6439}.hardware-context{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px}.hardware-context dt{font-size:12px;color:#60686d}.hardware-context dd{margin:4px 0;font-weight:600;overflow-wrap:anywhere}.hardware-change{padding:10px 0;border-top:1px solid #e4e6e8;margin-top:16px}.hardware-change h4{margin:2px 0;font-size:16px}.hardware-card label{display:block;margin:16px 0 8px}.hardware-card textarea{display:block;width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd0d4;border-radius:5px;font:inherit;margin-top:6px}.hardware-card details{margin:12px 0;color:#596168;overflow-wrap:anywhere}.hardware-feedback:empty{display:none}.hardware-feedback{padding:10px;background:#fff0ed;border-left:3px solid #ff4b1e}.hardware-dialog footer{justify-content:center;margin-top:16px}
-.hardware-map-halo{animation:hardware-halo 2.4s ease-in-out infinite;pointer-events:none}@keyframes hardware-halo{0%,100%{stroke-opacity:.8;stroke-width:2}50%{stroke-opacity:.2;stroke-width:7}}
-@media(prefers-reduced-motion:reduce){.hardware-map-halo{animation:none;stroke-opacity:.65}}
 @media(max-width:640px){.hardware-context{grid-template-columns:1fr}.hardware-dialog{padding:16px}.hardware-actions button{flex:1;min-width:180px}.hardware-dialog .monitor-comparison{grid-template-columns:1fr}}
-/* D-081 corrigida: aviso geográfico; modal apenas por ação explícita. */
-.hardware-map-notice{border:0;background:transparent;cursor:pointer;filter:drop-shadow(0 2px 3px #0004)}
-.hardware-map-badge{box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center;gap:7px;width:64px;height:38px;background:#d70825;color:#fff;border:2px solid #fff;border-radius:9px;font:700 17px Barlow,sans-serif;transform-origin:center bottom}
-.hardware-map-badge::after{content:"";position:absolute;left:calc(50% - 6px);bottom:-8px;width:10px;height:10px;background:inherit;border-right:2px solid white;border-bottom:2px solid white;transform:rotate(45deg)}
-.hardware-map-badge>span{display:grid;place-items:center;width:19px;height:19px;border:1.5px solid currentColor;border-radius:50%;font-size:15px}
-.hardware-map-notice[data-state=pending] .hardware-map-badge{animation:hardware-notice 2.4s ease-in-out infinite}
-.hardware-map-notice[data-state=demand] .hardware-map-badge{background:#9a5800}
-.hardware-map-notice:focus-visible{outline:3px solid #16191d;outline-offset:4px;border-radius:9px}
-@keyframes hardware-notice{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@media(prefers-reduced-motion:reduce){.hardware-map-notice[data-state=pending] .hardware-map-badge{animation:none}}
+/* D-081: círculo discreto no ponto; vermelho pendente, âmbar após encaminhamento. */
+.hardware-map-notice{border:0;background:transparent;color:#d70825;cursor:pointer}
+.hardware-map-badge{box-sizing:border-box;position:absolute;left:8px;top:8px;width:16px;height:16px;border:2px solid #fff;border-radius:50%;background:currentColor;box-shadow:0 1px 3px #0005}
+.hardware-map-halo{box-sizing:border-box;position:absolute;inset:4px;border:2px solid currentColor;border-radius:50%;pointer-events:none;animation:hardware-halo 2.4s ease-in-out infinite}
+.hardware-map-notice[data-state=demand]{color:#9a5800}
+.hardware-map-notice[data-state=demand] .hardware-map-halo{animation-duration:3.6s}
+.hardware-map-notice:focus-visible{outline:2px solid #16191d;outline-offset:2px;border-radius:50%}
+@keyframes hardware-halo{0%,100%{opacity:.8;transform:scale(.7)}55%{opacity:.15;transform:scale(1.2)}}
+@media(prefers-reduced-motion:reduce){.hardware-map-halo{animation:none;opacity:.5;transform:none}}
