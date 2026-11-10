@@ -28,3 +28,7 @@ Contagens oficiais referenciam inventário de bens existente e vistorias conclu�
 Root: bloco Números da unidade (opcional), 11 inteiros + prédio/observações/fonte/data; avisos não impedem salvar. Lista traz números em linha secundária e Fora do escopo para legado, acessível ao root. Importação/exportação 27 colunas, arquivos antigos 12 aceitos. Detalhe da unidade mostra números preenchidos e metadados; Unidade selecionada oferece o mesmo cadastro em bloco expansível. Página Unidades mostra alunos/turmas quando informados.
 
 Panorama: Rede em números (cadastro), abaixo dos indicadores existentes D-066/D-067, respeita filtros e distingue dado ausente de zero. Obras fora das somas educacionais, presentes na categoria própria e mapa. Matriz: primeiro/último nome conforme regra/oráculo, title/aria completo, colunas compactas/ícones em card estreito, valores >=12px em negrito, Total oito categorias; nomes completos secundários em Equipamentos. Ordenação/exportação continuam pelo cadastro completo. Identidade D-065, mapa e demais blocos D-067 preservados.
+
+## Atualização D-086 — 10/11/2026
+
+Relatórios agora apresenta computadores por unidade/ambiente, filtros, CSV/Excel e impressão integral. Planejamento apresenta fila de coletas pendentes/demandas abertas/hardware sem parecer, com atalhos e atualização de 15 s; mantém o bloco de Coletas em andamento. A decisão supera descrições anteriores de placeholder/indisponibilidade somente nesse escopo. [Contrato atual](RELATORIOS_E_PLANEJAMENTO.md).

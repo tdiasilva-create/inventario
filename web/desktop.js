@@ -1,3 +1,5 @@
+import {createManagementView} from './desktop-management.js';
+const computerReport=createManagementView('report'),workPlan=createManagementView('plan');
 import {editEnvironmentName} from './environment-editor.js';
 import {pendingIndicators,paintPendingIndicators} from './desktop-demand-count.js';
 import {updateBlocks} from './desktop-blocks.js';
@@ -117,9 +119,9 @@ function pageContent(){
  }
  if(state.page==='Ambientes')return `<div class="page-view">${heading('Ambientes da unidade','Escolha uma unidade para consultar os ambientes recebidos')}<label class="unit-picker">Unidade<input type="search" list="unit-options" id="unit-picker" placeholder="Buscar por nome ou INEP" value="${esc(chosen()?.name||'')}"><datalist id="unit-options">${catalogue.map(u=>`<option value="${esc(u.name)}">${esc(u.code||'')}</option>`).join('')}</datalist></label>${selectedPanel()}<div class="detail-grid">${environmentsPanel()}${galleryPanel()}</div>${equipmentConsultation.markup()}</div>`;
  if(state.page==='Ocorrências')return '<div class="page-view" id="received-findings">'+receivedResults.list()+'</div>';
- if(state.page==='Relatórios')return '<div class="page-view">'+heading('Relatórios','Aguardando dados oficiais e integração dos relatórios.')+'<section class="panel">'+emptyState('Nenhum relatório de inventário disponível. Aguardando coletas confirmadas.',btn('Consultar unidades','units-page'))+'</section></div>';
+ if(state.page==='Relatórios')return '<div class="page-view">'+heading('Relatórios','Computadores por unidade e ambiente · consulta, exportação e impressão')+computerReport.markup()+'</div>';
  if(state.page==='Exportar dados')return `<div class="page-view">${heading('Exportar dados','Selecione o conjunto de dados e o formato')}<section class="panel export-options"><label>Dados<select id="export-kind"><option value="units">Unidades cadastradas</option><option value="matrix">Equipamentos (matriz por unidade)</option><option value="equipment">Equipamentos (fichas publicadas)</option><option value="findings">Ocorrências recebidas</option></select></label><label>Formato<select id="export-format"><option>CSV</option><option>XLSX</option></select></label><button class="btn primary" data-action="export-data" ${catalogue.length?'':'disabled'}>Exportar</button><p>Respeita os filtros de unidades do painel. Fichas e ocorrências incluem somente dados publicados, em todas as páginas. Ocorrências recebidas não equivalem a demandas abertas.</p><p role="status" id="export-status"></p></section></div>`;
- if(state.page==='Planejamento')return `<div class="page-view planning-view">${heading('Planejamento','Organização das visitas e acompanhamento da rede')}<section class="panel">${emptyState('O planejamento de visitas ainda não está disponível.',authUser?.role==='root'?'<a class="btn empty-action" href="/operadores-unidades">Autorizar unidades por operador</a>':btn('Consultar unidades','units-page'))}</section><section class="panel progress-overview" id="progress-overview">${progress.overview()}</section></div>`;
+ if(state.page==='Planejamento')return `<div class="page-view planning-view">${heading('Planejamento','Providências por unidade · coletas, demandas e hardware')}${workPlan.markup()}<section class="panel progress-overview" id="progress-overview">${progress.overview()}</section></div>`;
  return `<div class="page-view">${heading('Configurações','Preferências e informações do sistema')}<section class="panel"><div class="dialog-body"><h3>Inventário Tecnológico SEMED</h3><p>Versão ${panelVersion}</p><p>As informações de inventário serão disponibilizadas após o recebimento de coletas.</p>${authUser?.role==='root'?'<details><summary>Sobre o sistema (root)</summary><p>Infraestrutura: Cloudflare Workers e D1; fotografias em armazenamento configurável (R2 ou pasta privada no Google Drive institucional). Coletor: inventario-semed-lumiar. Cartografia derivada do arquivo V33 fornecido, sem homologação adicional do limite.</p></details>':''}</div></section>${authUser?.role==='root'?googleBlock()+thumbnailMaintenance.block()+agentsAdmin.block(catalogue):''}</div>`;
 }
 // Bloco root: estado da integração de fotografias (proposta D-047). Nenhum token é exibido; apenas conta, pasta e eventos.
@@ -167,10 +169,11 @@ function render(){
  const content=document.querySelector('#content'),html=pageContent();
  if(renderedPage!==state.page)renderShell(content,html);else updateBlocks(content,html);
  paintPendingIndicators();
+ computerReport.attach();workPlan.attach();
  equipmentConsultation.attach();
  receivedResults.attach(filteredCatalogue());
  schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
- progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.q);
+ progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.page==='Planejamento'?'':state.q);
  const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;render();}});state.focus=null;}
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
  document.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page||(state.page==='Detalhe da Unidade'&&b.dataset.page==='Unidades');b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});

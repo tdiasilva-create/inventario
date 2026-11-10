@@ -1,6 +1,7 @@
 import {hardwareReviewRoutes} from './hardware-review.mjs';
 import {panelSearch} from './panel-search.mjs';
 import {pendingIndicatorsRoutes} from './pending-indicators.mjs';
+import {managementViews} from './management-views.mjs';
 import {thumbnailRoutes} from './photo-thumbnails.mjs';
 import {assetResponse} from './asset-response.mjs';
 import {UnitScopeError} from './unit-scope.mjs';
@@ -82,6 +83,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  const thumbnail=await thumbnailRoutes(request,url,user,env,{json,fail});if(thumbnail)return thumbnail;
  const photoGallery=await photoGalleryRead(request,url,user,env,{json,fail});if(photoGallery)return photoGallery;
  const pendingResponse=await pendingIndicatorsRoutes(request,url,user,env,{json,fail});if(pendingResponse)return pendingResponse;
+ const managementResponse=await managementViews(request,url,user,env,{json,fail});if(managementResponse)return managementResponse;
  const searchResponse=await panelSearch(request,url,user,env,{json,fail});if(searchResponse)return searchResponse;
  const collectionResponse=await collectorRoutes(request,url,user,env,{json,fail,body});if(collectionResponse)return collectionResponse;
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.

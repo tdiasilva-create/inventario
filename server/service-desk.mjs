@@ -20,7 +20,9 @@ const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,n.nam
  COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) AS hostname,
  l.device_id,d.state AS device_state,p.data_json AS presence_json,
  (SELECT COUNT(*) FROM service_requests sr WHERE sr.equipment_id=e.id AND sr.status!='Concluída') AS demands`;
-function item(row,env){const p=JSON.parse(row.presence_json||'{}');const {presence_json,device_state,...rest}=row;return {...rest,partial:!!row.partial,presence_state:row.device_id?presenceState({state:device_state},p,Date.now(),presenceThreshold(env)):'unlinked',last_contact_at:p.last_live_contact_at||null};}
+function item(row,env,now=Date.now()){const p=JSON.parse(row.presence_json||'{}');const {presence_json,device_state,...rest}=row;return {...rest,partial:!!row.partial,presence_state:row.device_id?presenceState({state:device_state},p,now,presenceThreshold(env)):'unlinked',last_contact_at:p.last_live_contact_at||null};}
+export const presenceGroup=st=>['communicating','communicating_with_failure'].includes(st)?'online':st==='no_recent_communication'?'lost':st==='unlinked'?'unlinked':'other';
+export {computerWhere as computerWhereSql,joins as computerJoins,columns as computerColumns,item as computerItem};
 function text(value,max=200){return typeof value==='string'&&value.trim().length<=max?value.trim():null;}
 async function result(db,id){const r=await db.prepare('SELECT * FROM service_requests WHERE id=?').bind(id).first();return r?{...r,context:JSON.parse(r.context_json)}:null;}
 function dateValid(v){return !v||/^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v+'T12:00:00Z'))&&new Date(v+'T12:00:00Z').toISOString().slice(0,10)===v;}
@@ -49,8 +51,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   const presence=s.get('presence')||'';
   if(!unitId&&['online','lost','unlinked','other'].includes(presence)){
    const rows=(await db.prepare(`SELECT ${columns},u.name AS unit_name ${joins} JOIN units u ON u.id=e.unit_id WHERE ${computerWhere} AND u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,environment_name,e.position_label,e.id`).all()).results;
-   const group=st=>['communicating','communicating_with_failure'].includes(st)?'online':st==='no_recent_communication'?'lost':st==='unlinked'?'unlinked':'other';
-   const all=rows.map(r=>item(r,env)).filter(i=>group(i.presence_state)===presence),page=all.slice(offset,offset+60);
+   const all=rows.map(r=>item(r,env)).filter(i=>presenceGroup(i.presence_state)===presence),page=all.slice(offset,offset+60);
    return json({unit:null,presence,items:page,total:all.length,offset,nextOffset:offset+page.length<all.length?offset+60:null,environments:[],server_time:new Date().toISOString()});
   }
   if(!uuid(unitId))return fail('Selecione uma unidade.');

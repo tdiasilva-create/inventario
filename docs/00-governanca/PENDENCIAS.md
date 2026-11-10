@@ -194,3 +194,10 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [x] Opção 3 aprovada: coletas pendentes, demandas abertas, hardware aguardando parecer. Implementados contador compartilhado, lista de unidades pendentes e modal filtrado; [critérios/aceite](../05-qualidade/INDICADORES_PENDENCIAS_2026-11-10.md). Supera a pendência de critério genérico nos registros anteriores.
 - [ ] Aceite operacional pelo responsável após publicação.
 - Permanecem sem nova decisão: LOG-08 (fichas/quantidade física), LOG-14 (Relatórios/Planejamento), LNA-09 (Ano), N-02 (destino da matriz), apresentação das escolas offline e Fases 4/5.
+
+## D-086 — LOG-14: primeira versão aprovada
+
+- [x] Opção 2: relatório de computadores com filtros/exportação/impressão e fila por unidade no Planejamento. Supera os textos de indisponibilidade desses setores nesse escopo. [Aceite](../05-qualidade/RELATORIOS_PLANEJAMENTO_2026-11-10.md).
+- [ ] Aceite operacional do responsável após publicação.
+- [ ] Outros relatórios, agenda, atribuição de técnicos e critérios automáticos de prioridade dependem de nova definição. Nenhum foi presumido.
+- LOG-08 (fichas/quantidade física), LNA-09 (Ano), N-02 (destino da matriz), apresentação das escolas offline e Fases 4/5 permanecem pendentes.

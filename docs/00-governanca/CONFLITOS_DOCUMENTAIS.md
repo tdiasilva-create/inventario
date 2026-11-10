@@ -78,3 +78,7 @@ O cabeçalho restrito a unidades em D-082 é superado pela escolha 2 (unidades +
 ## D-085 — “Pendentes” do desenho versus três filas reais
 
 A opção 3 aprovada em 10/11/2026 supera o indicador genérico e a pendência LOG-13. Coleta pendente, demanda aberta e hardware aguardando parecer têm fontes/estados distintos e não formam um total. A nova faixa é de toda a rede, explicitamente rotulada, enquanto os indicadores oficiais anteriores mantêm os filtros do Panorama. [Regras](../03-painel-desktop/INDICADORES_DE_PENDENCIAS.md). Não redefine outras métricas ou pendências.
+
+## D-086 — telas sem relatório/planejamento definido
+
+A escolha 2 resolve LOG-14 no escopo do primeiro relatório de computadores e fila por unidade. Supera os avisos de relatório indisponível/planejamento a definir. Não altera D-067 sobre coletas em andamento no Planejamento, nem decide agenda, atribuições ou prioridade. Relatório atual pode mostrar PARCIAL; matriz e indicadores oficiais mantêm escopo publicado. Contagem por ficha continua até decisão LOG-08. [Contrato](../03-painel-desktop/RELATORIOS_E_PLANEJAMENTO.md).

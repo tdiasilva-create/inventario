@@ -1,6 +1,6 @@
 import {collectionScopeSql} from './unit-scope.mjs';
 // Uma unidade é uma pendência, mesmo com visitas antigas preservadas. Revisita aberta volta à fila.
-const collectionCTE=`WITH pending AS (
+export const collectionCTE=`WITH pending AS (
  SELECT u.id AS unit_id,u.name,u.code,u.unit_type,i.id AS inspection_id,i.updated_at,
  CASE WHEN i.id IS NOT NULL THEN 'in_progress'
  WHEN EXISTS(SELECT 1 FROM inspections old WHERE old.unit_id=u.id AND old.state='paused') THEN 'preserved'
@@ -10,7 +10,7 @@ const collectionCTE=`WITH pending AS (
  AND (i.id IS NOT NULL OR NOT EXISTS(SELECT 1 FROM inspections done WHERE done.unit_id=u.id AND done.state='completed'))
 )`;
 // Mesma elegibilidade de D-081; leitura individual da notificação não é parecer.
-const hardwareCount=`SELECT COUNT(*) AS total FROM agent_notifications n
+export const hardwarePendingFrom=`FROM agent_notifications n
  JOIN units u ON u.id=n.unit_id JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id
  LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id
  WHERE n.kind='hardware_change' AND hr.notification_id IS NULL`;
@@ -25,7 +25,7 @@ export async function pendingIndicatorsRoutes(request,url,user,env,{json,fail}){
   const [collections,demands,hardware]=await db.batch([
    db.prepare(collectionCTE+' SELECT state,COUNT(*) AS total FROM pending GROUP BY state'),
    db.prepare("SELECT COUNT(*) AS total FROM service_requests WHERE status!='Concluída'"),
-   db.prepare(hardwareCount)
+   db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom)
   ]);
   const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;
   return json({collections:{total:Object.values(states).reduce((a,b)=>a+b,0),...states},demands:{total:demands.results[0].total},hardware:{total:hardware.results[0].total},scope:'network',server_time:new Date().toISOString()});
