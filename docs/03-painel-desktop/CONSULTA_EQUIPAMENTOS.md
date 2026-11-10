@@ -70,3 +70,7 @@ Root: na ficha do equipamento, além de Editar nome, usar Apagar cadastro. Dispo
 Lista e ficha destacam **Agente vinculado**, **Cadastro manual**, **Aguardando vínculo**, **Vínculo encerrado** ou **Cadastro não informado**. Prevalece o vínculo efetivo; encerramento histórico não é cadastro manual. Comunicação continua separada: um agente sem contato recente mantém a etiqueta de vinculado. Não constitui detector automático de duplicidade.
 
 `GET /api/inventory/equipment` acrescenta `link_state` (linked/manual/pending/ended/unknown/not_applicable) e aceita `agent=manual|pending|ended|unknown` além de linked/unlinked. Filtro antes da paginação, sobre o modo publicado e vínculo atual; unlinked conserva a compatibilidade antiga, incluindo outras categorias sem vínculo. Detalhe aberto atualiza a etiqueta com a consulta periódica de agent-status. Impressoras e demais categorias não recebem etiqueta de computador manual. [Testes e publicação](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md).
+
+## D-084 — consulta pela busca global
+
+O cabeçalho agora abre /busca, separando unidades e equipamentos. Essa página usa o escopo explícito current na ficha, rotula PARCIAL e admite fotos recebidas de coletas abertas/pausadas. O comportamento oficial descrito acima permanece como padrão nas consultas da matriz/unidade. Ver [contrato da busca](BUSCA_GLOBAL.md).

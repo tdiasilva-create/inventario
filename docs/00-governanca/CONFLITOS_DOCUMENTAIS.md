@@ -70,3 +70,7 @@ Substituir integralmente os arquivos prontos apagaria D-081 e correções D-080 
 ## D-083 — substituição do indicativo do mapa
 
 A composição D-067 mostrava computadores declarados funcionando, a partir de inventário concluído. A decisão posterior D-083 substitui somente esse indicativo por escolas com presença recente de agentes, dado operacional, inclusive vínculo ainda parcial. Não transforma estado de comunicação em conclusão de vistoria nem em diagnóstico de internet. D-082 usava marcador comum carvão/selecionado vermelho; agora ambos usam #7523C9, preservando precedência dos alertas D-081.
+
+## D-084 — busca atual e consulta oficial
+
+O cabeçalho restrito a unidades em D-082 é superado pela escolha 2 (unidades + equipamentos). A busca global usa ficha salva atual com PARCIAL explícito; a matriz e a consulta D-069 continuam no padrão publicado. Fotos abertas/pausadas só entram no escopo atual, com identificação de origem; não são promovidas aos indicadores. Demais decisões do tour continuam pendentes.

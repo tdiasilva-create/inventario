@@ -23,10 +23,10 @@ const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),
   await page.locator('.panorama-answers summary').first().click();await page.locator('.panorama-answers').scrollIntoViewIfNeeded();await page.evaluate(()=>{window.__map=document.querySelector('#municipal-map');window.__answer=document.querySelector('.panorama-answers details');window.__photo=document.querySelector('.panorama-evidence img');window.__y=scrollY;});
   const before=countDetail(),beforePhotos=requests.filter(p=>p.startsWith('/api/inventory/photo?')).length;
   // Dez teclas rápidas: um único filtro efetivo, preservando mapa, foto, foco e detalhes abertos.
-  await page.locator('.search input').focus();await page.locator('.search input').pressSequentially('TESTE ISOL',{delay:12});await page.waitForTimeout(400);
-  assert.deepEqual(await page.evaluate(()=>({mounts:window.__mounts,map:__map===document.querySelector('#municipal-map'),image:__photo===document.querySelector('.panorama-evidence img'),open:__answer.open,focus:document.activeElement.matches('.search input')})),{mounts:1,map:true,image:true,open:true,focus:true});
+  await page.locator('[data-unit-query]').focus();await page.locator('[data-unit-query]').pressSequentially('TESTE ISOL',{delay:12});await page.waitForTimeout(400);
+  assert.deepEqual(await page.evaluate(()=>({mounts:window.__mounts,map:__map===document.querySelector('#municipal-map'),image:__photo===document.querySelector('.panorama-evidence img'),open:__answer.open,focus:document.activeElement.matches('[data-unit-query]')})),{mounts:1,map:true,image:true,open:true,focus:true});
   assert.equal(countDetail(),before);assert.equal(requests.filter(p=>p.startsWith('/api/inventory/photo?')).length,beforePhotos);
-  await page.locator('.search input').fill('');await page.waitForTimeout(350);
+  await page.locator('[data-unit-query]').fill('');await page.waitForTimeout(350);
   await page.locator('[data-action=filters]').click();assert.equal(await page.locator('dialog [data-filter=type]').count(),1);await page.locator('dialog [data-filter=type]').selectOption('Escola municipal');await page.keyboard.press('Escape');assert.equal(await page.locator('.panorama [data-filter=type]').inputValue(),'Escola municipal');
   assert.equal(await page.evaluate(()=>window.__mounts),1);await screenshot('01-panorama-preservado');
   // TTL: expira o relógio do cliente; uma navegação na mesma tela busca o novo detalhe.

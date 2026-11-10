@@ -1,4 +1,5 @@
 import {hardwareReviewRoutes} from './hardware-review.mjs';
+import {panelSearch} from './panel-search.mjs';
 import {thumbnailRoutes} from './photo-thumbnails.mjs';
 import {assetResponse} from './asset-response.mjs';
 import {UnitScopeError} from './unit-scope.mjs';
@@ -79,6 +80,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  const agentHuman=await handleAgentHuman(request,url,user,env);if(agentHuman)return agentHuman;
  const thumbnail=await thumbnailRoutes(request,url,user,env,{json,fail});if(thumbnail)return thumbnail;
  const photoGallery=await photoGalleryRead(request,url,user,env,{json,fail});if(photoGallery)return photoGallery;
+ const searchResponse=await panelSearch(request,url,user,env,{json,fail});if(searchResponse)return searchResponse;
  const collectionResponse=await collectorRoutes(request,url,user,env,{json,fail,body});if(collectionResponse)return collectionResponse;
  // Integração Google Drive (somente root; o coletor não expõe estas rotas). Antes de unitRoutes, que responde 404 a /api/root/* desconhecidos.
  if(env.APP_KIND!=='collector'){const googleResponse=await googleRoutes(request,url,user,env,{json,fail,audit});if(googleResponse)return googleResponse;}
@@ -136,6 +138,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:collectorLogin(),'Cache-Control':'no-store'}});
  if(['/computadores','/demandas'].includes(path))return assetResponse(new Request(new URL('/operations.html',url),request),env);
+ if(path==='/busca')return assetResponse(new Request(new URL('/panel-search.html',url),request),env);
  if(path==='/fotografias')return new Response(null,{status:302,headers:{Location:'/panorama','Cache-Control':'no-store'}});
  const pages=['/','/coletas-em-andamento','/panorama','/mapa','/unidades','/ambientes','/equipamentos','/ocorrencias','/relatorios','/planejamento','/exportar','/configuracoes','/unidade'];
  const assetUrl=new URL(request.url);if(pages.includes(path))assetUrl.pathname='/index.html';

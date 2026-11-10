@@ -182,3 +182,9 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 
 - [ ] Responsável definir local/apresentação das escolas offline. Regra de classificação aprovada; não inventar nova aba ou listagem.
 - A mudança do indicativo do mapa não decide LOG-08 sobre quantidade física/fichas na tela Computadores. Demais decisões D-082 e Fases 4/5 preservadas.
+
+## D-084 — extensão da busca global
+
+- [x] Escolha LOG-10/LNA-12 resolvida: opção 2, cabeçalho unificado de unidades e equipamentos; implementação e testes em [BUSCA_GLOBAL_2026-11-10.md](../05-qualidade/BUSCA_GLOBAL_2026-11-10.md). Supera as anotações anteriores de busca pendente apenas nesse escopo.
+- [ ] Aceite operacional pelo responsável após publicação. Dados inativos/excluídos e históricos não fazem parte desta busca.
+- LOG-08, LOG-13, LOG-14, LNA-09, N-02, local das escolas offline e Fases 4/5 continuam pendentes.

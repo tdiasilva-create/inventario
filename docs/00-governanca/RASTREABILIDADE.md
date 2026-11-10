@@ -391,3 +391,7 @@ Publicação D-082 confirmada em 10/11/2026: commit `f7bb832`, painel `07f8adf1-
 Mensagens do responsável e liberação “terminei” → web/school-presence.js, panel-pulse.js (evento com consulta existente), desktop.js, desktop-results.js/desktop-blocks.js, desktop-map.js e build. Classificação escolar reutiliza schoolTypes; presença reutiliza API D-071/D-070, sem nova escrita. Testes school-presence.test.mjs e school-presence-browser.cjs; regressões do pulso, mapa/alertas e composição. [Registro](../05-qualidade/ESCOLAS_ONLINE_2026-11-10.md). Nenhuma alteração à Base original ou ao questionário.
 
 Publicação D-083: `11b90747-7d5a-4585-b2a5-fbe0c3af5f17`, 100%, commit `08dbf4a`; coletor inalterado; seis verificações HTTP pós-publicação aprovadas.
+
+## D-084 — busca global de unidades e equipamentos
+
+Escolha explícita “2” → server/panel-search.mjs + worker.mjs; web/panel-search.html/js, panel-shell.js, desktop.js, painel.css; escopo current explícito em inventory-equipment.mjs/desktop-equipment.js. Paginação/perfis/fotos e integridade oficial testados em panel-search.test.mjs e panel-search-browser.cjs, com regressões tour/blocks/identity/equipment/mesa. Build e CI incluem assets/testes. [Contrato](../03-painel-desktop/BUSCA_GLOBAL.md) e [evidências](../05-qualidade/BUSCA_GLOBAL_2026-11-10.md). Base original e questionário preservados; não depende de histórico do chat para manutenção.

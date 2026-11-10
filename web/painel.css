@@ -834,6 +834,42 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media print{.sidebar,.header,.pulse,.demo-ribbon{display:none}.layout{margin:0}}
+/* D-084: busca global separada dos filtros locais da unidade. */
+.search button{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:28px;border:0;border-radius:3px;background:transparent;color:var(--texto-secundario);cursor:pointer}
+.search button:hover{background:#fff0ed;color:var(--vermelho)}
+.search button:focus-visible,.global-search-group a:focus-visible,.global-search-group button:focus-visible{outline:2px solid var(--vermelho);outline-offset:2px}
+.filter.unit-query input{width:100%;min-width:0;height:32px;border:1px solid var(--borda);border-radius:var(--raio);padding:6px 9px;background:#fff;font:inherit}
+#search-status{font-size:13px;color:var(--texto-secundario);margin:12px 0}
+.global-search-groups{display:grid;grid-template-columns:minmax(230px,1fr) minmax(0,2fr);gap:16px;align-items:start}
+.global-search-group{min-width:0;padding:0!important;overflow:hidden}
+.global-search-group h3{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;margin:0;border-bottom:1px solid var(--borda);font-size:16px}
+.global-search-group h3 span{font:600 12px var(--font-sans);color:var(--texto-secundario)}
+.global-search-group ul{list-style:none;margin:0;padding:0}
+.global-search-group li+li{border-top:1px solid var(--borda)}
+.global-unit-result,.global-equipment-open{display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:100%;padding:14px 16px;color:var(--preto);text-decoration:none;overflow-wrap:anywhere;text-align:left;font:inherit;border:0;background:#fff;cursor:pointer}
+.global-unit-result:hover,.global-equipment-open:hover{background:#fff6f2}
+.global-unit-result strong,.global-equipment-open strong{font-size:15px}
+.global-unit-result span,.global-equipment-open span{font-size:13px;line-height:1.5}
+.global-unit-result small,.global-equipment-open small{font-size:12px;color:var(--texto-secundario)}
+.global-equipment-open code{font-size:11px;word-break:break-all;color:var(--texto-secundario)}
+.global-search-group .global-result-action{font-weight:600;font-size:12px;color:#aa0020}
+.global-result-tags{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px}
+.global-result-tags .eq-badge{margin:0}.global-published{font-size:11px;color:#356447}
+.global-remote{padding:0 16px 12px;margin:0;font-size:12px;white-space:normal;overflow-wrap:anywhere}
+.global-search-pages{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--borda)}
+.global-search-pages span{margin-right:auto;color:var(--texto-secundario);font-size:12px}
+.global-search-pages button,.global-search-error button{font:inherit;font-size:12px;padding:7px 10px;background:white;border:1px solid var(--borda);border-radius:4px;cursor:pointer}
+.global-search-pages button:disabled{opacity:.45;cursor:default}
+.global-empty{padding:20px 16px;font-size:13px;color:var(--texto-secundario)}
+.global-search-error{padding:16px;border-left:3px solid var(--vermelho);background:#fff0ed;margin:12px 0}
+@media(max-width:700px){
+ .header:has(.search){height:auto;min-height:96px;flex-wrap:wrap;padding:8px 12px;gap:6px}
+ .header .search{display:flex;order:5;flex:1 0 100%;max-width:none;margin:0;height:38px}
+ .header .search input{font-size:16px;min-height:32px}.header .search button{height:36px;width:40px}
+ .global-search-groups{grid-template-columns:minmax(0,1fr)}
+ .global-search-pages button{min-height:40px}
+}
+@media(pointer:coarse){.search{min-height:44px}.search button{min-height:40px;min-width:40px}.filter.unit-query input{min-height:44px;font-size:16px}}
 /* D-081: hardware exige decisão; leitura não encerra a ocorrência. */
 .hardware-dialog{width:min(820px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;padding:24px;border:1px solid #d9dde1;border-top:5px solid #d70825;border-radius:10px;background:white;color:#16191d;box-sizing:border-box}
 .hardware-dialog::backdrop{background:#16191d99}.hardware-dialog header,.hardware-dialog footer,.hardware-card-title,.hardware-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}

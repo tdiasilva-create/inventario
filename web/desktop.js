@@ -53,7 +53,7 @@ function chosen(){return catalogue.find(u=>u.id===state.selected)||null;}
 function ensureSelected(){const units=catalogue;if(!units.some(u=>u.id===state.selected))state.selected=units[0]?.id||null;}
 const hasFilters=()=>state.q||state.region!=='Todas'||state.type!=='Todas'||state.status!=='Todas'||state.year!=='Todos';
 function select(label,key,options){return `<label class="filter"><span>${label}</span><select aria-label="${label}" data-filter="${key}">${options.map(v=>`<option value="${esc(v)}" ${state[key]===v?'selected':''}>${esc(v)}</option>`).join('')}</select></label>`;}
-function filters(){return `<section class="filters" aria-label="Filtros do painel">${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn(icon('sliders')+' Filtros avançados','filters','filter-more')}</section>`;}
+function filters(){return `<section class="filters" aria-label="Filtros do painel"><label class="filter unit-query"><span>Filtrar unidades neste painel</span><input data-unit-query type="search" maxlength="120" aria-label="Filtrar unidades neste painel" placeholder="Nome, INEP ou gestor" value="${esc(state.q)}"></label>${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn(icon('sliders')+' Filtros avançados','filters','filter-more')}</section>`;}
 function unitCategoryStats(units){
  const labels={'Escola municipal':'Escolas municipais','Escola municipal militar':'Escolas municipais militares','Creche municipal':'Creches municipais','Obra em andamento':'Obras em andamento','Núcleo Educa Paço':'Núcleos Educa Paço','Núcleo tecnológico':'Núcleos tecnológicos','Unidade administrativa':'Unidades administrativas'};
  const counts=new Map(unitTypes.map(type=>[type,0]));
@@ -144,7 +144,7 @@ function googleBlock(){
  return `<section class="panel"><div class="dialog-body"><h3>Armazenamento de fotografias</h3>${situacao}<div class="actions" style="display:flex;gap:8px;flex-wrap:wrap">${actions}${btn('Atualizar','google-refresh','secondary')}</div>${events?`<details style="margin-top:12px"><summary>Últimos eventos da integração</summary><ul>${events}</ul></details>`:''}</div></section>`;
 }
 function sidebarArt(){return `<div class="sidebar-art" aria-hidden="true"><svg viewBox="0 0 240 230" fill="none" stroke="currentColor" stroke-width="1"><path d="M0 220v-40l30-30V90l30-30h35l20-20h45l15-15h28l20 20v75l-24 24v30l-33 33v23M0 180l22-22V80l30-30h42l22-22h49l13-13h23l28 28v82l-24 24v27l-26 26v28M0 115h38l24-24h33l25-25h30l18-18h30l15 15v29l-22 22v27l-35 35v54M0 127h43l24-24h33l25-25h30l20-20h18l10 10v19l-23 23v27l-37 37v56M0 90h27l25-25h40l21-21h46M76 0v35m12-35v27m14-27v18M40 230v-40l36-36v-29h30l25-25h26m-36 130v-44l36-36v-26"/>${Array.from({length:18},(_,i)=>`<circle cx="${95+(i*19%100)}" cy="${20+(i*13%110)}" r="3" fill="#05243c"/>`).join('')}</svg><p>Tecnologia<br>que fortalece<br>a educação</p></div>`;}
-function shell(){root.innerHTML=panelShell(authUser);bindPanelShell(authUser);document.querySelector('.search input').value=state.q;render();}
+function shell(){root.innerHTML=panelShell(authUser);bindPanelShell(authUser);render();}
 function detailNotice(){const error=detailErrors.get(state.selected);return error?'<p role="alert">'+esc(error)+' Use Atualizar para tentar novamente.</p>':loadingDetails.has(state.selected)?'<p role="status">Atualizando dados da unidade…</p>':'';}
 async function loadSelected(force=false){
  const id=state.selected;if(!id||!detailPages.has(state.page)||loadingDetails.has(id)||authUser?.role==='operador')return;
@@ -213,9 +213,9 @@ function dialog(name,body){
  document.querySelector('dialog')?.remove();const el=document.createElement('dialog');el.innerHTML=`<div class="dialog-head"><h2>${esc(name)}</h2><button class="icon-button" data-action="close-dialog" aria-label="Fechar janela">${icon('close')}</button></div><div class="dialog-body">${body}</div>`;
  document.body.append(el);el.addEventListener('close',()=>el.remove());el.showModal();
 }
-document.addEventListener('input',e=>{if(e.target.matches('.search input')){state.q=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(),250);}});
+document.addEventListener('input',e=>{if(e.target.matches('[data-unit-query]')){state.q=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(),250);}});
 // Enter na busca: abre a lista de Unidades com o filtro (a URL guarda ?q= para recarregar/compartilhar). Mapa e Unidades só filtram.
-document.addEventListener('keydown',e=>{if(e.key!=='Enter'||!e.target.matches('.search input'))return;e.preventDefault();state.q=e.target.value.trim();clearTimeout(searchTimer);if(!['Unidades','Mapa da Rede'].includes(state.page))navigate('Unidades');else render();const query=new URLSearchParams(location.search);if(state.q)query.set('q',state.q);else query.delete('q');history.replaceState(history.state,'',location.pathname+(query.size?'?'+query:''));});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter'||!e.target.matches('[data-unit-query]'))return;e.preventDefault();state.q=e.target.value.trim();clearTimeout(searchTimer);if(!['Unidades','Mapa da Rede'].includes(state.page))navigate('Unidades');else render();const query=new URLSearchParams(location.search);if(state.q)query.set('q',state.q);else query.delete('q');history.replaceState(history.state,'',location.pathname+(query.size?'?'+query:''));});
 document.addEventListener('change',e=>{if(e.target.id==='unit-picker'){const unit=catalogue.find(u=>u.name===e.target.value||u.code===e.target.value);if(unit){state.selected=unit.id;render();}} if(e.target.dataset.filter){state[e.target.dataset.filter]=e.target.value;render();}if(e.target.hasAttribute('data-sort')){state.sort=e.target.value;render();}});
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
@@ -240,7 +240,7 @@ document.addEventListener('click',e=>{
  if(a==='filters'){
   dialog('Filtros avançados',`<p>Filtre as unidades cadastradas por polo, tipo e situação.</p>${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',unitTypes.length?['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))]:['Todas'])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn('Limpar filtros','clear-filters')}<p>Os filtros usam os cadastros da administração.</p>`);return;
  }
- if(a==='clear-filters'){state.region='Todas';state.type='Todas';state.status='Todas';state.year='Todos';state.q='';document.querySelector('.search input').value='';document.querySelector('dialog')?.close();render();return;}
+ if(a==='clear-filters'){state.region='Todas';state.type='Todas';state.status='Todas';state.year='Todos';state.q='';document.querySelector('dialog')?.close();render();return;}
  if(a==='cell'||a==='inventory-page'){showEquipment(b.dataset.unit,a==='cell'?b.dataset.col:'');return;}
  if(a==='agent-status'){showAgentStatus(b.dataset.equipment);return;}
  if(a.startsWith('agents-')){agentsAdmin.handle(a,b).catch(e=>toast(e.message));return;}
@@ -266,7 +266,7 @@ document.addEventListener('click',e=>{
 
 
 });
-window.addEventListener('popstate',()=>{state.q=new URLSearchParams(location.search).get('q')||'';document.querySelector('.search input').value=state.q;state.selected=new URLSearchParams(location.search).get('id')||state.selected;navigate(Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',false);});
+window.addEventListener('popstate',()=>{state.q=new URLSearchParams(location.search).get('q')||'';state.selected=new URLSearchParams(location.search).get('id')||state.selected;navigate(Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',false);});
 document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||a.target)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const page=Object.keys(pageRoutes).find(p=>pageRoutes[p]===url.pathname);if(page){e.preventDefault();if(page==='Detalhe da Unidade')state.selected=url.searchParams.get('id')||state.selected;history.pushState({page},'',url.pathname+url.search);navigate(page,false);}});
 state.selected=new URLSearchParams(location.search).get('id');
 shell();

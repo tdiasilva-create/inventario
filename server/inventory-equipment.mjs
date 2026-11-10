@@ -2,22 +2,24 @@ import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {equipmentLinkStateSql,linkFilterValues} from './equipment-link-state.mjs';
 // D-069: consulta gerencial de fichas publicadas. Nenhuma escrita ou publicação.
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
-const categorySql=`CASE json_extract(e.published_json,'$.category') WHEN 'desktop' THEN 0 WHEN 'computer' THEN 0 WHEN 'notebook' THEN 1 WHEN 'tablet' THEN 2 WHEN 'projector' THEN 3 WHEN 'printer' THEN 4 WHEN 'tv' THEN 5 WHEN 'router' THEN 6 WHEN 'ap' THEN 6 WHEN 'switch' THEN 6 ELSE 7 END`;
-const photoWhere=`p.unit_id=e.unit_id AND p.target_kind='equipment' AND p.target_id=e.id AND p.status='ready' AND pi.unit_id=p.unit_id AND pi.state='completed'`;
+const categorySql=record=>`CASE json_extract(${record},'$.category') WHEN 'desktop' THEN 0 WHEN 'computer' THEN 0 WHEN 'notebook' THEN 1 WHEN 'tablet' THEN 2 WHEN 'projector' THEN 3 WHEN 'printer' THEN 4 WHEN 'tv' THEN 5 WHEN 'router' THEN 6 WHEN 'ap' THEN 6 WHEN 'switch' THEN 6 ELSE 7 END`;
 export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  if(!user)return fail('Autenticação necessária.',401);
  if(!['root','admin','visualizador'].includes(user.role))return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Consulta disponível somente para leitura.',405);
  const s=url.searchParams,id=s.get('unitId'),offset=Number(s.get('offset')||0),column=s.get('category')??'',q=(s.get('q')||'').trim(),agent=s.get('agent')||'',photo=s.get('photo')||'',environment=s.get('environmentId')||'';
  if(environment&&!uuid(environment)||!uuid(id)||!Number.isSafeInteger(offset)||offset<0||!['','0','1','2','3','4','5','6','7'].includes(column)||q.length>120||!linkFilterValues.includes(agent)||!['','yes','no'].includes(photo))return fail('Filtros de equipamentos inválidos.');
+ const scope=s.get('scope')||'published';if(!['published','current'].includes(scope)||scope==='current'&&env.APP_KIND==='collector')return fail('Escopo de consulta inválido.',403);
  const u=await unit(id);if(!u)return fail('Unidade indisponível.',403);
- // Os filtros usam a ficha publicada; search_text e data_json podem conter alterações parciais.
- const cte=`WITH records AS (SELECT e.id,e.unit_id,e.published_json,e.created_at,e.published_verified_at AS verified_at,e.published_updated_at AS updated_at,n.name AS display_name,
+ // D-084: escopo atual explícito para busca global; a matriz mantém o padrão publicado.
+ const current=scope==='current',record=current?'e.data_json':'e.published_json';
+ const photoWhere=`p.unit_id=e.unit_id AND p.target_kind='equipment' AND p.target_id=e.id AND p.status='ready' AND pi.unit_id=p.unit_id AND ${current?"(pi.state IN ('open','paused') OR (pi.state='completed' AND e.published_json IS NOT NULL))":"pi.state='completed'"}`;
+ const cte=`WITH records AS (SELECT e.id,e.unit_id,${record} AS published_json,(e.published_json IS NULL OR e.published_json!=e.data_json) AS record_partial,e.created_at,${current?'e.verified_at':'e.published_verified_at'} AS verified_at,${current?'e.updated_at':'e.published_updated_at'} AS updated_at,n.name AS display_name,
  e.environment_id AS current_environment,e.position_label AS current_position,e.location_state AS current_location_state,e.updated_at AS current_updated_at,e.inspection_id AS current_inspection_id,
- ${categorySql} AS column_index,
- ${equipmentLinkStateSql({json:'e.published_json',linked:'l.link_id IS NOT NULL AND l.ended_at IS NULL',history:'l.ended_at IS NOT NULL'})} AS link_state,
- CASE WHEN json_extract(e.published_json,'$.mode')='Lote' THEN COALESCE(json_extract(e.published_json,'$.quantity'),1) ELSE 1 END AS quantity,
- COALESCE((SELECT r.name FROM environments r WHERE r.id=json_extract(e.published_json,'$.environment') AND r.unit_id=e.unit_id AND r.name_version>1),NULLIF(json_extract(e.published_json,'$.environmentName'),''),(SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie JOIN inspections vi ON vi.id=ie.inspection_id WHERE vi.unit_id=e.unit_id AND vi.state='completed' AND ie.environment_id=json_extract(e.published_json,'$.environment') ORDER BY vi.completed_at DESC,vi.id DESC LIMIT 1)) AS environment_name,
+ ${categorySql(record)} AS column_index,
+ ${equipmentLinkStateSql({json:record,linked:'l.link_id IS NOT NULL AND l.ended_at IS NULL',history:'l.ended_at IS NOT NULL'})} AS link_state,
+ CASE WHEN json_extract(${record},'$.mode')='Lote' THEN COALESCE(json_extract(${record},'$.quantity'),1) ELSE 1 END AS quantity,
+ COALESCE((SELECT r.name FROM environments r WHERE r.id=json_extract(${record},'$.environment') AND r.unit_id=e.unit_id AND ${current?'1=1':'r.name_version>1'}),NULLIF(json_extract(${record},'$.environmentName'),''),(SELECT json_extract(ie.data_json,'$.name') FROM inspection_environments ie JOIN inspections vi ON vi.id=ie.inspection_id WHERE vi.unit_id=e.unit_id AND vi.state='completed' AND ie.environment_id=json_extract(${record},'$.environment') ORDER BY vi.completed_at DESC,vi.id DESC LIMIT 1)) AS environment_name,
  ap.data_json AS presence_json,l.device_id,l.linked_at,l.ended_at,CASE WHEN l.link_id IS NOT NULL AND l.ended_at IS NULL THEN 1 ELSE 0 END AS agent_linked,
  CASE WHEN l.ended_at IS NULL THEN json_extract(ap.data_json,'$.last_live_contact_at') END AS last_contact_at,
  CASE WHEN l.ended_at IS NULL THEN COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) END AS hostname,
@@ -31,11 +33,11 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  LEFT JOIN agent_enrollments en ON en.device_id=l.device_id
  LEFT JOIN agent_current_snapshot cs ON cs.device_id=l.device_id
  LEFT JOIN agent_inventory_snapshots si ON si.inventory_id=cs.inventory_id
- WHERE e.unit_id=? AND e.published_json IS NOT NULL)`;
+ WHERE e.unit_id=? AND ${record} IS NOT NULL)`;
  const clauses=[],params=[id];
  if(environment){clauses.push("json_extract(published_json,'$.environment')=?");params.push(environment);}
  if(column!==''){clauses.push('column_index=?');params.push(Number(column));}
- if(q){clauses.push(`instr(lower(COALESCE(display_name,'')||' '||COALESCE(hostname,'')||' '||id||' '||COALESCE(environment_name,'')||' '||COALESCE(json_extract(published_json,'$.position_label'),'')||' '||COALESCE(json_extract(published_json,'$.asset'),'')||' '||COALESCE(json_extract(published_json,'$.serial'),'')||' '||COALESCE(json_extract(published_json,'$.brand'),'')||' '||COALESCE(json_extract(published_json,'$.model'),'')||' '||COALESCE(json_extract(published_json,'$.customCategory'),'')),lower(?))>0`);params.push(q);}
+ if(q){clauses.push(`instr(lower(COALESCE(display_name,'')||' '||COALESCE(hostname,'')||' '||id||' '||COALESCE(environment_name,'')||' '||COALESCE(json_extract(published_json,'$.position_label'),'')||' '||COALESCE(json_extract(published_json,'$.asset'),'')||' '||COALESCE(json_extract(published_json,'$.serial'),'')||' '||COALESCE(json_extract(published_json,'$.brand'),'')||' '||COALESCE(json_extract(published_json,'$.model'),'')||' '||COALESCE(json_extract(published_json,'$.customCategory'),'')||' '||COALESCE(json_extract(published_json,'$.anydesk'),'')||' '||COALESCE(json_extract(published_json,'$.rustdesk'),'')),lower(?))>0`);params.push(q);}
  if(agent==='unlinked')clauses.push('agent_linked=0');
  else if(agent){clauses.push('link_state=?');params.push(agent);}
  if(photo)clauses.push('photo_count'+(photo==='yes'?'>0':'=0'));
@@ -47,10 +49,10 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  const counts=countResult.results[0],items=pageResult.results.map(r=>{
   const data=JSON.parse(r.published_json),position=data.position_label??null,location=data.location_state??'declarada';
   const partial=(data.environment??null)!==(r.current_environment??null)||position!==(r.current_position??null)||location!==r.current_location_state;
-  return {id:r.id,data,link_state:r.link_state,display_name:r.display_name,environment_name:r.environment_name,position_label:position,location_state:location,verified_at:r.verified_at,updated_at:r.updated_at,
+  return {id:r.id,data,record_partial:scope==='current'&&!!r.record_partial,link_state:r.link_state,display_name:r.display_name,environment_name:r.environment_name,position_label:position,location_state:location,verified_at:r.verified_at,updated_at:r.updated_at,
    presence_state:r.agent_linked?presenceState({state:'linked'},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):null,agent_linked:!!r.agent_linked,agent_history:!!r.device_id,hostname:r.hostname,last_contact_at:r.last_contact_at,link_ended_at:r.ended_at,
    photo_count:r.photo_count,photo_id:r.photo_id,missing_open:!!r.missing_open,
    partial:partial?{environment:r.current_environment,position_label:r.current_position,location_state:r.current_location_state,updated_at:r.current_updated_at,inspection_id:r.current_inspection_id}:null};
  });
- return json({...counts,items,offset,pageSize:50,nextOffset:offset+items.length<counts.total?offset+50:null,source:'published',server_time:new Date().toISOString()});
+ return json({...counts,items,offset,pageSize:50,nextOffset:offset+items.length<counts.total?offset+50:null,source:scope,server_time:new Date().toISOString()});
 }

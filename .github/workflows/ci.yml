@@ -102,3 +102,7 @@ jobs:
       - run: pnpm test:hardware-review:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: pnpm test:search:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

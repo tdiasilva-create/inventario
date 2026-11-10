@@ -47,7 +47,7 @@ const pw=require('./helpers/playwright.cjs');
   await page.reload();await expectCounts([2,0,0,0,0,2,0]);await screenshot('categorias-apos-administrativa');
   await page.locator('[data-filter=region]').selectOption('Norte');await expectCounts([1,0,0,0,0,0,0]);
   await page.locator('[data-filter=region]').selectOption('Todas');await page.locator('[data-filter=type]').selectOption('Unidade administrativa');await expectCounts([0,0,0,0,0,2,0]);await screenshot('categorias-filtro-administrativa');
-  await page.locator('[data-filter=type]').selectOption('Todas');await page.locator('.search input').fill('xyz-inexistente');await expectCounts([0,0,0,0,0,0,0]);await page.locator('.search input').fill('');
+  await page.locator('[data-filter=type]').selectOption('Todas');await page.locator('[data-unit-query]').fill('xyz-inexistente');await expectCounts([0,0,0,0,0,0,0]);await page.locator('[data-unit-query]').fill('');
   f.sqlite.prepare("UPDATE units SET unit_type='' WHERE id=?").run(administrativeId);await page.reload();await page.locator('[data-unit-category="Sem classificação"]').waitFor();assert.equal(await page.locator('[data-unit-category="Sem classificação"] dd').textContent(),'1');assert.equal(await page.locator('[data-unit-category="Escola municipal"] dd').textContent(),'2');
   f.sqlite.prepare('UPDATE units SET unit_type=? WHERE id=?').run('Unidade administrativa',administrativeId);
   await page.route('**/api/units',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'TESTE ISOLADO · falha de leitura'})}));await page.reload();await expectCounts(['—','—','—','—','—','—','—']);assert.match(await page.locator('.unit-category-heading').textContent(),/indisponível/);await page.unroute('**/api/units');

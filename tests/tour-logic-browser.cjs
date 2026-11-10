@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  f.sqlite.prepare('INSERT INTO settings(key,value) VALUES(?,?)').run('temporary_seconds',86400);
  await page.clock.install({time:Date.now()});
  // Global Enter works on every shell, and the query survives browser reload.
- for(const path of ['/computadores','/demandas','/usuarios','/conta','/panorama']){await page.goto(origin+path);await page.locator('.search input').fill('sem inventário');await page.locator('.search input').press('Enter');await page.waitForURL(/\/unidades\?q=/);await page.locator('.unit-list .unit-row, .unit-list button, [data-action=open-unit]').first().waitFor();assert.equal(new URL(page.url()).searchParams.get('q'),'sem inventário');await page.reload();await page.locator('.search input').waitFor();assert.equal(await page.locator('.search input').inputValue(),'sem inventário');}
+ for(const path of ['/computadores','/demandas','/usuarios','/conta','/panorama']){await page.goto(origin+path);await page.locator('.search input').fill('sem inventário');await page.locator('.search input').press('Enter');await page.waitForURL(/\/busca\?q=/);await page.locator('.global-unit-result').first().waitFor();assert.equal(new URL(page.url()).searchParams.get('q'),'sem inventário');await page.reload();await page.locator('.search input').waitFor();assert.equal(await page.locator('.search input').inputValue(),'sem inventário');}
  await shot('busca-unidades');
  // Current environment catalog opens only its published inventory and retains the environment filter.
  await page.goto(origin+'/ambientes?id='+seed.unit);await page.locator('[data-action=open-environment]').first().waitFor();assert.equal(await page.locator('.environments [data-action=environments]').count(),0);
