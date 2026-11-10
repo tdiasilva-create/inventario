@@ -29,9 +29,18 @@ Não comprova troca física neste turno; detecção depende do próximo inventá
 
 ## Publicação
 
-Registro de versão e verificações remotas será acrescentado após a execução. Sem migração, alteração de segredos ou novos crons. Versão anterior do painel: `78ca889a-b71b-4c7f-bb20-5f5a09164086`; coletor esperado: `274ecd9b-002e-4f79-a4b9-325fc26fece1`. Rollback somente do Worker; não restaurar banco sobre dados recebidos. A versão anterior volta ao prazo/notificações antigos, portanto só usar como retorno deliberado.
+Publicado o commit 95fb3b3 em 10/11/2026 às 20:07:30 de Fortaleza (23:07:30 UTC). Painel ativo em 100% na versão cffd8c33-7fec-4a60-8e5e-7a5699fdd885. Sem migração, alteração de segredos ou novos crons. Versão anterior do painel: `78ca889a-b71b-4c7f-bb20-5f5a09164086`; coletor confirmado sem alteração: `274ecd9b-002e-4f79-a4b9-325fc26fece1`. Rollback somente do Worker; não restaurar banco sobre dados recebidos. A versão anterior volta ao prazo/notificações antigos, portanto só usar como retorno deliberado.
 
-Regressões complementares aprovadas: pending-indicators-browser.cjs (três filas, parecer/encaminhamento, atualização e falhas); panel-navigation-browser.cjs (menus, voltar/avançar, timeout/retry e sessão expirada); desktop-identity-browser.cjs (17 rotas, identidade, formulários, filtros, fotos e mobile). Seis roteiros de navegador nesta entrega ao todo. Dry-run dos dois Workers aprovado; somente painel será publicado. Pacotes reconstruídos após os testes; os 86 arquivos do painel conferidos exatamente contra o manifesto, sem arquivos adicionais.
+Regressões complementares aprovadas: pending-indicators-browser.cjs (três filas, parecer/encaminhamento, atualização e falhas); panel-navigation-browser.cjs (menus, voltar/avançar, timeout/retry e sessão expirada); desktop-identity-browser.cjs (17 rotas, identidade, formulários, filtros, fotos e mobile). Seis roteiros de navegador nesta entrega ao todo. Dry-run dos dois Workers aprovado; somente painel foi publicado. Pacotes reconstruídos após os testes; os 86 arquivos do painel conferidos exatamente contra o manifesto, sem arquivos adicionais.
 
 
 Preparação: versões ativas dos dois Workers confirmadas por leitura. Cópia de segurança somente das cinco tabelas de monitoramento/pareceres exportada para private-data/release-notifications-48h-2026-11-10/monitor-before.sql (67.181 bytes, SHA-256 D2804ED635600A3DB79421A283CCC420D787F79BB36EA8612F51F38F910C763D). Nenhum dado da cópia foi enviado ao Git. Registro de saúde/contagens anterior em arquivo privado; sem mudança de dados por estas consultas.
+
+
+Pós-publicação: nove verificações HTTP externas aprovadas (login 200, páginas/assets privados 302 para login e APIs privadas 401 sem sessão). Tráfego/versões dos dois Workers conferidos; cron de minuto e manutenção diária preservados. Três consultas agregadas de leitura no D1 real aprovadas: monitor executado em 10/11/2026 às 23:07:42.725 UTC, depois do deploy; zero perdas abertas acima de 48 h e zero alterações aguardando parecer naquele instante. Os números são instantâneos, não dados fixos da interface. Nenhum incidente ou decisão foi fabricado para validar produção.
+
+A navegação autenticada detalhada foi testada no Worker/SQLite isolado. A conferência remota deste turno validou publicação, proteção HTTP e consultas/saúde no D1; não substitui o aceite físico do responsável com agente real. Logs e metadados remotos em private-data/release-notifications-48h-2026-11-10/. Recarregar abas abertas para receber os scripts novos.
+
+Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+Log: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/log-comunicacao
