@@ -371,3 +371,7 @@ Pedido explícito atual + Base §§7.3/7.4/9, D-069/D-070/D-071 → `server/equi
 ## D-080 — Mesa de dados e login, 10/11/2026
 
 Pacotes e comparações entregues pelo responsável → `web/painel.css`, `panel-shell.js`, `panel-pulse.js`, entradas HTML e login; remoção de injeções de CSS; ajustes de assets no Worker/build. Identidade D-065, composição D-067 e vínculo D-079 preservados. `tests/panel-mesa-browser.cjs` cobre resumo/API, falha/recuperação, teclado/fixação, navegação móvel e login; regressões desktop verificam mapas, filtros, permissões, fotos e operações. Base original intacta: cobertura de apresentação/consulta e acesso (§§7/8/9), sem novas perguntas A–H, offline ou regras de conclusão. [Registro](../05-qualidade/MESA_DADOS_LOGIN_2026-11-10.md).
+
+## D-081 — atenção de hardware no mapa e decisão
+
+Pedido de 10/11/2026 → migração 0024, server/hardware-review.mjs e agent-monitoring.mjs, web/hardware-attention.js, desktop-notifications.js, desktop-map.js, operations.js e painel.css. Base §§9.2/9.5/9.11: histórico e ID preservados; D-070: comparação confiável; D-071: demanda vinculada sem duplicação. Aceite em [HARDWARE_DECISAO_2026-11-10.md](../05-qualidade/HARDWARE_DECISAO_2026-11-10.md). testes/hardware-review.test.mjs e hardware-review-browser.cjs, mais regressões anteriores. Nenhuma cobertura nova de perguntas do TXT; coleta/EXE/fotos inalterados.

@@ -1,3 +1,4 @@
+import {hardwareReviewRoutes} from './hardware-review.mjs';
 import {thumbnailRoutes} from './photo-thumbnails.mjs';
 import {assetResponse} from './asset-response.mjs';
 import {UnitScopeError} from './unit-scope.mjs';
@@ -73,6 +74,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(path==='/api/auth/revoke'&&request.method==='POST'){const data=await body(request);await db.batch([db.prepare('DELETE FROM sessions WHERE token_hash=? AND user_id=?').bind(String(data.id),user.id),audit(db,user.id,'session_revoked')]);return json({ok:true});}
  // Rotas humanas do módulo de agentes (sessão + CSRF já verificados): antes de collectorRoutes/unitRoutes, que respondem 404 a caminhos desconhecidos.
  const operations=await serviceDeskRoutes(request,url,user,env,{json,fail,body});if(operations)return operations;
+ const hardware=await hardwareReviewRoutes(request,url,user,env,{json,fail,body});if(hardware)return hardware;
  const monitoring=await monitoringRoutes(request,url,user,env,{json,fail,body});if(monitoring)return monitoring;
  const agentHuman=await handleAgentHuman(request,url,user,env);if(agentHuman)return agentHuman;
  const thumbnail=await thumbnailRoutes(request,url,user,env,{json,fail});if(thumbnail)return thumbnail;

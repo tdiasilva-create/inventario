@@ -1,6 +1,22 @@
 import {geolocatedUnits} from './map-geography.js';
 import {icon} from './desktop-icons.js';
 let current=null,generation=0;
+let hardwareUnits=new Map();
+window.addEventListener('semed:monitoring',e=>{hardwareUnits=new Map((e.detail?.hardware?.units||[]).map(u=>[u.unit_id,u]));paintHardware();});
+function openHardware(unitId){window.dispatchEvent(new CustomEvent('semed:hardware-open',{detail:unitId?{unitId}:{}}));}
+function paintHardware(){
+ if(!current)return;let count=0;
+ for(const [id,entry] of current.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;count+=pending+demands;
+  entry.label.textContent=entry.name+(pending?' · '+pending+' alteração(ões) de hardware aguardando decisão':'')+(demands?' · '+demands+' demanda(s) de hardware em atendimento':'');
+  entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':'#0e9fff'});
+  const node=entry.marker.getElement();if(node){node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click');}};}
+  if(pending&&!entry.halo){entry.halo=window.L.circleMarker(entry.marker.getLatLng(),{radius:16,color:'#d70825',weight:3,fill:false,interactive:false,className:'hardware-map-halo'}).addTo(current.unitGroup);entry.marker.bringToFront();}
+  if(entry.halo){if(!pending){current.unitGroup.removeLayer(entry.halo);entry.halo=null;}else entry.halo.setLatLng(entry.marker.getLatLng());}
+ }
+ let button=current.container.closest('.map-panel').querySelector('.map-hardware-summary');
+ if(!button){button=document.createElement('button');button.type='button';button.className='map-hardware-summary';button.onclick=()=>openHardware();current.container.closest('.map-panel').append(button);}
+ button.hidden=!count;button.textContent=count+' alerta(s) de hardware nas unidades visíveis · Analisar';
+}
 const preference={base:'streets',boundary:false,camera:null,examples:true};
 const geometryPromise=fetch('/data/map-v33.json').then(r=>{if(!r.ok)throw new Error('Geometria indisponível');return r.json();});
 const examplesPromise=fetch('/data/map-examples.json').then(r=>{if(!r.ok)throw new Error('Exemplos indisponíveis');return r.json();}).catch(()=>null);
@@ -12,6 +28,7 @@ export function unmountMap(){
  generation++;
  if(!current)return;
  preference.camera={center:current.map.getCenter(),zoom:current.map.getZoom()};
+ current.container.closest('.map-panel')?.querySelector('.map-hardware-summary')?.remove();
  current.observer?.disconnect();current.map.remove();current=null;
 }
 function status(text,error=false){
@@ -86,13 +103,14 @@ export function updateMarkers(units,selected){
  for(const {unit,coordinates} of geolocatedUnits(units)){
   keep.add(unit.id);let entry=context.markers.get(unit.id);
   if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#d9f8ff',weight:2,fillColor:'#0e9fff',fillOpacity:1});
-   const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>context.onSelect(unit.id));marker.addTo(context.unitGroup);
+   const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>{context.onSelect(unit.id);if(hardwareUnits.has(unit.id))openHardware(unit.id);});marker.addTo(context.unitGroup);
    entry={marker,label};context.markers.set(unit.id,entry);
   }
-  entry.label.textContent=unit.name||unit.nome||'Unidade sem nome';entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
+  entry.name=unit.name||unit.nome||'Unidade sem nome';entry.label.textContent=entry.name;entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
  }
- for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);context.markers.delete(id);}
+ for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.halo)context.unitGroup.removeLayer(entry.halo);context.markers.delete(id);}
  context.markerCount=keep.size;context.container.dataset.markerCount=String(keep.size);baseStatus();
+ paintHardware();
 }
 export function zoomMap(direction){if(current)direction>0?current.map.zoomIn():current.map.zoomOut();}
 function frameMunicipality(context){

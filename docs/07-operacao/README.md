@@ -42,3 +42,7 @@ Aplicar as **23 migrações** em nova instalação. 0023 conserva a ficha retira
 ## Identificação do vínculo de computadores — D-079, 09/11/2026
 
 Etiquetas e filtro de vínculo/cadastro nas consultas desktop, sem migração ou alteração de registros. Vinculado sem comunicação recente permanece vinculado; histórico encerrado, cadastro manual, pendência e ausência de informação são distintos. Publicação somente do painel. [Aceite e versão ativa](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md).
+
+## D-081 — revisão administrativa de hardware
+
+Nova instalação aplica as 24 migrações. 0024 guarda decisão administrativa e vínculo à demanda sem modificar o inventário existente. Publicar apenas o painel é suficiente; o coletor continua compatível. [Aceite e versão](../05-qualidade/HARDWARE_DECISAO_2026-11-10.md). Novas tabelas e decisões integram backup/transferência; preservar eventos originais e histórico das demandas.

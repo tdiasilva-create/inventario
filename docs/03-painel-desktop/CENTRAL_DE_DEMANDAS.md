@@ -39,3 +39,7 @@ Base original preservada. Requisitos atendidos nesta entrega: histórico permane
 ## Atualização D-079 — identificar computadores vinculados e manuais
 
 Em `/computadores`, etiqueta textual independente da comunicação em cada ícone e no detalhe: Agente vinculado, Cadastro manual, Aguardando vínculo, Vínculo encerrado, Cadastro não informado. Hostname e unidade continuam no hover/foco. O filtro **Vínculo / cadastro** combina com ambiente/laboratório e funciona antes da paginação no servidor. `GET /api/operations/computers` aceita `agent` e retorna `link_state`; rascunhos usam a informação atual e continuam PARCIAL. Polling de 15s e suspensão durante diálogos mantidos. Não apaga nem reúne cadastros. [Aceite](../05-qualidade/VINCULOS_AGENTES_2026-11-09.md).
+
+## Alterações de hardware — D-081
+
+O modal de monitoramento permite a root/admin encaminhar uma alteração à Central. Demanda de Manutenção, origem Painel, vinculada ao mesmo computador e unidade; guarda antes/depois, hostname e localização do evento. Reenvios não criam outra demanda. A revisão administrativa fica imutável, enquanto o atendimento usa os estados/histórico normais. URL `/demandas?demanda=<id>` abre o registro diretamente. Conclusão/reabertura controla o destaque âmbar no mapa; nunca apaga a alteração nem muda a referência do agente.

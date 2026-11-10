@@ -92,6 +92,10 @@
     {
       "file": "0023_equipment_deletions.sql",
       "sha256": "8b0db185ac9df8bbed4345c7846de7691d19f65a46b38af32f4812df309879bc"
+    },
+    {
+      "file": "0024_hardware_reviews.sql",
+      "sha256": "835cb6e5d4e9344533ae0f8c36a6174bfb143fdb5392da97587e1c47f63d8dc3"
     }
   ],
   "tables": [
@@ -639,6 +643,92 @@
           "name": "inspection_id",
           "type": "TEXT",
           "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "agent_hardware_reviews",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "notification_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "decision",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "note",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "decided_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "context_json",
+          "type": "TEXT",
+          "notnull": 1,
           "dflt_value": null,
           "pk": 0
         }
@@ -5172,6 +5262,12 @@
     },
     {
       "type": "index",
+      "name": "hardware_review_request",
+      "tbl_name": "agent_hardware_reviews",
+      "sql": "CREATE INDEX hardware_review_request ON agent_hardware_reviews(request_id)"
+    },
+    {
+      "type": "index",
       "name": "idx_agent_audit_at",
       "tbl_name": "agent_audit_log",
       "sql": "CREATE INDEX idx_agent_audit_at ON agent_audit_log(at)"
@@ -5391,6 +5487,12 @@
       "name": "agent_equipment_location_history",
       "tbl_name": "agent_equipment_location_history",
       "sql": "CREATE TABLE agent_equipment_location_history (\n  history_id        TEXT PRIMARY KEY,\n  equipment_id      TEXT NOT NULL,\n  version_before    INTEGER NOT NULL,\n  version_after     INTEGER NOT NULL,\n  kind              TEXT NOT NULL CHECK (kind IN ('ficha_criada','localizacao_confirmada','posicao_definida_e_confirmada','mudanca_de_localizacao')),\n  source            TEXT NOT NULL CHECK (source IN ('pairing_claim','equipment_location')),\n  before_json       TEXT,\n  after_json        TEXT NOT NULL,\n  reason            TEXT,\n  changed_by        TEXT NOT NULL,\n  changed_at        TEXT NOT NULL,\n  inspection_id     TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "agent_hardware_reviews",
+      "tbl_name": "agent_hardware_reviews",
+      "sql": "CREATE TABLE agent_hardware_reviews (\n notification_id TEXT PRIMARY KEY,\n decision TEXT NOT NULL CHECK(decision IN ('accepted','demand')),\n request_id TEXT UNIQUE,\n operation_id TEXT NOT NULL UNIQUE,\n actor_id TEXT NOT NULL,\n actor_name TEXT NOT NULL,\n note TEXT NOT NULL,\n decided_at INTEGER NOT NULL,\n payload_json TEXT NOT NULL,\n context_json TEXT NOT NULL,\n CHECK((decision='accepted' AND request_id IS NULL) OR (decision='demand' AND request_id IS NOT NULL))\n)"
     },
     {
       "type": "table",

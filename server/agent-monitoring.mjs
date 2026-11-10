@@ -1,3 +1,4 @@
+import {hardwareSummary,notificationJoins,notificationColumns,notificationItem} from './hardware-review.mjs';
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 const parse=s=>s?JSON.parse(s):{};
 const clean=v=>typeof v==='string'?v.trim().replace(/\s+/g,' ').toUpperCase():v;
@@ -29,7 +30,7 @@ export function hardwareComponents(sections){
 }
 export const componentNames={gpu:'Adaptadores de vídeo (PCI)',cpu:'Processador',memory_total:'Memória total',memory_types:'Tipos dos módulos de memória',memory_modules:'Módulos de memória',memory_serials:'Séries da memória',storage:'Discos físicos',storage_serials:'Séries dos discos',board:'Placa-mãe',board_serial:'Série da placa-mãe'};
 const active=`FROM agent_equipment_links l JOIN agent_devices d ON d.device_id=l.device_id JOIN equipments e ON e.id=l.equipment_id JOIN units u ON u.id=e.unit_id LEFT JOIN agent_presence p ON p.device_id=d.device_id WHERE l.ended_at IS NULL AND d.state='linked' AND u.active=1`;
-const liveSelect=`SELECT l.link_id,l.device_id,l.equipment_id,l.linked_at,e.unit_id,e.published_json,e.data_json,u.name AS unit_name,d.state,p.data_json AS presence_json ${active}`;
+const liveSelect=`SELECT l.link_id,l.device_id,l.equipment_id,l.linked_at,e.unit_id,e.environment_id,e.position_label,e.published_json,e.data_json,u.name AS unit_name,(SELECT name FROM environments WHERE id=e.environment_id AND unit_id=e.unit_id) AS environment_name,(SELECT name FROM equipment_names WHERE equipment_id=e.id AND unit_id=e.unit_id) AS display_name,d.state,p.data_json AS presence_json ${active}`;
 // Uma rodada em lote; sem painel aberto também funciona. Repetições/concorrrência não duplicam eventos.
 export async function runAgentMonitoring(env,now=Date.now()){
  const db=env.DB,threshold=presenceThreshold(env),rows=(await db.prepare(liveSelect).all()).results;
@@ -60,7 +61,7 @@ export async function runAgentMonitoring(env,now=Date.now()){
   const token=crypto.randomUUID(),revision=old?.revision??-1;
   if(!old)statements.push(q(`INSERT OR IGNORE INTO agent_monitor_cursors VALUES(?,?,?,?,0,?,?)`,deviceId,row.link_id,watermark,JSON.stringify(components),token,now));
   else statements.push(q(`UPDATE agent_monitor_cursors SET link_id=?,collected_ms=?,components_json=?,revision=revision+1,commit_token=?,updated_at=? WHERE device_id=? AND revision=?`,row.link_id,watermark,JSON.stringify(components),token,now,deviceId,revision));
-  for(const c of changes){const s=c.snapshot;statements.push(q(`INSERT OR IGNORE INTO agent_notifications(id,event_key,device_id,link_id,equipment_id,unit_id,kind,observed_at,detected_at,details_json) SELECT ?,?,?,?,?,?,'hardware_change',?,?,? WHERE EXISTS(SELECT 1 FROM agent_monitor_cursors m JOIN agent_equipment_links l ON l.link_id=m.link_id WHERE m.device_id=? AND m.commit_token=? AND l.ended_at IS NULL)`,crypto.randomUUID(),'hardware|'+row.link_id+'|'+s.inventory_id,deviceId,row.link_id,row.equipment_id,row.unit_id,s.collected_at,now,JSON.stringify({inventory_id:s.inventory_id,changes:c.changes,queue_gaps:parse(s.queue_gaps_json)}),deviceId,token));}
+  for(const c of changes){const s=c.snapshot;statements.push(q(`INSERT OR IGNORE INTO agent_notifications(id,event_key,device_id,link_id,equipment_id,unit_id,kind,observed_at,detected_at,details_json) SELECT ?,?,?,?,?,?,'hardware_change',?,?,? WHERE EXISTS(SELECT 1 FROM agent_monitor_cursors m JOIN agent_equipment_links l ON l.link_id=m.link_id WHERE m.device_id=? AND m.commit_token=? AND l.ended_at IS NULL)`,crypto.randomUUID(),'hardware|'+row.link_id+'|'+s.inventory_id,deviceId,row.link_id,row.equipment_id,row.unit_id,s.collected_at,now,JSON.stringify({inventory_id:s.inventory_id,changes:c.changes,queue_gaps:parse(s.queue_gaps_json),context:{unit_name:row.unit_name,environment_name:row.environment_name||parse(row.data_json).environmentName||null,environment_id:row.environment_id,position_label:row.position_label,display_name:row.display_name,hostname:parse(s.sections_json).system?.data?.hostname||null}}),deviceId,token));}
  }
  statements.push(q('INSERT INTO agent_monitor_health VALUES(1,?,?) ON CONFLICT(id) DO UPDATE SET last_success_at=excluded.last_success_at,processed=excluded.processed',now,snapshots.length));
  await db.batch(statements);return {devices:rows.length,snapshots:snapshots.length};
@@ -79,13 +80,13 @@ export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
  const offset=Number(url.searchParams.get('offset')||0),ids=(url.searchParams.get('equipmentIds')||'').split(',').filter(Boolean);
  if(!Number.isSafeInteger(offset)||offset<0||ids.length>50||ids.some(id=>!/^[-a-f0-9]{36}$/i.test(id)))return fail('Filtro inválido.',422);
  const onlyUnread=url.searchParams.get('unread')==='1';
- const joins=`FROM agent_notifications n JOIN units u ON u.id=n.unit_id JOIN equipments e ON e.id=n.equipment_id LEFT JOIN agent_notification_reads r ON r.notification_id=n.id AND r.user_id=?`;
+ const joins=notificationJoins+' LEFT JOIN agent_notification_reads r ON r.notification_id=n.id AND r.user_id=?';
  const [page,count,health,statuses]=await Promise.all([
-  db.prepare(`SELECT n.*,u.name AS unit_name,e.published_json IS NULL AS partial,COALESCE(json_extract(e.published_json,'$.environmentName'),json_extract(e.data_json,'$.environmentName')) AS environment_name,r.read_at ${joins} ${onlyUnread?'WHERE r.read_at IS NULL':''} ORDER BY n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(user.id,offset).all(),
+  db.prepare(`SELECT ${notificationColumns},r.read_at ${joins} ${onlyUnread?'WHERE r.read_at IS NULL':''} ORDER BY n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(user.id,offset).all(),
   db.prepare(`SELECT COUNT(*) AS total,SUM(r.read_at IS NULL) AS unread,SUM(n.kind='communication_lost' AND n.resolved_at IS NULL) AS communication_lost ${joins}`).bind(user.id).first(),
   db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),
   ids.length?db.prepare(liveSelect+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})
  ]);
  const total=Number(onlyUnread?count.unread:count.total)||0;
- return json({items:page.results.map(n=>({...n,details:parse(n.details_json),details_json:undefined})),total,unread:Number(count.unread)||0,communication_lost:Number(count.communication_lost)||0,nextOffset:offset+page.results.length<total?offset+25:null,server_time:new Date(now).toISOString(),monitor_last_success_at:health?.last_success_at??null,statuses:[...ids.filter(id=>!statuses.results.some(r=>r.equipment_id===id)).map(id=>({equipment_id:id,state:'not_linked',last_live_contact_at:null})),...statuses.results.map(r=>({equipment_id:r.equipment_id,state:presenceState(r,parse(r.presence_json),now,presenceThreshold(env)),last_live_contact_at:parse(r.presence_json).last_live_contact_at??null}))]});
+ return json({hardware:await hardwareSummary(db),items:page.results.map(notificationItem),total,unread:Number(count.unread)||0,communication_lost:Number(count.communication_lost)||0,nextOffset:offset+page.results.length<total?offset+25:null,server_time:new Date(now).toISOString(),monitor_last_success_at:health?.last_success_at??null,statuses:[...ids.filter(id=>!statuses.results.some(r=>r.equipment_id===id)).map(id=>({equipment_id:id,state:'not_linked',last_live_contact_at:null})),...statuses.results.map(r=>({equipment_id:r.equipment_id,state:presenceState(r,parse(r.presence_json),now,presenceThreshold(env)),last_live_contact_at:parse(r.presence_json).last_live_contact_at??null}))]});
 }

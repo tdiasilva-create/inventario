@@ -25,6 +25,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0021_environment_names.sql`
 - `0022_equipment_names.sql`
 - `0023_equipment_deletions.sql`
+- `0024_hardware_reviews.sql`
 
 ## agent_audit_log
 
@@ -132,6 +133,21 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 | changed_by | TEXT | sim |  | — |
 | changed_at | TEXT | sim |  | — |
 | inspection_id | TEXT | não |  | — |
+
+## agent_hardware_reviews
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| notification_id | TEXT | não | 1 | — |
+| decision | TEXT | sim |  | — |
+| request_id | TEXT | não |  | — |
+| operation_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| note | TEXT | sim |  | — |
+| decided_at | INTEGER | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+| context_json | TEXT | sim |  | — |
 
 ## agent_heartbeats
 

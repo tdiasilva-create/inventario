@@ -80,6 +80,7 @@ async function init(){const r=await fetch('/api/auth/me');if(!r.ok){location.ass
  $('#content').addEventListener('click',e=>{const b=e.target.closest('[data-op]');if(!b)return;const action=b.dataset.op;if(action==='refresh')refresh(true);if(action==='unit'){selected=b.dataset.id;room='';offset=0;history.replaceState(null,'','/computadores?unidade='+selected);refresh(true);}if(action==='machine')showMachine(b.dataset.id);if(action==='classify')classify();if(action==='new-request')requestForm();if(action==='request')openRequest(b.dataset.id);if(action==='prev'){offset=Math.max(0,offset-(fleet?60:50));refresh(true);}if(action==='next'&&rows?.nextOffset!==null){offset=rows.nextOffset;refresh(true);}});
  if(fleet){$('input[name=unitSearch]').oninput=e=>{unitFilter=e.target.value;drawUnits();};$('select[name=unitState]').onchange=e=>{unitState=e.target.value;drawUnits();};}else $('#request-filters').onsubmit=e=>{e.preventDefault();const values=new FormData(e.target);listUnit=values.get('unit');listStatus=values.get('status');listQuery=values.get('q').trim();offset=0;refresh(true);};
  await refresh(true);if(!fleet)$('#request-filters select[name=unit]').innerHTML=unitOptions(listUnit,'Todas');
+ const demandId=new URLSearchParams(location.search).get('demanda');if(!fleet&&demandId)await openRequest(demandId);
  setInterval(()=>refresh(),15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 }
 init().catch(e=>{$('#dashboard').textContent='Não foi possível abrir o painel: '+e.message;});

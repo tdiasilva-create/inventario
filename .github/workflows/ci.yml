@@ -89,3 +89,7 @@ jobs:
       - run: pnpm test:mesa:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: pnpm test:hardware-review:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

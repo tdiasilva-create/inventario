@@ -59,3 +59,13 @@ Se a última rodada tiver mais de três minutos, a janela avisa que os alertas p
 Publicar somente o painel é suficiente: ele lê o D1 compartilhado, já alimentado pelo coletor existente. Preservar todos os bindings/segredos e o agendamento diário. Aplicar 0017 antes do código novo. Backup de D1 e versão anterior do Worker antes de publicar. Para reverter a interface/monitor, restaurar a versão anterior do painel e remover somente o cron de minuto; não apagar as novas tabelas nem restaurar todo o banco sobre dados recebidos posteriormente. A versão anterior ignora as tabelas adicionais.
 
 Testes e registro de publicação: `docs/05-qualidade/MONITORAMENTO_2026-11-08.md`.
+
+## D-081 — análise administrativa e mapa
+
+0024 adiciona `agent_hardware_reviews` (decisão única por notification_id, operation_id único, usuário/data/observação, request_id opcional e snapshots de payload/contexto). Não modifica `agent_notification_reads` nem os cursores de detecção. Audit registra ação e ID, sem copiar componentes/segredos no texto do evento.
+
+`GET /api/inventory/hardware-alerts?id=<UUID>&unitId=<UUID>&offset=0`: filtro por evento ou unidade, 25 registros por página; pendentes primeiro, depois demandas abertas. Consulta por ID também inclui decisões encerradas. `POST /api/inventory/hardware-review` recebe `{id,operationId,decision:"accepted"|"demand",note}`; nota opcional até 1.000 caracteres. Reenvio do mesmo usuário/payload devolve recibo; outra decisão após a primeira retorna 409. Aceitação e criação de demanda/histórico/audit são atômicas. Unidade inativa não aceita nova demanda. Demanda usa o evento de origem e mantém unidade/equipamento, inclusive contexto parcial claramente identificado.
+
+`GET /api/inventory/monitoring` acrescenta `hardware` com totais pendentes, IDs dos 25 primeiros e contagens por unidade (pendentes/demandas abertas), independente da página e do filtro de lidas. Cada alerta inclui decisão, demanda e nome/hostname/ambiente/posição. Eventos novos guardam a localização no momento da detecção; legado é rotulado contexto atual. Sem cadastro/unidade ativo na consulta, registro histórico não ganha marcador fictício.
+
+Somente root/admin escrevem decisões; visualizador lê, operador/coletor recusados. No mapa só a pendência de decisão anima; demanda aberta usa âmbar estático. Preferência de movimento reduzido respeitada. O ciclo da demanda não altera referência de hardware, e uma nova mudança pode gerar outro alerta. [Teste e publicação](../05-qualidade/HARDWARE_DECISAO_2026-11-10.md).
