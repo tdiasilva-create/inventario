@@ -58,3 +58,7 @@ O pacote externo sugere D-054 e migração 0015, já ocupados por decisões/migr
 # Seleção de ambientes — resolvido por D-074 (09/11/2026)
 
 O pedido atual substitui a digitação livre em cada equipamento aprovada no ponto 4 de D-057 pela seleção dos ambientes cadastrados na mesma unidade. Cadastro de ambiente novo permanece explícito. Não fundir nomes parecidos ou apagar duplicidades históricas automaticamente. A compatibilidade textual para abas antigas não é a interface oferecida ao abrir a página atualizada. Fases 4/5 da auditoria permanecem pausadas.
+
+## D-081 — apresentação do alerta, esclarecida em 10/11/2026
+
+A entrega inicial abriu o modal automaticamente e adicionou avisos fixos. O responsável esclareceu que o aviso deve estar sobre a coordenada da unidade e o modal abrir somente ao clicar. Aplicar o adendo de D-081; o registro de qualidade inicial permanece histórico, superado nesse comportamento.

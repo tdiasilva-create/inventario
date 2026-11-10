@@ -1,5 +1,7 @@
 # D-081 — atenção e decisão sobre alterações de hardware
 
+**Interação inicial superada por esclarecimento posterior:** modal somente por clique no aviso sobre a unidade no mapa. Removidos abertura automática e avisos fixos. [Correção e versão posterior](HARDWARE_MAPA_CLIQUE_2026-11-10.md).
+
 ## Pedido, fontes e escopo
 
 Responsável solicitou unidade animada no mapa e modal com o registro da mudança, permitindo ao administrador aceitar ou encaminhar à Central de demandas. Implantação sob a autorização contínua de publicação do painel real da sessão.

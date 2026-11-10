@@ -26,7 +26,6 @@ export function startNotifications(user){
   try{const ids=[...new Set([...document.querySelectorAll('[data-monitor-equipment]')].map(el=>el.dataset.monitorEquipment))].slice(0,50);
    const r=await fetch('/api/inventory/monitoring?'+new URLSearchParams({offset,unread:unread?'1':'0',equipmentIds:ids.join(',')}),{signal:controller.signal});if(!r.ok)throw Error(r.status===401?'Sessão expirada. Entre novamente.':'Não foi possível atualizar as notificações. Tente novamente.');data=await r.json();error='';
    for(const s of data.statuses){for(const node of document.querySelectorAll(`[data-monitor-equipment="${CSS.escape(s.equipment_id)}"]`)){node.textContent=monitorLabels[s.state]||s.state;node.dataset.state=s.state;node.title='Último contato: '+date(s.last_live_contact_at);}}
-   attention.update(data.hardware);
    window.dispatchEvent(new CustomEvent('semed:monitoring',{detail:data}));
   }catch(e){if(!closed){error=e.name==='AbortError'?'Atualização demorou demais. Tentaremos novamente.':e.message;document.querySelectorAll('[data-monitor-equipment]').forEach(n=>{n.textContent='Status desatualizado · aguardando conexão';n.dataset.state='unknown';});}}
   finally{clearTimeout(timeout);busy=false;if(!closed){paint();timer=setTimeout(poll,pending?0:error?30000:15000);}}
