@@ -43,3 +43,9 @@ Em `/computadores`, etiqueta textual independente da comunicação em cada ícon
 ## Alterações de hardware — D-081
 
 O modal de monitoramento permite a root/admin encaminhar uma alteração à Central. Demanda de Manutenção, origem Painel, vinculada ao mesmo computador e unidade; guarda antes/depois, hostname e localização do evento. Reenvios não criam outra demanda. A revisão administrativa fica imutável, enquanto o atendimento usa os estados/histórico normais. URL `/demandas?demanda=<id>` abre o registro diretamente. Conclusão/reabertura controla o destaque âmbar no mapa; nunca apaga a alteração nem muda a referência do agente.
+
+## Visão de rede e navegação — D-082
+
+A faixa superior e os quatro contadores de estado abrem /computadores?estado=comunicando|sem-comunicacao|sem-agente|outros. Lista de toda a rede, 60 fichas por página, agrupada pelo ID da unidade; nomes iguais não fundem unidades. Mostra hostname/unidade no hover e na ficha. “Ver por unidade” e seleção lateral retornam à consulta anterior; links com a Central mantêm a unidade selecionada. Quinto cartão inclui estados que antes estavam fora da soma (suspensão/desligamento/nunca comunicou/revogado). Total continua número de fichas (LOG-08 pendente), não quantidade física de lotes.
+
+Atualização existente de 15s, sem novo ciclo. Rascunhos continuam PARCIAL; absence de comunicação não significa desligamento. Envio de demanda inalterada retorna sem alterar versão/histórico; anotação não vazia continua gerando evento. Root/admin escrevem; visualizador consulta. [Aceite](../05-qualidade/TOUR_LOGICA_2026-11-10.md).

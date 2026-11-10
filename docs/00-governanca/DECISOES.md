@@ -535,3 +535,13 @@ Responsável rejeitou a apresentação inicial e esclareceu: aviso animado sobre
 ### D-081 — círculo discreto e distinção após parecer, 10/11/2026
 
 Responsável considerou o aviso geográfico grande e pediu círculo piscando, com apresentação diferente após o parecer. Substituir o balão/contador por ponto circular de 16 px, halo suave, área de interação de 32 px e quantidade no tooltip. Vermelho pendente (2,4 s), âmbar encaminhado para atendimento (3,6 s); aceitação/conclusão retiram o alerta ativo, mantendo histórico. Se houver outra alteração pendente na mesma unidade, o vermelho prevalece. Modal continua somente por clique/teclado. Não altera decisão ou detecção no servidor. [Aceite e publicação](../05-qualidade/HARDWARE_MAPA_CLIQUE_2026-11-10.md).
+
+## D-082 — tour de lógica e navegação do painel, 10/11/2026
+
+Responsável forneceu o pacote e relatório de tour e pediu “faça ja implantando no ambiente real”. Aprova LOG-01 a LOG-07 e as correções sem decisão de negócio LOG-09, LOG-11, LOG-12 e LOG-15 a LOG-18. Aplicação somente no painel, preservando D-065–D-081. Não retoma Fases 4/5 ou altera coletor, EXE/QR, Drive, cadastros ou conclusão de visitas.
+
+Pulso e contadores abrem computadores de toda a rede por estado, agrupados por ID da unidade, paginados em 60. Quatro estados são exaustivos (online/lost/unlinked/other), com contador total existente preservado. Busca global identifica unidades por nome/INEP/gestor e Enter abre Unidades. Links cruzados mantêm unidade. Ver no mapa foca coordenada real; sem coordenada retorna ao município. Marcadores normais usam identidade atual; vermelho/âmbar pulsante D-081 preservados e modal só por clique.
+
+Ambientes abrem consulta de fichas publicadas por ID do ambiente publicado, não localização parcial atual. Salvar demanda sem alteração não escreve histórico/versão; uma nota é alteração válida. Confirmações administrativas usam diálogo com cancelamento; senha provisória copiável, ocultável e removida da tela após 60 s. Atualizar Drive mostra retorno de consulta. Nenhuma nova permissão no servidor, migração, envio de foto ou exclusão real de teste.
+
+Critérios de lotes, busca global de equipamentos, Pendentes, relatórios/planejamento, filtro Ano e mudança de destino da matriz permanecem pendentes. Hover com 220 ms é a correção entregue; alternativa exclusivamente por botão não adotada. [Aceite e publicação](../05-qualidade/TOUR_LOGICA_2026-11-10.md).

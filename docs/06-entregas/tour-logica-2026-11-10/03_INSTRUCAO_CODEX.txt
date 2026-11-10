@@ -1,0 +1,66 @@
+INSTRUÇÃO PARA O CODEX — depois de aplicar os patches desta entrega
+Contexto: tour de lógica dos botões do painel em 10/11/2026 (01_RELATORIO_TOUR_LOGICA.txt).
+Regras: AGENTS.md (nenhuma pendência vira requisito; D-066/D-067/D-070/D-071 preservadas; sem
+exclusões reais em teste; testes/aceite em docs/05-qualidade/). Ordem = prioridade.
+
+A. CONSOLIDAR O QUE ESTA ENTREGA TROUXE
+A1. Rodar a suíte completa e o roteiro novo (tests/operations-network-browser.cjs); incluí-lo em
+    package.json e no ci.yml ao lado de test:operations:browser.
+A2. docs/03-painel-desktop/CENTRAL_DE_DEMANDAS.md: registrar a visão "toda a rede" de Computadores
+    (?estado=comunicando|sem-comunicacao|sem-agente|outros; GET /api/operations/computers?presence=
+    online|lost|unlinked|other sem unitId, paginação em JS após o cálculo de presença, conveniadas
+    fora) e o ribbon clicável com cinco contagens (cadastrados = soma das quatro).
+A3. docs/00-governanca/DECISOES.md: anexar à D-079 (ou nova D-080) os itens LOG-01…LOG-07 como
+    comportamento aprovado, se o responsável validar no roteiro visual.
+
+B. CORRIGIR (sem decisão pendente)
+B1. LOG-09 · web/operations.js requestForm(): guardar o snapshot inicial (kind, source, description,
+    requester, responsible, status, scheduledDate, note vazio) e, no submit, se nada mudou, não
+    chamar request-save: mostrar no [role=alert] "Nenhuma alteração para salvar" (ou manter o botão
+    desabilitado até haver mudança). Teste: abrir demanda, Salvar sem mexer → histórico não cresce.
+B2. LOG-11 · web/desktop.js environmentsPanel(): não renderizar o link "Ver todos" quando
+    state.page==='Ambientes'; nos tiles, data-action="open-environment" data-id=… que abre a consulta
+    embutida (createEquipmentConsultation) filtrada por environment_id — exige aceitar
+    `environmentId` em /api/inventory/equipment (server/inventory-equipment.mjs) com o mesmo
+    critério de e.environment_id usado em service-desk.mjs. Fotos do ambiente: /api/inventory/
+    photos?kind=environment&targetId=.
+B3. LOG-12 · web/desktop.js alertsPanel(): três linhas com destino próprio — "Ocorrências recebidas
+    (prioridades)" → /ocorrencias; "Notificações dos computadores" → sino; "Demandas pendentes (n)"
+    → /demandas — e remover o handler `alert-detail` e os ramos mortos (`open-photo`, `photo-next`,
+    `profile`, `toggle-demo`, `gallery` de desktop-data.js) já apontados em ERR-15.
+B4. LOG-16 · web/admin-units.js miniMap(): `window.L.map('unit-mini-map',{scrollWheelZoom:false,
+    attributionControl:false})` + `L.control.attribution({prefix:'<a href="https://leafletjs.com"
+    target="_blank" rel="noopener">Leaflet</a>'})`.
+B5. LOG-15 · web/account.js e web/admin-units.js: substituir confirm() por um diálogo <dialog> do
+    painel (mesma classe .root-delete-dialog já existente) em Encerrar sessão, Redefinir senha,
+    Revogar sessões, Inativar/Ativar/Desativar; a senha provisória em #temporary ganha botão
+    "Copiar" e some após 60 s ou ao clicar "Ocultar".
+B6. LOG-17 · web/desktop.js google-refresh: após recarregar, toast "Integração consultada" quando o
+    estado não mudou.
+B7. LOG-18 · web/desktop-map.js: cores dos marcadores e do limite para a identidade (tokens.css):
+    marcador #25272c com borda #fff, selecionado #d70825, limite #ff4b1e tracejado. Sem mudar
+    geometria, camadas ou dados (D-067).
+B8. `state.year` em desktop.js continua inerte (LNA-09): remover ou implementar "Ano da última
+    vistoria".
+
+C. SÓ APÓS DECISÃO DO RESPONSÁVEL (ver 01_RELATORIO, seção 6)
+C1. LOG-08 · contagem de computadores por máquina (somar quantity dos lotes) ou rótulo "fichas".
+C2. LOG-10 · busca de equipamento em toda a rede: GET /api/inventory/equipment?q= sem unitId
+    (limitar a 60, ordenar por unidade), cabeçalho mostrando "Unidades (n) · Equipamentos (n)".
+C3. LOG-13 · critério de "Pendentes".
+C4. LOG-14 · Relatórios/Planejamento: ocultar, "em breve", ou primeiro relatório real.
+C5. N-02 · clique no nome da matriz abre a consulta ou só seleciona.
+
+D. SE O RESPONSÁVEL PREFERIR O TRILHO SEM ABERTURA POR HOVER (LOG-06)
+   Em web/painel.css, trocar a regra
+   `.sidebar:hover,.sidebar.open,.sidebar.pinned{width:var(--trilho-aberto);…}` por
+   `.sidebar.open,.sidebar.pinned{…}` e, nas regras `.sidebar:hover .nav-item>span`, `.sidebar:hover
+   .identity>div`, `.sidebar:hover .nav-group`, `.sidebar:hover .rail-pin span`,
+   `.sidebar:hover .nav-item [data-demand-count]`, remover o seletor `:hover`. O botão "Menu fixo"
+   e o ☰ continuam abrindo. Remover também `.sidebar:hover:not(.open):not(.pinned){transition-delay}`.
+
+E. NÃO FAZER
+   - Não somar unidades num total geral (D-066). Não mudar a composição do Panorama (D-067).
+   - Não interpretar ausência de comunicação como máquina desligada (D-070) — os textos da visão de
+     rede já dizem isso; manter.
+   - Não executar exclusões reais nem "Apagar cadastro" em testes (D-078).

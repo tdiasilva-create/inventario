@@ -44,6 +44,15 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});
  }
  if(path==='/api/operations/computers'&&request.method==='GET'){
+  // 10/11/2026: sem unitId, lista os computadores de TODA a rede num estado de comunicação (pulso e ribbon do painel).
+  // O estado é calculado em JS como em /units; a paginação vem depois do filtro. Mesmas colunas da listagem por unidade.
+  const presence=s.get('presence')||'';
+  if(!unitId&&['online','lost','unlinked','other'].includes(presence)){
+   const rows=(await db.prepare(`SELECT ${columns},u.name AS unit_name ${joins} JOIN units u ON u.id=e.unit_id WHERE ${computerWhere} AND u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,environment_name,e.position_label,e.id`).all()).results;
+   const group=st=>['communicating','communicating_with_failure'].includes(st)?'online':st==='no_recent_communication'?'lost':st==='unlinked'?'unlinked':'other';
+   const all=rows.map(r=>item(r,env)).filter(i=>group(i.presence_state)===presence),page=all.slice(offset,offset+60);
+   return json({unit:null,presence,items:page,total:all.length,offset,nextOffset:offset+page.length<all.length?offset+60:null,environments:[],server_time:new Date().toISOString()});
+  }
   if(!uuid(unitId))return fail('Selecione uma unidade.');
   const unit=await db.prepare("SELECT id,name FROM units WHERE id=? AND unit_type!='Escola conveniada'").bind(unitId).first();if(!unit)return fail('Unidade não encontrada.',404);
   const room=s.get('environmentId')||'',all=s.get('allEquipment')==='1',agent=s.get('agent')||'';if(room&&!uuid(room))return fail('Ambiente inválido.');if(!linkFilterValues.includes(agent))return fail('Filtro de vínculo inválido.');
@@ -81,6 +90,8 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   if(receipt){if(receipt.actor_id!==user.id||receipt.payload_json!==payload)return fail('Esta operação já foi usada com outros dados.',409);return json({request:await result(db,receipt.request_id),replayed:true});}
   const old=await result(db,a.id);if((old?.version||0)!==a.version)return fail('Esta demanda foi alterada. Reabra para conferir o histórico antes de salvar.',409);
   const description=text(a.description,2000),responsible=text(a.responsible),requester=text(a.requester),note=text(a.note,2000),scheduled=text(a.scheduledDate,10);
+  // Saving an unchanged request is read-only, including callers outside this UI.
+  if(old&&note===''&&description===old.description&&responsible===old.responsible&&requester===old.requester&&scheduled===old.scheduled_date&&a.status===old.status&&a.kind===old.kind&&a.source===old.source)return json({request:old,unchanged:true});
   if(!description||responsible===null||requester===null||note===null||scheduled===null||!dateValid(scheduled)||!states.includes(a.status)||!kinds.includes(a.kind)||!sources.includes(a.source)||a.status==='Concluída'&&!note)return fail('Confira a descrição, situação e dados informados. Para concluir, descreva o atendimento realizado.');
   let context,unitId=old?.unit_id,equipmentId=old?.equipment_id;
   if(!old){if(!uuid(a.unitId)||a.equipmentId&&!uuid(a.equipmentId))return fail('Selecione uma unidade e, se necessário, um equipamento.');const unit=await db.prepare("SELECT id,name FROM units WHERE id=? AND active=1 AND unit_type!='Escola conveniada'").bind(a.unitId).first();if(!unit)return fail('Unidade indisponível.',404);

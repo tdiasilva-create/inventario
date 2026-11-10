@@ -16,3 +16,11 @@ Demanda: descrição 1–2000 caracteres; nota até 2000, obrigatória para Conc
 Migração 0018 acrescenta `service_requests`, `service_request_events`, `computer_context`, `computer_context_events`. Contexto da demanda e autoria são snapshots auditáveis; referências não impedem exclusão autorizada do cadastro mestre, e histórico não é apagado em cascata. Nenhuma tabela antiga alterada. IDs e dados de exemplo não são semeados na produção.
 
 Migração antes do novo Worker; rollback operacional permite voltar ao Worker anterior mantendo as tabelas novas e eventuais demandas recebidas. Não executar DOWN nem restaurar backup sobre novas gravações sem análise do responsável. Backup anterior fica privado; não versionar dados, tokens ou segredos.
+
+## Extensão D-082
+
+GET /api/operations/computers sem unitId aceita presence=online|lost|unlinked|other. Mesmo controle de sessão/perfil; operador e Worker coletor recusados. Retorna unit:null, presence, items (unit_id/unit_name + campos existentes), total, offset, nextOffset, environments:[], server_time. Presença calculada pela mesma função da lista por unidade; filtro aplicado antes da paginação de 60. Não inclui inventário técnico bruto/credenciais. Custo atual proporcional às fichas de computadores da rede; nenhum novo polling. Sem filtro válido, o contrato anterior continua exigindo unidade.
+
+POST request-save com versão válida e conteúdo normalizado igual, sem nota, retorna request existente + unchanged:true; nenhuma atualização ou evento. Verificação de versão/recibo/permissão continua anterior a esse retorno.
+
+Consulta oficial GET /api/inventory/equipment?unitId=…&environmentId=UUID filtra json_extract(published_json,'$.environment'). Mantém todas as categorias/quantidades/fotos publicadas e filtros anteriores; localização em edição não muda esse filtro.

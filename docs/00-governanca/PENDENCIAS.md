@@ -173,3 +173,7 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 - Implementada retirada administrativa com confirmação/histórico/fotos e proteção de IDs; [aceite](../05-qualidade/EXCLUSAO_EQUIPAMENTOS_2026-11-09.md).
 - A escolha de qual registro duplicado manter pertence ao responsável. Não houve exclusão real durante testes.
 - Repareamento testado por protocolo assinado; interação física com o EXE permanece a homologar. Sem fusão/restauração automática ou botão de exclusão para operador. Fases 4/5 continuam pausadas.
+
+## Tour de lógica D-082 — 10/11/2026
+
+Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOUR_LOGICA_2026-11-10.md). Permanecem sem nova decisão: LOG-08 (fichas vs quantidade física de lotes), LOG-10/LNA-12 (busca global de equipamentos), LOG-13 (critério de Pendentes), LOG-14 (Relatórios/Planejamento), LNA-09 (Ano) e N-02 (mudar clique da matriz). Comportamentos existentes preservados. A contagem de computadores nesta tela continua por ficha; não equiparar a soma física publicada da matriz. Fases 4/5 continuam pausadas.

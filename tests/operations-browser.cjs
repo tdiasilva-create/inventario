@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  await page.clock.install({time:Date.now()});await page.goto(origin+'/computadores?unidade='+seed.unit);await page.getByRole('button',{name:'Organizar ambientes',exact:true}).waitFor();
  assert.equal(await page.locator('.ops-machine').count(),57);
  await page.getByRole('button',{name:'Organizar ambientes',exact:true}).click();await page.locator('dialog[open] select[name="'+seed.room+'"]').selectOption('laboratory');await page.getByRole('button',{name:'Salvar classificação',exact:true}).click();await page.locator('.ops-dialog').waitFor({state:'detached'});
- await page.locator('.ops-room h3').first().waitFor();assert.match(await page.locator('.ops-room').first().innerText(),/Laboratório de informática/);
+ await page.waitForFunction(()=>document.querySelector('.ops-room')?.textContent.includes('Laboratório de informática'));assert.match(await page.locator('.ops-room').first().innerText(),/Laboratório de informática/);
  const machine=page.locator('.ops-machine').filter({hasText:'TESTE-PC-001'});await machine.hover();await page.locator('.ops-tooltip:visible').waitFor();assert.match(await page.locator('.ops-tooltip:visible').innerText(),/TESTE-PC-001/);assert.match(await page.locator('.ops-tooltip:visible').innerText(),/Unidade sem inventário/);
  await page.screenshot({path:folder+'/computadores-laboratorio.png'});
  await machine.click();await page.getByRole('dialog').getByRole('button',{name:'Registrar demanda',exact:true}).click();await page.locator('#request-form').waitFor();

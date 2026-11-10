@@ -1,0 +1,61 @@
+ROTEIRO COMPLEMENTAR — CONFERIR AS CORREÇÕES DE LÓGICA NO AMBIENTE DE VALIDAÇÃO
+Complementa o 03_ROTEIRO_TESTE_VISUAL.txt da entrega Mesa de dados. Compare com evidencias\capturas\.
+Perfil root (repita 01–03 com um visualizador: tudo deve funcionar só leitura, sem "Registrar demanda").
+
+01 — PULSO → COMPUTADORES DA REDE (LOG-01)
+[ ] Anote os números da faixa de pulso: Comunicando / Sem comunicação / Sem agente.
+[ ] Clique em SEM COMUNICAÇÃO: abre Computadores com o cartão "Sem comunicação recente" marcado
+    (fundo pêssego, barra vermelha, "Mostrando toda a rede"); título "COMPUTADORES SEM COMUNICAÇÃO
+    RECENTE · Toda a rede · N computador(es)"; N = número do pulso; máquinas agrupadas por unidade,
+    todas com o topo vermelho; URL termina em ?estado=sem-comunicacao.
+[ ] F5 (recarregar): a mesma visão volta.
+[ ] Clique numa máquina: ficha com a unidade certa, "Comunicação: Sem comunicação recente",
+    REGISTRAR DEMANDA abre o formulário já com a unidade; DEMANDAS DA UNIDADE abre a Central
+    filtrada.
+[ ] VER POR UNIDADE: volta ao modo por unidade (lista à esquerda com a unidade marcada).
+[ ] Repita com COMUNICANDO (topo verde) e SEM AGENTE (cinza, "Sem agente vinculado").
+[ ] Com mais de 60 máquinas num estado: PRÓXIMA/ANTERIOR paginam e o rodapé mostra a página.
+
+02 — RIBBON DE COMPUTADORES (LOG-02)
+[ ] Cinco cartões: Cadastrados · Comunicando agora · Sem comunicação recente · Sem agente
+    vinculado · Suspensão, desligamento ou nunca comunicou. Cadastrados = soma dos outros quatro.
+[ ] Os quatro cartões de estado têm "VER TODA A REDE" e abrem a visão do item 01; o ativo fica
+    marcado. "Computadores cadastrados" não é botão.
+[ ] Clicar numa unidade da lista desliga o estado e mostra a unidade.
+
+03 — LINKS CRUZADOS (LOG-05)
+[ ] Central de demandas filtrada por uma unidade (FILTRAR) → VER COMPUTADORES abre essa unidade.
+[ ] Computadores com uma unidade selecionada → CENTRAL DE DEMANDAS abre filtrada por ela.
+
+04 — VER NO MAPA (LOG-03)
+[ ] Unidades → uma unidade com coordenadas → VER NO MAPA: o mapa abre centrado nela (zoom de rua),
+    com o nome aberto e o marcador vermelho; os demais azuis.
+[ ] Unidade sem coordenadas → aviso "ainda não tem coordenadas cadastradas; o mapa mostra a rede
+    inteira" e o mapa abre no município.
+
+05 — BUSCA DO CABEÇALHO (LOG-04)
+[ ] Placeholder "Buscar unidade (nome, INEP ou gestor)".
+[ ] No Panorama, digite parte de um nome: matriz e mapa filtram; Enter → página Unidades com a
+    lista filtrada e ?q= na URL.
+[ ] Em Computadores, Central de demandas, Minha conta e Usuários: digite e Enter → Unidades
+    filtrada.
+[ ] Em Unidades: digitar filtra, Enter mantém a página e grava ?q=.
+[ ] Tecla "/" ainda leva o cursor à busca.
+
+06 — TRILHO (LOG-06)
+[ ] Passar o ponteiro rapidamente pela borda esquerda NÃO abre o trilho; parar sobre ele por
+    ~0,2 s abre; sair fecha na hora. "Menu fixo" e ☰ (janela estreita) abrem sem atraso.
+[ ] Com o trilho fechado, os botões +/− do mapa, "Ver detalhes da unidade" e o primeiro item do
+    pulso respondem ao primeiro clique.
+
+07 — OCORRÊNCIAS (LOG-07)
+[ ] Rodapé da lista: "Próximos 50" (com espaço).
+
+08 — O QUE NÃO PODE TER MUDADO
+[ ] Computadores por unidade: tudo como antes (busca de unidade, Exibir unidades, Organizar
+    ambientes, Ambiente/Vínculo, tiles, ficha, Editar nome/Apagar cadastro do root).
+[ ] Central de demandas: registrar, atender, concluir (exige registro do atendimento), histórico.
+[ ] Panorama: composição D-067, matriz, consulta embutida, filtros; indicadores por tipo (D-066).
+[ ] Coletor e QR intocados; agentes: Dados / Revogar em Configurações como antes.
+
+Resultado: APROVADO / COM RESSALVAS (listar) / REPROVADO (listar).

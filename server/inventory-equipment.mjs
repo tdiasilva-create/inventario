@@ -8,8 +8,8 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  if(!user)return fail('Autenticação necessária.',401);
  if(!['root','admin','visualizador'].includes(user.role))return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Consulta disponível somente para leitura.',405);
- const s=url.searchParams,id=s.get('unitId'),offset=Number(s.get('offset')||0),column=s.get('category')??'',q=(s.get('q')||'').trim(),agent=s.get('agent')||'',photo=s.get('photo')||'';
- if(!uuid(id)||!Number.isSafeInteger(offset)||offset<0||!['','0','1','2','3','4','5','6','7'].includes(column)||q.length>120||!linkFilterValues.includes(agent)||!['','yes','no'].includes(photo))return fail('Filtros de equipamentos inválidos.');
+ const s=url.searchParams,id=s.get('unitId'),offset=Number(s.get('offset')||0),column=s.get('category')??'',q=(s.get('q')||'').trim(),agent=s.get('agent')||'',photo=s.get('photo')||'',environment=s.get('environmentId')||'';
+ if(environment&&!uuid(environment)||!uuid(id)||!Number.isSafeInteger(offset)||offset<0||!['','0','1','2','3','4','5','6','7'].includes(column)||q.length>120||!linkFilterValues.includes(agent)||!['','yes','no'].includes(photo))return fail('Filtros de equipamentos inválidos.');
  const u=await unit(id);if(!u)return fail('Unidade indisponível.',403);
  // Os filtros usam a ficha publicada; search_text e data_json podem conter alterações parciais.
  const cte=`WITH records AS (SELECT e.id,e.unit_id,e.published_json,e.created_at,e.published_verified_at AS verified_at,e.published_updated_at AS updated_at,n.name AS display_name,
@@ -33,6 +33,7 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  LEFT JOIN agent_inventory_snapshots si ON si.inventory_id=cs.inventory_id
  WHERE e.unit_id=? AND e.published_json IS NOT NULL)`;
  const clauses=[],params=[id];
+ if(environment){clauses.push("json_extract(published_json,'$.environment')=?");params.push(environment);}
  if(column!==''){clauses.push('column_index=?');params.push(Number(column));}
  if(q){clauses.push(`instr(lower(COALESCE(display_name,'')||' '||COALESCE(hostname,'')||' '||id||' '||COALESCE(environment_name,'')||' '||COALESCE(json_extract(published_json,'$.position_label'),'')||' '||COALESCE(json_extract(published_json,'$.asset'),'')||' '||COALESCE(json_extract(published_json,'$.serial'),'')||' '||COALESCE(json_extract(published_json,'$.brand'),'')||' '||COALESCE(json_extract(published_json,'$.model'),'')||' '||COALESCE(json_extract(published_json,'$.customCategory'),'')),lower(?))>0`);params.push(q);}
  if(agent==='unlinked')clauses.push('agent_linked=0');

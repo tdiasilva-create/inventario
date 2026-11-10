@@ -1,0 +1,28 @@
+ENTREGA — TOUR DE LÓGICA DOS BOTÕES DO PAINEL (10/11/2026, tarde)
+Resposta ao pedido: "muitos botões ainda não funcionam como deveriam (…) faça um tour por todo
+sistema e teste a lógica dos botões". Exemplos dados: "Sem comunicação" e "Comunicando" na faixa
+de pulso mostravam uma listagem de unidades, não os computadores naquele estado.
+
+LEIA NESTA ORDEM
+ 01_RELATORIO_TOUR_LOGICA.txt        o que foi testado, o que estava errado, o que foi corrigido,
+                                     o que fica para o Codex e as 6 decisões que são suas
+ 02_ARQUIVOS_E_PASSO_A_PASSO.txt     arquivos, tamanhos, patches, testes, publicação, rollback
+ 03_INSTRUCAO_CODEX.txt              o que o Codex faz depois (ordem = prioridade)
+ 04_ROTEIRO_TESTE_VISUAL_COMPLEMENTAR.txt   conferência no ambiente de validação
+ evidencias\                         capturas, registro de cada clique (527), 16 fluxos, robôs
+
+EM UMA FRASE
+ 7 erros de lógica corrigidos com patch (os 2 exemplos do pedido, o ribbon de Computadores, "Ver
+ no mapa", a busca do cabeçalho, o trilho que cobria botões, "Próximos50"); 11 pontos mapeados
+ para o Codex/decisão; 802 controles em 19 rotas percorridos; 7 roteiros do CI + 1 novo passam.
+
+PRÉ-REQUISITO
+ Entrega "Mesa de dados" (revisoes\entrega-claude-painel-mesa-de-dados-2026-11-10) aplicada.
+ Esta entrega SUPERA web\painel.css, web\panel-shell.js e web\panel-pulse.js daquela.
+
+LIMITES HONESTOS
+ - O painel real não foi aberto logado (o navegador do app ficou em /login). Tudo foi verificado
+   na cópia local com o Worker verdadeiro e dados sintéticos; por isso o roteiro 04 existe.
+ - Coletor e QR não entraram no tour (pedido: painel). Perfis admin/visualizador: por leitura de
+   código, não por clique.
+ - Nada publicado; nada alterado no projeto do PC. Aplicação pelo passo a passo do 02.

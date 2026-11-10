@@ -1,0 +1,101 @@
+ARQUIVOS DESTA ENTREGA, ONDE VÃO E COMO APLICAR
+$E = C:\Users\SIGAE\Documents\Codex\INVENTARIO\revisoes\entrega-claude-tour-logica-2026-11-10
+$P = C:\Users\SIGAE\Documents\Codex\INVENTARIO
+Pré-requisito: entrega "Mesa de dados" (entrega-claude-painel-mesa-de-dados-2026-11-10) aplicada —
+esta entrega SUPERA três arquivos dela (web\painel.css, panel-shell.js, panel-pulse.js) e acrescenta
+patches em cinco arquivos que o Codex também edita.
+
+======================================================================
+A. SUBSTITUI (cópias prontas) — superam as da entrega Mesa de dados
+======================================================================
+$E\web\painel.css       75.343 bytes (Mesa de dados: 74.931) · botões do ribbon + atraso do trilho
+$E\web\panel-shell.js    7.618 bytes (Mesa de dados: 7.193)  · Enter na busca + placeholder
+$E\web\panel-pulse.js    2.875 bytes (Mesa de dados: 2.659)  · links do pulso com ?estado=
+
+======================================================================
+B. PATCHES (sobre os originais do PC lidos em 10/11) — cópias prontas em patches\prontos\
+======================================================================
+patches\DIFF_server_service-desk.mjs.patch   $P\server\service-desk.mjs   15.130 → 16.214 · 1 trecho
+   GET /api/operations/computers?presence=online|lost|unlinked|other sem unitId (visão de rede).
+patches\DIFF_web_operations.js.patch          $P\web\operations.js         26.148 → 29.298 · 4 trechos
+   ?estado= na URL, ribbon clicável com 5 cartões, drawNetwork(), ficha com unit_name, links cruzados.
+patches\DIFF_web_desktop-map.js.patch         $P\web\desktop-map.js         8.739 → 9.213 · 4 trechos
+   focusUnit(id): centraliza, abre o nome, marcador selecionado vermelho; mountMap aceita focus.
+patches\DIFF_web_desktop-results.js.patch     $P\web\desktop-results.js     7.753 → 7.754 · 1 trecho
+   "Próximos 50".
+patches\DIFF_web_desktop.js.patch             $P\web\desktop.js             3 trechos
+   "Ver no mapa" com foco; Enter na busca → Unidades com ?q=. O MESMO patch aplica sobre o original
+   do PC (50.104 → 50.742) e sobre o desktop.js com o patch opcional E/F da entrega anterior
+   (50.095 → 50.733) — conferido com git apply --check nos dois. Cópias prontas:
+   patches\prontos\web\desktop.js (com E/F, 50.733) e patches\prontos\web\desktop.SEM-PATCH-EF.js
+   (sem E/F, 50.742) — copie a que corresponde ao seu tamanho atual e renomeie para desktop.js.
+worker.mjs, build-desktop.mjs e os HTML não mudam (service-desk.mjs já é importado pelo Worker;
+operations.js, desktop-map.js e desktop-results.js já estão no build).
+
+======================================================================
+C. TESTE NOVO (opcional, recomendado)
+======================================================================
+$E\tests\operations-network-browser.cjs   CRIA   $P\tests\   · pulso → visão de rede, ribbon, soma, volta
+Para entrar no CI, acrescente em package.json, em "scripts":
+   "test:operations-network:browser": "node tests/operations-network-browser.cjs"
+(e a linha correspondente no .github/workflows/ci.yml, ao lado de test:operations:browser).
+
+======================================================================
+D. PASSO A PASSO (PowerShell em $P)
+======================================================================
+cd C:\Users\SIGAE\Documents\Codex\INVENTARIO
+$P = Get-Location; $E = Join-Path $P 'revisoes\entrega-claude-tour-logica-2026-11-10'
+git status --short                         # confira o trabalho do Codex pendente
+
+1. BACKUP
+$B = Join-Path $P 'backups\pre-tour-logica-2026-11-10'
+New-Item -ItemType Directory -Force -Path "$B\web","$B\server" | Out-Null
+Copy-Item "$P\web\painel.css","$P\web\panel-shell.js","$P\web\panel-pulse.js","$P\web\operations.js","$P\web\desktop-map.js","$P\web\desktop-results.js","$P\web\desktop.js" "$B\web\"
+Copy-Item "$P\server\service-desk.mjs" "$B\server\"
+
+2. TAMANHOS DOS ARQUIVOS QUE RECEBEM PATCH
+foreach($f in 'server\service-desk.mjs','web\operations.js','web\desktop-map.js','web\desktop-results.js','web\desktop.js'){ '{0,-30} {1}' -f $f,(Get-Item "$P\$f").Length }
+Esperado: 15130 · 26148 · 8739 · 7753 · desktop.js 50104 (original) ou 50095 (com E/F).
+
+3. COPIAR OS PRONTOS
+Copy-Item "$E\web\painel.css","$E\web\panel-shell.js","$E\web\panel-pulse.js" "$P\web\" -Force
+
+4. PATCHES
+4.1 Tamanhos iguais aos esperados → cópias prontas:
+Copy-Item "$E\patches\prontos\server\service-desk.mjs" "$P\server\" -Force
+Copy-Item "$E\patches\prontos\web\operations.js","$E\patches\prontos\web\desktop-map.js","$E\patches\prontos\web\desktop-results.js" "$P\web\" -Force
+# desktop.js: escolha pelo tamanho atual
+if((Get-Item "$P\web\desktop.js").Length -eq 50095){ Copy-Item "$E\patches\prontos\web\desktop.js" "$P\web\desktop.js" -Force } else { Copy-Item "$E\patches\prontos\web\desktop.SEM-PATCH-EF.js" "$P\web\desktop.js" -Force }
+4.2 Tamanhos diferentes → .patch (cada --check deve ficar mudo):
+Get-ChildItem "$E\patches\*.patch" | ForEach-Object { git apply --check $_.FullName; if($?){ git apply $_.FullName; "aplicado $($_.Name)" } else { "FALHOU $($_.Name)" } }
+4.3 Se um --check falhar: são 1–4 trechos curtos por arquivo; aplique à mão pelo .patch.
+4.4 Conferências:
+(Select-String -Path "$P\server\service-desk.mjs" -Pattern "presence=").Count          # >= 1
+(Select-String -Path "$P\web\operations.js" -Pattern "drawNetwork").Count              # 2
+(Select-String -Path "$P\web\desktop-map.js" -Pattern "export function focusUnit").Count # 1
+(Select-String -Path "$P\web\panel-pulse.js" -Pattern "estado=").Count                 # 3
+node --check server\service-desk.mjs; node --check web\operations.js; node --check web\desktop-map.js; node --check web\desktop.js; node --check web\panel-shell.js; node --check web\panel-pulse.js
+Copy-Item "$E\tests\operations-network-browser.cjs" "$P\tests\"
+
+5. TESTES (obrigatório antes de publicar)
+npm test                                   # mesma contagem de antes (aqui 136/137; o 88 depende de rede)
+npm run build:desktop                      # "files": 75
+npm run test:operations:browser
+npm run test:panel-navigation:browser
+npm run test:panel:browser
+npm run test:equipment:browser
+npm run test:monitoring:browser
+npm run test:auth:browser
+npm run test:catalogue:browser
+node tests\operations-network-browser.cjs  # novo
+Todos passaram aqui sobre este build (7 roteiros do CI + o novo).
+
+6. VALIDAÇÃO → ROTEIRO VISUAL (04_…) → PRODUÇÃO
+npx wrangler deploy --dry-run --config wrangler.validation.jsonc
+npx wrangler deploy --config wrangler.validation.jsonc      # siga 04_ROTEIRO_TESTE_VISUAL_COMPLEMENTAR.txt
+npx wrangler deploy --config wrangler.jsonc                 # só com o roteiro aprovado
+O Worker do coletor compartilha server\; republicá-lo é opcional (a rota nova é só do painel).
+
+7. ROLLBACK
+Copy-Item "$B\web\*" "$P\web\" -Force; Copy-Item "$B\server\service-desk.mjs" "$P\server\" -Force
+npm run build:desktop; npx wrangler deploy --config wrangler.jsonc

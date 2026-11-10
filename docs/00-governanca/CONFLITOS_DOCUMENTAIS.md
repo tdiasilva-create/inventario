@@ -62,3 +62,7 @@ O pedido atual substitui a digitação livre em cada equipamento aprovada no pon
 ## D-081 — apresentação do alerta, esclarecida em 10/11/2026
 
 A entrega inicial abriu o modal automaticamente e adicionou avisos fixos. O responsável esclareceu que o aviso deve estar sobre a coordenada da unidade e o modal abrir somente ao clicar. Aplicar o adendo de D-081; o registro de qualidade inicial permanece histórico, superado nesse comportamento.
+
+## D-082 — pacote anterior às correções do mapa e da moldura
+
+Substituir integralmente os arquivos prontos apagaria D-081 e correções D-080 (cancelamento de consultas, validação de contagens, acessibilidade/menu, retorno do primeiro acesso). Aplicação por trechos, sem executar comandos do anexo cegamente. A consulta de equipamentos de ambiente usa o ID no published_json (D-069), superando a sugestão técnica de usar e.environment_id, que pode estar em alteração parcial. Numeração sugerida D-079/080 já ocupada. A publicação real foi explicitamente solicitada; não é necessário novo staging/consentimento. O ponto B8 sobre Ano continua pendente de regra.

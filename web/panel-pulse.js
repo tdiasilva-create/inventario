@@ -19,9 +19,9 @@ export function startPulse(user){
    const sum=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});
    const at=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
    node.dataset.state='ok';
-   node.innerHTML=item('Comunicando',num(sum.online),sum.online?'ok':'idle','/computadores',num(sum.computers)+' computador(es) cadastrado(s)')
-    +item('Sem comunicação',num(sum.lost),sum.lost?'bad':'idle','/computadores','Sem contato com o agente no prazo de monitoramento')
-    +item('Sem agente',num(sum.unlinked),'idle','/computadores','Computadores sem agente vinculado')
+   node.innerHTML=item('Comunicando',num(sum.online),sum.online?'ok':'idle','/computadores?estado=comunicando',num(sum.computers)+' computador(es) cadastrado(s)')
+    +item('Sem comunicação',num(sum.lost),sum.lost?'bad':'idle','/computadores?estado=sem-comunicacao','Sem contato com o agente no prazo de monitoramento')
+    +item('Sem agente',num(sum.unlinked),'idle','/computadores?estado=sem-agente','Computadores sem agente vinculado')
     +item('Demandas pendentes',num(queue.pending),queue.pending?'bad':'idle','/demandas')
     +item('Coletas em andamento',num(progress.total),progress.total?'warn':'idle','/coletas-em-andamento','Rascunhos confirmados no servidor, rotulados PARCIAL')
     +item('Atualizado',at,'idle','',null);

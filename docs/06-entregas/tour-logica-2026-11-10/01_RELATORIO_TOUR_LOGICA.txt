@@ -1,0 +1,241 @@
+TOUR DE LÓGICA DOS BOTÕES DO PAINEL — RELATÓRIO (10/11/2026, tarde)
+
+Pedido: "gostei da nova aparência, porém muitos botões ainda não funcionam como deveriam (…)
+quero que faça um tour por todo sistema e teste a lógica dos botões, pois ainda tem muitos
+erros de lógica". Exemplos dados: clicar em "Sem comunicação" e em "Comunicando" na faixa de
+pulso mostrava a lista de unidades, não os computadores naquele estado.
+
+======================================================================
+0. RESUMO
+======================================================================
+- 19 rotas do painel percorridas com o Worker real sobre dados sintéticos; 802 controles visíveis
+  enumerados, 670 clicados um a um (os repetidos — 60 células da matriz, 10 unidades da lista… —
+  foram clicados 1 ou 2 por tipo), mais os controles dentro de cada diálogo aberto; 16 fluxos de
+  negócio testados ponta a ponta (demanda criada → atendida → concluída, exportações, filtros,
+  busca, mapa, classificação de unidade, pulso × API).
+- 7 erros de lógica CORRIGIDOS nesta entrega (patches prontos e testados), entre eles os dois
+  exemplos do pedido: o pulso e o ribbon de Computadores agora abrem a lista dos computadores
+  de TODA A REDE no estado clicado, agrupada por unidade.
+- 11 pontos ficam para o Codex / decisão sua (LOG-08 a LOG-18): o que cada botão promete, o que
+  faz, a causa no código e a correção proposta.
+- O que foi conferido e está certo também está listado (seção 4), para você saber o que NÃO
+  precisa reabrir.
+- Limite honesto: o painel real continuou sem login no navegador do app (ficou em /login); tudo
+  foi verificado na cópia local com o Worker verdadeiro. Os testes de navegador do CI passam
+  sobre o build corrigido (7 roteiros) e há um roteiro novo para a visão de rede.
+
+======================================================================
+1. MÉTODO E ALCANCE
+======================================================================
+Harness: clone do projeto + arquivos do seu PC (10/11, 05:30–06:40) + entrega "Mesa de dados";
+Worker real (server/worker.mjs) sobre SQLite isolado com a fixture dos testes do projeto e dados
+ilustrativos: 10 unidades (7 tipos D-068), 58 computadores individuais e lotes, agentes em 6
+estados de comunicação (comunicando, sem comunicação, suspensão/desligamento informado, nunca
+comunicou, sem agente), 2 coletas (1 em andamento), 6 demandas em todos os estados, fotos.
+Perfil root. Nada disso é oficial e nada foi gravado fora da memória do teste.
+
+Robô de cliques (evidencias/tour/*.json): para cada rota, enumera todo botão, link, select,
+checkbox e <summary> visível; para cada um, recarrega a rota, clica, espera 1,3 s e registra:
+URL depois, diálogo aberto, toast/alerta, mudança do conteúdo, requisições /api/ feitas, erros de
+console. Abre cada diálogo e clica em cada controle de dentro. Itens pulados de propósito: "Sair da
+conta", "Conectar/Reautorizar/Desconectar Google Drive". Clique em "Apagar cadastro" e "Excluir
+unidade" abre a prévia; a confirmação não foi acionada (AGENTS.md: sem exclusões reais em teste).
+Fluxos de negócio (evidencias/fluxos.json): 16 verificações automáticas com asserções.
+Leitura de código: desktop.js, operations.js, service-desk.mjs, desktop-map.js, desktop-results.js,
+desktop-progress.js, desktop-equipment.js, account.js, admin-units.js, panel-shell.js, panel-pulse.js.
+
+Não coberto: coletor mobile e QR (fora do pedido "painel"); perfis admin e visualizador (o robô
+rodou como root — as diferenças de permissão estão no código, conferidas por leitura); Google
+Drive real; agentes reais (presença simulada no banco).
+
+======================================================================
+2. CORRIGIDO NESTA ENTREGA (patches em patches\, cópias prontas em patches\prontos\)
+======================================================================
+
+LOG-01 · Pulso "Comunicando / Sem comunicação / Sem agente" → lista de unidades (os dois exemplos)
+ Sintoma: os três números levavam a /computadores, que abre a PRIMEIRA unidade da lista; o usuário
+ via "uma listagem" e nenhum computador do estado clicado.
+ Causa: a página Computadores (D-071) só sabe listar por unidade (`/api/operations/computers`
+ exige unitId); o pulso apontava para ela sem dizer o que queria.
+ Correção: nova visão "toda a rede" na página Computadores — `/computadores?estado=comunicando |
+ sem-comunicacao | sem-agente | outros`. O servidor ganhou `GET /api/operations/computers?presence=
+ online|lost|unlinked|other` (sem unitId): lista os computadores de toda a rede naquele estado,
+ calculado em JS como em /units, paginado de 60 em 60, mesmas colunas da listagem por unidade,
+ conveniadas fora. O cliente mostra o título do estado, "Toda a rede · N computador(es)", os
+ mesmos tiles de máquina agrupados por unidade, legenda, paginação e o botão "Ver por unidade".
+ Clicar numa máquina abre a mesma ficha (com a unidade certa), "Registrar demanda" e "Demandas da
+ unidade". A URL guarda o estado (recarregável, compartilhável). Clicar numa unidade da lista à
+ esquerda volta ao modo por unidade.
+ Conferido: fluxos F1, F1b, F2, F3 (pulso = soma da API; lista traz exatamente os N do estado,
+ todos com data-state certo; agrupada em 2 unidades; ficha mostra a unidade; "Ver por unidade"
+ volta) e tests\operations-network-browser.cjs (novo, passa).
+ Arquivos: server\service-desk.mjs (1 trecho), web\operations.js (4 trechos), web\panel-pulse.js.
+
+LOG-02 · Ribbon de Computadores (contagens) era só texto e os números não fechavam
+ Sintoma: "Computadores cadastrados 64 · Comunicando 4 · Sem comunicação 5 · Sem agente 53" —
+ 64 ≠ 4+5+53; faltavam os com suspensão/desligamento informado ou que nunca comunicaram (o
+ servidor já devolvia `other`, o cliente descartava). Nenhuma contagem era clicável.
+ Correção: as quatro contagens de estado viraram botões que abrem a visão de rede (LOG-01) e
+ marcam o estado ativo (fundo pêssego, barra vermelha, "Mostrando toda a rede"); quinto cartão
+ "Suspensão, desligamento ou nunca comunicou". Agora cadastrados = soma dos quatro (F8b).
+ Arquivos: web\operations.js, web\painel.css (estilo dos botões do ribbon).
+
+LOG-03 · "Ver no mapa" (detalhe da unidade) só abria o mapa
+ Sintoma: ia para Mapa da Rede com o enquadramento do município; a unidade era um ponto 3 px
+ maior, da mesma cor, sem nome — com 60 unidades, impossível achar.
+ Correção: centraliza na unidade (zoom 15), abre o nome, pinta o marcador selecionado de
+ vermelho (os demais azuis); sem coordenadas, avisa "o mapa mostra a rede inteira".
+ Conferido: F8 (tooltip aberto com o nome), captura depois_ver-no-mapa.png.
+ Arquivos: web\desktop-map.js (focusUnit), web\desktop.js (2 trechos).
+
+LOG-04 · Busca do cabeçalho: Enter não fazia nada; inerte em 7 páginas; prometia "equipamento"
+ Sintoma: no Panorama/Mapa/Unidades a digitação filtrava, mas Enter não levava a lugar nenhum e
+ a URL não guardava o filtro; em Computadores, Central de demandas, Minha conta, Cadastro,
+ Usuários, Operadores × unidades, Segurança e Configurações o campo não reagia (operations.js e
+ account.js nunca o ligaram). O placeholder dizia "Buscar unidade ou equipamento" e só buscava
+ nome/INEP/gestor da unidade (LNA-12).
+ Correção: Enter abre Unidades com o filtro (?q=) em qualquer página; na própria Unidades e no
+ Mapa só filtra e grava ?q= na URL; placeholder passa a "Buscar unidade (nome, INEP ou gestor)".
+ Busca de equipamento em toda a rede continua DECISÃO (LOG-10).
+ Conferido: F6 (Enter em /computadores → /unidades?q=Raio; Panorama filtra a matriz; Enter →
+ /unidades?q=Raio).
+ Arquivos: web\panel-shell.js, web\desktop.js (1 trecho).
+
+LOG-05 · Links cruzados Computadores ↔ Central de demandas perdiam a unidade
+ Sintoma: em Central de demandas filtrada por uma unidade, "Ver computadores" abria a PRIMEIRA
+ unidade; em Computadores, "Central de demandas" do cabeçalho abria todas as pendentes.
+ Correção: os dois links carregam ?unidade= quando há unidade selecionada/filtrada.
+ Arquivo: web\operations.js.
+
+LOG-06 · Trilho do menu abria ao encostar o ponteiro na borda e cobria os controles da esquerda
+ Evidência: o robô teve 19 cliques interceptados (zoom do mapa, "Ver detalhes da unidade", 1º item
+ do pulso, links do bloco Alertas) sempre que o ponteiro estava parado na borda esquerda — o trilho
+ aberto (232 px) fica por cima. Repetindo com o ponteiro longe, todos clicam.
+ Correção: atraso de intenção de 0,22 s para abrir no hover (passar o ponteiro pela borda não
+ abre; parar sobre o trilho abre). Fixo (botão "Menu fixo") e menu móvel continuam imediatos.
+ Se preferir eliminar de vez, a alternativa é abrir SÓ pelo botão "Menu fixo" (uma linha de CSS;
+ ver 03_INSTRUCAO_CODEX, item D).
+ Arquivo: web\painel.css.
+
+LOG-07 · Ocorrências: botão "Próximos50" (sem espaço)
+ Arquivo: web\desktop-results.js (1 caractere).
+
+======================================================================
+3. ERROS DE LÓGICA QUE FICAM PARA O CODEX / DECISÃO (não aplicados)
+======================================================================
+Formato: página · controle · promessa → o que faz · causa · correção proposta · [DECISÃO] quando
+depende de você. Detalhe de implementação em 03_INSTRUCAO_CODEX.txt.
+
+LOG-08 [DECISÃO] Computadores · "Computadores cadastrados" e contagens por unidade contam FICHAS,
+ não máquinas. Um lote "24 desktops" conta 1; a matriz do Panorama conta 24. No harness: ribbon
+ 64 fichas; a matriz soma 98 computadores (desktop+notebook) nas mesmas unidades. Causa: service-desk.mjs `counts.computers++` por linha de
+ inventory_equipment_all. Proposta: somar `COALESCE(json_extract(data_json,'$.quantity'),1)` nos
+ totais de "cadastrados" e "sem agente" (um lote nunca tem agente), mantendo online/lost por
+ máquina; ou rotular "fichas de computador". Decidir qual número o gestor quer ver.
+
+LOG-09 Central de demandas · "Salvar demanda" sem alterar nada grava um evento "Dados atualizados"
+ no histórico (o robô fez isso nas demandas #12 e #14: POST request-save, versão +1, evento sem
+ nota). Causa: o cliente só evita REPETIR o mesmo envio (operationId); não compara com o estado
+ carregado. Proposta: desabilitar "Salvar" enquanto o formulário for igual ao snapshot, ou avisar
+ "Nenhuma alteração para salvar".
+
+LOG-10 [DECISÃO · LNA-12] Busca por equipamento em toda a rede (hostname, ID permanente, AnyDesk/
+ RustDesk, patrimônio). Hoje só existe dentro da unidade (consulta D-069). Proposta: `GET
+ /api/inventory/equipment?q=` sem unitId, mesma técnica da visão de rede (LOG-01), e a busca do
+ cabeçalho mostrando "Unidades (n) · Equipamentos (n)". Fluxo F6: "TESTE-PC-001" → 0 resultados.
+
+LOG-11 Ambientes · "Ver todos" (título do bloco) na própria página Ambientes não faz nada; os
+ tiles de ambiente não abrem nada (LNA-18). Proposta: esconder "Ver todos" quando já está em
+ Ambientes; ao clicar num tile, abrir a consulta D-069 filtrada por ambiente (environment_id).
+
+LOG-12 Panorama · bloco "Alertas e Insights": "Ver todos" vai para Ocorrências, mas o bloco mistura
+ 3 coisas (links de operação, prioridades das ocorrências, notificações dos computadores); o
+ handler `alert-detail` ("Nenhum alerta recebido") é código morto (ICO-13). Proposta: 3 linhas com
+ destino próprio (Ocorrências / Notificações / Central de demandas) e remover `alert-detail`.
+
+LOG-13 [DECISÃO · LNA-15] Panorama · indicador "Pendentes" sempre "—" (`Critério pendente`).
+ Definir o critério (unidades ativas sem vistoria concluída? demandas pendentes?) ou retirar.
+
+LOG-14 [DECISÃO · LNA-16] Relatórios: só "Nenhum relatório disponível" + "Consultar unidades";
+ Planejamento: "ainda não está disponível" + bloco de coletas. Ambos no menu. Ocultar/"em breve"
+ ou entregar o primeiro relatório real (sugestão: Computadores por estado de comunicação por
+ unidade, que agora existe como dado).
+
+LOG-15 Usuários / Minha conta / Cadastro · "Encerrar sessão", "Redefinir senha", "Revogar sessões",
+ "Inativar/Ativar", "Desativar" usam `confirm()` nativo do navegador, diferente dos diálogos do
+ resto do painel (e o robô não consegue testá-los). A senha provisória gerada fica na tela até
+ recarregar. Proposta: diálogo próprio com confirmação e botão "Copiar senha / ocultar".
+
+LOG-16 Cadastro de unidades · o link "Leaflet" da atribuição do minimapa abre leafletjs.com NA
+ MESMA ABA, no meio do formulário. Proposta: `attributionControl` com prefixo `target="_blank"`
+ (como já é no mapa do Panorama) ou prefixo vazio.
+
+LOG-17 Configurações · "Atualizar" da integração de fotografias não dá retorno quando nada mudou
+ (só pisca "Consultando…"). Proposta: toast "Estado consultado · sem alterações".
+
+LOG-18 Visual herdado · marcadores do mapa continuam azul #0e9fff/#d9f8ff do tema antigo e o
+ limite do município em ciano (#55cff6); o selecionado agora é vermelho. Alinhar à identidade
+ (pêssego/laranja) quando o Codex tocar em desktop-map.js.
+
+======================================================================
+4. CONFERIDO E FUNCIONANDO (não precisa reabrir)
+======================================================================
+Moldura: 17 itens do menu levam à rota certa; "Menu fixo" persiste; sino abre Notificações
+(Somente não lidas, Atualizar agora, Fechar); perfil abre Minha conta/Sair; pulso: Demandas
+pendentes → /demandas (pendentes), Coletas em andamento → /coletas-em-andamento, números batem
+com a API (F1); badge do menu = pendentes.
+Panorama: Satélite/Ruas/Limite/zoom/enquadrar/"i"; ordenar matriz (3 modos); clique no nome →
+consulta embutida da unidade; clique na célula → consulta filtrada pela categoria (F7: Impressoras);
+filtros Regional/Tipo/Situação na barra e no diálogo (Tipo presente, F12); Limpar filtros;
+Unidade selecionada → Atualizar, "Cadastro da unidade"; Evidência e Galeria → visor (anterior/
+próxima/abrir unidade/fechar); Questionário A…H abre/fecha; Alertas → Ocorrências; Notificações.
+Coletas em andamento: Ver dados parciais → detalhe (fotos parciais), Voltar, Atualizar agora.
+Mapa da Rede: filtros, lista de unidades → detalhe.
+Unidades: filtros, cada unidade → detalhe. Detalhe: Voltar ao panorama, Ver no mapa (LOG-03),
+Consultar equipamentos recebidos, galeria, ambientes, questionário.
+Ambientes: campo de unidade com lista (F11), Editar nome (root) salva e preserva, galeria.
+Computadores: Atualizar; lista de unidades com busca e "Exibir unidades" (F13: confirmar "sem
+computadores" e filtrar); Registrar demanda (formulário com unidade, seletor de equipamento,
+tipo, origem, situação); Organizar ambientes (salva declaração e classificação); Ver demandas;
+Ambiente e Vínculo filtram; tile da máquina → ficha → Editar nome / Apagar cadastro (prévia) /
+Registrar demanda / Demandas da unidade.
+Central de demandas: filtros + Filtrar (F5: Concluída só concluídas); Registrar → salva, reabre
+com número, entra na fila (F4); Atender/histórico → situação, concluir sem registro é bloqueado,
+com registro gera 2 eventos e sai da fila (F4); Recarregar demanda; paginação.
+Equipamentos: Exportar matriz (mesma rotina que gera SEMED_MATRIZ.csv em Exportar), filtros, matriz
+expandida, consulta.
+Ocorrências: Atualizar, filtro de unidade, fotos → visor, Ver unidade, paginação.
+Exportar: 4 conjuntos × CSV geram arquivo (F9), XLSX gera; status "Arquivo gerado.".
+Planejamento: Autorizar unidades por operador, Acompanhar coletas, prévia → detalhe da coleta.
+Cadastro de unidades: formulário (Salvar/Limpar), minimapa +/−, importar planilha, filtros/ordem,
+Editar, Inativar/Ativar (confirm), Excluir → prévia (Cancelar).
+Usuários: Criar com senha provisória (valida usuário obrigatório), ⋯ ações; Operadores × unidades:
+selecionar operador, marcar unidades, Salvar atribuições (persiste); Segurança: Salvar prazos,
+auditoria; Minha conta: Continuar para o painel, Alterar minha senha, sessões; Configurações:
+Sobre o sistema, integração de fotos, Gerar miniaturas (toast), agentes (gerar código, filtrar,
+atualizar, Dados, Revogar → confirmação), Executar manutenção (toast).
+
+======================================================================
+5. JÁ CONHECIDOS DA REVISÃO DE 08/11 — SITUAÇÃO HOJE
+======================================================================
+Resolvidos desde então (conferido no tour): LNA-08 exportações (4 conjuntos, CSV/XLSX), LNA-09
+Tipo no diálogo de filtros (Ano continua inerte no código, sem efeito), LNA-17/LNA-20 fotos por
+equipamento, ICO-07 sino, ICO-09 célula, N-06 ícones (entrega Mesa de dados).
+Continuam: LNA-11 cache do detalhe (há "Atualizar"), LNA-12 (→ LOG-10), LNA-15 (→ LOG-13),
+LNA-16 (→ LOG-14), LNA-18 (→ LOG-11), ICO-13 (→ LOG-12), ERR-19 locais de referência do mapa
+sem botão, N-02 (clique no nome da matriz abre a consulta — decisão). N-01 (4 ciclos de 15 s +
+pulso de 60 s) continua; a visão de rede não acrescenta ciclo.
+
+======================================================================
+6. DECISÕES QUE SÓ VOCÊ PODE TOMAR
+======================================================================
+D1 LOG-08: "Computadores cadastrados" = fichas ou máquinas (somar lotes)?
+D2 LOG-10: buscar equipamento em toda a rede pelo cabeçalho? (rota nova + resultados mistos)
+D3 LOG-13: critério do indicador "Pendentes", ou retirar.
+D4 LOG-14: Relatórios/Planejamento ficam no menu como estão, saem, ou ganham o primeiro relatório.
+D5 LOG-06: trilho abre no hover (com atraso, como entregue) ou só pelo botão "Menu fixo"?
+D6 N-02: clicar no nome da unidade na matriz continua abrindo a consulta embutida?
+
+Evidências: evidencias\tour\tour-*.json (um registro por clique), evidencias\tour\tour-resumo.txt
+(tabela legível), evidencias\fluxos.json (16 asserções), evidencias\capturas\*.png (visão de rede,
+ribbon, Ver no mapa, busca).

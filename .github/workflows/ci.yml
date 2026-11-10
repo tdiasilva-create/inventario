@@ -50,6 +50,12 @@ jobs:
       - run: pnpm test:monitoring:browser
         env:
           SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:tour-logic:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:operations-network:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
       - run: pnpm test:operations:browser
         env:
           SEMED_TEST_BROWSER: chromium

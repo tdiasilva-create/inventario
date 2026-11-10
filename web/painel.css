@@ -848,3 +848,11 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .hardware-map-notice:focus-visible{outline:2px solid #16191d;outline-offset:2px;border-radius:50%}
 @keyframes hardware-halo{0%,100%{opacity:.8;transform:scale(.7)}55%{opacity:.15;transform:scale(1.2)}}
 @media(prefers-reduced-motion:reduce){.hardware-map-halo{animation:none;opacity:.5;transform:none}}
+
+/* D-082: intentional rail expansion and network status filters. */
+.sidebar:hover:not(.open):not(.pinned){transition-delay:.22s}
+.ops-stat[data-op]{cursor:pointer;text-align:left;transition:background .12s}.ops-stat[data-op]:hover{background:var(--cinza-claro)}.ops-stat[data-op]:hover small{color:var(--vermelho)}.ops-stat[aria-pressed="true"]{background:var(--pessego-suave);box-shadow:inset 0 -3px 0 var(--vermelho)}.ops-stat[aria-pressed="true"] small{color:var(--vermelho)}
+
+/* D-082: environment consultation without nested actions. */
+.environment-tile{flex-wrap:wrap}.environment-open{display:flex;align-items:center;gap:10px;flex:1 1 100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;padding:0}.environment-open strong,.environment-open small{display:block}.environment-open:focus-visible{outline:2px solid var(--vermelho);outline-offset:4px}
+.panel-confirm{max-width:min(520px,calc(100vw - 32px));box-sizing:border-box}.panel-confirm p{margin:16px 0}.panel-confirm::backdrop{background:#16191d80}#temporary code{user-select:all;overflow-wrap:anywhere}#temporary button{margin:6px}

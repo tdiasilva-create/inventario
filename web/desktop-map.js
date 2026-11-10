@@ -8,7 +8,7 @@ function paintHardware(){
  if(!current)return;const context=current;
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
   entry.label.textContent=entry.name+(pending?' · '+pending+' alteração(ões) de hardware aguardando decisão':'')+(demands?' · '+demands+' demanda(s) de hardware em atendimento':'');
-  entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':'#0e9fff'});
+  entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':entry.selected?'#d70825':'#25272c'});
   const node=entry.marker.getElement();if(node){node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click');}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
   if(pending||demands){
@@ -58,8 +58,8 @@ function switchBase(){
  context.container.dataset.mapBase=preference.base;
  context.container.closest('.map-panel').querySelectorAll('[data-map-base]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapBase===preference.base)));
 }
-export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}}={}){
- if(current?.container===container){current.onSelect=onSelect;updateMarkers(units,selected);return;}
+export async function mountMap(container,{units=[],selected=null,onSelect=()=>{},focus=null}={}){
+ if(current?.container===container){current.onSelect=onSelect;updateMarkers(units,selected);if(focus)focusUnit(focus);return;}
  const token=++generation;
  try{
   const [data,examples]=await Promise.all([geometryPromise,examplesPromise]);
@@ -68,7 +68,7 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   const map=L.map(container,{zoomControl:false,attributionControl:true,scrollWheelZoom:false,minZoom:8,maxZoom:19,preferCanvas:false});
   const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup(),markers:new Map(),unitGroup:L.featureGroup().addTo(map),onSelect};current=context;
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-  context.boundary=L.polygon(data.ring,{color:'#55cff6',weight:2,opacity:.95,fillColor:'#1aaed1',fillOpacity:.06,dashArray:'5 4'});
+  context.boundary=L.polygon(data.ring,{color:'#ff4b1e',weight:2,opacity:.95,fillColor:'#ff4b1e',fillOpacity:.06,dashArray:'5 4'});
   context.boundary.bindTooltip('Área de referência do município',{className:'v33-tooltip',sticky:true});
   if(preference.boundary)context.boundary.addTo(map);
   updateMarkers(units,selected);
@@ -87,6 +87,7 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   if(preference.examples)context.examplesLayer.addTo(map);
   if(preference.camera)map.setView(preference.camera.center,preference.camera.zoom,{animate:false});
   else frameMunicipality(context);
+  if(focus)focusUnit(focus);
   L.control.scale({position:'bottomleft',imperial:false,maxWidth:100}).addTo(map);
   context.observer=new ResizeObserver(()=>map.invalidateSize({pan:false}));context.observer.observe(container);
   const update=()=>{container.dataset.mapZoom=String(map.getZoom());};map.on('zoomend',update);update();
@@ -102,16 +103,17 @@ export function updateMarkers(units,selected){
  if(!current)return;const context=current,keep=new Set();
  for(const {unit,coordinates} of geolocatedUnits(units)){
   keep.add(unit.id);let entry=context.markers.get(unit.id);
-  if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#d9f8ff',weight:2,fillColor:'#0e9fff',fillOpacity:1});
+  if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#fff',weight:2,fillColor:'#25272c',fillOpacity:1});
    const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>{context.onSelect(unit.id);if(hardwareUnits.has(unit.id))openHardware(unit.id);});marker.addTo(context.unitGroup);
    entry={marker,label};context.markers.set(unit.id,entry);
   }
-  entry.name=unit.name||unit.nome||'Unidade sem nome';entry.label.textContent=entry.name;entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
+  entry.selected=unit.id===selected;entry.name=unit.name||unit.nome||'Unidade sem nome';entry.label.textContent=entry.name;entry.marker.setLatLng(coordinates);entry.marker.setRadius(unit.id===selected?9:6);
  }
  for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.notice)context.unitGroup.removeLayer(entry.notice);context.markers.delete(id);}
  context.markerCount=keep.size;context.container.dataset.markerCount=String(keep.size);baseStatus();
  paintHardware();
 }
+export function focusUnit(id){const entry=current?.markers.get(id);if(!entry){if(current)frameMunicipality(current);return false;}current.map.setView(entry.marker.getLatLng(),15,{animate:false});entry.marker.openTooltip();return true;}
 export function zoomMap(direction){if(current)direction>0?current.map.zoomIn():current.map.zoomOut();}
 function frameMunicipality(context){
  context.map.fitBounds(context.boundary.getBounds(),{padding:[24,32],maxZoom:12,animate:false});
