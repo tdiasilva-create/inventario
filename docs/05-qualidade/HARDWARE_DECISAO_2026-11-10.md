@@ -30,7 +30,11 @@ Arquivos: migração 0024 e módulo `server/hardware-review.mjs`; monitoramento/
 
 Versões anteriores conferidas: painel `8b102e2f-0a17-499f-8458-fe217cf7799e`, coletor `274ecd9b-002e-4f79-a4b9-325fc26fece1`, ambos 100%. Backup SQL privado com 2.854.250 bytes, SHA256 `d36f8ebb7de701c87d1ea5bb6b61a9128f466cf0ffe7d1eeb2d29dc692d54a7f`. Restauração em memória aprovada: integridade ok, zero erros de FK, hashes de 20 miniaturas conferidos e contagens originais preservadas após ensaio da migração. Consulta de produção anterior à mudança: 13 agentes vinculados, três alertas de comunicação, nenhum evento de hardware; nenhuma escrita nessa consulta.
 
-Registro de publicação será preenchido após conferência da versão ativa. Aplicar somente 0024 antes do painel; tabela adicional não modifica fichas existentes. Preservar coletor, segredos, Drive e crons.
+Migração **0024 aplicada no D1 real**; nenhuma semente/teste cadastrado. Publicado o código **827317a** em **10/11/2026, 11:10 de Fortaleza (14:10 UTC)**. Painel ativo em **100%: `1d055717-b1d6-42d1-a887-846fb78b6b28`**. Coletor confirmado na versão anterior `274ecd9b-002e-4f79-a4b9-325fc26fece1`; segredos, Drive e os dois crons preservados.
+
+Sete verificações HTTP externas aprovadas: login e CSS públicos; novas APIs e monitoramento recusam acesso anônimo (401); módulo privado e Panorama redirecionam ao login (302). SQL pós-publicação somente leitura confirmou 0024, nenhuma decisão sintética e os mesmos três incidentes de comunicação. Cron bem-sucedido às **14:10:42 UTC**, posterior ao deploy; não houve snapshot novo processado nessa rodada. Não foi executada troca física de memória nem decisão em registros reais. Testes autenticados de interface descritos acima ocorreram no Worker/SQLite isolados.
+
+Build/dry-run, scanner de 562 arquivos do índice e links documentais aprovados. Logs e backup em `private-data/release-hardware-2026-11-10/`, excluídos do Git.
 
 Em caso de retorno, voltar somente o código do painel à versão anterior registrada. Não apagar a tabela de decisões nem restaurar banco antigo sobre dados novos. A versão anterior ignora a tabela adicional. Backup SQL privado e ensaio local não são backup das fotografias nem homologação completa de recuperação do sistema.
 
