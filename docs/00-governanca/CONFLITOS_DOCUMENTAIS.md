@@ -66,3 +66,7 @@ A entrega inicial abriu o modal automaticamente e adicionou avisos fixos. O resp
 ## D-082 — pacote anterior às correções do mapa e da moldura
 
 Substituir integralmente os arquivos prontos apagaria D-081 e correções D-080 (cancelamento de consultas, validação de contagens, acessibilidade/menu, retorno do primeiro acesso). Aplicação por trechos, sem executar comandos do anexo cegamente. A consulta de equipamentos de ambiente usa o ID no published_json (D-069), superando a sugestão técnica de usar e.environment_id, que pode estar em alteração parcial. Numeração sugerida D-079/080 já ocupada. A publicação real foi explicitamente solicitada; não é necessário novo staging/consentimento. O ponto B8 sobre Ano continua pendente de regra.
+
+## D-083 — substituição do indicativo do mapa
+
+A composição D-067 mostrava computadores declarados funcionando, a partir de inventário concluído. A decisão posterior D-083 substitui somente esse indicativo por escolas com presença recente de agentes, dado operacional, inclusive vínculo ainda parcial. Não transforma estado de comunicação em conclusão de vistoria nem em diagnóstico de internet. D-082 usava marcador comum carvão/selecionado vermelho; agora ambos usam #7523C9, preservando precedência dos alertas D-081.

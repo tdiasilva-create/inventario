@@ -177,3 +177,8 @@ Implementadas consultas por blocos, mapa preservado, fachada e galeria completa,
 ## Tour de lógica D-082 — 10/11/2026
 
 Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOUR_LOGICA_2026-11-10.md). Permanecem sem nova decisão: LOG-08 (fichas vs quantidade física de lotes), LOG-10/LNA-12 (busca global de equipamentos), LOG-13 (critério de Pendentes), LOG-14 (Relatórios/Planejamento), LNA-09 (Ano) e N-02 (mudar clique da matriz). Comportamentos existentes preservados. A contagem de computadores nesta tela continua por ficha; não equiparar a soma física publicada da matriz. Fases 4/5 continuam pausadas.
+
+## D-083 — escolas online no mapa
+
+- [ ] Responsável definir local/apresentação das escolas offline. Regra de classificação aprovada; não inventar nova aba ou listagem.
+- A mudança do indicativo do mapa não decide LOG-08 sobre quantidade física/fichas na tela Computadores. Demais decisões D-082 e Fases 4/5 preservadas.

@@ -8,7 +8,7 @@ function paintHardware(){
  if(!current)return;const context=current;
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
   entry.label.textContent=entry.name+(pending?' · '+pending+' alteração(ões) de hardware aguardando decisão':'')+(demands?' · '+demands+' demanda(s) de hardware em atendimento':'');
-  entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':entry.selected?'#d70825':'#25272c'});
+  entry.marker.setStyle({fillColor:pending?'#d70825':demands?'#ba6a00':'#7523C9'});
   const node=entry.marker.getElement();if(node){node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click');}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
   if(pending||demands){
@@ -103,7 +103,7 @@ export function updateMarkers(units,selected){
  if(!current)return;const context=current,keep=new Set();
  for(const {unit,coordinates} of geolocatedUnits(units)){
   keep.add(unit.id);let entry=context.markers.get(unit.id);
-  if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#fff',weight:2,fillColor:'#25272c',fillOpacity:1});
+  if(!entry){const marker=window.L.circleMarker(coordinates,{color:'#fff',weight:2,fillColor:'#7523C9',fillOpacity:1});
    const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',()=>{context.onSelect(unit.id);if(hardwareUnits.has(unit.id))openHardware(unit.id);});marker.addTo(context.unitGroup);
    entry={marker,label};context.markers.set(unit.id,entry);
   }

@@ -16,7 +16,7 @@ files.push('hardware-attention.js','desktop-notifications.js','desktop-equipment
 files.push('desktop-demand-count.js','operations.html','operations.js');
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
-files.push('environment-editor.js','panel-confirm.js');
+files.push('environment-editor.js','panel-confirm.js','school-presence.js');
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');
 files.push('desktop-blocks.js','desktop-exports.js');
 for(const file of files){

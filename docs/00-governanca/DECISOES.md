@@ -545,3 +545,9 @@ Pulso e contadores abrem computadores de toda a rede por estado, agrupados por I
 Ambientes abrem consulta de fichas publicadas por ID do ambiente publicado, não localização parcial atual. Salvar demanda sem alteração não escreve histórico/versão; uma nota é alteração válida. Confirmações administrativas usam diálogo com cancelamento; senha provisória copiável, ocultável e removida da tela após 60 s. Atualizar Drive mostra retorno de consulta. Nenhuma nova permissão no servidor, migração, envio de foto ou exclusão real de teste.
 
 Critérios de lotes, busca global de equipamentos, Pendentes, relatórios/planejamento, filtro Ano e mudança de destino da matriz permanecem pendentes. Hover com 220 ms é a correção entregue; alternativa exclusivamente por botão não adotada. [Aceite e publicação](../05-qualidade/TOUR_LOGICA_2026-11-10.md).
+
+## D-083 — escolas online no mapa e marcadores roxos, 10/11/2026
+
+Pedido do responsável em duas mensagens, execução liberada ao dizer “terminei”: trocar “Computadores funcionando” por “Escolas onlines”, contando cada escola com pelo menos um computador comunicando. Nenhum comunicando: offline pela métrica. O local de exibição das offline será definido depois. Marcadores das unidades #7523C9.
+
+Derivação técnica: tipos escolares já definidos (municipal, militar, creche), ativos e conforme filtros; prédios administrativos/núcleos/obras não entram nessa contagem. Presença calculada pelo servidor D-070, prazo atual 17 min; atualização compartilhada do pulso de 60 s. Comunicação com falha de inventário ainda comprova contato. Ausência de sinal não comprova queda da internet. Erro HTTP/dado incompleto produz indisponibilidade. Alertas vermelho/âmbar D-081 têm prioridade sobre a cor comum; selecionado mantém destaque de tamanho. Sem alteração de perguntas, protocolo, dados ou contagens físicas/fichas LOG-08. [Aceite e publicação](../05-qualidade/ESCOLAS_ONLINE_2026-11-10.md).

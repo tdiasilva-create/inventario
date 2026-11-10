@@ -6,8 +6,10 @@ import {createEquipmentConsultation} from './desktop-equipment.js';
 import {shortUnitNames} from './unit-names.js';
 import {unitFigures,networkFigures,unitFiguresLine} from './unit-figures.js';
 import {createResultsView} from './desktop-results.js';
+import {createSchoolPresenceView} from './school-presence.js';
 import {openPhotoViewer} from './photo-viewer.js';
 const receivedResults=createResultsView();
+const schoolPresence=createSchoolPresenceView();
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
 const progress=createProgressView({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});
@@ -99,7 +101,7 @@ function unitList(){const units=filteredCatalogue();return '<section class="pane
 const layoutBlock=(html,name)=>html.replace('<section class="','<section data-layout-block="'+name+'" class="panorama-'+name+' ');
 function unitResultsPanel(){const u=chosen();return '<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3>'+(u?'<p class="unit-context">'+esc(u.name)+'</p><div data-result-summary="'+esc(u.id)+'">'+receivedResults.brief(u.id)+'</div>':'<p>Selecione uma unidade no mapa.</p>')+'</div></section>';}
 function panorama(){
- const map=mapPanel().replace('</section>','<div class="map-operation" data-result-working>'+receivedResults.working()+'</div></section>');
+ const map=mapPanel().replace('</section>','<div class="map-operation" data-schools-online role="status">'+schoolPresence.markup()+'</div></section>');
  return `<div class="panorama panorama-edited ${equipmentConsultation.active?'has-equipment-consultation':''}">${layoutBlock(map,'map')}${layoutBlock(matrixPanel(),'matrix')}${equipmentConsultation.markup()}<section class="panel panorama-indicators" data-layout-block="indicators" aria-label="Indicadores principais">${stats()}${networkFigures(filteredCatalogue(),catalogueLoaded)}</section>${layoutBlock(filters(),'filters')}${layoutBlock(selectedPanel(true),'selected')}${layoutBlock(evidencePanel(),'evidence')}${layoutBlock(receivedAnswers(),'answers')}${layoutBlock(galleryPanel(),'gallery')}<section class="panel panorama-results" data-layout-block="results"><div class="dialog-body"><h3>Computadores e impressoras recebidos</h3><div data-result-summary="" data-result-mode="without-working">${receivedResults.brief(undefined,{omitWorking:true})}</div></div></section>${layoutBlock(unitResultsPanel(),'unit-results')}${layoutBlock(alertsPanel(),'alerts')}</div>`;
 }
 function emptyState(text,action=''){return '<div class="empty">'+icon('box')+'<span>'+esc(text)+'</span>'+action+'</div>';}
@@ -166,6 +168,7 @@ function render(){
  if(renderedPage!==state.page)renderShell(content,html);else updateBlocks(content,html);
  equipmentConsultation.attach();
  receivedResults.attach(filteredCatalogue());
+ schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.q);
  const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;render();}});state.focus=null;}
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});

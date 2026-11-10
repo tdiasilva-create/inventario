@@ -10,10 +10,21 @@ const count=n=>{if(!Number.isSafeInteger(n)||n<0)throw Error('Contagem indispon�
 export function startPulse(user){
  stopPulse();const node=document.querySelector('#panel-pulse');
  if(!node||user?.mustChange||!['root','admin','visualizador'].includes(user?.role))return;let busy=false;const controller=new AbortController(),signal=controller.signal;
+ async function readFleet(){
+  try{
+   const fleet=await read('/api/operations/units',signal);
+   if(!Array.isArray(fleet.units))throw Error('Rede indisponível');
+   if(!signal.aborted&&node.isConnected)window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{fleet}}));
+   return fleet;
+  }catch(e){
+   if(!signal.aborted&&node.isConnected)window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{error:true}}));
+   throw e;
+  }
+ }
  async function update(){
   if(busy||document.hidden||signal.aborted)return;busy=true;
   try{
-   const [fleet,queue,progress]=await Promise.all([read('/api/operations/units',signal),read('/api/operations/queue-summary',signal),read('/api/inventory/in-progress?cursor=',signal)]);
+   const [fleet,queue,progress]=await Promise.all([readFleet(),read('/api/operations/queue-summary',signal),read('/api/inventory/in-progress?cursor=',signal)]);
    if(signal.aborted||!node.isConnected)return;
    if(!Array.isArray(fleet.units))throw Error('Rede indisponível');count(queue.pending);count(progress.total);
    const sum=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});
