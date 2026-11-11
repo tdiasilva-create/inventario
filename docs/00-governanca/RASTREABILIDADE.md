@@ -499,3 +499,7 @@ Pedido posterior e horário confirmado → provider-report.mjs agrupa por ID/obs
 Publicação D-099: commit b030985, migração 0026, painel e84c72d6-297b-474d-a7b8-c9b5c5913767 (100%) em 11/11/2026 às 18:16:35 Fortaleza. Coletor preservado em 2dac8571-2671-4eec-8ab0-7492753a0255. Registro inicial automático às 18:16:43, seis unidades/quatro com provedor, próximo agendamento 16/11/2026 08h; dados atuais e arquivo abertos no painel real com sessão root. 54 verificações HTTP aprovadas. Nada retroativo ou fictício gravado; execução da próxima segunda-feira é futura.
 
 Adendo editorial D-099, 11/11/2026: pedido direto de remoção da frase sobre provedor contratado/links → constante note em web/provider-report.js, compartilhada pela leitura atual, arquivada e impressão/PDF. Nenhuma escrita de dados nem mudança de agrupamento, colunas, APIs ou agenda. Ver conferência e versão no mesmo documento de aceite.
+
+## D-100 — modal com nomes das escolas
+
+Pedido e screenshot do responsável → web/desktop.js converte indicadores em botões; web/school-presence.js deriva nomes do mesmo catálogo/estado dos contadores e gerencia dialog; web/painel.css preserva identidade D-080/escala D-091. school-presence-browser.cjs verifica lista/filtros, atualização, falha/recuperação, teclado, foco, mapa ampliado, visualizador, rolagem, nomes como texto e saída da página. Regras puras de presença e panorama-map-browser.cjs preservados. [Aceite/publicação](../05-qualidade/ESCOLAS_MODAL_2026-11-11.md). Nenhum novo campo/requisito de coleta do TXT; Base, servidor, dados e fotos preservados.

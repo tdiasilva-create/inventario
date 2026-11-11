@@ -306,12 +306,23 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .map-panel .institutional-popup strong,.map-panel .institutional-popup a{color:var(--vermelho)}
 .map-reference-info{color:var(--texto-secundario);line-height:1.6}
 .map-operation{position:absolute;z-index:1001;right:12px;bottom:40px;display:grid;gap:6px;max-width:calc(100% - 80px);padding:8px 12px;border:1px solid var(--borda);border-radius:var(--raio);background:#fffffff2;box-shadow:0 2px 8px #16191d12}
-.map-school-status{display:flex;align-items:center;gap:10px}
+.map-school-status{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:3px;padding:3px 0;background:transparent;text-align:left;font:inherit;text-transform:none;letter-spacing:normal;cursor:pointer}
+.map-school-status:hover:not(:disabled){background:var(--pessego-suave)}
+.map-school-status:focus-visible{outline:2px solid var(--vermelho);outline-offset:3px}
+.map-school-status:disabled{cursor:wait;opacity:1}
 .map-school-status+ .map-school-status{border-top:1px solid var(--borda);padding-top:6px}
 .map-school-status>strong{font:700 22px/1 var(--font-display);font-variant-numeric:tabular-nums;min-width:28px;color:#187247}
 .map-school-status[data-schools-offline]>strong{color:var(--vermelho)}
 .map-school-status>span{font-size:12px;color:var(--preto);line-height:1.3}
 .map-operation small{display:block;font-size:10px;color:var(--texto-secundario);margin-top:2px}
+.school-presence-dialog{width:min(480px,calc(100vw - 32px));max-height:min(640px,calc(100dvh - 32px));overflow:hidden}
+.school-presence-dialog[open]{display:flex;flex-direction:column}
+.school-presence-dialog .dialog-head{flex-shrink:0}
+.school-presence-dialog h2{margin:0}
+.school-presence-list{overflow:auto;overscroll-behavior:contain;padding:4px 16px 12px;font-size:14px;line-height:1.5}
+.school-presence-list ul{list-style:none;margin:0;padding:0}
+.school-presence-list li{padding:10px 0;overflow-wrap:anywhere;border-bottom:1px solid var(--linha)}
+.school-presence-list li:last-child{border-bottom:0}
 /* D-091: somente o Panorama; a tela Mapa da Rede mantém seu tamanho. */
 .panorama .map-operation{transform:scale(.7);transform-origin:bottom right}
 .map-panel [data-action="map-collapse"]{display:none}

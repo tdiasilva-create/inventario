@@ -295,3 +295,12 @@ Sem agenda automática ou histórico de variações solicitado/implantado neste 
 - [ ] Aceite operacional final pelo responsável.
 
 Supera a ausência de agenda/histórico de D-098, sem resolver outras pendências ou retomar Fases 4/5. [Aceite](../05-qualidade/PROVEDORES_SEMANAIS_2026-11-11.md).
+
+## D-100 — escolas online/offline em modal
+
+- [x] Pedido definido: somente nomes do grupo, mesmos filtros, sem informação adicional.
+- [x] Implementação e testes locais de lista, acessibilidade, atualização/falha e mapa ampliado concluídos.
+- [ ] Publicação e conferência real.
+- [ ] Aceite operacional do responsável.
+
+Sem decisões funcionais adicionais. Demais pendências e Fases 4/5 preservadas. [Aceite](../05-qualidade/ESCOLAS_MODAL_2026-11-11.md).
