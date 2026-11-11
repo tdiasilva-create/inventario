@@ -439,3 +439,5 @@ Publicação D-090: commit af9c6bf, migração 0025; painel 73b79751-7c50-4b38-8
 ## D-091 — PAN-02/PAN-03 e confirmação PAN-05
 
 Arquivo original preservado em [DECISOES_PAINEL_2026-11-10.txt](../06-entregas/decisoes-painel-2026-11-10/DECISOES_PAINEL_2026-11-10.txt). PAN-02 → web/desktop.js, web/desktop-map.js e web/painel.css: ampliação, roda e retorno. PAN-03 → CSS restrito a .panorama, escala 0,7. PAN-05 → sem alteração por confirmação direta. Teste de interação em tests/panorama-map-browser.cjs, regressões de presença/hardware/blocos; [medidas e capturas](../05-qualidade/PANORAMA_MAPA_2026-11-10.md). Nenhuma pergunta ou regra da Base de Coleta alterada.
+
+Publicação D-091: implementação 2f4aa07, painel 376572e4-184b-4fd8-8d4a-2057c5b81cd8 em 100% às 22:32 de Fortaleza. Nove verificações HTTP aprovadas; coletor e D1 sem alterações.

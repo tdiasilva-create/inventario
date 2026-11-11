@@ -49,4 +49,8 @@ Abrir https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumia
 
 ## Publicação
 
-Registro da versão real será acrescentado após confirmação do deploy. Sem migração de dados ou publicação do coletor neste lote.
+Publicação concluída em 10/11/2026 às 22:32 de Fortaleza (2026-11-11T01:32:13.165528Z), commit de implementação 2f4aa07. Painel: **376572e4-184b-4fd8-8d4a-2057c5b81cd8**, 100% do tráfego confirmado por deployments list. Versão anterior para rollback de código: 73b79751-7c50-4b38-86a0-c9e769f4ab93.
+
+Build e dry-run aprovados, scanner do índice (622 arquivos) e links documentais sem erros. Nove verificações HTTP externas aprovadas: login acessível, páginas e assets privados redirecionados ao login, APIs privadas retornando 401 e login do coletor acessível. Verificação visual autenticada executada em Worker/SQLite isolado; não declarar navegação autenticada de produção neste lote.
+
+Sem migração, escrita de registros oficiais, mudanças de configuração/segredos ou publicação do coletor. Dois agendamentos do painel e provedor Drive preservados. Evidência operacional privada em private-data/release-panorama-mapa-2026-11-10/.
