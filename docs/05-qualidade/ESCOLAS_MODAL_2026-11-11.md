@@ -25,6 +25,6 @@ Regressão panorama-map-browser.cjs aprovada: escala .7, roda/retorno/Escape, at
 
 Implementação commit **3f878e2**. Build, dry-run, diff, links documentais e scanner do índice Git (652 arquivos) aprovados. Painel publicado em **11/11/2026 às 19:38:49 Fortaleza**, versão **e1b208a6-7813-4901-9bed-7b1c34522d4a**, 100% do tráfego. Três assets alterados: desktop.js, school-presence.js e painel.css. Cinquenta verificações HTTP reais aprovadas. Dois crons preservados; sem migração, publicação do coletor ou escrita de cadastros.
 
-Navegação pós-publicação encontrou sessão expirada ao abrir Panorama; solicitada renovação pelo responsável, sem manipular credenciais. Conferência autenticada real pendente até o login.
+Navegação pós-publicação encontrou sessão expirada ao abrir Panorama; renovação feita pelo próprio responsável, sem manipular credenciais. Conferência autenticada como root concluída em **11/11/2026 às 19:56–19:57 Fortaleza**: indicador online 1 abriu somente EM RAIO DE LUZ; indicador offline 68 abriu 68 nomes, em ordem alfabética, com rolagem própria. Contagem e conteúdo conferidos pela interface real. Botão Fechar restaurou o foco no indicador de origem; modal offline deixado aberto para o responsável. Screenshots reais das duas listas observados. Nenhum cadastro, filtro ou dado de comunicação alterado durante essa conferência.
 
 Retorno: republicar a versão anterior **4075d22d-a3b6-4e71-a484-ff7660bcf85d**, sem desfazer dados. Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama .
