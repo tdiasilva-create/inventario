@@ -129,4 +129,4 @@ O endereço observado na chegada do heartbeat é uma observação do servidor, n
 
 ## D-098 — periodicidade de emissão não altera a fonte histórica
 
-O pedido diz emitir semanalmente ao clicar e abranger computadores que já enviaram dados. Portanto a consulta usa a última informação disponível e inclui offline antigo; não inventa histórico semanal, limita a sete dias nem agenda tarefa. A repetição de Provedor foi interpretada como Último contato, com proposta e premissa comunicadas. O relatório identifica data da emissão e do contato. [Contrato](../03-painel-desktop/RELATORIO_PROVEDORES_D098.md).
+O pedido diz emitir semanalmente ao clicar e abranger computadores que já enviaram dados. Portanto a consulta usa a última informação disponível e inclui offline antigo; não inventa histórico semanal, limita a sete dias nem agenda tarefa. O responsável confirmou Último contato no lugar da repetição de Provedor. O relatório identifica data da emissão e do contato. [Contrato](../03-painel-desktop/RELATORIO_PROVEDORES_D098.md).

@@ -279,6 +279,8 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 ## D-098 — emissão semanal por clique
 
 - [x] Botão, consulta completa, Excel/CSV/PDF e testes implementados.
-- [ ] Aceite operacional do responsável após publicação; quinta coluna Último contato é interpretação comunicada da repetição de Provedor.
+- [x] Quinta coluna Último contato expressamente confirmada pelo responsável.
+- [x] Publicado e conferido com sessão root no ambiente real; relatório completo exibido.
+- [ ] Aceite operacional do responsável após publicação.
 
 Sem agenda automática ou histórico de variações solicitado/implantado neste lote. [Aceite](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md). Demais pendências preservadas.

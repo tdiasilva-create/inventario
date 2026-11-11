@@ -489,3 +489,5 @@ Publicação D-097: commit 5a8afa5; coletor 2dac8571-2671-4eec-8ab0-7492753a0255
 ## D-098 — relatório de provedores
 
 Pedido direto → provider-report.mjs consulta completa de vínculos/telemetria D-097, management-views.mjs mantém acesso gerencial; web/provider-report.js fornece prévia/Excel/CSV/PDF, com botões em operations.js e desktop-management.js. Testes provider-report.test.mjs e provider-report-browser.cjs, regressões de relatório/operação/presença/exclusão. [Aceite e publicação](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md). Sem alterações da Base TXT, dados oficiais, agente ou coletor.
+
+Último contato confirmado expressamente como quinta coluna. Implementação 1d47d69 publicada no painel em 11/11/2026, 17:54:53 Fortaleza, versão 8d60b5ca-7c98-4104-ad20-882aa59b0727 (100%). Coletor permaneceu em 2dac8571-2671-4eec-8ab0-7492753a0255. 21 testes de servidor, três roteiros de navegador e 52 verificações HTTP aprovados. Conferência root em produção: prévia integral com 65 computadores de seis unidades, cinco colunas e exportações disponíveis; sem alteração de dados reais.

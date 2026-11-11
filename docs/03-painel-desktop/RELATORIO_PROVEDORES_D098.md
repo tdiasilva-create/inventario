@@ -1,6 +1,6 @@
 # D-098 — relatório semanal de provedores por computador
 
-Pedido de 11/11/2026: botão para listar Unidade, Hostname, IP público e Provedor / rede identificada de todos os computadores com agente que já enviaram ou continuam enviando dados. A coluna Provedor veio duplicada; foi proposta a substituição da repetição por Último contato. Sem resposta adicional, essa interpretação reversível foi comunicada e usada como quinta coluna, reaproveitando D-097.
+Pedido de 11/11/2026: botão para listar Unidade, Hostname, IP público e Provedor / rede identificada de todos os computadores com agente que já enviaram ou continuam enviando dados. A coluna Provedor veio duplicada; o responsável confirmou expressamente a substituição da repetição por Último contato: “Sim, usar Último contato”. Quinta coluna reaproveita D-097.
 
 ## Operação
 
