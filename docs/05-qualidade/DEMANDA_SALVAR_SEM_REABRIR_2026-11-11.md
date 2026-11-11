@@ -34,3 +34,9 @@ Publicada em 11/11/2026 às 20:29:17 (Fortaleza), no painel real conforme autori
 Dry-run e verificação documental aprovados. Após publicação, verify-panel-release.mjs aprovou 51 checks HTTP. Central aberta como root, recarregada e conferida visualmente em produção às 20:29, com busca/lista/contadores funcionais. Nenhuma demanda criada/editada no teste real: os cenários de gravação, falhas e idempotência foram executados no Worker/SQLite isolado descrito acima.
 
 Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/demandas
+
+## Conferência real solicitada posteriormente pelo responsável — 20:42 Fortaleza
+
+O responsável pediu explicitamente verificar o salvamento no painel real. Registrada a própria solicitação de verificação técnica como demanda #9, na SECRETARIA MUNICIPAL DE EDUCAÇÃO - SEMED, tipo Outro/origem Painel, sem equipamento nem defeito fictício. Após salvar às 20:42:10, apareceu “Demanda #9 registrada com sucesso”, o modal fechou e a demanda apareceu uma única vez na lista; atualização automática às 20:42:16 preservou o formulário fechado. O detalhe foi aberto somente por clique em Ver demanda.
+
+Resultado registrado e demanda concluída às 20:42:41, sem deixar pendência técnica aberta. A edição também fechou o modal com confirmação. Filtro Concluída + busca pela descrição mostrou somente #9 na lista. Nenhuma demanda preexistente foi modificada. Evidências privadas (fora do Git): `evidencias/demandas-salvar-2026-11-11/03-producao-demanda-9-salva.jpg` e `04-producao-demanda-9-concluida.jpg`. Nenhuma alteração de código ou nova publicação nesta conferência.
