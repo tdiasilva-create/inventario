@@ -21,6 +21,7 @@ function selectMapUnit(context,id,event){
  if(nearby.length===1||event?.keyboard){choose(id);return;}
  context.map.closePopup();origin.marker.closeTooltip();
  const content=document.createElement('section');content.className='map-unit-choices';content.setAttribute('aria-label','Escolher unidade neste ponto');
+ content.style.maxHeight=Math.max(100,context.container.clientHeight-180)+'px';
  const title=document.createElement('strong');title.textContent='Qual unidade deseja consultar?';content.append(title);
  const hint=document.createElement('p');hint.textContent='Há unidades próximas neste ponto do mapa.';content.append(hint);
  for(const [unitId,entry] of nearby.sort((a,b)=>a[1].name.localeCompare(b[1].name,'pt-BR'))){
