@@ -4,6 +4,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const h=await require('./helpers/panel-browser.cjs')(),{f,env,page,origin,errors}=h;
  const {hardwareChange}=await import('./helpers/hardware-change.mjs'),hardware=await hardwareChange(f,env);
  const {seedMapDemands}=await import('./helpers/map-demands.mjs'),seed=seedMapDemands(f),unit=f.ids.pending;
+ f.sqlite.prepare('UPDATE units SET students_total=1234,seats_available=0 WHERE id=?').run(unit);
+ f.sqlite.prepare('UPDATE units SET students_total=NULL,seats_available=17 WHERE id=?').run(f.ids.progress);
+ f.sqlite.prepare('UPDATE units SET students_total=0,seats_available=NULL WHERE id=?').run(f.ids.blocked);
  const out='docs/05-qualidade/evidencias/demandas-mapa-2026-11-11';fs.mkdirSync(out,{recursive:true});const writes=[];
  page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))writes.push(r.url());});
  const ring=id=>page.locator('.demand-map-notice[data-unit-id="'+id+'"]');
@@ -23,8 +26,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   assert.equal(await page.locator('.unit-map-marker[data-unit-id="'+f.ids.progress+'"]').getAttribute('fill'),'#EAB308');
   await page.locator('.hardware-map-notice[data-unit-id="'+unit+'"]').waitFor();
   await page.clock.runFor(500);await shot('aneis-e-hardware');
-  // O centro mantém o modal de hardware; o anel é um acesso separado às demandas.
-  await page.locator('.hardware-map-notice').focus();await page.keyboard.press('Enter');await page.locator('.hardware-card').waitFor();assert.match(await page.locator('.hardware-dialog').innerText(),/32 GiB/);await page.getByRole('button',{name:'Fechar aviso de hardware'}).click();
+  // D-095: valores de cadastro e prioridade da demanda, inclusive sobre hardware.
+  await page.locator('.hardware-map-notice').hover();await page.locator('.unit-map-tooltip:visible').waitFor();assert.match(await page.locator('.unit-map-tooltip:visible').innerText(),/Alunos: 1\.234\nVagas disponíveis: 0/);const tooltipBox=await page.locator('.unit-map-tooltip:visible').boundingBox(),mapBox=await page.locator('#municipal-map').boundingBox();assert.ok(tooltipBox.width>150&&tooltipBox.height<180,'texto não pode virar coluna estreita ou esconder informações');assert.ok(tooltipBox.y>=mapBox.y&&tooltipBox.x>=mapBox.x&&tooltipBox.x+tooltipBox.width<=mapBox.x+mapBox.width,'informações visíveis dentro do mapa');await shot('hover-alunos-vagas');
+  await page.locator('.hardware-map-notice').focus();await page.keyboard.press('Enter');await page.waitForURL('**/demandas?unidade='+unit);assert.equal(await page.locator('.hardware-dialog[open]').count(),0);await page.waitForFunction(id=>document.querySelector('#request-filters select[name=unit]')?.value===id,unit);assert.equal(await page.locator('#request-filters select[name=unit]').inputValue(),unit);
+  await page.goto(origin+'/panorama');await expectCount(unit,2);
+  const plain=()=>page.locator('.unit-map-marker[data-unit-id="'+f.ids.blocked+'"]');await plain().hover();assert.match(await page.locator('.unit-map-tooltip:visible').innerText(),/Alunos: 0\nVagas disponíveis: Não informado/);await plain().click();await page.waitForURL('**/unidade?id='+f.ids.blocked);await page.locator('.detail-banner').waitFor();assert.equal(await page.locator('.nav-item[href="/unidades"]').getAttribute('aria-current'),'page');await page.reload();await page.locator('.detail-banner').waitFor();assert.match(await page.locator('.detail-banner').innerText(),new RegExp(f.ids.blocked));await shot('unidade-selecionada');
+  await page.goto(origin+'/panorama');await expectCount(unit,2);
+  await page.getByRole('button',{name:/^Notificações de hardware/}).click();await page.locator('.hardware-card').waitFor();assert.match(await page.locator('.hardware-dialog').innerText(),/32 GiB/);await page.getByRole('button',{name:'Fechar aviso de hardware'}).click();
   await page.getByRole('button',{name:'Ampliar mapa',exact:true}).click();await page.clock.runFor(400);await untilAnchored();
   await page.getByRole('button',{name:'Ampliar área do mapa',exact:true}).click();await page.clock.runFor(400);await untilAnchored();await shot('mapa-ampliado');await page.keyboard.press('Escape');
   await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await ring(unit).locator('.demand-map-ring').evaluate(e=>getComputedStyle(e).animationName),'none');await page.emulateMedia({reducedMotion:'no-preference'});
@@ -36,12 +44,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   // Concluir uma de duas não remove o anel; concluir a última remove. Reabrir restaura.
   f.sqlite.prepare("UPDATE service_requests SET status='Concluída' WHERE id=?").run(seed.ids[0]);await tick();await expectCount(unit,1);
   f.sqlite.prepare("UPDATE service_requests SET status='Concluída' WHERE unit_id=?").run(unit);await tick();await ring(unit).waitFor({state:'detached'});assert.equal(await ring(f.ids.progress).count(),1);assert.equal(await page.locator('.hardware-map-notice').count(),1,'hardware sem parecer continua');
+  await page.locator('.hardware-map-notice').focus();await page.keyboard.press('Enter');await page.waitForURL('**/unidade?id='+unit);await page.locator('.detail-banner').waitFor();assert.equal(await page.locator('.hardware-dialog[open]').count(),0);await page.goto(origin+'/panorama');await ring(f.ids.progress).waitFor();
   f.sqlite.prepare("UPDATE service_requests SET status='Em atendimento' WHERE id=?").run(seed.ids[0]);await tick();await expectCount(unit,1);
   await ring(f.ids.progress).focus();await page.keyboard.press('Enter');await page.waitForURL('**/demandas?unidade='+f.ids.progress);await page.locator('#ops-body').getByText('TESTE · Visita à unidade',{exact:true}).waitFor();assert.equal(await page.locator('#request-filters select[name=unit]').inputValue(),f.ids.progress);await shot('central-filtrada');
   // Mapa da Rede, visualizador e movimento reduzido mantêm a mesma sinalização.
   f.sqlite.prepare("UPDATE users SET role='visualizador' WHERE id=?").run(f.root.id);await page.goto(origin+'/mapa');await expectCount(unit,1);
   await page.setViewportSize({width:390,height:844});await page.clock.runFor(400);await page.getByRole('button',{name:'Enquadrar mapa',exact:true}).click();await page.locator('.map-panel').scrollIntoViewIfNeeded();await page.clock.runFor(400);await untilAnchored();await shot('mapa-390');
   await ring(f.ids.progress).focus();await page.keyboard.press('Enter');await page.waitForURL('**/demandas?unidade='+f.ids.progress);await page.locator('#ops-body').getByText('TESTE · Visita à unidade',{exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Registrar demanda',exact:true}).count(),0);
-  assert.deepEqual(writes,[]);assert.deepEqual(errors,[]);const result={passed:true,allOpenStates:true,perUnitCounts:true,noFabricatedCoordinates:true,hardwareCoexists:true,teal:'#006D77',size:48,pollingSeconds:15,completionReopening:true,errorPreservesRead:true,clickFiltersCentral:true,reducedMotion:true,viewer:true,writeRequests:0,errors};fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+  assert.deepEqual(writes,[]);assert.deepEqual(errors,[]);const result={passed:true,allOpenStates:true,perUnitCounts:true,noFabricatedCoordinates:true,hardwareCoexists:true,teal:'#006D77',size:48,pollingSeconds:15,completionReopening:true,errorPreservesRead:true,clickFiltersCentral:true,hoverStudentsSeats:true,nullVersusZero:true,unitDetailSelected:true,hardwareBellPreserved:true,reducedMotion:true,viewer:true,writeRequests:0,errors};fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
  }catch(e){await shot('falha');throw e;}finally{await h.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

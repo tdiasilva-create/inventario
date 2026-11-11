@@ -463,3 +463,9 @@ Publicação D-093: fff4869; painel f43d0101-aca7-465e-a666-ad4981405f62, 100%, 
 Pedido direto: animação circular média #006D77 por unidade → pending-indicators.mjs agrega solicitações por ID, desktop-demand-count.js valida a resposta, desktop-map.js ancora anel e abre Central por unidade, unit-map-palette.js/ painel.css informam legenda/cor/animação. Regressão map-demands-browser e teste pending-indicators; hardware-review adaptado para sinalização verde-petróleo pós-encaminhamento. [Aceite/publicação](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md). Base TXT e coletor intactos.
 
 Publicação D-094: commit 37d5690; painel 00c07426-6655-4240-9c68-b77ce69016d6, 100%, 11/11/2026 07:57:55 Fortaleza. 26 testes de servidor, seis roteiros de navegador e 50 verificações HTTP reais aprovados. Coletor preservado em 91ba6200-d080-4026-8e92-7042bd67f86e. Conferência visual real depende de nova entrada após expiração da sessão.
+
+Responsável confirmou o funcionamento publicado de D-094 em 11/11/2026.
+
+## D-095 — dados de cadastro e navegação no mapa
+
+Pedido direto → desktop-map.js usa students_total/seats_available no hover e prioriza demandas; desktop.js abre o detalhe pelo ID com aba Unidades ativa; unit-map-palette.js atualiza a orientação de hardware; painel.css mantém tooltip legível. map-demands-browser cobre os novos destinos, valores e alertas; quatro regressões existentes adaptadas à regra posterior. [Aceite/publicação](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md). Nenhuma mudança de dados, Base TXT ou coletor.

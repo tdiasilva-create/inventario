@@ -7,19 +7,22 @@ let hardwareUnits=new Map();
 window.addEventListener('semed:monitoring',e=>{hardwareUnits=new Map((e.detail?.hardware?.units||[]).map(u=>[u.unit_id,u]));paintHardware();});
 window.addEventListener('semed:pending-summary',()=>paintHardware());
 const openDemandCount=id=>getPendingState().data?.demands?.units?.find(u=>u.unit_id===id)?.total||0;
-function openHardware(unitId){window.dispatchEvent(new CustomEvent('semed:hardware-open',{detail:unitId?{unitId}:{}}));}
+const mapFigure=value=>Number.isSafeInteger(value)&&value>=0?value.toLocaleString('pt-BR'):'Não informado';
+const tooltipOptions={className:'v33-tooltip unit-map-tooltip',direction:'top'};
 // Unidades próximas continuam nas coordenadas reais. O clique ambíguo pede
 // uma escolha explícita em vez de favorecer o último marcador desenhado.
-function selectMapUnit(context,id,event,intent='unit'){
+function selectMapUnit(context,id,event){
  if(current!==context||!context.markers.has(id))return;
  const origin=context.markers.get(id),point=context.map.latLngToContainerPoint(origin.marker.getLatLng());
  const radius=entry=>entry.demandNotice?24:entry.notice?16:entry.marker.getRadius()+2;
  const nearby=[...context.markers.entries()].filter(([,entry])=>context.map.latLngToContainerPoint(entry.marker.getLatLng()).distanceTo(point)<=radius(origin)+radius(entry));
  const choose=unitId=>{
   if(current!==context||!context.markers.has(unitId))return;
-  context.map.closePopup();context.onSelect(unitId);
-  if((intent==='demands'||!hardwareUnits.has(unitId))&&openDemandCount(unitId)>0)window.location.assign('/demandas?unidade='+encodeURIComponent(unitId));
-  else if(hardwareUnits.has(unitId))openHardware(unitId);
+  context.map.closePopup();
+  // D-095: demanda aberta tem prioridade; nos demais casos abrir a unidade.
+  // Pareceres de hardware continuam disponíveis pelo sino.
+  if(openDemandCount(unitId)>0)window.location.assign('/demandas?unidade='+encodeURIComponent(unitId));
+  else context.onSelect(unitId);
  };
  // Teclado já identifica um marcador pelo nome; não depende da área atingida.
  if(nearby.length===1||event?.keyboard){choose(id);return;}
@@ -49,20 +52,20 @@ function paintHardware(){
  if(mapStatus){mapStatus.hidden=demandReady&&!pendingState.error;mapStatus.textContent=pendingState.error?'Demandas: consulta indisponível. Última leitura preservada.':'Consultando demandas abertas…';}
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
   const openDemands=counts.get(id)||0;
-  entry.label.textContent=entry.name+' · '+entry.type+(pending?' · '+pending+' alteração(ões) de hardware aguardando decisão':'')+(openDemands?' · '+openDemands+' demanda(s) aberta(s)':'')+(demands?' · '+demands+' demanda(s) de hardware em atendimento':'');
+  entry.label.textContent=entry.name+' · '+entry.type+'\nAlunos: '+mapFigure(entry.students)+'\nVagas disponíveis: '+mapFigure(entry.seats)+(pending?'\n'+pending+' alteração(ões) de hardware aguardando decisão':'')+(openDemands?'\n'+openDemands+' demanda(s) aberta(s)':'');
   if(pendingState.error&&openDemands)entry.label.textContent+=' · Demandas: última leitura, atualização indisponível';
   entry.marker.setStyle({fillColor:entry.color});
   const node=entry.marker.getElement();if(node){node.dataset.unitId=id;node.dataset.unitType=entry.type;node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click',{keyboard:true});}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
   if(pending||demands){
    const state=pending?'pending':'demand';
-   if(!entry.notice){entry.notice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,riseOnHover:true,zIndexOffset:700,icon:window.L.divIcon({className:'hardware-map-notice',iconSize:[32,32],iconAnchor:[16,16],html:'<span class="hardware-map-halo" aria-hidden="true"></span><span class="hardware-map-badge" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.notice.on('click',e=>selectMapUnit(context,id,e));}
-   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();if(!badge)continue;badge.dataset.state=state;badge.dataset.unitId=id;badge.style.setProperty('--unit-color',entry.color);const hint=pending?'Clique para escolher a providência':'Clique para acompanhar o atendimento';badge.setAttribute('aria-label',entry.label.textContent+' · '+hint);badge.title=entry.label.textContent+' · '+hint;badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click',{keyboard:true});}};
+   if(!entry.notice){entry.notice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,riseOnHover:true,zIndexOffset:700,icon:window.L.divIcon({className:'hardware-map-notice',iconSize:[32,32],iconAnchor:[16,16],html:'<span class="hardware-map-halo" aria-hidden="true"></span><span class="hardware-map-badge" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.notice.on('click',e=>selectMapUnit(context,id,e));entry.notice.bindTooltip(()=>entry.label.cloneNode(true),tooltipOptions);}
+   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();if(!badge)continue;badge.dataset.state=state;badge.dataset.unitId=id;badge.style.setProperty('--unit-color',entry.color);const hint=openDemands?'Abrir demandas desta unidade':'Abrir cadastro desta unidade';badge.setAttribute('aria-label',entry.label.textContent+' · '+hint);badge.title=entry.label.textContent+' · '+hint;badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click',{keyboard:true});}};
   }else if(entry.notice){context.unitGroup.removeLayer(entry.notice);entry.notice=null;}
   // Anel externo de todas as demandas, sem modificar a categoria no centro.
-  // A camada de hardware fica acima: centro vermelho abre parecer; anel abre demandas.
+  // Centro e anel seguem o mesmo destino aprovado em D-095.
   if(openDemands){
-   if(!entry.demandNotice){entry.demandNotice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,zIndexOffset:600,icon:window.L.divIcon({className:'demand-map-notice',iconSize:[48,48],iconAnchor:[24,24],html:'<span class="demand-map-ring" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.demandNotice.on('click',e=>selectMapUnit(context,id,e,'demands'));}
+   if(!entry.demandNotice){entry.demandNotice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,zIndexOffset:600,icon:window.L.divIcon({className:'demand-map-notice',iconSize:[48,48],iconAnchor:[24,24],html:'<span class="demand-map-ring" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.demandNotice.on('click',e=>selectMapUnit(context,id,e));entry.demandNotice.bindTooltip(()=>entry.label.cloneNode(true),tooltipOptions);}
    entry.demandNotice.setLatLng(entry.marker.getLatLng());const ring=entry.demandNotice.getElement();
    if(ring){ring.dataset.unitId=id;ring.dataset.demands=String(openDemands);ring.dataset.stale=String(!!pendingState.error);ring.setAttribute('role','button');ring.setAttribute('aria-label',entry.label.textContent+' · Abrir demandas desta unidade');ring.title=entry.label.textContent+' · Abrir demandas desta unidade';ring.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();entry.demandNotice.fire('click',{keyboard:true});}};}
   }else if(entry.demandNotice){context.unitGroup.removeLayer(entry.demandNotice);entry.demandNotice=null;}
@@ -157,10 +160,10 @@ export function updateMarkers(units,selected){
   keep.add(unit.id);let entry=context.markers.get(unit.id);
   const type=unit.unit_type||unit.type||'Tipo não informado',color=unitMapColor(type);
   if(!entry){const marker=window.L.circleMarker(coordinates,{className:'unit-map-marker',color:'#fff',weight:2,fillColor:color,fillOpacity:1});
-   const label=document.createElement('span');marker.bindTooltip(label,{className:'v33-tooltip'});marker.on('click',e=>selectMapUnit(context,unit.id,e));marker.addTo(context.unitGroup);
+   const label=document.createElement('span');marker.bindTooltip(label,tooltipOptions);marker.on('click',e=>selectMapUnit(context,unit.id,e));marker.addTo(context.unitGroup);
    entry={marker,label};context.markers.set(unit.id,entry);
   }
-  entry.selected=unit.id===selected;entry.name=unit.name||unit.nome||'Unidade sem nome';entry.type=type;entry.color=color;entry.marker.setLatLng(coordinates);entry.marker.setRadius(entry.selected?9:6);
+  entry.selected=unit.id===selected;entry.name=unit.name||unit.nome||'Unidade sem nome';entry.type=type;entry.color=color;entry.students=unit.students_total;entry.seats=unit.seats_available;entry.marker.setLatLng(coordinates);entry.marker.setRadius(entry.selected?9:6);
   const node=entry.marker.getElement();if(node){node.dataset.unitId=unit.id;node.dataset.unitType=type;}
  }
  for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.notice)context.unitGroup.removeLayer(entry.notice);if(entry.demandNotice)context.unitGroup.removeLayer(entry.demandNotice);context.markers.delete(id);}

@@ -112,3 +112,7 @@ O responsável informou que EM RAIO DE LUZ existe como municipal e conveniada e 
 ## D-094 — âmbar de hardware encaminhado superado
 
 A sinalização âmbar D-081/D-087/D-088 para demanda oriunda de hardware foi substituída por anel verde-petróleo #006D77 para qualquer demanda aberta, por pedido posterior do responsável. O vermelho de hardware sem parecer permanece no círculo interno, com seu modal e sino próprios. Demanda não é alerta sem parecer; o número do sino não aumenta por criar atendimento manual.
+
+## D-095 — destino do clique, decisão posterior
+
+O pedido mais recente determina Unidades já na escola escolhida, com exceção somente para demanda aberta, que vai à Central. Isso supera a abertura de modal de hardware pelo centro do marcador em D-081/D-088/D-094. O círculo vermelho continua informativo; parecer e comparativo permanecem no sino. Não confundir essa mudança de navegação com remoção da detecção, dos eventos ou da exigência de parecer. Tooltip reaproveita números oficiais do cadastro, sem converter nulo em zero.

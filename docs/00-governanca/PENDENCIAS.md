@@ -248,6 +248,13 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 ## D-094 — demandas no mapa
 
 - [x] Todas as demandas abertas, não apenas hardware, sinalizadas por unidade em #006D77. Critérios de abertura/conclusão já definidos por D-071/D-085.
-- [ ] Aceite visual do responsável após publicação do anel de 48 px/ciclo 3 s.
+- [x] Aceite visual do responsável após publicação do anel de 48 px/ciclo 3 s: confirmou que acessou e está funcionando em 11/11/2026.
 
 [Aceite](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md). Nenhuma decisão anterior pendente foi antecipada.
+
+## D-095 — consulta da unidade no mapa
+
+- [x] Hover com alunos/vagas do cadastro e destino por unidade/demanda implementados e testados.
+- [ ] Aceite visual do responsável após publicação. Dados não preenchidos permanecem Não informado, sem criar pendência artificial ou importar números.
+
+[Aceite](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md). Demais pendências preservadas.

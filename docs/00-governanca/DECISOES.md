@@ -619,3 +619,7 @@ TP-20 esclarecido diretamente: o escopo atual é EM RAIO DE LUZ municipal; conve
 ## D-094 — anel de demandas abertas por unidade, 11/11/2026
 
 Responsável pediu animação circular média #006D77 nas unidades com demandas pendentes. Abrange todo atendimento não concluído, manual ou originado em hardware. Implementação/publicação sob autorização contínua da sessão. Derivação visual: área 48 px, ciclo suave de 3 s, categoria no centro; hover conta demandas, clique/Enter abre a Central filtrada. Hardware pendente preserva vermelho interno e seu modal; antigo âmbar encaminhado substituído pelo anel geral verde-petróleo. Consulta compartilhada de 15 s; sem localização fictícia, novo sino, fechamento automático ou mudança do coletor. [Aceite e publicação](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md).
+
+## D-095 — hover e navegação da unidade no mapa, 11/11/2026
+
+Responsável confirmou o funcionamento de D-094 e pediu nome da escola, número de alunos e vagas no hover. Clique deve abrir a aba Unidades na escola selecionada, tendo como exceção a existência de demanda aberta: nesse caso abrir a Central da unidade. Reutilizar cadastro mestre D-068/D-090, sem inferências ou valores fictícios. Nulo distinto de zero. A regra mais recente vale também para marcadores com hardware, cujo comparativo permanece no sino. Cores, anéis, geografia e seleção de sobreposições preservados. Implementação/publicação sob autorização contínua da sessão; sem migração, alteração de servidor ou coletor. [Aceite e publicação](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md).

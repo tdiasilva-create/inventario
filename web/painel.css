@@ -284,6 +284,7 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .map-panel .leaflet-tile{transition:none;filter:none}
 .map-panel .v33-tooltip{background:#fff;color:var(--preto);border-color:#c5c9ce;box-shadow:0 5px 20px #16191d26;font-size:11px}
 .map-panel .v33-tooltip:before{display:none}
+.map-panel .unit-map-tooltip{width:max-content;white-space:pre-line;max-width:min(300px,calc(100vw - 48px));overflow-wrap:anywhere;font-size:12px;line-height:1.5;padding:8px 10px}
 .map-unit-choices{font-family:var(--font-body,Barlow,sans-serif);color:var(--preto);max-height:32vh;overflow:auto}
 .map-unit-choices>strong{display:block;padding-right:12px;font-size:14px}
 .map-unit-choices p{font-size:12px;margin:6px 0 10px}

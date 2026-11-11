@@ -25,8 +25,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await wheel(-350);assert.ok(Number(await zoom())>Number(baseline.zoom),'roda amplia no modo expandido');
   const z=await zoom();await page.clock.fastForward(61000);assert.equal(await zoom(),z);assert.equal(await handle.evaluate(n=>n===document.querySelector('#municipal-map')),true,'atualização mantém o mapa');
   assert.equal(await page.locator('.map-expanded').count(),1);await shot('mapa-ampliado');
-  // A seleção mantém o mapa expandido e abre o diálogo existente sobre ele.
-  const alertId=await page.locator('.hardware-map-notice').getAttribute('data-unit-id');await page.locator('.hardware-map-notice').click();await page.locator('[data-map-choice="'+alertId+'"]').click();await page.locator('.hardware-card').waitFor();assert.match(await page.locator('.hardware-dialog').innerText(),/TESTE-PC-001/);
+  // Escolha de unidades sobrepostas continua acessível no mapa ampliado.
+  const alertId=await page.locator('.hardware-map-notice').getAttribute('data-unit-id');await page.locator('.hardware-map-notice').click();await page.locator('[data-map-choice="'+alertId+'"]').waitFor();
   await shot('hardware-no-mapa-ampliado');await page.keyboard.press('Escape');assert.equal(await page.locator('.hardware-dialog[open]').count(),0);assert.equal(await page.locator('.map-expanded').count(),1);
   await back.click();assert.equal(await page.locator('.map-expanded').count(),0);assert.equal(await zoom(),baseline.zoom);assert.deepEqual(await page.locator('.map-panel').boundingBox(),normal);
   assert.deepEqual(await markerCenter(),originalCenter,'restaura o enquadramento original');
@@ -42,6 +42,6 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.goto(origin+'/panorama');await map.locator(':scope[data-map-ready=true]').waitFor();
   await page.setViewportSize({width:390,height:844});await expand.click();await shot('mapa-ampliado-390');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);assert.ok((await back.boundingBox()).x>=0);await back.click();
   await page.setViewportSize({width:812,height:375});await expand.click();assert.deepEqual(await page.locator('.map-expanded').boundingBox(),{x:0,y:0,width:812,height:375});await shot('mapa-ampliado-paisagem');await page.keyboard.press('Escape');
-  assert.deepEqual(h.errors,[]);const result={passed:true,size,normal,separate,scale:.7,wheel:true,returnButton:true,escape:true,updates:true,hardwareModal:true,otherMapUnchanged:true,mobile:true,landscape:true};fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+  assert.deepEqual(h.errors,[]);const result={passed:true,size,normal,separate,scale:.7,wheel:true,returnButton:true,escape:true,updates:true,overlapChoice:true,otherMapUnchanged:true,mobile:true,landscape:true};fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
  }catch(e){await shot('falha');throw e;}finally{await h.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

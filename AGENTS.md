@@ -81,3 +81,5 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 
 
 - D-094 (11/11/2026): todas as demandas não concluídas geram anel externo #006D77 de 48 px/ciclo 3 s na coordenada da unidade; substitui o âmbar de demandas de hardware. Centro conserva categoria; hardware sem parecer mantém círculo vermelho interno/modal. Anel abre Central filtrada, teclado e seleção de sobreposições preservados. Reutiliza pending-summary de 15 s com demands.units; falha preserva leitura com aviso, movimento reduzido sem animação. Sem migração/coletor; ver docs/05-qualidade/DEMANDAS_MAPA_2026-11-11.md.
+
+- D-095 (11/11/2026): hover da unidade mostra nome, alunos e vagas do cadastro, distinguindo nulo de zero. Clique abre detalhe na aba Unidades (/unidade?id=ID), exceto com demanda aberta, quando abre Central filtrada. Vale para centro/anel/hardware/teclado/sobreposição. Supera apenas o destino de clique de hardware no mapa; comparativo e parecer continuam no sino. Cores e sinalizações D-087/D-094 preservadas. Ver docs/05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md.
