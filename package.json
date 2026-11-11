@@ -51,7 +51,8 @@
     "test:panel-async:browser": "node tests/panel-async-browser.cjs",
     "test:map-demands:browser": "node tests/map-demands-browser.cjs",
     "test:agent-connection:browser": "node tests/agent-connection-browser.cjs",
-    "test:providers:browser": "node tests/provider-report-browser.cjs"
+    "test:providers:browser": "node tests/provider-report-browser.cjs",
+    "test:demand-unit-search:browser": "node tests/demand-unit-search-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

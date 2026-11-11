@@ -503,3 +503,7 @@ Adendo editorial D-099, 11/11/2026: pedido direto de remoção da frase sobre pr
 ## D-100 — modal com nomes das escolas
 
 Pedido e screenshot do responsável → web/desktop.js converte indicadores em botões; web/school-presence.js deriva nomes do mesmo catálogo/estado dos contadores e gerencia dialog; web/painel.css preserva identidade D-080/escala D-091. school-presence-browser.cjs verifica lista/filtros, atualização, falha/recuperação, teclado, foco, mapa ampliado, visualizador, rolagem, nomes como texto e saída da página. Regras puras de presença e panorama-map-browser.cjs preservados. [Aceite/publicação](../05-qualidade/ESCOLAS_MODAL_2026-11-11.md). Nenhum novo campo/requisito de coleta do TXT; Base, servidor, dados e fotos preservados.
+
+## D-101 — busca de unidade nas demandas
+
+Pedido direto e inspeção da produção → web/unit-name-picker.js controla seleção por ID no filtro/formulário web/operations.js; painel.css mantém aparência e build-desktop inclui o módulo autenticado. demand-unit-search-browser.cjs cobre seleção, teclado, acentos, homônimas, contexto, vínculo de equipamento, bloqueio de nome livre, viewport e visualizador; regressões de operações, tour e mapa verificam caminhos anteriores. [Aceite/publicação](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md). Sem mudança da Base de Coleta, dados oficiais, servidor ou agente.

@@ -302,6 +302,14 @@ Supera a ausência de agenda/histórico de D-098, sem resolver outras pendência
 - [x] Implementação e testes locais de lista, acessibilidade, atualização/falha e mapa ampliado concluídos.
 - [x] Painel publicado em 11/11/2026 às 19:38:49 Fortaleza, versão e1b208a6-7813-4901-9bed-7b1c34522d4a (100%).
 - [x] Conferência autenticada real como root em 11/11/2026 às 19:56–19:57 Fortaleza: 1 escola online (EM RAIO DE LUZ), 68 offline, listas somente de nomes correspondentes aos indicadores.
-- [ ] Aceite operacional do responsável.
+- [x] Responsável confirmou: “assim está bom por enquanto”, em 11/11/2026.
 
 Sem decisões funcionais adicionais. Demais pendências e Fases 4/5 preservadas. [Aceite](../05-qualidade/ESCOLAS_MODAL_2026-11-11.md).
+
+## D-101 — busca por nome de unidade nas demandas
+
+- [x] Escopo definido pelo pedido; filtro e formulário implementados e testados em banco isolado.
+- [ ] Publicação e conferência real somente de seleção, sem salvar demanda de teste.
+- [ ] Aceite operacional do responsável.
+
+Sem novas decisões pendentes. [Aceite](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md). Demais pendências preservadas.

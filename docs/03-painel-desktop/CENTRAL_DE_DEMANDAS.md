@@ -49,3 +49,9 @@ O modal de monitoramento permite a root/admin encaminhar uma alteração à Cent
 A faixa superior e os quatro contadores de estado abrem /computadores?estado=comunicando|sem-comunicacao|sem-agente|outros. Lista de toda a rede, 60 fichas por página, agrupada pelo ID da unidade; nomes iguais não fundem unidades. Mostra hostname/unidade no hover e na ficha. “Ver por unidade” e seleção lateral retornam à consulta anterior; links com a Central mantêm a unidade selecionada. Quinto cartão inclui estados que antes estavam fora da soma (suspensão/desligamento/nunca comunicou/revogado). Total continua número de fichas (LOG-08 pendente), não quantidade física de lotes.
 
 Atualização existente de 15s, sem novo ciclo. Rascunhos continuam PARCIAL; absence de comunicação não significa desligamento. Envio de demanda inalterada retorna sem alterar versão/histórico; anotação não vazia continua gerando evento. Root/admin escrevem; visualizador consulta. [Aceite](../05-qualidade/TOUR_LOGICA_2026-11-10.md).
+
+## Buscar unidade por nome — D-101
+
+Na Central e em Registrar demanda, digite parte do nome em **Buscar unidade por nome** e selecione um resultado. Não exige acentos nem diferencia maiúsculas. No filtro, use **Filtrar** para consultar as demandas; **Registrar demanda** já aproveita a unidade escolhida. **Limpar** remove a seleção. Setas/Enter também selecionam; Escape fecha resultados antes de fechar o modal. Homônimas são distinguidas por tipo/início do ID.
+
+Nome digitado sem escolher resultado não vale como unidade. Ao trocar a unidade de uma demanda nova, o equipamento anterior é desvinculado do formulário; a descrição permanece. Demanda existente conserva o contexto histórico. Pesquisa usa catálogo já carregado, sem nova chamada por tecla, e atualização não apaga a digitação. [Teste/publicação](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md).

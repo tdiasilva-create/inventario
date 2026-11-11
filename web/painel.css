@@ -591,6 +591,22 @@ body.map-expanded-open{overflow:hidden}
 .ops-filters,.ops-link-filters{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:0 0 var(--calha)}
 .ops-filters label,.ops-link-filters>.ops-control{flex:1;min-width:150px;margin:0}
 .ops-filters .ops-btn{margin-bottom:0}
+.unit-name-picker{position:relative;margin:0 0 12px;min-width:0}
+.unit-name-picker>label{display:block;margin:0 0 4px;font-size:12.5px}
+.unit-name-input{display:flex;gap:6px;align-items:center}
+.unit-name-input input{flex:1;min-width:0;width:100%;min-height:32px;padding:7px 10px;border:1px solid var(--borda);border-radius:var(--raio);background:#fff;color:var(--preto);font:inherit;font-size:13px}
+.unit-name-input .ops-btn{flex-shrink:0}
+.unit-name-picker>small{display:block;margin:4px 0 0;font-size:11px;color:var(--texto-secundario)}
+.unit-name-options{position:absolute;top:calc(100% - 16px);left:0;right:0;z-index:10;max-height:240px;overflow:auto;background:#fff;border:1px solid var(--borda);border-radius:5px;box-shadow:0 8px 20px #16191d26}
+.unit-name-options ul{list-style:none;padding:4px;margin:0}
+.unit-name-options li{padding:9px 10px;border-radius:3px;font-size:13px;line-height:1.4;overflow-wrap:anywhere;cursor:pointer}
+.unit-name-options li:hover,.unit-name-options li[data-focused=true]{background:var(--pessego-suave);outline:1px solid var(--laranja);outline-offset:-1px}
+.unit-name-options li[aria-selected=true]{font-weight:600;background:var(--pessego-suave)}
+.unit-name-options li small{display:block;font-size:11px;color:var(--texto-secundario)}
+.ops-filters>.unit-name-picker{flex:2;min-width:220px;margin:0}
+.ops-filters:has(.unit-name-picker){align-items:flex-start}
+.ops-filters:has(.unit-name-picker)>button[type=submit]{margin-top:20px}
+@media(max-width:640px){.unit-name-input input{font-size:16px;min-height:44px}.ops-filters>.unit-name-picker{min-width:100%}.ops-filters:has(.unit-name-picker)>button[type=submit]{margin-top:0}}
 .ops-room{padding:12px 0 4px;border-top:1px solid var(--linha)}
 .ops-room:first-of-type{border-top:0}
 .ops-room h3{margin:0 0 2px;font:600 13px/1.3 var(--font-display);letter-spacing:.03em;text-transform:uppercase}
