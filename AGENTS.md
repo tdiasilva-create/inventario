@@ -88,3 +88,6 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 
 
 - D-097 (11/11/2026): ficha de computador mostra IP público, provedor/rede identificada e último contato, separados dos IPs internos já reportados. Observação Cloudflare somente no heartbeat assinado, vivo e mais novo, no JSON de presença existente; sem migração, alteração de protocolo/instalador ou reinstalação. Vínculo encerrado não revela conexão atual; ausência de dado explícita, sem provedor inferido ou alerta de hardware por IP. Ver docs/04-dados-apis/CONEXAO_AGENTES_D097.md e docs/05-qualidade/CONEXAO_AGENTES_2026-11-11.md.
+
+
+- D-098 (11/11/2026): Relatório de provedores em Computadores e Relatórios, toda a rede com vínculo atual de agente e dados recebidos, inclusive offline. Prévia e Excel/CSV/PDF usam a mesma leitura completa com instante de emissão; não é histórico de sete dias nem agendamento. IP/provedor vêm de D-097, Último contato separado; manual/sem dados/vínculo encerrado fora. Somente consulta desktop, sem migração/coletor/EXE. Ver docs/03-painel-desktop/RELATORIO_PROVEDORES_D098.md.

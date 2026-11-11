@@ -125,3 +125,8 @@ A decisão expressa de 11/11/2026 supera mínimo 12, verificação externa de va
 ## D-097 — IP público não substitui endereço local nem localização oficial
 
 O endereço observado na chegada do heartbeat é uma observação do servidor, não novo campo obrigatório do inventário assinado. Não muda o contrato do EXE nem habilita a coleta de endereços internos que a política atual deixe desativada. Organização de ASN não equivale necessariamente ao provedor contratado; geolocalização por IP não é usada para cadastro/mapa. A ficha mantém vínculo por ID e não expõe conexão atual de instalação cujo vínculo com aquele equipamento acabou. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md).
+
+
+## D-098 — periodicidade de emissão não altera a fonte histórica
+
+O pedido diz emitir semanalmente ao clicar e abranger computadores que já enviaram dados. Portanto a consulta usa a última informação disponível e inclui offline antigo; não inventa histórico semanal, limita a sete dias nem agenda tarefa. A repetição de Provedor foi interpretada como Último contato, com proposta e premissa comunicadas. O relatório identifica data da emissão e do contato. [Contrato](../03-painel-desktop/RELATORIO_PROVEDORES_D098.md).

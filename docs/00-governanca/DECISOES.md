@@ -632,3 +632,8 @@ Responsável decidiu os itens 5, 9 e 11 da revisão de acesso: root informa a se
 ## D-097 — conexão pública na ficha do computador, 11/11/2026
 
 Responsável pediu expressamente IP público, provedor e último contato, IP interno separado, publicação real sem reinstalar agentes. Implementação usa os metadados Cloudflare do heartbeat autenticado e vivo já existente; não muda corpo/assinatura/ACK, instalador, QR ou política de endereços internos. Campo aditivo no JSON de presença, sem migração; rede identificada por ASN não garante operadora contratada. Somente leitura autorizada da ficha; legado/manual e vínculo encerrado tratados explicitamente. Atualização da ficha aberta a cada 15 s, sem consultas por computador na listagem. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md), [aceite/publicação](../05-qualidade/CONEXAO_AGENTES_2026-11-11.md).
+
+
+## D-098 — relatório de provedores por computador, 11/11/2026
+
+Responsável pediu botão para emissão semanal de Unidade, Hostname, IP público e provedor de todos os computadores com agente que já enviaram ou seguem enviando dados. Coluna Provedor duplicada interpretada reversivelmente como Último contato, proposta e comunicada. Consulta manual completa da última informação, inclusive offline, com instante de emissão; sem agenda automática ou filtro de sete dias. Prévia, Excel, CSV e impressão/PDF no painel. Reaproveitar vínculos/perfis/escopo e D-097 sem IP inferido, migração ou reinstalação. [Contrato](../03-painel-desktop/RELATORIO_PROVEDORES_D098.md), [aceite/publicação](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md).

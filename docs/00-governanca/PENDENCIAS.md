@@ -271,6 +271,14 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 
 - [x] IP público, organização da rede e último contato implementados/testados; IP interno separado. Sem decisão funcional pendente neste lote.
 - [x] Dois Workers publicados em 11/11/2026; recebimento real confirmado em seis agentes pela consulta agregada de 17:31, sem reinstalação.
-- [ ] Aceite visual do responsável após publicação. Valores dependem de nova comunicação válida; endereços internos dependem da política já existente do agente, que não foi alterada.
+- [x] Aceite visual do responsável em 11/11/2026: aprovou a ficha após navegação autenticada no painel real. Endereços internos continuam dependentes da política já existente do agente.
 
 [Aceite e publicação](../05-qualidade/CONEXAO_AGENTES_2026-11-11.md). Demais pendências e Fases 4/5 preservadas.
+
+
+## D-098 — emissão semanal por clique
+
+- [x] Botão, consulta completa, Excel/CSV/PDF e testes implementados.
+- [ ] Aceite operacional do responsável após publicação; quinta coluna Último contato é interpretação comunicada da repetição de Provedor.
+
+Sem agenda automática ou histórico de variações solicitado/implantado neste lote. [Aceite](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md). Demais pendências preservadas.

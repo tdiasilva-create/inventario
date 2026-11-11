@@ -484,3 +484,8 @@ Publicação D-096: commit 28bc825; coletor 0efcee24-7180-4c82-89a2-4a32458859e0
 Pedido direto → server/agentes/connection.mjs observa metadados confiáveis; núcleo grava junto à presença por sequência/boot; endpoint existente agent-status fornece leitura vinculada. web/agent-connection.js apresenta campos compartilhados em Computadores, consulta de Equipamentos e Dados do agente, preservando IPs locais. Testes agent-connection.test.mjs e agent-connection-browser.cjs mais regressões de agentes/consulta/operações. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md), [aceite/evidências/publicação](../05-qualidade/CONEXAO_AGENTES_2026-11-11.md). Sem alteração da Base TXT, perguntas, protocolo ou reinstalação.
 
 Publicação D-097: commit 5a8afa5; coletor 2dac8571-2671-4eec-8ab0-7492753a0255 às 17:29:50 e painel e59b7120-4036-4ba0-b850-a400c39df18e às 17:30:15, 11/11/2026 Fortaleza, ambos 100%. 31 testes de servidor, quatro roteiros de navegador e 64 verificações HTTP aprovados. Leitura agregada do D1 confirmou seis agentes reais com IP/provedor após publicação, sem reinstalação ou escrita de teste. Nenhuma migração; identidade, dados e fotos preservados.
+
+
+## D-098 — relatório de provedores
+
+Pedido direto → provider-report.mjs consulta completa de vínculos/telemetria D-097, management-views.mjs mantém acesso gerencial; web/provider-report.js fornece prévia/Excel/CSV/PDF, com botões em operations.js e desktop-management.js. Testes provider-report.test.mjs e provider-report-browser.cjs, regressões de relatório/operação/presença/exclusão. [Aceite e publicação](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md). Sem alterações da Base TXT, dados oficiais, agente ou coletor.

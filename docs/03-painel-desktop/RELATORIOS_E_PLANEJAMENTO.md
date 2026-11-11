@@ -33,3 +33,8 @@ As duas APIs aceitam somente GET e root/admin/visualizador no painel; operador/c
 O filtro de comunicação usa a função compartilhada no Worker após leitura compacta dos computadores; a exportação integral pode exigir mais memória/tempo em redes maiores. Falhas/timeout são visíveis; não há truncamento silencioso. Não foi homologada uma quantidade máxima de computadores. Consultas históricas, relatórios adicionais, agenda e atribuição de equipe permanecem para decisão posterior.
 
 [Aceite e publicação](../05-qualidade/RELATORIOS_PLANEJAMENTO_2026-11-10.md).
+
+
+## D-098 — relatório adicional de provedores
+
+Botão Relatório de provedores em Relatórios e Computadores. Consulta toda a rede com vínculo atual de agente e dados recebidos, independente dos filtros da tela; inclui offline. Prévia e exportações completas da mesma leitura datada, sem agendamento ou histórico semanal fictício. [Contrato](RELATORIO_PROVEDORES_D098.md). Relatório operacional D-086 e Planejamento preservados.

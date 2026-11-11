@@ -3,12 +3,17 @@ import {linkFilterValues} from './equipment-link-state.mjs';
 import {collectionCTE,hardwarePendingFrom} from './pending-indicators.mjs';
 import {inventoryScopeSql,collectionScopeSql} from './unit-scope.mjs';
 import {presenceThreshold} from './agentes/presence.mjs';
+import {providerReport} from './provider-report.mjs';
 const uuid=v=>/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 export async function managementViews(request,url,user,env,{json,fail}){
- const path=url.pathname;if(!['/api/inventory/computer-report','/api/inventory/work-plan'].includes(path))return null;
+ const path=url.pathname;if(!['/api/inventory/computer-report','/api/inventory/work-plan','/api/inventory/provider-report'].includes(path))return null;
  if(!user)return fail('Autenticação necessária.',401);
  if(env.APP_KIND==='collector'||!['root','admin','visualizador'].includes(user.role))return fail('Consulta disponível somente no painel.',403);
  if(request.method!=='GET')return fail('Consulta somente para leitura.',405);
+ if(path.endsWith('/provider-report')){
+  if([...url.searchParams].length)return fail('Este relatório abrange toda a rede, sem filtros.');
+  return json(await providerReport(env.DB,env));
+ }
  const s=url.searchParams,offset=Number(s.get('offset')||0),unitId=s.get('unitId')||'',q=(s.get('q')||'').trim(),db=env.DB;
  if(!Number.isSafeInteger(offset)||offset<0||q.length>120||unitId&&!uuid(unitId))return fail('Filtros inválidos.');
  if(path.endsWith('/computer-report')){
