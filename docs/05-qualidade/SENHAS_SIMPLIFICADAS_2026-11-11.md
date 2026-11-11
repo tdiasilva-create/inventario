@@ -29,4 +29,13 @@ Evidências locais privadas: docs/05-qualidade/evidencias/senhas-root-2026-11-11
 
 ## Publicação
 
-Preparação local concluída; builds, verificações HTTP e versões de publicação serão registrados após a implantação. Sem escrita de teste no D1 oficial. Versões anteriores para eventual rollback: painel c9ef64e6-3e05-4905-8a94-22837286a285; coletor 91ba6200-d080-4026-8e92-7042bd67f86e. Rollback precisa considerar os dois Workers para não restaurar políticas diferentes de senha entre os ambientes.
+Publicado em 11/11/2026, commit 28bc825, ambos com 100% do tráfego confirmado por Wrangler:
+
+- Coletor: 0efcee24-7180-4c82-89a2-4a32458859e0, 13:33:38 Fortaleza (16:33:38 UTC). Um asset alterado, collector-account.html, além do Worker compartilhado.
+- Painel: 831c0af8-7505-4a80-9521-d06da8e8ba44, 13:34:02 Fortaleza (16:34:02 UTC). Dois assets alterados, account.html e account.js, além do Worker compartilhado.
+
+Build desktop: 86 entradas; build coletor: 55 entradas. Dois dry-runs aprovados. Scanner do índice Git: 631 arquivos aprovados; links documentais e git diff --check sem erros. Pós-publicação: 50 verificações HTTP de login/assets/proteção no painel e dez no coletor aprovadas. As verificações externas são GET sem credenciais; os fluxos autenticados de criação/troca foram testados no Worker real com SQLite isolado, não criando usuários nem mudando senhas em produção.
+
+Evidência HTTP do coletor: docs/05-qualidade/evidencias/senhas-root-2026-11-11/collector-publicado.json; do painel: docs/05-qualidade/evidencias/auth/release.json. Dados oficiais, segredos, bindings e cron preservados. Sem escrita de teste no D1 oficial.
+
+Versões anteriores para eventual rollback: painel c9ef64e6-3e05-4905-8a94-22837286a285; coletor 91ba6200-d080-4026-8e92-7042bd67f86e. Rollback precisa considerar os dois Workers para não restaurar políticas diferentes de senha entre os ambientes.

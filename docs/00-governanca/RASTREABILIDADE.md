@@ -475,3 +475,5 @@ Publicação D-095: commit 573ca12; painel c9ef64e6-3e05-4905-8a94-22837286a285,
 ## D-096 — senha de criação e definição pessoal
 
 Pedido direto → server/security.mjs valida 6–256 sem fetch externo; server/worker.mjs recebe temporaryPassword obrigatório na criação root; web/account.html/js oferece campo e Mostrar/Ocultar, web/collector-account.html usa a mesma regra. Scripts de verificação/exportação atualizados. tests/security.test.mjs, auth-flow.test.mjs e auth-flow-browser.cjs verificam os dois ambientes com banco isolado. [Aceite, evidências e publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md). Sem migração, alteração de dados reais ou questionário/Base TXT.
+
+Publicação D-096: commit 28bc825; coletor 0efcee24-7180-4c82-89a2-4a32458859e0 às 13:33:38 e painel 831c0af8-7505-4a80-9521-d06da8e8ba44 às 13:34:02, 11/11/2026 Fortaleza, ambos 100%. Doze testes de servidor, roteiro de navegador com oito screenshots, builds/dry-runs e 60 verificações HTTP reais aprovados. Nenhuma conta de produção criada ou redefinida para testar.
