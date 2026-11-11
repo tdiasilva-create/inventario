@@ -22,6 +22,14 @@ Evidências locais privadas (dados sintéticos): `docs/05-qualidade/evidencias/p
 
 ## Publicação
 
-A registrar após aplicação da migração e publicação: versão anterior do painel 8d60b5ca-7c98-4104-ad20-882aa59b0727; coletor preservado em 2dac8571-2671-4eec-8ab0-7492753a0255. Plano de retorno: voltar ao código anterior do painel, conservar tabelas/relatórios, não desfazer dados. Sem mudança de Drive, agente, protocolo, contas ou credenciais.
+Implementação no commit **b030985**. Antes da alteração, versões ativas dos dois Workers e única migração pendente 0026 conferidas; bookmark de recuperação D1 guardado privadamente em `.wrangler/d099-recovery-before.json`. Não houve exportação bloqueante, pausa da coleta ou restauração de dados. Esse bookmark não equivale a backup completo do Drive nem a ensaio de recuperação.
 
-O primeiro registro automático será conferido no ambiente real. A primeira segunda-feira posterior à publicação prevista é **16/11/2026 às 08h (Fortaleza)**; teste com relógio controlado não deve ser descrito como execução dessa data em produção. Aceite operacional final pelo responsável permanece pendente.
+Migração **0026_provider_reports.sql** aplicada no D1 real em 11/11/2026 (cinco comandos, sucesso). Painel publicado às **18:16:35 Fortaleza**, versão **e84c72d6-297b-474d-a7b8-c9b5c5913767**, 100% do tráfego, dois assets atualizados. Versão anterior 8d60b5ca-7c98-4104-ad20-882aa59b0727. Coletor preservado em 2dac8571-2671-4eec-8ab0-7492753a0255. Dois crons existentes confirmados. Scanner de 650 arquivos indexados, links documentais e diff aprovados; **54 verificações HTTP reais aprovadas**, incluindo proteção das três rotas e do módulo.
+
+O cron criou sozinho o primeiro **Registro inicial às 18:16:43 Fortaleza**, antes de abrir o relatório no navegador. Consulta somente leitura do D1 confirmou seis unidades/linhas e quatro com provedor identificado, com próximo vencimento **2026-11-16T11:00:00.000Z**. Não houve chamada manual de geração, seed ou escrita de exemplo em produção.
+
+Navegação autenticada como root conferiu Dados atuais (seis unidades, quatro com provedor e duas sem informação), quatro colunas, acesso ao Histórico semanal e abertura do registro inicial com valores preservados. Próxima emissão **16/11/2026 às 08h (Fortaleza)** exibida no painel. Screenshots reais observados; nenhum cadastro alterado nem download de dados reais durante a conferência. Exportações completas e histórico futuro foram exercitados com dados isolados nos testes locais. Evidência HTTP privada em `docs/05-qualidade/evidencias/provedores-historico-2026-11-11/http-real.json`; agregados remotos em `.wrangler/d099-postdeploy.json`.
+
+Plano de retorno: voltar ao código anterior do painel, conservar tabelas/relatórios, não desfazer dados. Sem mudança de Drive, agente, protocolo, contas ou credenciais. Primeira execução semanal futura e aceite operacional final pelo responsável ainda devem ser conferidos; o teste com relógio controlado não é execução de 16/11 em produção.
+
+Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores — botão **Relatório de provedores**, abas **Dados atuais** e **Histórico semanal**. Mesmo botão em Relatórios.

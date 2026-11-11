@@ -290,7 +290,7 @@ Sem agenda automática ou histórico de variações solicitado/implantado neste 
 - [x] Quatro colunas e uma linha por unidade solicitadas expressamente; seleção rastreável e dados ausentes explícitos implementados.
 - [x] Horário confirmado pelo responsável: segunda-feira às 08h, Fortaleza.
 - [x] Registro inicial, agenda durável, arquivo imutável, consultas e exportações testados localmente.
-- [ ] Registrar aplicação da migração 0026 e publicação do painel, verificando a primeira emissão automática real.
+- [x] Migração 0026 aplicada e painel publicado em 11/11/2026 às 18:16:35 Fortaleza; primeiro registro automático às 18:16:43, aberto e conferido como root.
 - [ ] Conferir execução da primeira segunda-feira em produção na data prevista, distinta dos testes com relógio controlado.
 - [ ] Aceite operacional final pelo responsável.
 
