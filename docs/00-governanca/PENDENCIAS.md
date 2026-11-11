@@ -309,7 +309,7 @@ Sem decisões funcionais adicionais. Demais pendências e Fases 4/5 preservadas.
 ## D-101 — busca por nome de unidade nas demandas
 
 - [x] Escopo definido pelo pedido; filtro e formulário implementados e testados em banco isolado.
-- [ ] Publicação e conferência real somente de seleção, sem salvar demanda de teste.
+- [x] Publicação real em 11/11/2026 às 20:14:10 Fortaleza, versão 9544bdfb-2a9d-4873-bedb-7f1ea58ca80a (100%). Conferência root de “raio” no filtro/pré-seleção e “pirâmide” no cadastro, sem salvar demanda de teste.
 - [ ] Aceite operacional do responsável.
 
 Sem novas decisões pendentes. [Aceite](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md). Demais pendências preservadas.

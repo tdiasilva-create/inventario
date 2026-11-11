@@ -27,4 +27,8 @@ Screenshots sintéticos em docs/05-qualidade/evidencias/demandas-busca-2026-11-1
 
 ## Publicação
 
-Em preparação. Publicação real autorizada no fluxo contínuo da sessão. Nenhuma migração ou necessidade de publicar coletor.
+Implementação commit **195e88f**. Build, dry-run, diff, links documentais e scanner do índice Git (655 arquivos) aprovados. Publicação real autorizada no fluxo contínuo da sessão. Painel publicado em **11/11/2026 às 20:14:10 Fortaleza**, versão **9544bdfb-2a9d-4873-bedb-7f1ea58ca80a**, 100% do tráfego. Três assets atualizados: operations.js, unit-name-picker.js e painel.css. Nenhuma migração, mudança de crons ou publicação de coletor.
+
+**51 verificações HTTP reais aprovadas**, incluindo redirecionamento para login do novo módulo sem sessão. Conferência navegada com sessão root: busca “raio” encontrou EM RAIO DE LUZ no filtro; selecionar e abrir Registrar demanda preencheu a mesma escola. Dentro do formulário, busca “pirâmide” encontrou EM RESIDENCIAL PIRAMIDE sem exigir a grafia/acento do cadastro. Screenshot real observado e formulário deixado nessa busca para o responsável. Nenhuma descrição preenchida, demanda salva, conta alterada ou teste fictício gravado em produção.
+
+Retorno: publicar versão anterior do painel **e1b208a6-7813-4901-9bed-7b1c34522d4a**, sem reverter banco. Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/demandas . Aceite operacional final do responsável permanece pendente.
