@@ -33,3 +33,11 @@ Navegação autenticada como root conferiu Dados atuais (seis unidades, quatro c
 Plano de retorno: voltar ao código anterior do painel, conservar tabelas/relatórios, não desfazer dados. Sem mudança de Drive, agente, protocolo, contas ou credenciais. Primeira execução semanal futura e aceite operacional final pelo responsável ainda devem ser conferidos; o teste com relógio controlado não é execução de 16/11 em produção.
 
 Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores — botão **Relatório de provedores**, abas **Dados atuais** e **Histórico semanal**. Mesmo botão em Relatórios.
+
+## Adendo — retirada de frase e conferência navegada, 11/11/2026
+
+Responsável solicitou mostrar os dois relatórios no navegador e retirar a frase sobre rede identificada/provedor contratado/links da unidade. Commit **340e918** altera apenas o texto compartilhado em web/provider-report.js, sem mudanças de dados, consulta ou agenda. Também ajusta a espera do teste existente pelo evento assíncrono de fechamento do dialog: primeira execução encontrou a verificação antecipada; após aguardar a remoção real, roteiro completo aprovado. Nenhuma alteração no comportamento de fechamento da aplicação.
+
+Build desktop e `provider-report-browser.cjs` aprovados novamente: três unidades únicas/quatro colunas, CSV/Excel/PDF, consulta atual e arquivo inicial/semanal, responsividade, permissões e falhas. Links documentais e diff aprovados. Painel publicado na versão **4075d22d-a3b6-4e71-a484-ff7660bcf85d**, com apenas provider-report.js como asset atualizado. Sem migração, mudança de coletor ou escrita cadastral; crons preservados.
+
+Após renovação da sessão pelo próprio responsável, conferência real como root às **18:35 Fortaleza**: Dados atuais mostrou seis unidades, seis linhas sem repetição de nomes, quatro com IP/provedor e duas sem informação. Colunas Nome da unidade, IP público, Provedor / rede identificada e Último contato (Fortaleza). Frase removida confirmada visualmente. Histórico semanal mostrou um Registro inicial de 18:16:43 e próxima emissão em 16/11/2026 às 08h; arquivo aberto manteve os valores antigos, também sem a frase. Screenshots reais observados nas três etapas e navegador deixado no registro arquivado. Nenhuma exportação privada real ou alteração cadastral durante a conferência.
