@@ -433,3 +433,5 @@ Publicação D-089: commit 329bb6e; coletor 4df19c82-0b07-4b31-b115-62b8fe94e7ad
 ## D-090 — cadastro escolar e contagem do Panorama
 
 Pedido de ampliar cadastro + planilha API MAPA (SEMED) + decisões escolas somente/CONTRATO fora/militares como subconjunto → web/unit-schema.js, admin-units.js, unit-figures.js, desktop.js, painel.css; migração 0025_school_registration.sql; modelos de arquivos dinâmicos, testes school-registration (servidor/navegador), unit-files, unit-catalogue e desktop-identity; CI e dicionário de dados gerado. [Contrato/mapeamento](../04-dados-apis/CADASTRO_ESCOLAS_D090.md), [aceite/capturas/publicação](../05-qualidade/CADASTRO_ESCOLAS_2026-11-10.md). Nenhuma linha da planilha importada nem pergunta da Base original modificada.
+
+Publicação D-090: commit af9c6bf, migração 0025; painel 73b79751-7c50-4b38-86a0-c9e769f4ab93 e coletor 91ba6200-d080-4026-8e92-7042bd67f86e em 100%. Backup privado conferido; 76 unidades, suas versões e histórico preservados. 203 testes, cinco roteiros de navegador, scanner de 619 arquivos e nove verificações HTTP aprovados. Sem escrita de dados oficiais para teste.

@@ -28,4 +28,21 @@ Atende ao cadastro oficial prévio, tipos reais, permissões em servidor, identi
 
 ## Publicação e reversão
 
-Em preparação: backup privado das tabelas de cadastro, verificação da migração pendente e dos dois Workers. Migração aditiva deve preceder os novos Workers. Rollback de código pode manter as colunas; não executar DROP nem restaurar backup completo sobre novos dados. Os dois Workers usam a mesma validação e D1. Fotos/Drive, protocolos de agente, segredos e agendamentos permanecem preservados.
+Concluída em 10/11/2026 às 21:33 de Fortaleza, commit de implementação af9c6bf. Migração 0025 aplicada antes dos Workers; listagem posterior sem migrações pendentes. Versões confirmadas por deployments list, 100% do tráfego:
+
+- Painel: 73b79751-7c50-4b38-86a0-c9e769f4ab93, 2026-11-11T00:33:10.893Z.
+- Coletor (compatibilidade do esquema compartilhado): 91ba6200-d080-4026-8e92-7042bd67f86e, 2026-11-11T00:33:34.607Z. Perguntas/interface preservadas.
+
+Backup privado de units e unit_changes exportado, carregado em SQLite isolado e conferido contra agregados remotos. SHA-256 a7287f55b4fa1f2f73f480637800197042478051febf36f8cd10ca073ef10d36, 222477 bytes. Antes/depois: 76 unidades, soma de versões 158, 96 registros de histórico; 59 municipais, 10 militares e 7 administrativas ativas. Os 28 campos novos estão NULL nas 76 unidades; nenhum preenchimento presumido. Esses números são evidência desta verificação, não constantes do aplicativo.
+
+Builds e dry-run dos dois Workers aprovados; scanner de 619 arquivos do índice e links documentais aprovados. Cinco roteiros de navegador e 203 testes locais aprovados, com repetição específica do XLSX após ampliar sua cobertura. Nove verificações HTTP externas passaram: login 200, páginas/asset privados 302 para login, APIs privadas 401. Leitura agregada no D1 confirmou a migração e preservação das contagens/versões/histórico. Não houve criação, edição, exclusão ou importação de registros oficiais para teste. A navegação autenticada detalhada foi validada em Worker/SQLite isolado; não afirmar captura ou edição autenticada em produção.
+
+Rollback de código: painel anterior a8166f95-8c6b-4534-9df6-c1b342a51cdc; coletor anterior 4df19c82-0b07-4b31-b115-62b8fe94e7ad. Pode manter as colunas aditivas; não executar DROP nem restaurar backup completo sobre novos dados. Os dois Workers usam a mesma validação e D1. Fotos/Drive, protocolos de agente, segredos e os dois agendamentos do painel permanecem preservados.
+
+## Conferência pelo responsável
+
+1. Abrir https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/cadastro-unidades como root, recarregar e escolher Editar em uma escola.
+2. Abaixo dos campos existentes, abrir os quatro blocos opcionais; preencher somente informações verificadas, salvar e reabrir.
+3. Confirmar os novos dados no detalhe da unidade. CONTRATO não existe no formulário. Valores vazios não viram zero ou Não.
+4. No Panorama sem filtros, verificar o conjunto municipal e Das quais militares; aplicar filtro militar para conferir o subconjunto filtrado.
+5. Se for importar no futuro, baixar o modelo atual de 55 colunas e conferir a prévia; não enviar a planilha heterogênea inteira sem mapeamento/revisão.
