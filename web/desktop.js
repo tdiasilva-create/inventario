@@ -55,6 +55,13 @@ function activeUnits(){
 }
 function chosen(){return catalogue.find(u=>u.id===state.selected)||null;}
 function ensureSelected(){const units=catalogue;if(!units.some(u=>u.id===state.selected))state.selected=units[0]?.id||null;}
+const unitContextPages=new Set(['Panorama','Mapa da Rede','Ambientes','Equipamentos','Detalhe da Unidade']);
+function selectUnit(id){
+ state.selected=id;
+ if(!unitContextPages.has(state.page))return;
+ const url=new URL(location.href);url.searchParams.set('id',id);
+ if(url.href!==location.href)history.pushState({...history.state,page:state.page},'',url.pathname+url.search+url.hash);
+}
 const hasFilters=()=>state.q||state.region!=='Todas'||state.type!=='Todas'||state.status!=='Todas'||state.year!=='Todos';
 function select(label,key,options){return `<label class="filter"><span>${label}</span><select aria-label="${label}" data-filter="${key}">${options.map(v=>`<option value="${esc(v)}" ${state[key]===v?'selected':''}>${esc(v)}</option>`).join('')}</select></label>`;}
 function filters(){return `<section class="filters" aria-label="Filtros do painel"><label class="filter unit-query"><span>Filtrar unidades neste painel</span><input data-unit-query type="search" maxlength="120" aria-label="Filtrar unidades neste painel" placeholder="Nome, INEP ou gestor" value="${esc(state.q)}"></label>${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn(icon('sliders')+' Filtros avançados','filters','filter-more')}</section>`;}
@@ -101,7 +108,7 @@ async function showAgentStatus(equipmentId){try{const r=await fetch('/api/invent
  const hist=(v.official_record?.location_history||[]);const history=hist.length?'<h3>Histórico de localização e vínculo</h3><ul>'+hist.slice(0,10).map(h=>'<li>'+esc(whenIso(h.changed_at||h.created_at||h.at))+' · '+esc(h.event||h.kind||h.reason||'alteração')+(h.environment_name||h.position_label?' · '+esc([h.environment_name,h.position_label].filter(Boolean).join(' / ')):'')+(h.by_name||h.by?' · '+esc(h.by_name||h.by):'')+'</li>').join('')+'</ul>':'';
  dialog('Agente do computador',official+presence+'<h3>Inventário técnico reportado</h3>'+agentSections(a.current_inventory)+history);}catch(e){toast(e.message);}}
 function receivedAnswers(){const d=detail();return '<section class="panel"><div class="dialog-body"><h3>Questionário recebido</h3><p>'+esc(receivedDate())+'</p>'+(d?.missing?'<p class="missing-flag">'+esc(d.missing)+' equipamento(s) não localizado(s) em conferência, com caso aberto. Veja a lista de equipamentos da unidade.</p>':'')+(d?.inspection?(d.visit?'<div class="inventory-totals"><span>Computadores administrativos: <b>'+esc(d.visit.answers.administrative||'Não avaliado')+'</b></span><span>Laboratório: <b>'+esc(d.visit.answers.laboratory||'Não avaliado')+'</b></span><span>Impressoras: <b>'+esc(d.visit.answers.printers||'Não avaliado')+'</b></span></div>'+Object.entries(d.visit.answers).filter(([k,v])=>!['completed','problems','needs'].includes(k)&&typeof v==='string').map(([k,v])=>'<p>'+esc(k)+': '+esc(v)+'</p>').join(''):answerDetails(d)):'<p>Nenhuma vistoria concluída para esta unidade.</p>')+'</div></section>';}
-function showEquipment(unitId,column='',equipmentId=''){const u=catalogue.find(x=>x.id===unitId);if(!u)return;state.selected=u.id;equipmentConsultation.open(u,column,equipmentId);}
+function showEquipment(unitId,column='',equipmentId=''){const u=catalogue.find(x=>x.id===unitId);if(!u)return;selectUnit(u.id);equipmentConsultation.open(u,column,equipmentId);}
 function unitList(){const units=filteredCatalogue();return '<section class="panel unit-list">'+title('Unidades cadastradas','building')+units.map(u=>'<button class="unit-list-item" data-action="open-unit" data-unit="'+esc(u.id)+'">'+icon('building')+'<span><strong>'+esc(u.name)+'</strong><small>'+esc(u.manager_name?'Gestor: '+u.manager_name:'Gestor não informado')+'</small>'+unitFiguresLine(u)+'</span>'+icon('chevron','small-icon')+'</button>').join('')+(!units.length?emptyState('Nenhuma unidade cadastrada.',authUser?.role==='root'?'<a class="btn empty-action" href="/cadastro-unidades">Cadastrar unidade</a>':btn('Ver mapa','map-expand')):'')+'</section>';}
 const layoutBlock=(html,name)=>html.replace('<section class="','<section data-layout-block="'+name+'" class="panorama-'+name+' ');
 function unitResultsPanel(){const u=chosen();return '<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3>'+(u?'<p class="unit-context">'+esc(u.name)+'</p><div data-result-summary="'+esc(u.id)+'">'+receivedResults.brief(u.id)+'</div>':'<p>Selecione uma unidade no mapa.</p>')+'</div></section>';}
@@ -178,7 +185,7 @@ function render(){
  receivedResults.attach(filteredCatalogue());
  schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.page==='Planejamento'?'':state.q);
- const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;render();}});state.focus=null;}
+ const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();selectUnit(id);render();}});state.focus=null;}
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
  document.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page||(state.page==='Detalhe da Unidade'&&b.dataset.page==='Unidades');b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
  loadSelected();
@@ -215,7 +222,7 @@ async function renameSelectedEnvironment(trigger){
   if(renamed){detailTimes.delete(unitId);await loadSelected(true);toast('Nome do ambiente atualizado. Equipamentos e fotos preservados.');}
  }catch(e){toast(e.message);}finally{if(trigger.isConnected)trigger.disabled=false;}
 }
-function navigate(page,push=true){if(push&&pageRoutes[page])history.pushState({page},'',pageRoutes[page]+(page==='Detalhe da Unidade'&&state.selected?'?id='+encodeURIComponent(state.selected):''));state.page=page;render();document.querySelector('.sidebar').classList.remove('open');window.scrollTo(0,0);document.querySelector('#live').textContent=`Página ${page}`;}
+function navigate(page,push=true){if(push&&pageRoutes[page])history.pushState({page},'',pageRoutes[page]+(unitContextPages.has(page)&&state.selected?'?id='+encodeURIComponent(state.selected):''));state.page=page;render();document.querySelector('.sidebar').classList.remove('open');window.scrollTo(0,0);document.querySelector('#live').textContent=`Página ${page}`;}
 function toast(text){document.querySelector('.toast')?.remove();const el=document.createElement('div');el.className='toast';el.setAttribute('role','status');el.textContent=text;document.body.append(el);setTimeout(()=>el.remove(),5500);}
 function dialog(name,body){
  document.querySelector('dialog')?.remove();const el=document.createElement('dialog');el.innerHTML=`<div class="dialog-head"><h2>${esc(name)}</h2><button class="icon-button" data-action="close-dialog" aria-label="Fechar janela">${icon('close')}</button></div><div class="dialog-body">${body}</div>`;
@@ -224,7 +231,7 @@ function dialog(name,body){
 document.addEventListener('input',e=>{if(e.target.matches('[data-unit-query]')){state.q=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>render(),250);}});
 // Enter na busca: abre a lista de Unidades com o filtro (a URL guarda ?q= para recarregar/compartilhar). Mapa e Unidades só filtram.
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'||!e.target.matches('[data-unit-query]'))return;e.preventDefault();state.q=e.target.value.trim();clearTimeout(searchTimer);if(!['Unidades','Mapa da Rede'].includes(state.page))navigate('Unidades');else render();const query=new URLSearchParams(location.search);if(state.q)query.set('q',state.q);else query.delete('q');history.replaceState(history.state,'',location.pathname+(query.size?'?'+query:''));});
-document.addEventListener('change',e=>{if(e.target.id==='unit-picker'){const unit=catalogue.find(u=>u.name===e.target.value||u.code===e.target.value);if(unit){state.selected=unit.id;render();}} if(e.target.dataset.filter){state[e.target.dataset.filter]=e.target.value;render();}if(e.target.hasAttribute('data-sort')){state.sort=e.target.value;render();}});
+document.addEventListener('change',e=>{if(e.target.id==='unit-picker'){const unit=catalogue.find(u=>u.name===e.target.value||u.code===e.target.value);if(unit){selectUnit(unit.id);render();}} if(e.target.dataset.filter){state[e.target.dataset.filter]=e.target.value;render();}if(e.target.hasAttribute('data-sort')){state.sort=e.target.value;render();}});
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.page){navigate(b.dataset.page);return;}
@@ -275,8 +282,8 @@ document.addEventListener('click',e=>{
 
 
 });
-window.addEventListener('popstate',()=>{state.q=new URLSearchParams(location.search).get('q')||'';state.selected=new URLSearchParams(location.search).get('id')||state.selected;navigate(Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',false);});
-document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||a.target)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const page=Object.keys(pageRoutes).find(p=>pageRoutes[p]===url.pathname);if(page){e.preventDefault();if(page==='Detalhe da Unidade')state.selected=url.searchParams.get('id')||state.selected;history.pushState({page},'',url.pathname+url.search);navigate(page,false);}});
+window.addEventListener('popstate',()=>{state.q=new URLSearchParams(location.search).get('q')||'';state.selected=new URLSearchParams(location.search).get('id');navigate(Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',false);});
+document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||a.target)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;const page=Object.keys(pageRoutes).find(p=>pageRoutes[p]===url.pathname);if(page){e.preventDefault();if(unitContextPages.has(page)){if(url.searchParams.has('id'))state.selected=url.searchParams.get('id');else if(state.selected)url.searchParams.set('id',state.selected);}history.pushState({page},'',url.pathname+url.search);navigate(page,false);}});
 state.selected=new URLSearchParams(location.search).get('id');
 shell();
 {const p=new URLSearchParams(location.search);if(p.get('equipment')&&state.selected){showEquipment(state.selected,'',p.get('equipment'));}}

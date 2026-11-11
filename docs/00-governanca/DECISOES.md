@@ -601,3 +601,9 @@ Implementação técnica: 28 campos opcionais de identificação/funcionamento, 
 Fonte: DECISOES_PAINEL_2026-11-10.txt, entregue pelo responsável com pedido de aplicação. Confirmações diretas: PAN-02 amplia o mapa e habilita zoom pela roda do mouse; PAN-05 fica como está. PAN-03 reduz os dois indicadores em 30% (escala 70%). Publicação dentro da autorização contínua da sessão.
 
 O mesmo mapa ocupa a área útil do navegador, sem navegar à página Mapa da Rede. Voltar ao Panorama ou Esc restaura tamanho, centro e zoom anteriores, devolve o foco e desativa novamente a roda. Atualizações e alertas de hardware permanecem ativos; modal de hardware tem prioridade de foco. Indicadores menores somente no Panorama. Matriz, métricas, categorias, geografia e demais telas preservadas; sem mudança de servidor, banco, coletor ou permissões. [Aceite e publicação](../05-qualidade/PANORAMA_MAPA_2026-11-10.md).
+
+## D-092 — correções de navegação confirmadas no painel, 11/11/2026
+
+Responsável autorizou expressamente corrigir os cinco problemas confirmados, testar e publicar no ambiente real. Clique em unidades sobrepostas oferece escolha por nome/tipo sem mudar coordenadas; histórico de coletas parciais mantém lista/detalhe; seleção de unidade em Ambientes persiste na URL e na recarga; menus de usuários ficam exclusivos e fecham por clique fora/Esc; menu do perfil fecha por Esc com retorno do foco. Prioridade dos modais e mapa ampliado D-091 preservada.
+
+Correções de interação, sem nova regra de negócio, migração, escrita de dados oficiais, mudanças no coletor, fotos, agente ou permissões. [Aceite e publicação](../05-qualidade/PAINEL_NAVEGACAO_2026-11-11.md).

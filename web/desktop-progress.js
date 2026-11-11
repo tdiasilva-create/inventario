@@ -42,7 +42,7 @@ export function createProgressView({onCompleted=async()=>{},canRename=()=>false,
   await photographs.refresh(selected&&detail?.inspection.state==='open'?selected:null);
   error='';lastChecked=Date.now();
  }catch(e){error=e.message;}finally{if(token===requestToken){loading=false;draw();if(refreshPending){refreshPending=false;queueMicrotask(()=>refresh(true));}}}}
- function setUrl(id){const url=new URL(location.href);if(id)url.searchParams.set('vistoria',id);else url.searchParams.delete('vistoria');history.replaceState(history.state,'',url.pathname+url.search);}
+ function setUrl(id){const url=new URL(location.href);if(id)url.searchParams.set('vistoria',id);else url.searchParams.delete('vistoria');if(url.href!==location.href)history.pushState({...history.state,page:'Coletas em andamento'},'',url.pathname+url.search+url.hash);}
  document.addEventListener('click',async event=>{const button=event.target.closest('[data-progress]');if(!button||button.disabled)return;const name=button.dataset.progress;try{
   if(name==='delete-equipment'&&canRename()){button.disabled=true;try{if(await deleteEquipment({id:button.dataset.id,unitId:button.dataset.unit,csrf:csrf()}))await refresh(true);}finally{button.disabled=false;}}
   if(name==='rename-equipment'&&canRename()){button.disabled=true;try{const renamed=await editEquipmentName({id:button.dataset.id,unitId:button.dataset.unit,csrf:csrf()});if(renamed)await refresh(true);}finally{button.disabled=false;}}

@@ -285,6 +285,13 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .map-panel .leaflet-tile{transition:none;filter:none}
 .map-panel .v33-tooltip{background:#fff;color:var(--preto);border-color:#c5c9ce;box-shadow:0 5px 20px #16191d26;font-size:11px}
 .map-panel .v33-tooltip:before{display:none}
+.map-unit-choices{font-family:var(--font-body,Barlow,sans-serif);color:var(--preto);max-height:32vh;overflow:auto}
+.map-unit-choices>strong{display:block;padding-right:12px;font-size:14px}
+.map-unit-choices p{font-size:12px;margin:6px 0 10px}
+.map-unit-choices button{display:block;width:100%;text-align:left;background:#fff;border:1px solid #d9dde1;border-radius:6px;padding:9px 10px;margin:6px 0;color:inherit;cursor:pointer}
+.map-unit-choices button:hover,.map-unit-choices button:focus-visible{background:#fff0e9;border-color:#ff4b1e;outline:2px solid #ff4b1e;outline-offset:1px}
+.map-unit-choices button strong,.map-unit-choices button small{display:block;white-space:normal;overflow-wrap:anywhere}
+.map-unit-choices button small{font-size:11px;margin-top:3px}
 .unit-map-marker{filter:drop-shadow(0 1px 1px #16191d90)}
 .unit-map-legend{position:absolute;top:88px;right:8px;z-index:1001;max-width:calc(100% - 64px);width:max-content;border:1px solid #c5c9ce;border-radius:4px;background:#fffffff5;color:var(--preto);box-shadow:0 1px 4px #16191d1f;font:500 11px/1.4 var(--font-sans)}
 .unit-map-legend summary{padding:7px 10px;cursor:pointer;font-weight:600}

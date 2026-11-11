@@ -26,7 +26,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const z=await zoom();await page.clock.fastForward(61000);assert.equal(await zoom(),z);assert.equal(await handle.evaluate(n=>n===document.querySelector('#municipal-map')),true,'atualização mantém o mapa');
   assert.equal(await page.locator('.map-expanded').count(),1);await shot('mapa-ampliado');
   // A seleção mantém o mapa expandido e abre o diálogo existente sobre ele.
-  await page.locator('.hardware-map-notice').click();await page.locator('.hardware-card').waitFor();assert.match(await page.locator('.hardware-dialog').innerText(),/TESTE-PC-001/);
+  const alertId=await page.locator('.hardware-map-notice').getAttribute('data-unit-id');await page.locator('.hardware-map-notice').click();await page.locator('[data-map-choice="'+alertId+'"]').click();await page.locator('.hardware-card').waitFor();assert.match(await page.locator('.hardware-dialog').innerText(),/TESTE-PC-001/);
   await shot('hardware-no-mapa-ampliado');await page.keyboard.press('Escape');assert.equal(await page.locator('.hardware-dialog[open]').count(),0);assert.equal(await page.locator('.map-expanded').count(),1);
   await back.click();assert.equal(await page.locator('.map-expanded').count(),0);assert.equal(await zoom(),baseline.zoom);assert.deepEqual(await page.locator('.map-panel').boundingBox(),normal);
   assert.deepEqual(await markerCenter(),originalCenter,'restaura o enquadramento original');
