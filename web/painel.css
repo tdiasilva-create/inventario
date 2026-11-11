@@ -973,3 +973,12 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .communication-table td>a:not(:first-child){display:inline-block;margin-top:8px}
 .communication-state{font-weight:600;color:#9a2900}
 .communication-state[data-state=closed]{color:#187247}
+
+/* D-090: novos campos escolares opcionais, sem alongar o formulário fechado. */
+.school-registration-group{grid-column:1/-1;border:1px solid var(--line,#d9dde2);border-radius:6px;background:#fff;padding:12px 14px}
+.school-registration-group[hidden]{display:none}
+.school-registration-group>summary{cursor:pointer;font-weight:600;min-height:28px}
+.school-registration-group>.help{font-size:13px;color:#66717d;margin:8px 0 14px;line-height:1.5}
+.school-registration-group>.form-grid{margin-top:12px}
+.school-registration-group[open]>summary{margin-bottom:10px}
+.school-registration-group:has([aria-invalid=true])>summary{color:var(--red,#d90029)}

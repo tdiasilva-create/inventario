@@ -1,11 +1,212 @@
+// D-090: cadastro escolar opcional, sem dados pessoais de alunos e sem contrato do gestor.
+export const schoolFieldGroups=[
+ {
+  "id": "identity",
+  "label": "Identificação e funcionamento escolar",
+  "fields": [
+   {
+    "key": "official_name",
+    "label": "Nome oficial da escola",
+    "type": "text",
+    "maxLength": 180
+   },
+   {
+    "key": "secretary_name",
+    "label": "Nome do secretário escolar",
+    "type": "text",
+    "maxLength": 180
+   },
+   {
+    "key": "school_zone",
+    "label": "Zona da escola",
+    "type": "select",
+    "options": [
+     "Urbana",
+     "Rural"
+    ]
+   },
+   {
+    "key": "school_shifts",
+    "label": "Turnos de funcionamento",
+    "type": "text",
+    "maxLength": 120
+   },
+   {
+    "key": "full_time",
+    "label": "Atendimento em tempo integral",
+    "type": "select",
+    "options": [
+     "Sim",
+     "Não"
+    ]
+   },
+   {
+    "key": "shared_building",
+    "label": "Prédio compartilhado",
+    "type": "select",
+    "options": [
+     "Sim",
+     "Não"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "programs",
+  "label": "Programas, estrutura e segurança",
+  "fields": [
+   {
+    "key": "pdde_status",
+    "label": "Situação do PDDE",
+    "type": "select",
+    "options": [
+     "Ativo",
+     "Pendente",
+     "Não se aplica"
+    ]
+   },
+   {
+    "key": "census_pending",
+    "label": "Possui pendências no Censo Escolar",
+    "type": "select",
+    "options": [
+     "Sim",
+     "Não"
+    ]
+   },
+   {
+    "key": "sports_court",
+    "label": "Possui quadra poliesportiva",
+    "type": "select",
+    "options": [
+     "Sim",
+     "Não"
+    ]
+   },
+   {
+    "key": "video_monitoring",
+    "label": "Possui videomonitoramento",
+    "type": "select",
+    "options": [
+     "Sim",
+     "Não"
+    ]
+   },
+   {
+    "key": "classrooms_total",
+    "label": "Salas de aula (total)",
+    "type": "number"
+   },
+   {
+    "key": "classrooms_in_use",
+    "label": "Salas de aula em uso",
+    "type": "number"
+   }
+  ]
+ },
+ {
+  "id": "enrollment",
+  "label": "Detalhamento de matrículas e espera",
+  "fields": [
+   {
+    "key": "students_eja_initial",
+    "label": "Alunos EJA — anos iniciais",
+    "type": "number"
+   },
+   {
+    "key": "students_eja_final",
+    "label": "Alunos EJA — anos finais",
+    "type": "number"
+   },
+   {
+    "key": "waiting_daycare",
+    "label": "Fila de espera — creche",
+    "type": "number"
+   },
+   {
+    "key": "waiting_preschool",
+    "label": "Fila de espera — pré-escola",
+    "type": "number"
+   },
+   {
+    "key": "waiting_elementary",
+    "label": "Fila de espera — ensino fundamental",
+    "type": "number"
+   }
+  ]
+ },
+ {
+  "id": "team",
+  "label": "Composição da equipe escolar",
+  "fields": [
+   {
+    "key": "staff_management",
+    "label": "Servidores — gestão e coordenação",
+    "type": "number"
+   },
+   {
+    "key": "staff_pedagogical",
+    "label": "Servidores — apoio pedagógico",
+    "type": "number"
+   },
+   {
+    "key": "staff_administrative",
+    "label": "Servidores — administrativo",
+    "type": "number"
+   },
+   {
+    "key": "staff_food",
+    "label": "Servidores — alimentação",
+    "type": "number"
+   },
+   {
+    "key": "staff_maintenance",
+    "label": "Servidores — limpeza e manutenção",
+    "type": "number"
+   },
+   {
+    "key": "staff_security",
+    "label": "Servidores — vigilância / vigilantes",
+    "type": "number"
+   },
+   {
+    "key": "staff_educa_paco",
+    "label": "Servidores — Educa Paço",
+    "type": "number"
+   },
+   {
+    "key": "staff_other",
+    "label": "Servidores — outras funções",
+    "type": "number"
+   },
+   {
+    "key": "staff_permanent",
+    "label": "Servidores efetivos",
+    "type": "number"
+   },
+   {
+    "key": "staff_temporary",
+    "label": "Servidores contratados",
+    "type": "number"
+   },
+   {
+    "key": "staff_commissioned",
+    "label": "Servidores comissionados",
+    "type": "number"
+   }
+  ]
+ }
+];
+export const schoolFields=schoolFieldGroups.flatMap(g=>g.fields);
+export const schoolColumns=schoolFields.map(f=>[f.key,f.label]);
 export const unitTypes=['Escola municipal','Escola municipal militar','Creche municipal','Núcleo Educa Paço','Núcleo tecnológico','Unidade administrativa','Obra em andamento'];
 export const legacyUnitTypes=['Escola conveniada'];
 export const collectorHiddenTypes=['Obra em andamento'];
 export const schoolTypes=['Escola municipal','Escola municipal militar','Creche municipal'];
 export const isOutOfScope=type=>legacyUnitTypes.includes(type);
 export const requiresInep=type=>schoolTypes.includes(type);
-export const numericUnitColumns=[['students_total','Alunos (total)'],['students_daycare','Alunos creche'],['students_preschool','Alunos pré-escola'],['students_early_years','Alunos anos iniciais'],['students_final_years','Alunos anos finais'],['students_eja','Alunos EJA'],['classes_total','Turmas'],['seats_available','Vagas disponíveis'],['capacity_total','Capacidade total'],['staff_total','Servidores lotados'],['teachers_total','Professores']];
-export const extraUnitColumns=[...numericUnitColumns,['building_code','Código do prédio'],['notes','Observações'],['figures_source','Fonte dos números'],['figures_reference_date','Data de referência']];
+export const numericUnitColumns=[['students_total','Alunos (total)'],['students_daycare','Alunos creche'],['students_preschool','Alunos pré-escola'],['students_early_years','Alunos anos iniciais'],['students_final_years','Alunos anos finais'],['students_eja','Alunos EJA'],['classes_total','Turmas'],['seats_available','Vagas disponíveis'],['capacity_total','Capacidade total'],['staff_total','Servidores lotados'],['teachers_total','Professores'],...schoolFields.filter(f=>f.type==='number').map(f=>[f.key,f.label])];
+export const extraUnitColumns=[...numericUnitColumns.filter(([key])=>!schoolFields.some(f=>f.key===key)),['building_code','Código do prédio'],['notes','Observações'],['figures_source','Fonte dos números'],['figures_reference_date','Data de referência'],...schoolColumns];
 export const compareUnitCodes=(a,b)=>a.code&&b.code?String(a.code).localeCompare(String(b.code),'pt-BR'):a.code?-1:b.code?1:0;
 export const unitColumns=[['name','Nome da unidade'],['code','INEP'],['unit_type','Tipo de unidade'],['region','Polo/Regional'],['neighborhood','Bairro'],['address','Endereço'],['manager_name','Nome do gestor'],['phone','Telefone'],['email','E-mail'],['latitude','Latitude'],['longitude','Longitude'],['active','Situação'],...extraUnitColumns];
 export const normalize=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase().replace(/\s+/g,' ');
@@ -23,11 +224,17 @@ export function validateUnitFields(data){
  const extra={};for(const [key]of numericUnitColumns){const raw=String(data[key]??'').trim();extra[key]=raw===''?null:Number(raw.replaceAll('.',''));if(raw&&((typeof data[key]==='number'&&!Number.isInteger(data[key]))||!/^(?:\d+|\d{1,3}(?:\.\d{3})+)$/.test(raw)||!Number.isInteger(extra[key])||extra[key]>99999))fields[key]='Use um número inteiro entre 0 e 99.999.';}
  extra.building_code=trim('building_code',20).toUpperCase();if(!/^[A-Z0-9-]{0,20}$/.test(extra.building_code))fields.building_code='Use até 20 letras, números ou hífens.';
  extra.notes=trim('notes',500);extra.figures_source=trim('figures_source',180);extra.figures_reference_date=trim('figures_reference_date',10)||null;
+ for(const field of schoolFields){if(field.type==='number')continue;const raw=String(data[field.key]??'').trim();if(field.type==='select'){const option=field.options.find(v=>normalize(v)===normalize(raw));if(raw&&!option)fields[field.key]='Selecione uma opção válida.';extra[field.key]=option||null;}else extra[field.key]=trim(field.key,field.maxLength)||null;}
  const date=extra.figures_reference_date,today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Fortaleza',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  if(date&&(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00:00Z'))||new Date(date+'T12:00:00Z').toISOString().slice(0,10)!==date||date>today))fields.figures_reference_date='Informe uma data válida, não futura.';
  const stageSum=numericUnitColumns.slice(1,6).reduce((n,[key])=>n+(extra[key]||0),0);if(extra.students_total!==null&&stageSum>extra.students_total)warnings.students='A soma por etapa ('+stageSum+') é maior que o total ('+extra.students_total+').';
  if(extra.seats_available!==null&&extra.capacity_total!==null&&extra.seats_available>extra.capacity_total)warnings.seats='As vagas disponíveis superam a capacidade total.';
  if(extra.teachers_total!==null&&extra.staff_total!==null&&extra.teachers_total>extra.staff_total)warnings.staff='O número de professores supera o de servidores lotados.';
+ if(extra.classrooms_total!==null&&extra.classrooms_in_use!==null&&extra.classrooms_in_use>extra.classrooms_total)warnings.classrooms='As salas em uso superam o total de salas de aula.';
+ const eja=(extra.students_eja_initial||0)+(extra.students_eja_final||0);if(extra.students_eja!==null&&eja>extra.students_eja)warnings.eja='O detalhamento de EJA supera o total de alunos EJA informado.';
+ const functionSum=['teachers_total','staff_management','staff_pedagogical','staff_administrative','staff_food','staff_maintenance','staff_security','staff_educa_paco','staff_other'].reduce((n,k)=>n+(extra[k]||0),0);
+ if(extra.staff_total!==null&&functionSum>extra.staff_total&&schoolFieldGroups.find(g=>g.id==='team').fields.some(f=>!['staff_permanent','staff_temporary','staff_commissioned'].includes(f.key)&&extra[f.key]!==null))warnings.functions='A soma das funções informadas supera o total de servidores. Confira sobreposições e fontes.';
+ const employmentSum=['staff_permanent','staff_temporary','staff_commissioned'].reduce((n,k)=>n+(extra[k]||0),0);if(extra.staff_total!==null&&employmentSum>extra.staff_total)warnings.employment='A soma dos vínculos funcionais supera o total de servidores.';
  if(Object.keys(fields).length)return {error:Object.values(fields)[0],fields,warnings};
  return {warnings,value:{name,name_key:normalize(name),code,unit_type,region,neighborhood,address,manager_name,phone,email,latitude,longitude,active:data.active?1:0,...extra}};
 }

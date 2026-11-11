@@ -429,3 +429,7 @@ Pacote externo SHA-256 319f643eb4da587d11bc51ba029b1cf370e5b6a7de73ff4510deb45c1
 Base TXT: estados/conclusão manual, retomada, consistência por unidade/equipamento e fotos, interpretados pelas decisões atuais D-057/D-060/D-062/D-074. Nenhuma pergunta nova; offline durável, políticas pendentes e demais lacunas do TXT não são declarados concluídos. Compartilhamento do servidor exige publicar os dois Workers; painel não recebe alteração visual nesta entrega.
 
 Publicação D-089: commit 329bb6e; coletor 4df19c82-0b07-4b31-b115-62b8fe94e7ad e painel a8166f95-8c6b-4534-9df6-c1b342a51cdc em 100%. 200 testes de servidor, nove roteiros de navegador e nove verificações HTTP externas aprovados; sem migração ou escrita de teste oficial. Aceite físico Android/iPhone permanece pendente.
+
+## D-090 — cadastro escolar e contagem do Panorama
+
+Pedido de ampliar cadastro + planilha API MAPA (SEMED) + decisões escolas somente/CONTRATO fora/militares como subconjunto → web/unit-schema.js, admin-units.js, unit-figures.js, desktop.js, painel.css; migração 0025_school_registration.sql; modelos de arquivos dinâmicos, testes school-registration (servidor/navegador), unit-files, unit-catalogue e desktop-identity; CI e dicionário de dados gerado. [Contrato/mapeamento](../04-dados-apis/CADASTRO_ESCOLAS_D090.md), [aceite/capturas/publicação](../05-qualidade/CADASTRO_ESCOLAS_2026-11-10.md). Nenhuma linha da planilha importada nem pergunta da Base original modificada.

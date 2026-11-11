@@ -94,3 +94,7 @@ Decisão posterior supera D-070 quanto a gerar comunicação perdida após 17 mi
 ## D-089 — propostas do pacote do coletor versus decisões existentes
 
 O pacote externo é fonte de diagnóstico, não aprovação automática. CL-08 resolvido pela busca limitada com rótulo explicativo; CL-10 pelo Salvar compacto. CL-13 não reintroduz conferência obrigatória, pois D-057 já decidiu Editar somente; somente o contador sem ação foi retirado. Fotos obrigatórias de impressora/fachada continuam pelas decisões atuais; foto de computador permanece opcional D-060. Relatório externo de testes antigos não substitui os testes executados nesta entrega. Base original permanece íntegra; [contrato](../02-coleta-mobile/REVISAO_E_ACOES_D089.md).
+
+## D-090 — contagem sobreposta intencional e dados escolares
+
+D-066/D-068 preservam os tipos distintos no cadastro, mas D-090 manda contar militares dentro de Escolas municipais e explicitar Das quais militares. Não somar os dois cartões nem alterar o tipo real; creches continuam separadas. Números históricos no relatório externo não são constantes oficiais do sistema. A planilha contém dados de múltiplas fontes e setores: somente cadastro escolar foi aprovado, sem importação ou conciliação automática. CONTRATO não entra no esquema; quantidade de servidores contratados é conceito distinto. Campos antigos e fonte/data são reaproveitados; fotografias, equipamentos e internet continuam no inventário, sem cadastros duplicados.

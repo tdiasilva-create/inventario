@@ -26,6 +26,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0022_equipment_names.sql`
 - `0023_equipment_deletions.sql`
 - `0024_hardware_reviews.sql`
+- `0025_school_registration.sql`
 
 ## agent_audit_log
 
@@ -919,6 +920,34 @@ Referências: `assigned_by` → `users.id` (delete: NO ACTION); `unit_id` → `u
 | notes | TEXT | sim |  | '' |
 | figures_source | TEXT | sim |  | '' |
 | figures_reference_date | TEXT | não |  | — |
+| official_name | TEXT | não |  | — |
+| secretary_name | TEXT | não |  | — |
+| school_zone | TEXT | não |  | — |
+| school_shifts | TEXT | não |  | — |
+| full_time | TEXT | não |  | — |
+| shared_building | TEXT | não |  | — |
+| pdde_status | TEXT | não |  | — |
+| census_pending | TEXT | não |  | — |
+| sports_court | TEXT | não |  | — |
+| video_monitoring | TEXT | não |  | — |
+| classrooms_total | INTEGER | não |  | — |
+| classrooms_in_use | INTEGER | não |  | — |
+| students_eja_initial | INTEGER | não |  | — |
+| students_eja_final | INTEGER | não |  | — |
+| waiting_daycare | INTEGER | não |  | — |
+| waiting_preschool | INTEGER | não |  | — |
+| waiting_elementary | INTEGER | não |  | — |
+| staff_management | INTEGER | não |  | — |
+| staff_pedagogical | INTEGER | não |  | — |
+| staff_administrative | INTEGER | não |  | — |
+| staff_food | INTEGER | não |  | — |
+| staff_maintenance | INTEGER | não |  | — |
+| staff_security | INTEGER | não |  | — |
+| staff_educa_paco | INTEGER | não |  | — |
+| staff_other | INTEGER | não |  | — |
+| staff_permanent | INTEGER | não |  | — |
+| staff_temporary | INTEGER | não |  | — |
+| staff_commissioned | INTEGER | não |  | — |
 
 ## users
 

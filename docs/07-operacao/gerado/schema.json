@@ -96,6 +96,10 @@
     {
       "file": "0024_hardware_reviews.sql",
       "sha256": "835cb6e5d4e9344533ae0f8c36a6174bfb143fdb5392da97587e1c47f63d8dc3"
+    },
+    {
+      "file": "0025_school_registration.sql",
+      "sha256": "a84f1b46d98ba23b22dadacd691d133f0601f450de8d32ecac8cbbbe83bc5f88"
     }
   ],
   "tables": [
@@ -4981,6 +4985,230 @@
           "notnull": 0,
           "dflt_value": null,
           "pk": 0
+        },
+        {
+          "cid": 32,
+          "name": "official_name",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 33,
+          "name": "secretary_name",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 34,
+          "name": "school_zone",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 35,
+          "name": "school_shifts",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 36,
+          "name": "full_time",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 37,
+          "name": "shared_building",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 38,
+          "name": "pdde_status",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 39,
+          "name": "census_pending",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 40,
+          "name": "sports_court",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 41,
+          "name": "video_monitoring",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 42,
+          "name": "classrooms_total",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 43,
+          "name": "classrooms_in_use",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 44,
+          "name": "students_eja_initial",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 45,
+          "name": "students_eja_final",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 46,
+          "name": "waiting_daycare",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 47,
+          "name": "waiting_preschool",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 48,
+          "name": "waiting_elementary",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 49,
+          "name": "staff_management",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 50,
+          "name": "staff_pedagogical",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 51,
+          "name": "staff_administrative",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 52,
+          "name": "staff_food",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 53,
+          "name": "staff_maintenance",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 54,
+          "name": "staff_security",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 55,
+          "name": "staff_educa_paco",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 56,
+          "name": "staff_other",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 57,
+          "name": "staff_permanent",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 58,
+          "name": "staff_temporary",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 59,
+          "name": "staff_commissioned",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
         }
       ],
       "foreignKeys": []
@@ -5834,7 +6062,7 @@
       "type": "table",
       "name": "units",
       "tbl_name": "units",
-      "sql": "CREATE TABLE units (id TEXT PRIMARY KEY,name TEXT NOT NULL,name_key TEXT NOT NULL UNIQUE,code TEXT UNIQUE,address TEXT NOT NULL DEFAULT '',neighborhood TEXT NOT NULL DEFAULT '',latitude REAL,longitude REAL,active INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL, manager_name TEXT NOT NULL DEFAULT '', unit_type TEXT NOT NULL DEFAULT '', region TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', students_total INTEGER CHECK(students_total IS NULL OR (typeof(students_total)='integer' AND students_total BETWEEN 0 AND 99999)), students_daycare INTEGER CHECK(students_daycare IS NULL OR (typeof(students_daycare)='integer' AND students_daycare BETWEEN 0 AND 99999)), students_preschool INTEGER CHECK(students_preschool IS NULL OR (typeof(students_preschool)='integer' AND students_preschool BETWEEN 0 AND 99999)), students_early_years INTEGER CHECK(students_early_years IS NULL OR (typeof(students_early_years)='integer' AND students_early_years BETWEEN 0 AND 99999)), students_final_years INTEGER CHECK(students_final_years IS NULL OR (typeof(students_final_years)='integer' AND students_final_years BETWEEN 0 AND 99999)), students_eja INTEGER CHECK(students_eja IS NULL OR (typeof(students_eja)='integer' AND students_eja BETWEEN 0 AND 99999)), classes_total INTEGER CHECK(classes_total IS NULL OR (typeof(classes_total)='integer' AND classes_total BETWEEN 0 AND 99999)), seats_available INTEGER CHECK(seats_available IS NULL OR (typeof(seats_available)='integer' AND seats_available BETWEEN 0 AND 99999)), capacity_total INTEGER CHECK(capacity_total IS NULL OR (typeof(capacity_total)='integer' AND capacity_total BETWEEN 0 AND 99999)), staff_total INTEGER CHECK(staff_total IS NULL OR (typeof(staff_total)='integer' AND staff_total BETWEEN 0 AND 99999)), teachers_total INTEGER CHECK(teachers_total IS NULL OR (typeof(teachers_total)='integer' AND teachers_total BETWEEN 0 AND 99999)), building_code TEXT NOT NULL DEFAULT '', notes TEXT NOT NULL DEFAULT '', figures_source TEXT NOT NULL DEFAULT '', figures_reference_date TEXT)"
+      "sql": "CREATE TABLE units (id TEXT PRIMARY KEY,name TEXT NOT NULL,name_key TEXT NOT NULL UNIQUE,code TEXT UNIQUE,address TEXT NOT NULL DEFAULT '',neighborhood TEXT NOT NULL DEFAULT '',latitude REAL,longitude REAL,active INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL, manager_name TEXT NOT NULL DEFAULT '', unit_type TEXT NOT NULL DEFAULT '', region TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', students_total INTEGER CHECK(students_total IS NULL OR (typeof(students_total)='integer' AND students_total BETWEEN 0 AND 99999)), students_daycare INTEGER CHECK(students_daycare IS NULL OR (typeof(students_daycare)='integer' AND students_daycare BETWEEN 0 AND 99999)), students_preschool INTEGER CHECK(students_preschool IS NULL OR (typeof(students_preschool)='integer' AND students_preschool BETWEEN 0 AND 99999)), students_early_years INTEGER CHECK(students_early_years IS NULL OR (typeof(students_early_years)='integer' AND students_early_years BETWEEN 0 AND 99999)), students_final_years INTEGER CHECK(students_final_years IS NULL OR (typeof(students_final_years)='integer' AND students_final_years BETWEEN 0 AND 99999)), students_eja INTEGER CHECK(students_eja IS NULL OR (typeof(students_eja)='integer' AND students_eja BETWEEN 0 AND 99999)), classes_total INTEGER CHECK(classes_total IS NULL OR (typeof(classes_total)='integer' AND classes_total BETWEEN 0 AND 99999)), seats_available INTEGER CHECK(seats_available IS NULL OR (typeof(seats_available)='integer' AND seats_available BETWEEN 0 AND 99999)), capacity_total INTEGER CHECK(capacity_total IS NULL OR (typeof(capacity_total)='integer' AND capacity_total BETWEEN 0 AND 99999)), staff_total INTEGER CHECK(staff_total IS NULL OR (typeof(staff_total)='integer' AND staff_total BETWEEN 0 AND 99999)), teachers_total INTEGER CHECK(teachers_total IS NULL OR (typeof(teachers_total)='integer' AND teachers_total BETWEEN 0 AND 99999)), building_code TEXT NOT NULL DEFAULT '', notes TEXT NOT NULL DEFAULT '', figures_source TEXT NOT NULL DEFAULT '', figures_reference_date TEXT, official_name TEXT CHECK (official_name IS NULL OR (length(official_name)<=180)), secretary_name TEXT CHECK (secretary_name IS NULL OR (length(secretary_name)<=180)), school_zone TEXT CHECK (school_zone IS NULL OR (school_zone IN ('Urbana','Rural'))), school_shifts TEXT CHECK (school_shifts IS NULL OR (length(school_shifts)<=120)), full_time TEXT CHECK (full_time IS NULL OR (full_time IN ('Sim','Não'))), shared_building TEXT CHECK (shared_building IS NULL OR (shared_building IN ('Sim','Não'))), pdde_status TEXT CHECK (pdde_status IS NULL OR (pdde_status IN ('Ativo','Pendente','Não se aplica'))), census_pending TEXT CHECK (census_pending IS NULL OR (census_pending IN ('Sim','Não'))), sports_court TEXT CHECK (sports_court IS NULL OR (sports_court IN ('Sim','Não'))), video_monitoring TEXT CHECK (video_monitoring IS NULL OR (video_monitoring IN ('Sim','Não'))), classrooms_total INTEGER CHECK (classrooms_total IS NULL OR (classrooms_total BETWEEN 0 AND 99999 AND typeof(classrooms_total)='integer')), classrooms_in_use INTEGER CHECK (classrooms_in_use IS NULL OR (classrooms_in_use BETWEEN 0 AND 99999 AND typeof(classrooms_in_use)='integer')), students_eja_initial INTEGER CHECK (students_eja_initial IS NULL OR (students_eja_initial BETWEEN 0 AND 99999 AND typeof(students_eja_initial)='integer')), students_eja_final INTEGER CHECK (students_eja_final IS NULL OR (students_eja_final BETWEEN 0 AND 99999 AND typeof(students_eja_final)='integer')), waiting_daycare INTEGER CHECK (waiting_daycare IS NULL OR (waiting_daycare BETWEEN 0 AND 99999 AND typeof(waiting_daycare)='integer')), waiting_preschool INTEGER CHECK (waiting_preschool IS NULL OR (waiting_preschool BETWEEN 0 AND 99999 AND typeof(waiting_preschool)='integer')), waiting_elementary INTEGER CHECK (waiting_elementary IS NULL OR (waiting_elementary BETWEEN 0 AND 99999 AND typeof(waiting_elementary)='integer')), staff_management INTEGER CHECK (staff_management IS NULL OR (staff_management BETWEEN 0 AND 99999 AND typeof(staff_management)='integer')), staff_pedagogical INTEGER CHECK (staff_pedagogical IS NULL OR (staff_pedagogical BETWEEN 0 AND 99999 AND typeof(staff_pedagogical)='integer')), staff_administrative INTEGER CHECK (staff_administrative IS NULL OR (staff_administrative BETWEEN 0 AND 99999 AND typeof(staff_administrative)='integer')), staff_food INTEGER CHECK (staff_food IS NULL OR (staff_food BETWEEN 0 AND 99999 AND typeof(staff_food)='integer')), staff_maintenance INTEGER CHECK (staff_maintenance IS NULL OR (staff_maintenance BETWEEN 0 AND 99999 AND typeof(staff_maintenance)='integer')), staff_security INTEGER CHECK (staff_security IS NULL OR (staff_security BETWEEN 0 AND 99999 AND typeof(staff_security)='integer')), staff_educa_paco INTEGER CHECK (staff_educa_paco IS NULL OR (staff_educa_paco BETWEEN 0 AND 99999 AND typeof(staff_educa_paco)='integer')), staff_other INTEGER CHECK (staff_other IS NULL OR (staff_other BETWEEN 0 AND 99999 AND typeof(staff_other)='integer')), staff_permanent INTEGER CHECK (staff_permanent IS NULL OR (staff_permanent BETWEEN 0 AND 99999 AND typeof(staff_permanent)='integer')), staff_temporary INTEGER CHECK (staff_temporary IS NULL OR (staff_temporary BETWEEN 0 AND 99999 AND typeof(staff_temporary)='integer')), staff_commissioned INTEGER CHECK (staff_commissioned IS NULL OR (staff_commissioned BETWEEN 0 AND 99999 AND typeof(staff_commissioned)='integer')))"
     },
     {
       "type": "table",

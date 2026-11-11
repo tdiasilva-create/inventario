@@ -43,6 +43,12 @@ const pw=require('./helpers/playwright.cjs');
   const countTypes=['Escola municipal','Escola municipal militar','Creche municipal','Núcleo Educa Paço','Núcleo tecnológico','Unidade administrativa','Obra em andamento'];
   const expectCounts=async expected=>{await page.waitForFunction(expected=>{const rows=[...document.querySelectorAll('.unit-category-counts>div')];return rows.length>=expected.length&&expected.every((v,i)=>rows[i]?.querySelector('dd')?.textContent===String(v));},expected);assert.deepEqual(await page.locator('.unit-category-counts>div').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.unitCategory,n.querySelector('dd').textContent]))),Object.fromEntries(countTypes.map((type,i)=>[type,String(expected[i])])));assert.equal(await page.locator('.inventory-stats .metric').count(),3);};
   await page.goto(origin+'/panorama');await expectCounts([2,0,0,0,0,1,0]);
+  // D-090: militares participam do indicador municipal e continuam categoria/filtro próprios.
+  const militaryId=crypto.randomUUID();f.sqlite.prepare('INSERT INTO units(id,name,name_key,code,unit_type,region,active,created_at,updated_at) VALUES(?,?,?,?,?,?,1,?,?)').run(militaryId,'TESTE ISOLADO · Militar','test-military','21999998','Escola municipal militar','Norte',Date.now(),Date.now());
+  await page.reload();await expectCounts([3,1,0,0,0,1,0]);assert.equal(await page.locator('[data-unit-category="Escola municipal militar"] dt').textContent(),'Das quais militares');await screenshot('categorias-militares-subconjunto');
+  await page.locator('[data-filter=type]').selectOption('Escola municipal militar');await expectCounts([1,1,0,0,0,0,0]);
+  await page.locator('[data-filter=type]').selectOption('Escola municipal');await expectCounts([2,0,0,0,0,0,0]);
+  f.sqlite.prepare('DELETE FROM units WHERE id=?').run(militaryId);await page.goto(origin+'/panorama');await expectCounts([2,0,0,0,0,1,0]);
   const administrativeId=crypto.randomUUID();f.sqlite.prepare('INSERT INTO units(id,name,name_key,unit_type,region,active,created_at,updated_at) VALUES(?,?,?,?,?,1,?,?)').run(administrativeId,'TESTE ISOLADO · Prédio administrativo','test-administrative','Unidade administrativa','Leste',Date.now(),Date.now());
   await page.reload();await expectCounts([2,0,0,0,0,2,0]);await screenshot('categorias-apos-administrativa');
   await page.locator('[data-filter=region]').selectOption('Norte');await expectCounts([1,0,0,0,0,0,0]);

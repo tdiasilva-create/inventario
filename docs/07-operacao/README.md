@@ -46,3 +46,7 @@ Etiquetas e filtro de vínculo/cadastro nas consultas desktop, sem migração ou
 ## D-081 — revisão administrativa de hardware
 
 Nova instalação aplica as 24 migrações. 0024 guarda decisão administrativa e vínculo à demanda sem modificar o inventário existente. Publicar apenas o painel é suficiente; o coletor continua compatível. [Aceite e versão](../05-qualidade/HARDWARE_DECISAO_2026-11-10.md). Novas tabelas e decisões integram backup/transferência; preservar eventos originais e histórico das demandas.
+
+## D-090 — cadastro escolar
+
+Nova instalação aplica as 25 migrações. 0025 acrescenta 28 campos opcionais em units, sem carga de dados. Ambos os Workers usam o esquema compartilhado; publicar após a migração. Backup de units/unit_changes deve preservar os metadados e histórico. Rollback de código pode deixar as colunas: não executar DROP/restauração destrutiva. Modelos CSV/XLSX atuais têm 55 colunas, compatíveis com entradas antigas de 12/27. [Contrato e limites](../04-dados-apis/CADASTRO_ESCOLAS_D090.md), [aceite/publicação](../05-qualidade/CADASTRO_ESCOLAS_2026-11-10.md).

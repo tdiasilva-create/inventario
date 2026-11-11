@@ -220,3 +220,12 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [ ] Offline durável, autosave completo da ficha, declaração explícita de ausência de equipamentos, exclusão pelo operador, ações em lote e revisão das perguntas continuam fora desta entrega; dependem de decisão/planejamento próprios.
 
 [Contrato e limites](../02-coleta-mobile/REVISAO_E_ACOES_D089.md). Esta decisão não reabre as Fases 4/5 pausadas nem transforma rascunho em inventário publicado.
+
+## D-090 — ampliação escolar
+
+- [x] Cadastro escolar ampliado com campos opcionais e fontes mapeadas; CONTRATO excluído pelo responsável. Militares como subconjunto das municipais.
+- [ ] Aceite operacional do formulário pelo responsável após publicação.
+- [ ] Importação/preenchimento dos novos campos: não executados; diferenças entre fontes e células com erro precisam de conferência própria.
+- [ ] Outros tipos de unidade, indicadores pedagógicos e histórico por ano seguem fora do escopo. Fases 4/5 não retomadas.
+
+[Contrato e limites](../04-dados-apis/CADASTRO_ESCOLAS_D090.md).

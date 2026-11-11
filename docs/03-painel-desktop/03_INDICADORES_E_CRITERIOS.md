@@ -23,3 +23,7 @@ Rede em números soma students_total, classes_total, seats_available e staff_tot
 ## D-085 — substituição do indicador genérico de pendências
 
 Em 10/11/2026 foram aprovados três indicadores separados, de toda a rede: coletas pendentes (unidades), demandas abertas (atendimentos) e hardware aguardando parecer (eventos). Não somar os três nem confundir leitura de notificação com decisão administrativa. Cada um abre a consulta correspondente, com atualização compartilhada de 15 s. [Critérios, exceções e contratos](INDICADORES_DE_PENDENCIAS.md). Esta decisão supera as referências anteriores a “Pendentes” sem critério.
+
+## D-090 — municipais e subconjunto militar
+
+Escolas municipais inclui Escola municipal + Escola municipal militar. Das quais militares conta somente o segundo tipo. É um subconjunto informativo, não categoria para somar novamente. Aplicar ao conjunto ativo filtrado; creches e demais tipos permanecem separados, sem total geral. Preservar classificação real e cores. Nenhum valor histórico fixado no código. [Cadastro escolar e critérios](../04-dados-apis/CADASTRO_ESCOLAS_D090.md).
