@@ -116,3 +116,7 @@ A sinalização âmbar D-081/D-087/D-088 para demanda oriunda de hardware foi su
 ## D-095 — destino do clique, decisão posterior
 
 O pedido mais recente determina Unidades já na escola escolhida, com exceção somente para demanda aberta, que vai à Central. Isso supera a abertura de modal de hardware pelo centro do marcador em D-081/D-088/D-094. O círculo vermelho continua informativo; parecer e comparativo permanecem no sino. Não confundir essa mudança de navegação com remoção da detecção, dos eventos ou da exigência de parecer. Tooltip reaproveita números oficiais do cadastro, sem converter nulo em zero.
+
+## D-096 — regras de senha posteriores às propostas originais
+
+A decisão expressa de 11/11/2026 supera mínimo 12, verificação externa de vazamentos e geração automática de senha no formulário de criação presentes nas propostas/autenticação anteriores. Agora seis a 256 caracteres, composição livre, provisória escolhida pelo root e nenhuma dependência Pwned Passwords. Primeiro acesso obrigatório, prazos, hashing e D-075 continuam vigentes. A remoção da geração automática se restringe à criação; reset administrativo não foi alterado. Documentos históricos e Base original são preservados como fontes anteriores. [Aceite](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).

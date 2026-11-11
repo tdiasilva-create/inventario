@@ -258,3 +258,10 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 - [ ] Aceite visual do responsável após publicação. Dados não preenchidos permanecem Não informado, sem criar pendência artificial ou importar números.
 
 [Aceite](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md). Demais pendências preservadas.
+
+## D-096 — senhas e criação de usuários
+
+- [x] Três decisões explícitas implementadas e testadas: provisória escolhida pelo root, mínimo seis, sem consulta externa.
+- [ ] Aceite operacional pelo responsável após publicação. Não há decisão funcional pendente neste lote. Reset administrativo permanece como já implementado; não faz parte da alteração pedida.
+
+[Aceite/publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md). Demais pendências e Fases 4/5 preservadas.

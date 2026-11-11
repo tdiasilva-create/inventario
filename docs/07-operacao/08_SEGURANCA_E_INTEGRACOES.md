@@ -8,7 +8,7 @@ A autorização está no Worker, não no botão. Mudanças de host/proxy precisa
 
 Hash de senha atual: PBKDF2/SHA-512, 100.000 iterações, salt individual e `AUTH_PEPPER` adicional. Alterar o pepper sem migração apropriada impede validar senhas existentes. Não restaurar senhas em texto nem resetar todos os usuários silenciosamente durante transferência.
 
-Verificação de novas senhas consulta Pwned Passwords por prefixo de hash. Se o destino bloquear essa saída HTTPS, cadastro/reset/troca podem falhar; registrar essa dependência.
+D-096 (11/11/2026): root informa a senha provisória ao criar um usuário. Senhas provisórias de criação e definitivas aceitam de 6 a 256 caracteres, sem requisito de composição e sem remover espaços. A consulta Pwned Passwords foi retirada; não existe dependência externa para validar uma nova senha. Primeiro acesso e reset administrativo continuam exigindo troca. O reset administrativo conserva a geração aleatória existente; a escolha pelo root foi solicitada para a criação. Os prazos configurados de sessão/provisória e as demais proteções permanecem. Ver [aceite e publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).
 
 ## Google Drive
 

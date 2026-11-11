@@ -130,7 +130,7 @@ for(const [id,label,required,when,opts]of [
  ['X.finalizar','Concluir vistoria?','Revisão e confirmação explícitas, com requisitos validados pelo servidor.','Após revisar cartões.',['Cancelar','Confirmar']],
  ['X.sair','Sair da coleta?','Confirmação.','Menu da conta.',['Cancelar','Confirmar']],
  ['X.login.usuario','Nome de usuário','Obrigatório.','Login.',[]],['X.login.senha','Senha','Obrigatória.','Login.',[]],
- ['X.conta.atual','Senha atual','Obrigatória ao alterar senha.','Minha conta.',[]],['X.conta.nova','Nova senha (mínimo 12 caracteres)','Obrigatória ao alterar senha.','Minha conta.',[]],['X.conta.confirmar','Confirme a nova senha','Obrigatória ao alterar senha.','Minha conta.',[]]
+ ['X.conta.atual','Senha atual','Obrigatória ao alterar senha.','Minha conta.',[]],['X.conta.nova','Nova senha (mínimo 6 caracteres)','Obrigatória ao alterar senha.','Minha conta.',[]],['X.conta.confirmar','Confirme a nova senha','Obrigatória ao alterar senha.','Minha conta.',[]]
 ])item(id,label,opts.length?'Escolha/ação':'Texto ou campo conforme descrição',required,when,opts);
 add('', 'Outros filtros sem valor de resposta do inventário: busca de equipamento por patrimônio/série/marca/modelo; categoria; conferência (Todos os registros / Não conferidos ou não verificados / Não localizados); pesquisa de opções nos seletores.',
  '', '========================================================================','SUA PROPOSTA GERAL PARA O MODELO ALTERNATIVO','========================================================================',

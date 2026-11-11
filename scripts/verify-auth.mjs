@@ -23,7 +23,7 @@ try{
  assert.equal((await post(admin,'/api/admin/create',{username:'forbidden.root',role:'root'},adminMe.csrf)).status(),403);
  assert.equal((await post(admin,'/api/admin/reset',{id:users.find(x=>x.username==='root').id},adminMe.csrf)).status(),403);
  assert.equal((await post(context,'/api/admin/status',{id:users.find(x=>x.username==='root').id,active:false},me.csrf)).status(),403);
- const created=await post(context,'/api/admin/create',{username:'teste.fluxo',role:'operador'},me.csrf);assert.equal(created.status(),201);const createdPassword=(await created.json()).temporaryPassword;
+ const created=await post(context,'/api/admin/create',{username:'teste.fluxo',role:'operador',temporaryPassword:'TESTE ISOLADO inicial 2026!'},me.csrf);assert.equal(created.status(),201);const createdPassword=(await created.json()).temporaryPassword;
  const createdUsers=(await (await context.request.get(base+'/api/admin/users')).json()).users;const createdUser=createdUsers.find(x=>x.username==='teste.fluxo');assert.ok(createdUser);
  assert.equal((await post(context,'/api/admin/status',{id:createdUser.id,active:false},me.csrf)).status(),200);
  assert.equal((await post(context,'/api/admin/status',{id:createdUser.id,active:true},me.csrf)).status(),200);

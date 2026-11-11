@@ -623,3 +623,7 @@ Responsável pediu animação circular média #006D77 nas unidades com demandas 
 ## D-095 — hover e navegação da unidade no mapa, 11/11/2026
 
 Responsável confirmou o funcionamento de D-094 e pediu nome da escola, número de alunos e vagas no hover. Clique deve abrir a aba Unidades na escola selecionada, tendo como exceção a existência de demanda aberta: nesse caso abrir a Central da unidade. Reutilizar cadastro mestre D-068/D-090, sem inferências ou valores fictícios. Nulo distinto de zero. A regra mais recente vale também para marcadores com hardware, cujo comparativo permanece no sino. Cores, anéis, geografia e seleção de sobreposições preservados. Implementação/publicação sob autorização contínua da sessão; sem migração, alteração de servidor ou coletor. [Aceite e publicação](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md).
+
+## D-096 — criação de senha simplificada, 11/11/2026
+
+Responsável decidiu os itens 5, 9 e 11 da revisão de acesso: root informa a senha provisória de criação; usuário define sua própria senha no primeiro login; mínimo seis caracteres, composição totalmente livre; retirar consulta de senhas vazadas e seu bloqueio por indisponibilidade. Máximo 256 e demais regras preservados. A mesma validação vale para provisória de criação e definitiva. Não alterar contas existentes nem o fluxo de reset administrativo automático. Implementação/publicação sob autorização contínua da sessão. Supera as regras originais de mínimo 12 e Pwned Passwords, preservando D-075. [Aceite/publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).

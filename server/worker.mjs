@@ -101,9 +101,10 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
    const data=await body(request),username=typeof data.username==='string'?data.username.trim().toLowerCase():'';
    if(!/^[a-z0-9._-]{2,80}$/.test(username)||!['root','admin','operador','visualizador'].includes(data.role))return fail('Informe usuário válido e perfil.');
    if(!canManage(user.role,data.role))return fail('Sem permissão para criar este perfil.',403);
+   const temporary=data.temporaryPassword,error=await validatePassword(temporary);if(error)return fail(error);
    const settings=await config(db);if(!settings.temporary_seconds)return fail('Prazo provisório não configurado.',503);
    if(await db.prepare('SELECT id FROM users WHERE username=?').bind(username).first())return fail('Nome de usuário já cadastrado.',409);
-   const id=crypto.randomUUID(),temporary=random(),salt=random();
+   const id=crypto.randomUUID(),salt=random();
    await db.batch([db.prepare('INSERT INTO users(id,username,role,password_hash,salt,temporary_expires,created_at,display_name) VALUES(?,?,?,?,?,?,?,?)').bind(id,username,data.role,await hashPassword(temporary,salt,env.AUTH_PEPPER),salt,Date.now()+settings.temporary_seconds*1000,Date.now(),typeof data.displayName==='string'?data.displayName.trim().slice(0,180):''),audit(db,user.id,'user_created:'+id)]);
    return json({temporaryPassword:temporary,expiresIn:settings.temporary_seconds},201);
   }
