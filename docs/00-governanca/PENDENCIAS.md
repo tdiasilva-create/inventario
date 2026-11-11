@@ -313,3 +313,11 @@ Sem decisões funcionais adicionais. Demais pendências e Fases 4/5 preservadas.
 - [ ] Aceite operacional do responsável.
 
 Sem novas decisões pendentes. [Aceite](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md). Demais pendências preservadas.
+
+## D-102 — salvar sem reabrir demanda
+
+- [x] Causa identificada e correção testada: fechamento, confirmação, consulta manual e falhas/idempotência.
+- [ ] Publicação real, sem criar demanda fictícia na conferência.
+- [ ] Aceite operacional do responsável.
+
+Sem decisões adicionais. [Aceite](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).

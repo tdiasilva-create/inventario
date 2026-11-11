@@ -653,3 +653,7 @@ Responsável pediu transformar os indicadores do mapa em botões que mostram som
 ## D-101 — seleção de unidade por busca de nome nas demandas, 11/11/2026
 
 Responsável relatou dificuldade em procurar unidades no controle suspenso da Central e pediu buscador por nome. Aplicar tanto ao filtro quanto ao cadastro de demanda, com busca parcial tolerante a acentos/caixa e seleção do ID oficial. Aproveitar catálogo/atualização já existentes; resultados selecionáveis por teclado, sem cadastro por texto livre. Unidade atual escolhida preenche a nova demanda, sem herdar outra da URL; trocar unidade limpa equipamento/opções anteriores. Histórico, permissões, situações e validação definitiva no servidor preservados. Publicação sob autorização contínua da sessão; sem migração/coletor. [Aceite/publicação](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md).
+
+## D-102 — não reabrir demanda após salvar, 11/11/2026
+
+Responsável apontou reabertura indevida após cadastrar. Retirar chamada automática ao detalhe; sucesso fecha modal, atualiza listagem e confirma número da demanda. Mesmo fluxo para edição. Consulta posterior somente por clique (Ver demanda/Atender e histórico). Preservar erro e preenchimento quando não houver confirmação, idempotência e histórico. Não recarregar página nem misturar falha de atualização da lista com falha de gravação. Publicação sob autorização contínua da sessão; sem migração ou servidor/coletor. [Aceite/publicação](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).

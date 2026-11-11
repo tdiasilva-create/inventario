@@ -507,3 +507,7 @@ Pedido e screenshot do responsável → web/desktop.js converte indicadores em b
 ## D-101 — busca de unidade nas demandas
 
 Pedido direto e inspeção da produção → web/unit-name-picker.js controla seleção por ID no filtro/formulário web/operations.js; painel.css mantém aparência e build-desktop inclui o módulo autenticado. demand-unit-search-browser.cjs cobre seleção, teclado, acentos, homônimas, contexto, vínculo de equipamento, bloqueio de nome livre, viewport e visualizador; regressões de operações, tour e mapa verificam caminhos anteriores. [Aceite/publicação](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md). Sem mudança da Base de Coleta, dados oficiais, servidor ou agente.
+
+## D-102 — retorno após salvar demanda
+
+Relato direto → retirada de openRequest automático no sucesso de request-save em web/operations.js, confirmação persistente com consulta explícita e estilo sem mudança de identidade. demand-save-browser.cjs verifica criação/edição, ausência de navegação/reabertura, falha/ACK perdido e repetição sem duplicidade, foco, histórico e lista desatualizada; regressões de operações, busca de unidades e tour aprovadas. [Aceite/publicação](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md). Persistência, Base TXT, coleta e demais pendências preservadas.

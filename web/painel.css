@@ -639,6 +639,9 @@ body.map-expanded-open{overflow:hidden}
 .ops-selection{margin-bottom:12px}
 .ops-pager{margin:10px 0}
 .ops-update{font-size:11px;color:var(--texto-secundario);margin-top:var(--calha)}
+.ops-save-success{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 12px;margin:0 0 var(--calha);border:1px solid #9bcab5;border-left:3px solid #187247;border-radius:var(--raio);background:#f0faf5;color:var(--preto)}
+.ops-save-success p{margin:0;font-size:13px}
+.ops-save-success:focus-visible{outline:2px solid #187247;outline-offset:2px}
 
 /* ---------- 11. coletas em andamento (D-045) ---------- */
 .progress-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:4px 0 var(--calha)}

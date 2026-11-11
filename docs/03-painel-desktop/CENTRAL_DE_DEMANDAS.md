@@ -55,3 +55,7 @@ Atualização existente de 15s, sem novo ciclo. Rascunhos continuam PARCIAL; abs
 Na Central e em Registrar demanda, digite parte do nome em **Buscar unidade por nome** e selecione um resultado. Não exige acentos nem diferencia maiúsculas. No filtro, use **Filtrar** para consultar as demandas; **Registrar demanda** já aproveita a unidade escolhida. **Limpar** remove a seleção. Setas/Enter também selecionam; Escape fecha resultados antes de fechar o modal. Homônimas são distinguidas por tipo/início do ID.
 
 Nome digitado sem escolher resultado não vale como unidade. Ao trocar a unidade de uma demanda nova, o equipamento anterior é desvinculado do formulário; a descrição permanece. Demanda existente conserva o contexto histórico. Pesquisa usa catálogo já carregado, sem nova chamada por tecla, e atualização não apaga a digitação. [Teste/publicação](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2026-11-11.md).
+
+## Após salvar — D-102
+
+Salvar cadastro ou edição fecha o formulário e mostra confirmação com o número da demanda na tela atual. O registro não reabre automaticamente. Para consultá-lo, clique em **Ver demanda** no aviso ou em **Atender / histórico** na listagem. Filtros permanecem iguais. Falha de gravação conserva o preenchimento para repetir o envio sem duplicação; falha apenas da atualização da lista não desfaz a confirmação do salvamento. [Teste/publicação](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).
