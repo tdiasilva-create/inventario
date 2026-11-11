@@ -102,3 +102,8 @@ D-066/D-068 preservam os tipos distintos no cadastro, mas D-090 manda contar mil
 ## D-091 — ambiguidade resolvida no pedido do Panorama
 
 PAN-02 foi confirmado como ampliar o mapa e habilitar a roda, não somente ativar zoom. PAN-05 estava marcado A sem descrição: responsável confirmou manter como está. PAN-03 interpretado e comunicado como 30% menor (70% do tamanho anterior). Nenhum item desmarcado é removido ou transferido.
+
+
+## D-093 — TP-20: municipal e conveniada homônimas
+
+O responsável informou que EM RAIO DE LUZ existe como municipal e conveniada e definiu somente a municipal no escopo atual. O nome isolado não justifica reclassificação, união ou remoção de unidades. A conferência cadastral do relatório não autoriza importar conveniadas. Nenhum dado oficial foi alterado por esta decisão.

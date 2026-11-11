@@ -449,3 +449,8 @@ Pedido direto de correção/publicação dos cinco defeitos confirmados em naveg
 Publicação D-092: d297b32; painel 283ff06b-182e-405b-a601-5692f805fbc7, 100%, 11/11/2026 07:12:49 Fortaleza. Cinco fluxos conferidos como root em produção; 50 verificações HTTP aprovadas. Script verify-panel-release atualizado para imagens/fontes do login atual. Coletor e dados preservados.
 
 Acabamento D-092: 1551d12 limita a lista ao cartão e testa 11 pontos sobrepostos. Versão final d8bb3245-094b-4675-a128-adec00c4a3ae, 100%, 07:17:41 Fortaleza. Lista conferida novamente na produção, roteiros de navegação/mapa e 50 verificações HTTP aprovados.
+
+
+## D-093 — TP-18, TP-08, TP-19 e esclarecimento TP-20
+
+Pedido expresso do responsável → desktop-notifications.js (cancelamentos intencionais), painel.css (indicadores em linhas), desktop.js/desktop-request.js (consulta imediata, limitada e cancelável). Regressão tests/panel-async-browser.cjs adicionada à CI; demais fluxos preservados. TP-20 confirmado como municipal; nenhum cadastro reclassificado. [Aceite e publicação](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md). Base TXT, servidor e coletor intactos.

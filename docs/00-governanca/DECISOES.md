@@ -607,3 +607,10 @@ O mesmo mapa ocupa a área útil do navegador, sem navegar à página Mapa da Re
 Responsável autorizou expressamente corrigir os cinco problemas confirmados, testar e publicar no ambiente real. Clique em unidades sobrepostas oferece escolha por nome/tipo sem mudar coordenadas; histórico de coletas parciais mantém lista/detalhe; seleção de unidade em Ambientes persiste na URL e na recarga; menus de usuários ficam exclusivos e fecham por clique fora/Esc; menu do perfil fecha por Esc com retorno do foco. Prioridade dos modais e mapa ampliado D-091 preservada.
 
 Correções de interação, sem nova regra de negócio, migração, escrita de dados oficiais, mudanças no coletor, fotos, agente ou permissões. [Aceite e publicação](../05-qualidade/PAINEL_NAVEGACAO_2026-11-11.md).
+
+
+## D-093 — consultas e indicadores do painel, 11/11/2026
+
+Responsável autorizou TP-18, TP-08 e TP-19 com testes e publicação real. Cancelamento intencional ao ocultar a aba preserva a última leitura do sino, sem falso erro; falhas reais continuam explícitas. Faixa superior quebra em linhas para exibir todos os indicadores. Consulta do agente mostra modal imediato, espera limitada, cancelamento e nova tentativa. Sem alteração de métricas, regras, D1, coletor ou protocolos.
+
+TP-20 esclarecido diretamente: o escopo atual é EM RAIO DE LUZ municipal; conveniadas ficam fora. Não reclassificar cadastros por inferência. Demais decisões permanecem pendentes. [Aceite e publicação](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md).

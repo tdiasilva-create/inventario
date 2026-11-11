@@ -97,9 +97,8 @@ code,.agent-code,.eq-id,.photo-id{font-family:var(--font-mono)}
 .profile-menu a:hover,.profile-menu button:hover{background:var(--pessego-suave);color:var(--vermelho)}
 .profile-menu [role=alert]{padding:8px 10px;color:var(--vermelho);font-size:12px}
 /* pulso: estado da rede em todas as páginas (preenchido por panel-pulse.js) */
-.pulse{height:var(--pulso);flex-shrink:0;display:flex;align-items:center;gap:0;padding:0 16px;background:#fff;border-bottom:1px solid var(--borda);overflow-x:auto;scrollbar-width:none;white-space:nowrap}
-.pulse::-webkit-scrollbar{display:none}
-.pulse-item{display:inline-flex;align-items:center;gap:6px;padding:0 14px 0 0;margin-right:14px;border-right:1px solid var(--linha);color:var(--texto-secundario)}
+.pulse{min-height:var(--pulso);flex-shrink:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;padding:6px 16px;background:#fff;border-bottom:1px solid var(--borda)}
+.pulse-item{display:inline-flex;flex:0 0 auto;max-width:100%;min-height:18px;align-items:center;gap:6px;padding:0 14px 0 0;margin-right:14px;border-right:1px solid var(--linha);color:var(--texto-secundario)}
 .pulse-item:last-child{border:0;margin-left:auto;padding-right:0}
 .pulse-item small{color:var(--texto-secundario)}
 .pulse-item b{font:700 13px/1 var(--font-display);color:var(--preto);font-variant-numeric:tabular-nums}
@@ -826,7 +825,7 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
  .panorama-edited>.panorama-answers{max-height:640px}
  .panorama-edited>.panorama-gallery{height:190px}
  .planning-view .progress-preview,.progress-preview{grid-template-columns:1fr}
- .pulse{padding:0 12px}
+ .pulse{padding:6px 12px}
  .pulse-item:last-child{margin-left:14px}
  .search{display:none}
  .header .notification{margin-left:auto}

@@ -25,3 +25,6 @@ D-073/Fase 3: `pnpm test:blocks:browser` verifica mapa/DOM preservados, fachada 
 D-090, 10/11/2026: migração aditiva 0025 e campos escolares opcionais. Modelo 55 colunas compatível com 12/27. Executar pnpm test:school-registration:browser e regressões catálogo/identidade/navegação; pnpm test cobre migração, validação, versões, permissões e importação. Ambos os Workers usam o mesmo esquema. [Contrato](docs/04-dados-apis/CADASTRO_ESCOLAS_D090.md), [publicação](docs/05-qualidade/CADASTRO_ESCOLAS_2026-11-10.md). Nenhuma importação oficial foi feita.
 
 D-092, 11/11/2026: cinco correções de navegação do painel. Após build desktop, executar pnpm test:panel-usability:browser; regressões panorama-map, hardware-review, tour-logic e panel-navigation. Fixtures isoladas e zero escritas na produção durante a conferência. Sem migração nem publicação do coletor. Ver docs/05-qualidade/PAINEL_NAVEGACAO_2026-11-11.md.
+
+
+D-093, 11/11/2026: após build desktop, executar pnpm test:panel-async:browser (cancelamento por aba oculta, faixa responsiva, consulta do agente imediata/cancelável, erro e nova tentativa). Teste incluído na CI; falhas controladas só em Worker/SQLite isolados. Regressões monitoring, panel-usability, panel-mesa e panel-navigation. Publicar somente painel, sem migração. Ver docs/05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md.

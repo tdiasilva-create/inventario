@@ -233,3 +233,13 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 ## D-091 — decisões do Panorama
 
 PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz. Não há decisão funcional pendente neste lote. Aceite visual do responsável após publicação ainda a conferir. As demais decisões e fases não foram antecipadas.
+
+
+## D-093 — continuação da averiguação do painel
+
+- [x] TP-18/08/19: correções autorizadas, implementadas e cobertas por regressão isolada; publicação registrada no aceite.
+- [x] TP-20: responsável confirmou EM RAIO DE LUZ municipal no escopo atual; conveniadas excluídas. Sem mudança cadastral automática.
+- [ ] Aceite visual do responsável após publicação.
+- [ ] TP-09 e TP-17 continuam dependendo de decisão. TP-10, descoberta dos menus/TP-04 e títulos/TP-13 não fazem parte deste lote. TP-01/TP-14 dependem de reprodução adicional.
+
+[Aceite, limites e evidências](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md). Fases 4/5 continuam pausadas.

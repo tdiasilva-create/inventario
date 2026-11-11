@@ -47,7 +47,8 @@
     "test:collector-refinement:browser": "node tests/collector-refinement-browser.cjs",
     "test:school-registration:browser": "node tests/school-registration-browser.cjs",
     "test:panorama-map:browser": "node tests/panorama-map-browser.cjs",
-    "test:panel-usability:browser": "node tests/panel-usability-browser.cjs"
+    "test:panel-usability:browser": "node tests/panel-usability-browser.cjs",
+    "test:panel-async:browser": "node tests/panel-async-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",
