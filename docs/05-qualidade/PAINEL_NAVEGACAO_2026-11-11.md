@@ -30,7 +30,9 @@ Evidências locais em `docs/05-qualidade/evidencias/painel-navegacao-2026-11-11/
 
 ## Publicação e conferência real
 
-Publicado em **11/11/2026 às 07:12:49 de Fortaleza**, 10:12:49Z, versão **283ff06b-182e-405b-a601-5692f805fbc7**, 100% do tráfego confirmado por deployments list. Implementação no commit **d297b32**. Versão anterior para rollback de código: 376572e4-184b-4fd8-8d4a-2057c5b81cd8. Coletor permanece 91ba6200-d080-4026-8e92-7042bd67f86e (conferido novamente após a publicação). Somente cinco assets alterados; Worker/API, D1, Drive, segredos e os dois agendamentos preservados.
+Versão final publicada em **11/11/2026 às 07:17:41 de Fortaleza**, 10:17:41Z: **d8bb3245-094b-4675-a128-adec00c4a3ae**, 100% do tráfego confirmado por deployments list. Implementação nos commits **d297b32** e **1551d12**. Primeira publicação às 07:12:49: 283ff06b-182e-405b-a601-5692f805fbc7; a segunda limita a altura da lista de pontos ao cartão do mapa. Versão anterior a D-092 para rollback de código: 376572e4-184b-4fd8-8d4a-2057c5b81cd8. Coletor permanece 91ba6200-d080-4026-8e92-7042bd67f86e (conferido novamente após a publicação). Somente cinco assets alterados; Worker/API, D1, Drive, segredos e os dois agendamentos preservados.
+
+Revisão visual final acrescentou teste com 11 pontos sobrepostos: lista rolável, popup integralmente dentro do mapa. Roteiros panel-usability e panorama-map novamente aprovados; captura e limites visuais novamente conferidos em produção. As 50 verificações HTTP foram repetidas com sucesso na versão final.
 
 Os cinco casos foram repetidos na sessão root do navegador real:
 
