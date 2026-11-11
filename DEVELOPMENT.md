@@ -28,3 +28,6 @@ D-092, 11/11/2026: cinco correções de navegação do painel. Após build deskt
 
 
 D-093, 11/11/2026: após build desktop, executar pnpm test:panel-async:browser (cancelamento por aba oculta, faixa responsiva, consulta do agente imediata/cancelável, erro e nova tentativa). Teste incluído na CI; falhas controladas só em Worker/SQLite isolados. Regressões monitoring, panel-usability, panel-mesa e panel-navigation. Publicar somente painel, sem migração. Ver docs/05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md.
+
+
+D-094: pnpm build:desktop e pnpm test:map-demands:browser cobrem anel de demandas (incluído na CI). tests/pending-indicators.test.mjs cobre demands.units e consistência do total. Estado/câmera/cores e separação hardware/demandas preservados. Nenhuma demanda de exemplo na produção. Ver docs/05-qualidade/DEMANDAS_MAPA_2026-11-11.md.

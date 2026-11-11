@@ -904,8 +904,17 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .hardware-map-notice{border:0;background:transparent;color:#d70825;cursor:pointer}
 .hardware-map-badge{box-sizing:border-box;position:absolute;left:8px;top:8px;width:16px;height:16px;border:2px solid #fff;border-radius:50%;background:var(--unit-color);box-shadow:0 1px 3px #0005}
 .hardware-map-halo{box-sizing:border-box;position:absolute;inset:4px;border:2px solid currentColor;border-radius:50%;pointer-events:none;animation:hardware-halo 2.4s ease-in-out infinite}
-.hardware-map-notice[data-state=demand]{color:#9a5800}
-.hardware-map-notice[data-state=demand] .hardware-map-halo{animation-duration:3.6s}
+.hardware-map-notice[data-state=demand]{color:#006D77}
+.hardware-map-notice[data-state=demand] .hardware-map-halo{visibility:hidden;animation:none}
+.demand-map-notice{background:transparent;border:0;color:#006D77;cursor:pointer}
+.demand-map-notice::before,.demand-map-ring{content:"";box-sizing:border-box;position:absolute;inset:5px;border:2px solid currentColor;border-radius:50%;pointer-events:none;box-shadow:0 0 0 1px #ffffffb3,inset 0 0 0 1px #ffffff80}
+.demand-map-notice::before{opacity:.45}
+.demand-map-ring{animation:demand-map-pulse 3s ease-out infinite}
+.demand-map-notice:focus-visible{outline:2px solid #006D77;outline-offset:3px;border-radius:50%}
+.demand-map-notice[data-stale=true] .demand-map-ring{animation-play-state:paused;opacity:.45}
+.demand-map-key{display:inline-block;width:13px;height:13px;border:2px solid #006D77;border-radius:50%;vertical-align:middle}
+@keyframes demand-map-pulse{0%{opacity:.9;transform:scale(.85)}75%,100%{opacity:0;transform:scale(1.25)}}
+@media(prefers-reduced-motion:reduce){.demand-map-ring{animation:none;opacity:.7;transform:none}}
 .hardware-map-notice:focus-visible{outline:2px solid #16191d;outline-offset:2px;border-radius:50%}
 @keyframes hardware-halo{0%,100%{opacity:.8;transform:scale(.7)}55%{opacity:.15;transform:scale(1.2)}}
 @media(prefers-reduced-motion:reduce){.hardware-map-halo{animation:none;opacity:.5;transform:none}}

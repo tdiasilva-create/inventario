@@ -131,3 +131,7 @@ jobs:
       - run: pnpm test:panel-async:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: pnpm test:map-demands:browser
+        env:
+          SEMED_TEST_BROWSER: chromium

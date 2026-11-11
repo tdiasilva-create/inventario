@@ -456,3 +456,8 @@ Acabamento D-092: 1551d12 limita a lista ao cartão e testa 11 pontos sobreposto
 Pedido expresso do responsável → desktop-notifications.js (cancelamentos intencionais), painel.css (indicadores em linhas), desktop.js/desktop-request.js (consulta imediata, limitada e cancelável). Regressão tests/panel-async-browser.cjs adicionada à CI; demais fluxos preservados. TP-20 confirmado como municipal; nenhum cadastro reclassificado. [Aceite e publicação](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md). Base TXT, servidor e coletor intactos.
 
 Publicação D-093: fff4869; painel f43d0101-aca7-465e-a666-ad4981405f62, 100%, 11/11/2026 07:40:59 Fortaleza. Cinco roteiros de navegador e 14 testes de servidor aprovados; 50 verificações HTTP e conferência root real. Quatro assets, sem mudanças no coletor ou D1.
+
+
+## D-094 — demandas abertas no mapa
+
+Pedido direto: animação circular média #006D77 por unidade → pending-indicators.mjs agrega solicitações por ID, desktop-demand-count.js valida a resposta, desktop-map.js ancora anel e abre Central por unidade, unit-map-palette.js/ painel.css informam legenda/cor/animação. Regressão map-demands-browser e teste pending-indicators; hardware-review adaptado para sinalização verde-petróleo pós-encaminhamento. [Aceite/publicação](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md). Base TXT e coletor intactos.

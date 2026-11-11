@@ -19,7 +19,9 @@ export function startDemandCount(user){
  const controller=new AbortController(),signal=controller.signal;let busy=false,queued=false;
  async function update(force=false){
   if(signal.aborted||document.hidden)return;if(busy){if(force)queued=true;return;}busy=true;
-  try{const r=await fetch('/api/inventory/pending-summary',{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error(r.status===401?'Sessão expirada. Entre novamente.':'Não foi possível atualizar as pendências. Use Atualizar para tentar novamente.');const data=await r.json();for(const key of ['collections','demands','hardware'])if(!Number.isSafeInteger(data[key]?.total)||data[key].total<0)throw Error('Contagens indisponíveis. Tente atualizar.');if(signal.aborted)return;state={data,error:'',checkedAt:new Date()};}
+  try{const r=await fetch('/api/inventory/pending-summary',{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error(r.status===401?'Sessão expirada. Entre novamente.':'Não foi possível atualizar as pendências. Use Atualizar para tentar novamente.');const data=await r.json();for(const key of ['collections','demands','hardware'])if(!Number.isSafeInteger(data[key]?.total)||data[key].total<0)throw Error('Contagens indisponíveis. Tente atualizar.');
+   if(data.demands.units!==undefined&&(!Array.isArray(data.demands.units)||data.demands.units.some(u=>typeof u.unit_id!=='string'||!u.unit_id||!Number.isSafeInteger(u.total)||u.total<1)||new Set(data.demands.units.map(u=>u.unit_id)).size!==data.demands.units.length||data.demands.units.reduce((n,u)=>n+u.total,0)!==data.demands.total))throw Error('Demandas por unidade indisponíveis. Tente atualizar.');
+   if(signal.aborted)return;state={data,error:'',checkedAt:new Date()};}
   catch(e){if(signal.aborted)return;state={...state,error:e.message};}
   finally{busy=false;if(!signal.aborted){paintPendingIndicators();window.dispatchEvent(new CustomEvent('semed:pending-summary',{detail:state}));if(queued){queued=false;update();}}}
  }

@@ -10,5 +10,5 @@ export const unitMapColors=Object.freeze({
 });
 export const unitMapColor=type=>Object.hasOwn(unitMapColors,type)?unitMapColors[type]:'#475569';
 export function unitMapLegend(){
- return '<details class="unit-map-legend"><summary>Tipos de unidade</summary><ul>'+Object.entries(unitMapColors).map(([type,color])=>'<li><span class="unit-map-swatch" style="--unit-color:'+color+'" aria-hidden="true"></span>'+type+'</li>').join('')+'</ul><p>O círculo pulsante indica uma ocorrência de hardware. Clique na unidade para consultar.</p></details>';
+ return '<details class="unit-map-legend"><summary>Tipos de unidade</summary><ul>'+Object.entries(unitMapColors).map(([type,color])=>'<li><span class="unit-map-swatch" style="--unit-color:'+color+'" aria-hidden="true"></span>'+type+'</li>').join('')+'</ul><p><span class="demand-map-key" aria-hidden="true"></span> Anel verde-petróleo: demandas abertas. Clique no anel para consultar.</p><p>Círculo vermelho: hardware aguardando parecer. Clique no centro para consultar.</p><p data-map-demand-status role="status">Consultando demandas abertas…</p></details>';
 }

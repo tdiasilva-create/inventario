@@ -37,3 +37,8 @@ Preserva D-083: escolas municipais, militares e creches ativas; um ou mais agent
 ## Operação e teste
 
 [Aceite e publicação](../05-qualidade/NOTIFICACOES_48H_2026-11-10.md). Publicação somente do painel, onde roda o cron. Coletor/EXE e suas versões preservados. Não executar simulação de hardware ou exclusões no banco oficial para testar esta entrega.
+
+
+## Atualização D-094 — círculo de atendimento geral
+
+Demanda encaminhada deixa de usar halo âmbar: o anel externo #006D77 representa todas as solicitações não concluídas da unidade, inclusive toner, teclado/mouse e visitas manuais. Hardware sem parecer continua no círculo vermelho interno e no sino. O anel abre a Central filtrada; o centro de hardware mantém o modal. Clique não registra parecer nem conclui atendimento. Ver [aceite D-094](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md).

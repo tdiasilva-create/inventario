@@ -24,11 +24,11 @@ export async function pendingIndicatorsRoutes(request,url,user,env,{json,fail}){
  if(path.endsWith('/pending-summary')){
   const [collections,demands,hardware]=await db.batch([
    db.prepare(collectionCTE+' SELECT state,COUNT(*) AS total FROM pending GROUP BY state'),
-   db.prepare("SELECT COUNT(*) AS total FROM service_requests WHERE status!='Concluída'"),
+   db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id"),
    db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom)
   ]);
   const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;
-  return json({collections:{total:Object.values(states).reduce((a,b)=>a+b,0),...states},demands:{total:demands.results[0].total},hardware:{total:hardware.results[0].total},scope:'network',server_time:new Date().toISOString()});
+  return json({collections:{total:Object.values(states).reduce((a,b)=>a+b,0),...states},demands:{total:demands.results.reduce((sum,row)=>sum+row.total,0),units:demands.results},hardware:{total:hardware.results[0].total},scope:'network',server_time:new Date().toISOString()});
  }
  const offset=Number(url.searchParams.get('offset')||0),state=url.searchParams.get('state')||'',q=(url.searchParams.get('q')||'').trim();
  if(!Number.isSafeInteger(offset)||offset<0||!['','not_started','in_progress','preserved'].includes(state)||q.length>120)return fail('Filtros inválidos.');

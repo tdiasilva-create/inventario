@@ -243,3 +243,11 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 - [ ] TP-09 e TP-17 continuam dependendo de decisão. TP-10, descoberta dos menus/TP-04 e títulos/TP-13 não fazem parte deste lote. TP-01/TP-14 dependem de reprodução adicional.
 
 [Aceite, limites e evidências](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md). Fases 4/5 continuam pausadas.
+
+
+## D-094 — demandas no mapa
+
+- [x] Todas as demandas abertas, não apenas hardware, sinalizadas por unidade em #006D77. Critérios de abertura/conclusão já definidos por D-071/D-085.
+- [ ] Aceite visual do responsável após publicação do anel de 48 px/ciclo 3 s.
+
+[Aceite](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md). Nenhuma decisão anterior pendente foi antecipada.

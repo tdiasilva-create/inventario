@@ -614,3 +614,8 @@ Correções de interação, sem nova regra de negócio, migração, escrita de d
 Responsável autorizou TP-18, TP-08 e TP-19 com testes e publicação real. Cancelamento intencional ao ocultar a aba preserva a última leitura do sino, sem falso erro; falhas reais continuam explícitas. Faixa superior quebra em linhas para exibir todos os indicadores. Consulta do agente mostra modal imediato, espera limitada, cancelamento e nova tentativa. Sem alteração de métricas, regras, D1, coletor ou protocolos.
 
 TP-20 esclarecido diretamente: o escopo atual é EM RAIO DE LUZ municipal; conveniadas ficam fora. Não reclassificar cadastros por inferência. Demais decisões permanecem pendentes. [Aceite e publicação](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md).
+
+
+## D-094 — anel de demandas abertas por unidade, 11/11/2026
+
+Responsável pediu animação circular média #006D77 nas unidades com demandas pendentes. Abrange todo atendimento não concluído, manual ou originado em hardware. Implementação/publicação sob autorização contínua da sessão. Derivação visual: área 48 px, ciclo suave de 3 s, categoria no centro; hover conta demandas, clique/Enter abre a Central filtrada. Hardware pendente preserva vermelho interno e seu modal; antigo âmbar encaminhado substituído pelo anel geral verde-petróleo. Consulta compartilhada de 15 s; sem localização fictícia, novo sino, fechamento automático ou mudança do coletor. [Aceite e publicação](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md).

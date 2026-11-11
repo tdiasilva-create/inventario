@@ -107,3 +107,8 @@ PAN-02 foi confirmado como ampliar o mapa e habilitar a roda, não somente ativa
 ## D-093 — TP-20: municipal e conveniada homônimas
 
 O responsável informou que EM RAIO DE LUZ existe como municipal e conveniada e definiu somente a municipal no escopo atual. O nome isolado não justifica reclassificação, união ou remoção de unidades. A conferência cadastral do relatório não autoriza importar conveniadas. Nenhum dado oficial foi alterado por esta decisão.
+
+
+## D-094 — âmbar de hardware encaminhado superado
+
+A sinalização âmbar D-081/D-087/D-088 para demanda oriunda de hardware foi substituída por anel verde-petróleo #006D77 para qualquer demanda aberta, por pedido posterior do responsável. O vermelho de hardware sem parecer permanece no círculo interno, com seu modal e sino próprios. Demanda não é alerta sem parecer; o número do sino não aumenta por criar atendimento manual.

@@ -30,3 +30,8 @@ Ler/fechar uma notificação não é parecer. Aceitar retira a alteração da fi
 Nenhuma migração, escrita de dados oficiais em testes, modificação no coletor, questionário, agente/QR ou Drive. Não altera LOG-08 (fichas vs quantidades físicas), LOG-14 (Relatórios/Planejamento), Ano, destino da matriz, local das escolas offline ou Fases 4/5. Não mostra percentual geral.
 
 [Testes e publicação](../05-qualidade/INDICADORES_PENDENCIAS_2026-11-10.md).
+
+
+## Atualização D-094 — demandas por unidade no mapa
+
+A resposta demands passa a {total, units: [{unit_id,total}]}; a consulta de demandas agrupa por ID e o total soma os mesmos grupos, mantendo três leituras no batch. Mapa usa a consulta compartilhada de 15 s para anel externo #006D77 em toda unidade localizada com demandas abertas. Não altera elegibilidade/estados nem cria um novo polling. Substitui o antigo âmbar de hardware encaminhado; hardware sem parecer continua vermelho interno. [Aceite](../05-qualidade/DEMANDAS_MAPA_2026-11-11.md).

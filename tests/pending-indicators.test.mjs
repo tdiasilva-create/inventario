@@ -4,8 +4,20 @@ import {collectorFixture} from './helpers/collector-db.mjs';
 import {hardwareChange} from './helpers/hardware-change.mjs';
 import {session,humanFetch} from './helpers/agent-client.mjs';
 import worker from '../server/worker.mjs';
+import {seedMapDemands} from './helpers/map-demands.mjs';
 async function setup(){const f=collectorFixture(),env={DB:f.db,AUTH_PEPPER:'TEST',DEBUG_COLLECTION:'1'},auth=await session(f,f.root);return {...f,env,auth,call:(p,data,opts)=>humanFetch(worker,env,'https://teste.invalid',auth,'/api/inventory/'+p,data,opts)};}
 function visit(f,unit,state){const id=crypto.randomUUID();f.sqlite.prepare('INSERT INTO inspections(id,unit_id,state,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?)').run(id,unit,state,f.root.id,Date.now(),Date.now());return id;}
+test('D094: demandas por ID da unidade, estados pendentes, encerramento, reabertura e histórico sem coordenadas',async()=>{const f=await setup();try{
+ const seed=seedMapDemands(f);let v=(await f.call('pending-summary')).data.demands;
+ assert.equal(v.total,6);assert.equal(v.units.length,5);assert.equal(v.units.find(u=>u.unit_id===f.ids.pending).total,2);
+ assert.equal(v.units.some(u=>u.unit_id===f.ids.blocked),false);assert.equal(v.units.reduce((n,u)=>n+u.total,0),v.total);
+ assert.ok(v.units.some(u=>u.unit_id==='unidade-removida-teste'));assert.ok(v.units.some(u=>u.unit_id===f.ids.inactive));
+ f.sqlite.prepare("UPDATE service_requests SET status='Concluída' WHERE unit_id=?").run(f.ids.pending);
+ v=(await f.call('pending-summary')).data.demands;assert.equal(v.total,4);assert.equal(v.units.some(u=>u.unit_id===f.ids.pending),false);
+ f.sqlite.prepare("UPDATE service_requests SET status='Em atendimento' WHERE id=?").run(seed.ids[0]);
+ v=(await f.call('pending-summary')).data.demands;assert.equal(v.units.find(u=>u.unit_id===f.ids.pending).total,1);assert.equal(v.total,5);
+ f.sqlite.prepare("UPDATE service_requests SET status='Concluída'").run();assert.deepEqual((await f.call('pending-summary')).data.demands,{total:0,units:[]});
+ }finally{f.sqlite.close();}});
 test('D085: coleta conta unidades elegíveis uma vez; conclusão, revisita e históricos preservados',async()=>{const f=await setup();try{
  assert.deepEqual((await f.call('pending-summary')).data.collections,{total:4,not_started:3,in_progress:1,preserved:0});
  visit(f,f.ids.pending,'paused');visit(f,f.ids.pending,'paused');
