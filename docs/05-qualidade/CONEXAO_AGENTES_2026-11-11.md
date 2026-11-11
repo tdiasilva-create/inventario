@@ -20,6 +20,17 @@ Requisitos da Base TXT: preservadas separação entre telemetria e ficha oficial
 
 ## Publicação e verificação externa
 
-Builds aprovados: painel com 87 entradas, coletor com 55. Dois dry-runs Wrangler aprovados, links documentais e git diff --check sem erros. Scanner do índice Git aprovado com 638 arquivos. Publicação e versões serão registradas após o deploy. Ambos os Workers precisam receber o backend, pois o agente envia ao coletor e o painel consulta a persistência compartilhada. Não há gravação de teste em produção, reconfiguração de agente, criação de unidade ou alteração de senha.
+Builds aprovados: painel com 87 entradas, coletor com 55. Dois dry-runs Wrangler aprovados, links documentais e git diff --check sem erros. Scanner do índice Git aprovado com 638 arquivos. Ambos os Workers receberam o backend, pois o agente envia ao coletor e o painel consulta a persistência compartilhada. Não houve gravação de teste em produção, reconfiguração de agente, criação de unidade ou alteração de senha.
+
+Publicado em 11/11/2026, commit 5a8afa5, ambos com 100% do tráfego confirmado por Wrangler:
+
+- Coletor: 2dac8571-2671-4eec-8ab0-7492753a0255, às 17:29:50 Fortaleza (20:29:50 UTC). Backend atualizado, nenhum asset de questionário alterado.
+- Painel: e59b7120-4036-4ba0-b850-a400c39df18e, às 17:30:15 Fortaleza (20:30:15 UTC). Cinco assets atualizados e backend compartilhado; cron e bindings preservados.
+
+Pós-publicação: 64 verificações HTTP aprovadas (50 no roteiro de release do painel, três de proteção da nova ficha/módulo/API e 11 no coletor). Leituras sem credenciais não expõem conexão ou ficha; aplicação e login continuam disponíveis. Evidências locais: collector-publicado.json, panel-conexao-protegida.json e evidencias/auth/release.json.
+
+**Recebimento real confirmado:** consulta agregada somente leitura ao D1 identificou seis registros de agentes com IP público e provedor preenchidos por comunicações reais após o deploy, última observação 20:31:03 UTC / 17:31:03 Fortaleza. Não foi enviado heartbeat sintético para produção nem reinstalado qualquer agente. A consulta registrou zero linhas escritas. Evidência privada recebimento-real-agregado.json contém somente contagens e horário, sem IPs de usuários. O número é fotografia dessa consulta, não indicador fixo do sistema.
+
+A visualização autenticada foi testada com o Worker e banco isolados; não foi reutilizada uma senha de produção nem declarada uma sessão de navegador autenticada que não estivesse disponível. Aceite visual final permanece com o responsável. Máquinas sem nova comunicação conservam ausência de informação explícita; não é necessário reinstalar para preencher os campos.
 
 Versões anteriores para rollback: painel 831c0af8-7505-4a80-9521-d06da8e8ba44 e coletor 0efcee24-7180-4c82-89a2-4a32458859e0. O campo aditivo em JSON é tolerado pela versão anterior; não exige apagar dados nem reverter schema.
