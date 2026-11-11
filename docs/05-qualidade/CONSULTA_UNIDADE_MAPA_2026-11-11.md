@@ -29,4 +29,8 @@ Capturas do roteiro ampliado em docs/05-qualidade/evidencias/demandas-mapa-2026-
 
 ## Publicação
 
-Publicação do painel sob autorização contínua da sessão. Versão anterior para rollback: 00c07426-6655-4240-9c68-b77ce69016d6. Coletor preservado em 91ba6200-d080-4026-8e92-7042bd67f86e. Registrar versão/horário e verificação HTTP após a implantação. Na aba disponível ao agente, o acesso ao Panorama voltou ao login; não declarar conferência visual autenticada de produção sem sessão.
+Publicado em 11/11/2026 às 08:15:16 (Fortaleza), versão c9ef64e6-3e05-4905-8a94-22837286a285, confirmada com 100% do tráfego. Commit 573ca12. Quatro assets alterados; servidor, cron e bindings preservados. Build (86 arquivos), dry-run, scanner do índice (630 arquivos), links documentais e 50 verificações HTTP no endereço real aprovados.
+
+Versão anterior para rollback: 00c07426-6655-4240-9c68-b77ce69016d6. Coletor confirmado sem nova publicação em 91ba6200-d080-4026-8e92-7042bd67f86e, 100%, implantação de 10/11/2026 às 21:33:34 (Fortaleza). Nenhuma escrita, importação ou exclusão de dados oficiais.
+
+Na aba disponível ao agente, o acesso ao Panorama voltou ao login. A conferência visual autenticada foi realizada em Worker/SQLite isolados; não declarar conferência visual autenticada de produção sem sessão. O responsável recebe o endereço real para conferir com sua sessão.

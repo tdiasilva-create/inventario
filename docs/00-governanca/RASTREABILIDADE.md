@@ -469,3 +469,5 @@ Responsável confirmou o funcionamento publicado de D-094 em 11/11/2026.
 ## D-095 — dados de cadastro e navegação no mapa
 
 Pedido direto → desktop-map.js usa students_total/seats_available no hover e prioriza demandas; desktop.js abre o detalhe pelo ID com aba Unidades ativa; unit-map-palette.js atualiza a orientação de hardware; painel.css mantém tooltip legível. map-demands-browser cobre os novos destinos, valores e alertas; quatro regressões existentes adaptadas à regra posterior. [Aceite/publicação](../05-qualidade/CONSULTA_UNIDADE_MAPA_2026-11-11.md). Nenhuma mudança de dados, Base TXT ou coletor.
+
+Publicação D-095: commit 573ca12; painel c9ef64e6-3e05-4905-8a94-22837286a285, 100%, 11/11/2026 08:15:16 Fortaleza. Cinco roteiros de navegador e 50 verificações HTTP reais aprovados; quatro assets atualizados. Coletor inalterado em 91ba6200-d080-4026-8e92-7042bd67f86e. Conferência autenticada em produção limitada por sessão expirada; screenshots em ambiente isolado.
