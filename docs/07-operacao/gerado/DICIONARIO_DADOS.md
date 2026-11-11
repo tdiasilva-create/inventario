@@ -27,6 +27,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0023_equipment_deletions.sql`
 - `0024_hardware_reviews.sql`
 - `0025_school_registration.sql`
+- `0026_provider_reports.sql`
 
 ## agent_audit_log
 
@@ -758,6 +759,28 @@ Referências: `equipment_id` → `equipments.id` (delete: NO ACTION).
 | storage_provider | TEXT | sim |  | 'r2' |
 | storage_ref | TEXT | não |  | — |
 
+## provider_report_schedule
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| started_at | TEXT | sim |  | — |
+| next_due_at | TEXT | sim |  | — |
+
+## provider_reports
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| period_key | TEXT | sim |  | — |
+| kind | TEXT | sim |  | — |
+| scheduled_at | TEXT | sim |  | — |
+| generated_at | TEXT | sim |  | — |
+| missed_weeks | INTEGER | sim |  | 0 |
+| unit_count | INTEGER | sim |  | — |
+| with_provider | INTEGER | sim |  | — |
+| report_json | TEXT | sim |  | — |
+
 ## published_equipment_counts
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -993,5 +1016,6 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `misc_published_equipment_update` (trigger, miscellaneous_equipments)
 - `progress_equipment_insert` (trigger, equipments)
 - `progress_equipment_update` (trigger, equipments)
+- `provider_reports_immutable` (trigger, provider_reports)
 - `published_equipment_update` (trigger, equipments)
 - `inventory_equipment_all` (view, inventory_equipment_all)

@@ -91,3 +91,5 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 
 
 - D-098 (11/11/2026): Relatório de provedores em Computadores e Relatórios, toda a rede com vínculo atual de agente e dados recebidos, inclusive offline. Prévia e Excel/CSV/PDF usam a mesma leitura completa com instante de emissão; não é histórico de sete dias nem agendamento. IP/provedor vêm de D-097, Último contato separado; manual/sem dados/vínculo encerrado fora. Somente consulta desktop, sem migração/coletor/EXE. Ver docs/03-painel-desktop/RELATORIO_PROVEDORES_D098.md.
+
+- D-099 (11/11/2026): supera a apresentação D-098 com uma linha por unidade (computador com observação completa de provedor mais recente), quatro colunas: unidade, IP público, provedor/rede e último contato Fortaleza. Histórico imutável no D1, emissão automática segunda-feira 08h Fortaleza pelo cron existente do painel, registro inicial sem reconstruir semanas antigas. Migração aditiva 0026; Dados atuais/Histórico semanal, exportação da mesma leitura, somente consulta gerencial. Não alterar coletor/EXE nem sobrescrever emissões antigas. Ver docs/03-painel-desktop/RELATORIO_PROVEDORES_HISTORICO_D099.md.

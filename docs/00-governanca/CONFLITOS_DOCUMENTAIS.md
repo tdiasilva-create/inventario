@@ -130,3 +130,7 @@ O endereço observado na chegada do heartbeat é uma observação do servidor, n
 ## D-098 — periodicidade de emissão não altera a fonte histórica
 
 O pedido diz emitir semanalmente ao clicar e abranger computadores que já enviaram dados. Portanto a consulta usa a última informação disponível e inclui offline antigo; não inventa histórico semanal, limita a sete dias nem agenda tarefa. O responsável confirmou Último contato no lugar da repetição de Provedor. O relatório identifica data da emissão e do contato. [Contrato](../03-painel-desktop/RELATORIO_PROVEDORES_D098.md).
+
+## D-099 — alteração posterior do relatório D-098
+
+Novo pedido explícito substitui linhas por computador por uma amostra por unidade e remove Hostname da apresentação/exportações, mantendo quatro colunas. Também autoriza o arquivo semanal automático que D-098 não contemplava. Horário confirmado: segunda-feira 08h Fortaleza. Não reinterpretar os documentos antigos como impedimento nem inventar dados de semanas anteriores; preservar D-098 como histórico e começar as emissões datadas na implantação D-099. IP, provedor e contato provêm do mesmo computador selecionado, sem inferir que todos os links da unidade sejam iguais. [Contrato vigente](../03-painel-desktop/RELATORIO_PROVEDORES_HISTORICO_D099.md).

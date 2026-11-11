@@ -1015,8 +1015,10 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 @media(max-width:480px){.agent-connection-fields{grid-template-columns:1fr;gap:3px}.agent-connection-fields dd{margin-bottom:8px}}
 
 /* D-098: one dated, complete provider report, using the shared print layout. */
-.provider-report-dialog .provider-table{min-width:760px}
+.provider-report-dialog .provider-table{min-width:620px}
 .provider-report-dialog .report-print-controls{flex-wrap:wrap}
 .provider-report-dialog .provider-equipment-id{font-size:10px;color:var(--texto-secundario);overflow-wrap:anywhere}
 .provider-report-dialog [data-provider-error]{margin:12px 0}
+.provider-report-dialog [aria-pressed=true]{background:var(--preto);color:#fff}
+.provider-history-pages{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:16px}
 @media print{.provider-report-dialog .provider-table{min-width:0}.provider-report-dialog [data-provider-error]{display:none}}

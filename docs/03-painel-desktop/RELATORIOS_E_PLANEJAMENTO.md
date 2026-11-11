@@ -38,3 +38,5 @@ O filtro de comunicação usa a função compartilhada no Worker após leitura c
 ## D-098 — relatório adicional de provedores
 
 Botão Relatório de provedores em Relatórios e Computadores. Consulta toda a rede com vínculo atual de agente e dados recebidos, independente dos filtros da tela; inclui offline. Prévia e exportações completas da mesma leitura datada, sem agendamento ou histórico semanal fictício. [Contrato](RELATORIO_PROVEDORES_D098.md). Relatório operacional D-086 e Planejamento preservados.
+
+Atualização D-099: esse relatório adicional agora mostra **uma linha por unidade e quatro colunas**, possui Dados atuais e Histórico semanal imutável, com emissão automática segunda-feira 08h Fortaleza e registro inicial real. [Contrato vigente](RELATORIO_PROVEDORES_HISTORICO_D099.md). Não muda o relatório operacional por computador nem a fila de planejamento D-086.

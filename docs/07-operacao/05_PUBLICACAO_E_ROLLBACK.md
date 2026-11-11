@@ -35,6 +35,8 @@ pnpm exec wrangler deploy --config wrangler.collector.jsonc
 
 Não executar ambos automaticamente quando só o frontend de um foi alterado. Mudanças de servidor devem considerar os dois, pois compartilham banco e recebem operações distintas. Confirmar que o tráfego está na versão desejada. Há dois agendamentos no painel: manutenção diária `23 3 * * *` e monitoramento `* * * * *`, ambos UTC; não duplicar no coletor. Conferir saúde da última rodada, não apenas a presença da configuração de cron.
 
+D-099 reutiliza o cron de minuto para conferir a agenda durável de provedores: segunda-feira 08h Fortaleza (11h UTC). Migração 0026 precisa existir antes desse código. Conferir `provider_report_schedule` e a emissão inicial/última em `provider_reports`; não confundir ativação de cron com sucesso de gravação. Rollback conserva as duas tabelas e os relatórios, sem reverter dados. [Contrato e recuperação](../03-painel-desktop/RELATORIO_PROVEDORES_HISTORICO_D099.md).
+
 ## Conferência após publicação
 
 - Login público e assets essenciais carregam; APIs privadas sem sessão retornam recusa apropriada.

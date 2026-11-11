@@ -100,6 +100,10 @@
     {
       "file": "0025_school_registration.sql",
       "sha256": "a84f1b46d98ba23b22dadacd691d133f0601f450de8d32ecac8cbbbe83bc5f88"
+    },
+    {
+      "file": "0026_provider_reports.sql",
+      "sha256": "2de8bf2fc6b7347193db22f649c5054e12d0ab55e9990d3a4a42f8ce14427e11"
     }
   ],
   "tables": [
@@ -4089,6 +4093,114 @@
       "foreignKeys": []
     },
     {
+      "name": "provider_report_schedule",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "started_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "next_due_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "provider_reports",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "period_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "kind",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "scheduled_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "generated_at",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "missed_weeks",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "unit_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "with_provider",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "report_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "published_equipment_counts",
       "columns": [
         {
@@ -5628,6 +5740,12 @@
     },
     {
       "type": "index",
+      "name": "provider_reports_chronology",
+      "tbl_name": "provider_reports",
+      "sql": "CREATE INDEX provider_reports_chronology ON provider_reports(generated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
       "name": "service_events_history",
       "tbl_name": "service_request_events",
       "sql": "CREATE INDEX service_events_history ON service_request_events(request_id,created_at)"
@@ -5994,6 +6112,18 @@
     },
     {
       "type": "table",
+      "name": "provider_report_schedule",
+      "tbl_name": "provider_report_schedule",
+      "sql": "CREATE TABLE provider_report_schedule (\n id INTEGER PRIMARY KEY CHECK(id=1),\n started_at TEXT NOT NULL,\n next_due_at TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "provider_reports",
+      "tbl_name": "provider_reports",
+      "sql": "CREATE TABLE provider_reports (\n id TEXT PRIMARY KEY,\n period_key TEXT NOT NULL UNIQUE,\n kind TEXT NOT NULL CHECK(kind IN ('initial','weekly')),\n scheduled_at TEXT NOT NULL,\n generated_at TEXT NOT NULL,\n missed_weeks INTEGER NOT NULL DEFAULT 0 CHECK(missed_weeks>=0),\n unit_count INTEGER NOT NULL CHECK(unit_count>=0),\n with_provider INTEGER NOT NULL CHECK(with_provider>=0 AND with_provider<=unit_count),\n report_json TEXT NOT NULL CHECK(json_valid(report_json))\n)"
+    },
+    {
+      "type": "table",
       "name": "published_equipment_counts",
       "tbl_name": "published_equipment_counts",
       "sql": "CREATE TABLE published_equipment_counts(unit_id TEXT NOT NULL,category TEXT NOT NULL,records INTEGER NOT NULL DEFAULT 0,items INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(unit_id,category))"
@@ -6153,6 +6283,12 @@
       "name": "progress_equipment_update",
       "tbl_name": "equipments",
       "sql": "CREATE TRIGGER progress_equipment_update AFTER UPDATE OF inspection_id,data_json,published_json ON equipments WHEN NEW.inspection_id IS NOT OLD.inspection_id OR NEW.data_json IS NOT OLD.data_json OR NEW.published_json IS NOT OLD.published_json BEGIN\n UPDATE inspection_collection_totals SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.data_json,'$.quantity'),1) AS INTEGER),new_records=new_records-(OLD.published_json IS NULL),changed_records=changed_records-(OLD.published_json IS NOT NULL) WHERE inspection_id=OLD.inspection_id;\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "provider_reports_immutable",
+      "tbl_name": "provider_reports",
+      "sql": "CREATE TRIGGER provider_reports_immutable BEFORE UPDATE ON provider_reports\nBEGIN SELECT RAISE(ABORT,'PROVIDER_REPORT_IMMUTABLE'); END"
     },
     {
       "type": "trigger",

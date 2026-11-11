@@ -1,5 +1,7 @@
 # D-098 — relatório semanal de provedores por computador
 
+> Histórico da primeira entrega. Em 11/11/2026, D-099 substituiu a apresentação por uma linha por unidade/quatro colunas e acrescentou arquivo semanal automático. Consultar o [contrato vigente D-099](RELATORIO_PROVEDORES_HISTORICO_D099.md).
+
 Pedido de 11/11/2026: botão para listar Unidade, Hostname, IP público e Provedor / rede identificada de todos os computadores com agente que já enviaram ou continuam enviando dados. A coluna Provedor veio duplicada; o responsável confirmou expressamente a substituição da repetição por Último contato: “Sim, usar Último contato”. Quinta coluna reaproveita D-097.
 
 ## Operação

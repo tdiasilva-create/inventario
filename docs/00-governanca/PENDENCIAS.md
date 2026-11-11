@@ -284,3 +284,14 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 - [ ] Aceite operacional do responsável após publicação.
 
 Sem agenda automática ou histórico de variações solicitado/implantado neste lote. [Aceite](../05-qualidade/RELATORIO_PROVEDORES_2026-11-11.md). Demais pendências preservadas.
+
+## D-099 — arquivo semanal de provedores
+
+- [x] Quatro colunas e uma linha por unidade solicitadas expressamente; seleção rastreável e dados ausentes explícitos implementados.
+- [x] Horário confirmado pelo responsável: segunda-feira às 08h, Fortaleza.
+- [x] Registro inicial, agenda durável, arquivo imutável, consultas e exportações testados localmente.
+- [ ] Registrar aplicação da migração 0026 e publicação do painel, verificando a primeira emissão automática real.
+- [ ] Conferir execução da primeira segunda-feira em produção na data prevista, distinta dos testes com relógio controlado.
+- [ ] Aceite operacional final pelo responsável.
+
+Supera a ausência de agenda/histórico de D-098, sem resolver outras pendências ou retomar Fases 4/5. [Aceite](../05-qualidade/PROVEDORES_SEMANAIS_2026-11-11.md).
