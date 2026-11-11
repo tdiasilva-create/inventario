@@ -13,7 +13,7 @@ files.push('account.html','account.js','admin-units.js','panel-shell.js','panel-
 files.push('photo-viewer.js','vendor/chakra-petch/ChakraPetch-600.woff2','vendor/chakra-petch/LICENSE','vendor/barlow/Barlow-400.woff2','vendor/barlow/Barlow-600.woff2','vendor/barlow/LICENSE');
 files.push('tokens.css','assets/paisagem-coleta.jpg','vendor/chakra-petch/ChakraPetch-400.woff2','vendor/chakra-petch/ChakraPetch-500.woff2','vendor/chakra-petch/ChakraPetch-700.woff2','vendor/barlow/Barlow-500.woff2','vendor/barlow/Barlow-700.woff2','vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','vendor/jetbrains-mono/LICENSE');
 files.push('hardware-attention.js','desktop-notifications.js','desktop-equipment.js','unit-names.js','unit-figures.js');
-files.push('desktop-demand-count.js','operations.html','operations.js');
+files.push('desktop-demand-count.js','operations.html','operations.js','agent-connection.js');
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
 files.push('environment-editor.js','panel-confirm.js','school-presence.js');

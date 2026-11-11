@@ -74,3 +74,8 @@ Lista e ficha destacam **Agente vinculado**, **Cadastro manual**, **Aguardando v
 ## D-084 — consulta pela busca global
 
 O cabeçalho agora abre /busca, separando unidades e equipamentos. Essa página usa o escopo explícito current na ficha, rotula PARCIAL e admite fotos recebidas de coletas abertas/pausadas. O comportamento oficial descrito acima permanece como padrão nas consultas da matriz/unidade. Ver [contrato da busca](BUSCA_GLOBAL.md).
+
+
+## D-097 — conexão na ficha (11/11/2026)
+
+Ficha de computador vinculada também apresenta IP público, provedor/rede identificada e último contato do agente. IP interno permanece separado, lido do inventário técnico quando informado. Mesma apresentação em Computadores e Dados do agente. Valores públicos são observações do servidor no heartbeat válido; não dependem de reinstalação, não inferem localidade nem substituem os dados publicados da coleta. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md).

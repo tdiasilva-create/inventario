@@ -23,7 +23,11 @@ export async function machinePost(worker,env,origin,identity,path,body,options={
  // Alterar o primeiro caractere muda bits reais; o último pode conter apenas padding ignorado.
  if(options.tamperSignature)headers['X-SEMED-Signature']=headers['X-SEMED-Signature'].replace(/^./,c=>c==='A'?'B':'A');
  if(options.ip)headers['CF-Connecting-IP']=options.ip;
- const response=await worker.fetch(new Request(origin+path,{method:'POST',headers,body:bytes}),env);
+ if(options.ipv6)headers['CF-Connecting-IPv6']=options.ipv6;
+ if(options.cfWorker)headers['CF-Worker']=options.cfWorker;
+ const request=new Request(origin+path,{method:'POST',headers,body:bytes});
+ if(options.cf)Object.defineProperty(request,'cf',{value:options.cf}); // trusted edge metadata in isolated tests only
+ const response=await worker.fetch(request,env);
  const data=await response.json().catch(()=>null);
  return {status:response.status,data,response};
 }

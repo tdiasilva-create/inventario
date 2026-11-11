@@ -1,4 +1,5 @@
 import {presenceState} from '../presence.mjs';
+import {observeConnection} from '../connection.mjs';
 // NÚCLEO da API de agentes SEMED /api/agent/v1 (contrato 1.0) — cópia adaptada ao inventário SEMED.
 // Origem: revisoes/agente-0.1.6-fonte/mock-server/src/worker.mjs (sha256 ab28afb1…). Alterações marcadas com [SEMED] e
 // descritas em docs/04-dados-apis/CONTRATO_QR_E_AGENTE.md (R1–R5 da revisão 0.1.6 e perfis root/admin/operador/visualizador).
@@ -333,6 +334,7 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
     return {
       state,
       last_live_contact_at: p?.last_live_contact_at ?? null,
+      network_observation: p?.network_observation ?? null,
       last_observation_collected_at: p?.last_collected_at ?? null,
       last_received_at: p?.last_received_at ?? null,
       last_boot_id: p?.boot_id ?? null,
@@ -926,6 +928,7 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
         const applied = await store.setPresenceIfNewer(device.device_id, {
           ...p,
           last_live_contact_at: receivedAt,
+          network_observation: observeConnection(request,receivedAt),
           last_collected_at: body.collected_at,
           collected_ms: collectedMs,
           last_received_at: receivedAt,
@@ -1109,6 +1112,8 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
       store.getEquipmentHistory(eq.id, 10), store.getBaseline(deviceId), store.queueGapSummary(deviceId),
       presenceView(deviceId), officialLocation(eq),
     ]);
+    // An old equipment link must not expose the current connection of a moved agent.
+    if(link?.ended_at)presence.network_observation=null;
     return json(200, {
       equipment_id: equipmentId,
       equipment_status: eq.status,

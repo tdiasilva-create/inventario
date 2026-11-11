@@ -1006,3 +1006,10 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .school-registration-group>.form-grid{margin-top:12px}
 .school-registration-group[open]>summary{margin-bottom:10px}
 .school-registration-group:has([aria-invalid=true])>summary{color:var(--red,#d90029)}
+
+/* D-097: same connection sheet in equipment detail and operations. */
+.agent-connection{border-top:1px solid var(--borda);margin-top:16px;padding-top:12px;min-width:0}
+.agent-connection h4{margin:0 0 10px;font-size:14px}.agent-connection h5{margin:14px 0 6px;font-size:13px}
+.agent-connection-fields{display:grid;grid-template-columns:minmax(130px,1fr) minmax(0,2fr);gap:8px 12px;margin:0}.agent-connection-fields dt{color:var(--texto-secundario)}.agent-connection-fields dd{margin:0;overflow-wrap:anywhere}.agent-connection-fields small{display:block;color:var(--texto-secundario)}
+.agent-connection p{font-size:12px;line-height:1.45;color:var(--texto-secundario);margin:8px 0}.agent-connection ul{padding-left:18px}.agent-connection code{font-family:var(--font-mono);font-size:12px;overflow-wrap:anywhere}
+@media(max-width:480px){.agent-connection-fields{grid-template-columns:1fr;gap:3px}.agent-connection-fields dd{margin-bottom:8px}}

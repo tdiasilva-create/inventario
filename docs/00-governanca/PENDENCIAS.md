@@ -265,3 +265,11 @@ PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz.
 - [ ] Aceite operacional pelo responsável após publicação. Não há decisão funcional pendente neste lote. Reset administrativo permanece como já implementado; não faz parte da alteração pedida.
 
 [Aceite/publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md). Demais pendências e Fases 4/5 preservadas.
+
+
+## D-097 — conexão dos agentes
+
+- [x] IP público, organização da rede e último contato implementados/testados; IP interno separado. Sem decisão funcional pendente neste lote.
+- [ ] Aceite visual do responsável após publicação. Valores dependem de nova comunicação válida; endereços internos dependem da política já existente do agente, que não foi alterada.
+
+[Aceite e publicação](../05-qualidade/CONEXAO_AGENTES_2026-11-11.md). Demais pendências e Fases 4/5 preservadas.

@@ -75,3 +75,8 @@ Correção de interação D-081 em 10/11/2026: aviso circular pequeno na coorden
 ## Atualização D-088 — 10/11/2026 (prevalece sobre os trechos anteriores)
 
 Perda inesperada gera incidente somente após MAIS DE 48 HORAS (172800 s). A presença recente continua com 17 min. Log separado /log-comunicacao, acesso root/admin/visualizador; incidentes não entram no sino. Sino usa hardware.pending (sem parecer), e abre diretamente o modal; histórico hardware disponível em state=all. Nenhum evento antigo apagado/encerrado por trocar prazo. Consultar [contrato atual](../03-painel-desktop/NOTIFICACOES_E_LOG.md) e [aceite](../05-qualidade/NOTIFICACOES_48H_2026-11-10.md) para API, legado e publicação. Esta regra supera o prazo de criação/contagem do sino de D-070, preservando cron, comparação de peças e protocolo do agente.
+
+
+## D-097 — observação da rede de saída (11/11/2026)
+
+Heartbeat vivo mais novo registra IP público/organização/ASN observados no Worker, no mesmo JSON de presença e atualização condicional. Sem mudança de assinatura, ACK, prazo de comunicação, cron ou notificações. Alteração de IP/provedor não é troca de hardware. Leitura é feita pela ficha autenticada via agent-status, preservando IP interno do inventário. [Contrato e limites](CONEXAO_AGENTES_D097.md).

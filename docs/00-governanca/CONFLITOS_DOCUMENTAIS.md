@@ -120,3 +120,8 @@ O pedido mais recente determina Unidades já na escola escolhida, com exceção 
 ## D-096 — regras de senha posteriores às propostas originais
 
 A decisão expressa de 11/11/2026 supera mínimo 12, verificação externa de vazamentos e geração automática de senha no formulário de criação presentes nas propostas/autenticação anteriores. Agora seis a 256 caracteres, composição livre, provisória escolhida pelo root e nenhuma dependência Pwned Passwords. Primeiro acesso obrigatório, prazos, hashing e D-075 continuam vigentes. A remoção da geração automática se restringe à criação; reset administrativo não foi alterado. Documentos históricos e Base original são preservados como fontes anteriores. [Aceite](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).
+
+
+## D-097 — IP público não substitui endereço local nem localização oficial
+
+O endereço observado na chegada do heartbeat é uma observação do servidor, não novo campo obrigatório do inventário assinado. Não muda o contrato do EXE nem habilita a coleta de endereços internos que a política atual deixe desativada. Organização de ASN não equivale necessariamente ao provedor contratado; geolocalização por IP não é usada para cadastro/mapa. A ficha mantém vínculo por ID e não expõe conexão atual de instalação cujo vínculo com aquele equipamento acabou. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md).

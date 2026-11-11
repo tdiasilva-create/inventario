@@ -627,3 +627,8 @@ Responsável confirmou o funcionamento de D-094 e pediu nome da escola, número 
 ## D-096 — criação de senha simplificada, 11/11/2026
 
 Responsável decidiu os itens 5, 9 e 11 da revisão de acesso: root informa a senha provisória de criação; usuário define sua própria senha no primeiro login; mínimo seis caracteres, composição totalmente livre; retirar consulta de senhas vazadas e seu bloqueio por indisponibilidade. Máximo 256 e demais regras preservados. A mesma validação vale para provisória de criação e definitiva. Não alterar contas existentes nem o fluxo de reset administrativo automático. Implementação/publicação sob autorização contínua da sessão. Supera as regras originais de mínimo 12 e Pwned Passwords, preservando D-075. [Aceite/publicação](../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).
+
+
+## D-097 — conexão pública na ficha do computador, 11/11/2026
+
+Responsável pediu expressamente IP público, provedor e último contato, IP interno separado, publicação real sem reinstalar agentes. Implementação usa os metadados Cloudflare do heartbeat autenticado e vivo já existente; não muda corpo/assinatura/ACK, instalador, QR ou política de endereços internos. Campo aditivo no JSON de presença, sem migração; rede identificada por ASN não garante operadora contratada. Somente leitura autorizada da ficha; legado/manual e vínculo encerrado tratados explicitamente. Atualização da ficha aberta a cada 15 s, sem consultas por computador na listagem. [Contrato](../04-dados-apis/CONEXAO_AGENTES_D097.md), [aceite/publicação](../05-qualidade/CONEXAO_AGENTES_2026-11-11.md).

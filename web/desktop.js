@@ -1,3 +1,4 @@
+import {renderAgentConnection} from './agent-connection.js';
 import {createManagementView} from './desktop-management.js';
 const computerReport=createManagementView('report'),workPlan=createManagementView('plan');
 import {editEnvironmentName} from './environment-editor.js';
@@ -106,7 +107,7 @@ function agentStatusBody(equipmentId,v){const a=v.agent,loc=v.official_record?.l
  if(!a)return official+'<p>Este computador não possui agente vinculado. Cadastro manual ou vínculo ainda pendente.</p>';
  const p=a.presence||{},link=a.link||{};const presence='<h3>Comunicação do agente</h3><dl class="inventory-answers"><dt>Situação</dt><dd><b>'+esc(presenceLabels[p.state]||p.state||'—')+'</b></dd><dt>Última comunicação (recebida)</dt><dd>'+esc(whenIso(p.last_live_contact_at))+'</dd><dt>Última leitura (coletada na máquina)</dt><dd>'+esc(whenIso(p.last_observation_collected_at))+'</dd><dt>Versão do agente</dt><dd>'+esc(a.agent_version||p.agent_version||'—')+'</dd><dt>Estado do dispositivo</dt><dd>'+esc(a.device_state||'—')+'</dd><dt>Vínculo</dt><dd>'+esc(link.linked_at?'desde '+whenIso(link.linked_at):'—')+(link.device_confirmed_at?' · confirmado pela máquina em '+esc(whenIso(link.device_confirmed_at)):' · aguardando confirmação da máquina')+(link.ended_at?' · encerrado em '+esc(whenIso(link.ended_at)):'')+'</dd></dl><p class="muted">'+esc(p.note||'Ausência de comunicação não prova que a máquina está desligada.')+'</p>';
  const hist=(v.official_record?.location_history||[]);const history=hist.length?'<h3>Histórico de localização e vínculo</h3><ul>'+hist.slice(0,10).map(h=>'<li>'+esc(whenIso(h.changed_at||h.created_at||h.at))+' · '+esc(h.event||h.kind||h.reason||'alteração')+(h.environment_name||h.position_label?' · '+esc([h.environment_name,h.position_label].filter(Boolean).join(' / ')):'')+(h.by_name||h.by?' · '+esc(h.by_name||h.by):'')+'</li>').join('')+'</ul>':'';
- return official+presence+'<h3>Inventário técnico reportado</h3>'+agentSections(a.current_inventory)+history;}
+ return official+presence+renderAgentConnection(a)+'<h3>Inventário técnico reportado</h3>'+agentSections(a.current_inventory)+history;}
 
 function showAgentStatus(equipmentId,trigger){
  if(document.querySelector('dialog[open]'))return;
