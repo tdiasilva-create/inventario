@@ -23,4 +23,8 @@ Build desktop aprovado (88 arquivos, sem coletor). Dois testes puros de presenç
 
 Regressão panorama-map-browser.cjs aprovada: escala .7, roda/retorno/Escape, atualização, câmera e sobreposições, Mapa da Rede preservado, viewport 390 e paisagem. Screenshots locais em docs/05-qualidade/evidencias/escolas-modal-2026-11-11 (dados sintéticos, fora do Git); inspeção visual desktop, celular e paisagem. Viewport não equivale a aparelho físico.
 
-Publicação e conferência real pendentes.
+Implementação commit **3f878e2**. Build, dry-run, diff, links documentais e scanner do índice Git (652 arquivos) aprovados. Painel publicado em **11/11/2026 às 19:38:49 Fortaleza**, versão **e1b208a6-7813-4901-9bed-7b1c34522d4a**, 100% do tráfego. Três assets alterados: desktop.js, school-presence.js e painel.css. Cinquenta verificações HTTP reais aprovadas. Dois crons preservados; sem migração, publicação do coletor ou escrita de cadastros.
+
+Navegação pós-publicação encontrou sessão expirada ao abrir Panorama; solicitada renovação pelo responsável, sem manipular credenciais. Conferência autenticada real pendente até o login.
+
+Retorno: republicar a versão anterior **4075d22d-a3b6-4e71-a484-ff7660bcf85d**, sem desfazer dados. Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama .

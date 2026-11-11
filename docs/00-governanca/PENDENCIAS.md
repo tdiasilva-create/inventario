@@ -300,7 +300,8 @@ Supera a ausência de agenda/histórico de D-098, sem resolver outras pendência
 
 - [x] Pedido definido: somente nomes do grupo, mesmos filtros, sem informação adicional.
 - [x] Implementação e testes locais de lista, acessibilidade, atualização/falha e mapa ampliado concluídos.
-- [ ] Publicação e conferência real.
+- [x] Painel publicado em 11/11/2026 às 19:38:49 Fortaleza, versão e1b208a6-7813-4901-9bed-7b1c34522d4a (100%).
+- [ ] Conferência autenticada real: aguarda renovação de sessão pelo responsável.
 - [ ] Aceite operacional do responsável.
 
 Sem decisões funcionais adicionais. Demais pendências e Fases 4/5 preservadas. [Aceite](../05-qualidade/ESCOLAS_MODAL_2026-11-11.md).
