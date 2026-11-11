@@ -208,3 +208,15 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [x] Confirmadas 48 HORAS para perda inesperada em log próprio; hardware no sino/mapa. Implementação e aceite em NOTIFICACOES_48H_2026-11-10.md.
 - [ ] Aceite operacional com dados/máquina reais pelo responsável após publicação. Troca física depende do envio do inventário pelo agente; não foi simulada na produção.
 - LOG-08, LNA-09, N-02 e Fases 4/5 permanecem pendentes.
+
+## D-089 — refinamento do coletor em 10/11/2026
+
+- [x] CL-01–07: causas específicas, retorno à revisão, rascunho explícito, renovação de trava pelo mesmo usuário, leitura de assunto concluído, sessão expirada e foto de impressora na conclusão do assunto.
+- [x] CL-08: responsável escolheu manter busca limitada e explicar seu alcance; expansão não aprovada.
+- [x] CL-09–12: páginas acumuladas, retorno/filtro/rolagem, Salvar compacto, diálogos próprios e remoção dos controles V2 sem interface atual.
+- [x] CL-13: manter D-057 Editar somente, retirar contador não conferido; sem apagar verificações históricas.
+- [x] CL-14–16: aviso sobre links ocultos preservados; aviso do histórico de questionário antigo já existente; separar testes históricos dos atuais e usar dependência local do Playwright.
+- [ ] Confirmar teclado/câmera reais no celular do responsável. Testes em Chromium/Edge e viewport reduzido não comprovam experiência física Android/iPhone.
+- [ ] Offline durável, autosave completo da ficha, declaração explícita de ausência de equipamentos, exclusão pelo operador, ações em lote e revisão das perguntas continuam fora desta entrega; dependem de decisão/planejamento próprios.
+
+[Contrato e limites](../02-coleta-mobile/REVISAO_E_ACOES_D089.md). Esta decisão não reabre as Fases 4/5 pausadas nem transforma rascunho em inventário publicado.

@@ -32,6 +32,12 @@ jobs:
       - run: pnpm test:v3:browser
         env:
           SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:review-pending:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
+      - run: pnpm test:collector-refinement:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
       - run: pnpm test:ux:browser
         env:
           SEMED_TEST_BROWSER: chromium

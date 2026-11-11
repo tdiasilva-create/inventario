@@ -90,3 +90,7 @@ A decisão posterior de cores por tipo supera D-083 quanto ao roxo uniforme e D-
 ## D-088 — destino e prazo dos avisos
 
 Decisão posterior supera D-070 quanto a gerar comunicação perdida após 17 min e mostrá-la no sino; agora mais de 48 HORAS, confirmado pelo responsável, e nova aba de log. Os 17 min permanecem só na presença recente/status. O sino usa hardware.pending, não unread; histórico e leitura individual preservados. Não aplicar o novo prazo para encerrar incidentes antigos como se houvesse retorno. A posição das escolas offline, pendente em D-083, foi definida acima de online. Cores D-087 e círculo/clique/modal D-081 preservados. [Contrato](../03-painel-desktop/NOTIFICACOES_E_LOG.md).
+
+## D-089 — propostas do pacote do coletor versus decisões existentes
+
+O pacote externo é fonte de diagnóstico, não aprovação automática. CL-08 resolvido pela busca limitada com rótulo explicativo; CL-10 pelo Salvar compacto. CL-13 não reintroduz conferência obrigatória, pois D-057 já decidiu Editar somente; somente o contador sem ação foi retirado. Fotos obrigatórias de impressora/fachada continuam pelas decisões atuais; foto de computador permanece opcional D-060. Relatório externo de testes antigos não substitui os testes executados nesta entrega. Base original permanece íntegra; [contrato](../02-coleta-mobile/REVISAO_E_ACOES_D089.md).

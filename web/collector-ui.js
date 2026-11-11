@@ -71,7 +71,7 @@ export function installInputExperience(root){
  root.addEventListener('focusin',e=>{sync();if(textInput(e.target))ensureVisible(e.target);});
  root.addEventListener('focusout',()=>setTimeout(sync,0));
  // Mantém o botão vivo até click, mesmo que o navegador focalize botões ao tocar.
- root.addEventListener('pointerdown',e=>{if(e.target.closest('[data-action=close-keyboard]'))e.preventDefault();});
+ root.addEventListener('pointerdown',e=>{if(e.target.closest('[data-action=close-keyboard],.keyboard-save'))e.preventDefault();});
  root.addEventListener('click',e=>{if(e.target.closest('[data-action=close-keyboard]')){document.activeElement?.blur();sync();}});
  root.addEventListener('keydown',e=>{
   if(e.key!=='Enter'||e.isComposing||!textInput(e.target)||e.target.tagName==='TEXTAREA')return;

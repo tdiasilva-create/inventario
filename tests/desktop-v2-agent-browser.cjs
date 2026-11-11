@@ -1,9 +1,10 @@
+// HISTÓRICO V1/V2: não é aceite do coletor atual; ver tests/README.md. Preservado para investigação de regressões legadas.
 // Teste de navegador (fora do npm test): painel desktop consultando uma unidade com vistoria V2 concluída e um computador
 // vinculado ao agente, através do Worker REAL (APP_KIND painel) com sessão de visualizador injetada pelo servidor de teste.
 // Verifica: esquema V2 no "Questionário recebido", tabela de equipamentos com estado do agente, janela "Dados do agente"
 // (presença, última comunicação × última leitura, inventário reportado), contagem "Não testados" com o valor V2.
 const {resolve,extname}=require('node:path'),fs=require('node:fs'),http=require('node:http'),assert=require('node:assert/strict');
-let pw;try{pw=require('playwright');}catch{pw=require(require('node:path').join(process.env.USERPROFILE,'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'));}
+const pw=require('./helpers/playwright.cjs');
 (async()=>{
  const {collectorFixture}=await import('./helpers/collector-db.mjs'),{agentIdentity,enroll,session,humanFetch,heartbeatBody,inventoryBody,machinePost,lockFor}=await import('./helpers/agent-client.mjs'),worker=(await import('../server/worker.mjs')).default;
  const f=collectorFixture(),errors=[];

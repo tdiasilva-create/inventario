@@ -18,7 +18,8 @@ const fs=require('node:fs'),http=require('node:http'),path=require('node:path'),
  for(const page of [desktop,mobile]){page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.stack));}
  const dialog=page=>page.getByRole('dialog',{name:'Editar nome do ambiente'}),shot=async(page,name)=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png'});};
  try{
-  await desktop.goto(origin+'/ambientes');await desktop.locator('#unit-picker').fill('TESTE ISOLADO · Unidade sem inventário');await desktop.locator('#unit-picker').dispatchEvent('change');
+  // Trilho do menu do painel abre ao passar o mouse (Mesa de dados): afastar o ponteiro antes de clicar.
+  await desktop.goto(origin+'/ambientes');await desktop.mouse.move(900,600);await desktop.locator('#unit-picker').fill('TESTE ISOLADO · Unidade sem inventário');await desktop.locator('#unit-picker').dispatchEvent('change');
   await desktop.getByRole('button',{name:'Editar nome de Sala errda'}).click();await dialog(desktop).waitFor();
   await mobile.goto(origin+'/coleta-v3?vistoria='+visit.id+'&tela=environment&assunto=B');await mobile.getByRole('button',{name:'Editar nome de Sala errda'}).click();
   await dialog(mobile).getByLabel('Nome do ambiente',{exact:true}).fill('Sala de informática');await shot(mobile,'01-correcao-mobile');

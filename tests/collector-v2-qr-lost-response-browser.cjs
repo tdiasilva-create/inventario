@@ -1,8 +1,9 @@
+// HISTÓRICO V1/V2: não é aceite do coletor atual; ver tests/README.md. Preservado para investigação de regressões legadas.
 // Teste de navegador (fora do npm test) — R2-A: a resposta do claim é PERDIDA depois do commit no servidor (o pedido chega ao
 // Worker real e grava; o navegador nunca recebe a resposta). A interface não pode anunciar sucesso; ao repetir, deve conferir o
 // recibo do mesmo request_id e mostrar o vínculo real, sem duplicar ficha nem vínculo. Depois, o mesmo para falha ANTES do envio.
 const {resolve,extname}=require('node:path'),fs=require('node:fs'),http=require('node:http'),assert=require('node:assert/strict');
-let pw;try{pw=require('playwright');}catch{pw=require(require('node:path').join(process.env.USERPROFILE,'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'));}
+const pw=require('./helpers/playwright.cjs');
 const QRCode=require('qrcode');
 (async()=>{
  const {collectorFixture}=await import('./helpers/collector-db.mjs'),{agentIdentity,enroll,session,humanFetch}=await import('./helpers/agent-client.mjs'),worker=(await import('../server/worker.mjs')).default;
