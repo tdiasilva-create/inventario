@@ -317,7 +317,7 @@ Sem novas decisões pendentes. [Aceite](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2
 ## D-102 — salvar sem reabrir demanda
 
 - [x] Causa identificada e correção testada: fechamento, confirmação, consulta manual e falhas/idempotência.
-- [ ] Publicação real, sem criar demanda fictícia na conferência.
+- [x] Publicação real em 11/11/2026 às 20:29:17 Fortaleza, versão a905bd00-0115-43ae-aa99-96058b9eac5b (100%). 51 checks HTTP e conferência root somente de leitura; nenhuma demanda fictícia criada.
 - [ ] Aceite operacional do responsável.
 
 Sem decisões adicionais. [Aceite](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).

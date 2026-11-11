@@ -29,4 +29,8 @@ Testes antigos que aguardavam reabertura automática agora usam explicitamente V
 
 ## Publicação
 
-Em preparação, no painel real conforme autorização contínua da sessão. Sem migração nem publicação do coletor.
+Publicada em 11/11/2026 às 20:29:17 (Fortaleza), no painel real conforme autorização contínua da sessão. Versão `a905bd00-0115-43ae-aa99-96058b9eac5b`, 100% do tráfego; commit de implementação `a2bfcf8`. Dois assets alterados: operations.js e painel.css. Sem migração nem publicação do coletor; bindings e crons preservados.
+
+Dry-run e verificação documental aprovados. Após publicação, verify-panel-release.mjs aprovou 51 checks HTTP. Central aberta como root, recarregada e conferida visualmente em produção às 20:29, com busca/lista/contadores funcionais. Nenhuma demanda criada/editada no teste real: os cenários de gravação, falhas e idempotência foram executados no Worker/SQLite isolado descrito acima.
+
+Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/demandas
