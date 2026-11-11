@@ -3,7 +3,7 @@ import {downloadTable} from './desktop-exports.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const when=v=>v&&Number.isFinite(Date.parse(v))?new Date(v).toLocaleString('pt-BR',{timeZone:'America/Fortaleza'}):'Não recebido';
 const columns=['Nome da unidade','IP público','Provedor / rede identificada','Último contato (Fortaleza)'];
-const note='Uma linha por unidade, usando o computador com informação de provedor mais recente, inclusive offline. A rede identificada pode diferir do provedor contratado e não representa necessariamente todos os links da unidade.';
+const note='Uma linha por unidade, usando o computador com informação de provedor mais recente, inclusive offline.';
 let current=null;
 function table(items){return `<div class="management-table-scroll"><table class="data-table management-table provider-table"><thead><tr>${columns.map(c=>'<th>'+esc(c)+'</th>').join('')}</tr></thead><tbody>${items.map(r=>`<tr><td><b>${esc(r.unit_name)}</b></td><td><code>${esc(r.public_ip||'Não recebido')}</code></td><td>${esc(r.provider||'Não identificado')}</td><td>${esc(when(r.last_contact_at))}</td></tr>`).join('')}</tbody></table></div>`;}
 function validReport(r){return r.complete===true&&r.scope==='one-per-unit-with-agent-data'&&Array.isArray(r.items)&&r.items.length===r.total&&new Set(r.items.map(v=>v.unit_id)).size===r.total&&Number.isFinite(Date.parse(r.server_time))&&r.totals?.units===r.total&&r.totals.with_provider+r.totals.without_provider===r.total;}

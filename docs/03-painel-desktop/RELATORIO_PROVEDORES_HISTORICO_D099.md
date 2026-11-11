@@ -16,6 +16,8 @@ Um computador é uma amostra da saída de internet da unidade. Havendo vários l
 
 Botão **Relatório de provedores** em Computadores e Relatórios. A janela possui **Dados atuais** e **Histórico semanal**. Os dados atuais são consultados ao abrir e ao clicar em Atualizar consulta; não mudam durante a leitura/exportação.
 
+Ajuste de apresentação solicitado em 11/11/2026 após a publicação: retirar a frase sobre diferença entre rede identificada/provedor contratado e links da unidade. Texto atual e arquivado, inclusive impressão/PDF, mantêm apenas “Uma linha por unidade, usando o computador com informação de provedor mais recente, inclusive offline.” CSV/Excel já contêm apenas as quatro colunas. A retirada do texto não altera a fonte, seleção ou dados preservados.
+
 Histórico ordenado da emissão mais recente para a mais antiga, 20 registros por página, com data de emissão em Fortaleza, quantidade de unidades e quantidade com provedor. Abrir uma emissão mostra sua leitura preservada e permite Excel, CSV ou impressão/PDF. Não permite atualizar os valores de um relatório arquivado. Voltar a Dados atuais consulta o estado corrente. Filtros da tela de origem não restringem nenhum desses relatórios.
 
 Resposta incompleta, falha ou ausência de registros é explícita; não gerar arquivo parcial fingindo sucesso. Fechar cancela consultas pendentes. Downloads reproduzem a leitura apresentada, com quatro colunas, escape de HTML/fórmulas e data da emissão no nome do arquivo. O histórico pode conter um relatório sem unidades, registrando honestamente a leitura daquele momento.
