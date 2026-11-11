@@ -30,7 +30,19 @@ Evidências locais em `docs/05-qualidade/evidencias/painel-navegacao-2026-11-11/
 
 ## Publicação e conferência real
 
-Em preparação. Versão anterior do painel: 376572e4-184b-4fd8-8d4a-2057c5b81cd8. Coletor a preservar: 91ba6200-d080-4026-8e92-7042bd67f86e. Atualizar esta seção com versão, testes HTTP e observações autenticadas depois do deploy.
+Publicado em **11/11/2026 às 07:12:49 de Fortaleza**, 10:12:49Z, versão **283ff06b-182e-405b-a601-5692f805fbc7**, 100% do tráfego confirmado por deployments list. Implementação no commit **d297b32**. Versão anterior para rollback de código: 376572e4-184b-4fd8-8d4a-2057c5b81cd8. Coletor permanece 91ba6200-d080-4026-8e92-7042bd67f86e (conferido novamente após a publicação). Somente cinco assets alterados; Worker/API, D1, Drive, segredos e os dois agendamentos preservados.
+
+Os cinco casos foram repetidos na sessão root do navegador real:
+
+1. Com SEMED selecionada, clique na área de ALANA abriu a escolha das unidades próximas. Escolher EMI ALANA LUDMILA atualizou URL e detalhe da unidade correta.
+2. SEMED selecionada em Ambientes permaneceu na URL, no campo e no título após recarregar.
+3. SEMED em Coletas em andamento: abrir parcial → Voltar levou à lista; Avançar reabriu o mesmo detalhe, rotulado PARCIAL.
+4. Ações de admin → ações de operador manteve somente o último menu aberto. Esc fechou com foco devolvido; clique fora fechou também.
+5. Perfil root → Esc fechou o menu, definiu aria-expanded=false e devolveu foco ao botão.
+
+Nenhum erro/aviso no console observado nessa conferência; nenhum cadastro, senha, parecer ou demanda alterado. Evidências reais privadas em `private-data/correcoes-painel-2026-11-11/`: mapa-escolha-unidades.jpg, ambientes-apos-recarregar.jpg, coletas-voltar-lista.jpg e menus-apos-esc.jpg.
+
+**50 verificações HTTP públicas aprovadas**: login e assets atuais acessíveis; páginas/arquivos privados redirecionam para login; APIs privadas recusam sem sessão. O script verify-panel-release ainda exigia duas imagens do login antigo; foi alinhado aos assets efetivamente usados pelo HTML/CSS atual (paisagem-coleta.jpg, tokens, favicon e fontes), sem alterar regras de acesso do servidor. Scanner do índice Git: 624 arquivos aprovados; links documentais sem erros.
 
 ## Roteiro para o responsável
 

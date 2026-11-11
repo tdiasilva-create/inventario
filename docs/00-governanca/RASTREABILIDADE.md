@@ -445,3 +445,5 @@ Publicação D-091: implementação 2f4aa07, painel 376572e4-184b-4fd8-8d4a-2057
 ## D-092 — navegação do painel
 
 Pedido direto de correção/publicação dos cinco defeitos confirmados em navegação real → web/desktop-map.js (escolha de pontos sobrepostos), web/desktop-progress.js (histórico lista/detalhe), web/desktop.js (contexto da unidade por URL), web/panel-shell.js (menus e foco), web/painel.css (lista do mapa). Regressão reproduzível tests/panel-usability-browser.cjs incluída na CI; panorama-map e tour-logic adaptados às novas interações. [Aceite](../05-qualidade/PAINEL_NAVEGACAO_2026-11-11.md). Base de Coleta original e questionários sem alterações.
+
+Publicação D-092: d297b32; painel 283ff06b-182e-405b-a601-5692f805fbc7, 100%, 11/11/2026 07:12:49 Fortaleza. Cinco fluxos conferidos como root em produção; 50 verificações HTTP aprovadas. Script verify-panel-release atualizado para imagens/fontes do login atual. Coletor e dados preservados.
