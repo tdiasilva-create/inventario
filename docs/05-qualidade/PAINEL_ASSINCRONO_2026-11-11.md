@@ -32,7 +32,13 @@ Evidências reproduzíveis, ignoradas no Git: `docs/05-qualidade/evidencias/pain
 
 ## Publicação
 
-Autorizada explicitamente pelo responsável. Resultado da publicação e conferência real será registrado após o deploy. Versão anterior para rollback de código: `d8bb3245-094b-4675-a128-adec00c4a3ae`. Coletor anterior: `91ba6200-d080-4026-8e92-7042bd67f86e`.
+Publicada em **11/11/2026 às 07:40:59 de Fortaleza** (10:40:59Z), versão **f43d0101-aca7-465e-a666-ad4981405f62**, 100% do tráfego. Implementação: commit **fff4869**. Quatro assets alterados; Worker/API, bindings, segredos e agendamentos preservados. Versão anterior para rollback de código: d8bb3245-094b-4675-a128-adec00c4a3ae. Coletor permaneceu **91ba6200-d080-4026-8e92-7042bd67f86e**, conferido após publicação.
+
+Todos os cinco roteiros de navegador citados e os 14 testes de servidor passaram. Build, dry-run, verificação de links, diff e inspeção do índice Git aprovados. As 50 verificações HTTP de scripts/verify-panel-release.mjs passaram na URL real.
+
+Na sessão root real, o clique em Dados do PCPROTOCOLO exibiu imediatamente Consultando dados do agente… e, depois, a ficha correta com localização, comunicação, hardware e histórico. Esc fechou a janela. Panorama em 809×1035 exibiu os sete indicadores completos em duas linhas; captura indicadores-real-809.jpg. O sino carregou Nenhuma alteração de hardware aguardando parecer, coerente com zero pendências. Nenhum parecer, exclusão ou edição foi feito. Console sem erros/avisos nesta conferência. Viewport restaurado e aba mantida no Panorama.
+
+Os cenários de timeout, HTTP 401/503 e ocultação no instante da requisição foram reproduzidos somente no navegador isolado, sem provocar falhas no servidor real. Capturas e resultado do teste local foram examinados; a validação local não é apresentada como teste físico de celular ou agente Windows.
 
 ## Fora deste lote
 

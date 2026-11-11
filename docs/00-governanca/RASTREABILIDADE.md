@@ -454,3 +454,5 @@ Acabamento D-092: 1551d12 limita a lista ao cartão e testa 11 pontos sobreposto
 ## D-093 — TP-18, TP-08, TP-19 e esclarecimento TP-20
 
 Pedido expresso do responsável → desktop-notifications.js (cancelamentos intencionais), painel.css (indicadores em linhas), desktop.js/desktop-request.js (consulta imediata, limitada e cancelável). Regressão tests/panel-async-browser.cjs adicionada à CI; demais fluxos preservados. TP-20 confirmado como municipal; nenhum cadastro reclassificado. [Aceite e publicação](../05-qualidade/PAINEL_ASSINCRONO_2026-11-11.md). Base TXT, servidor e coletor intactos.
+
+Publicação D-093: fff4869; painel f43d0101-aca7-465e-a666-ad4981405f62, 100%, 11/11/2026 07:40:59 Fortaleza. Cinco roteiros de navegador e 14 testes de servidor aprovados; 50 verificações HTTP e conferência root real. Quatro assets, sem mudanças no coletor ou D1.
