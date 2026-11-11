@@ -33,4 +33,8 @@ Ao testar redimensionamento, foi identificado que o primeiro desenho de caminhos
 
 ## Publicação
 
-Resultado da publicação e conferência real registrado após deploy. Versão anterior do painel para rollback: f43d0101-aca7-465e-a666-ad4981405f62. Coletor anterior: 91ba6200-d080-4026-8e92-7042bd67f86e. Nenhum dado ou incidente de produção usado como teste de escrita. Fases e decisões pendentes continuam preservadas.
+Publicado em 11/11/2026 às 07:57:55 (Fortaleza), versão 00c07426-6655-4240-9c68-b77ce69016d6, 100% do tráfego. Commit de implementação: 37d5690. Build desktop, dry-run, check:docs, check:repository (629 arquivos) e verificação HTTP real (50/50) aprovados. Assets e Worker publicados juntos; cron e bindings existentes preservados.
+
+Versão anterior do painel para rollback: f43d0101-aca7-465e-a666-ad4981405f62. Coletor confirmado sem nova publicação: 91ba6200-d080-4026-8e92-7042bd67f86e, 100%, implantação de 10/11/2026 às 21:33:34 (Fortaleza). Nenhum dado ou incidente de produção usado como teste de escrita. Fases e decisões pendentes continuam preservadas.
+
+Ao recarregar o painel real após publicar, a sessão redirecionou ao login. Nova entrada do responsável solicitada para a conferência visual autenticada. Essa conferência não é declarada concluída antes de observar os dados reais.
