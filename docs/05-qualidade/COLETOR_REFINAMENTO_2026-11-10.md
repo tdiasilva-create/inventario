@@ -36,4 +36,18 @@ Cobertos nesta entrega: diagnóstico da conclusão manual, separação entre ras
 
 ## Publicação
 
-Registro de versão e verificação remota será acrescentado após deploy. Sem migração, seed, alteração de segredos/provedor ou teste que altere cadastros oficiais. Os dois Workers compartilham servidor; o painel recebe apenas a atualização compatível do backend.
+Publicação concluída: commit de implementação 329bb6e. Sem migração, seed, alteração de segredos/provedor ou teste que altere cadastros oficiais. Os dois Workers compartilham servidor; o painel recebe apenas a atualização compatível do backend.
+
+
+Versões reais confirmadas por deployments list (100% do tráfego):
+
+- Coletor: 4df19c82-0b07-4b31-b115-62b8fe94e7ad — 2026-11-11T00:02:20.372834Z.
+- Painel (servidor compartilhado): a8166f95-8c6b-4534-9df6-c1b342a51cdc — 2026-11-11T00:02:48.454143Z.
+
+Versões anteriores preservadas para rollback de código: coletor 274ecd9b-002e-4f79-a4b9-325fc26fece1; painel cffd8c33-7fec-4a60-8e5e-7a5699fdd885. Nenhuma migração foi necessária. Fotos continuam no Drive institucional; nenhum segredo foi alterado. Os dois agendamentos do painel foram preservados.
+
+Builds: coletor 55 assets, painel 86; dry-run dos dois aprovado. Scanner do índice Git: 614 arquivos, aprovado; links documentais e diff sem erros. Nove roteiros de navegador aprovados, incluindo panel-blocks-browser (57 fotografias e exportação de 58 equipamentos em fixture local). Nove verificações HTTP externas aprovadas: login 200, páginas/assets privados 302 para login, APIs privadas 401 sem sessão. Logs remotos e capturas permanecem na área privada/local, sem dados oficiais inseridos ou excluídos. A navegação autenticada detalhada foi exercitada em Worker/SQLite isolado; não se declara homologação física de celular nem conclusão de visita real.
+
+Acesso: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Antes de recarregar uma aba antiga, salvar o preenchimento em edição. Após atualizar, abrir Revisar visita e conferir as pendências por ficha.
