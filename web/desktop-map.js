@@ -15,7 +15,7 @@ function paintHardware(){
   if(pending||demands){
    const state=pending?'pending':'demand';
    if(!entry.notice){entry.notice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,riseOnHover:true,zIndexOffset:700,icon:window.L.divIcon({className:'hardware-map-notice',iconSize:[32,32],iconAnchor:[16,16],html:'<span class="hardware-map-halo" aria-hidden="true"></span><span class="hardware-map-badge" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.notice.on('click',()=>{context.onSelect(id);openHardware(id);});}
-   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();badge.dataset.state=state;badge.dataset.unitId=id;badge.style.setProperty('--unit-color',entry.color);const hint=pending?'Clique para escolher a providência':'Clique para acompanhar o atendimento';badge.setAttribute('aria-label',entry.label.textContent+' · '+hint);badge.title=entry.label.textContent+' · '+hint;badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click');}};
+   entry.notice.setLatLng(entry.marker.getLatLng());const badge=entry.notice.getElement();if(!badge)continue;badge.dataset.state=state;badge.dataset.unitId=id;badge.style.setProperty('--unit-color',entry.color);const hint=pending?'Clique para escolher a providência':'Clique para acompanhar o atendimento';badge.setAttribute('aria-label',entry.label.textContent+' · '+hint);badge.title=entry.label.textContent+' · '+hint;badge.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();entry.notice.fire('click');}};
   }else if(entry.notice){context.unitGroup.removeLayer(entry.notice);entry.notice=null;}
  }
 }
@@ -29,6 +29,7 @@ const basemaps={
 export function unmountMap(){
  generation++;
  if(!current)return;
+ collapseMap({restoreFocus:false});
  preference.camera={center:current.map.getCenter(),zoom:current.map.getZoom()};
  current.observer?.disconnect();current.map.remove();current=null;
 }
@@ -89,8 +90,9 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   if(preference.camera)map.setView(preference.camera.center,preference.camera.zoom,{animate:false});
   else frameMunicipality(context);
   if(focus)focusUnit(focus);
+  paintHardware();
   L.control.scale({position:'bottomleft',imperial:false,maxWidth:100}).addTo(map);
-  context.observer=new ResizeObserver(()=>map.invalidateSize({pan:false}));context.observer.observe(container);
+  context.observer=new ResizeObserver(()=>map.invalidateSize({pan:!!context.expanded,animate:false}));context.observer.observe(container);
   const update=()=>{container.dataset.mapZoom=String(map.getZoom());};map.on('zoomend',update);update();
   container.dataset.markerCount=String(context.markerCount);container.dataset.exampleCount=String(context.exampleCount);container.dataset.mapReady='true';
   switchBase();updateBoundaryButton();updateExamplesButton();
@@ -118,6 +120,42 @@ export function updateMarkers(units,selected){
 }
 export function focusUnit(id){const entry=current?.markers.get(id);if(!entry){if(current)frameMunicipality(current);return false;}current.map.setView(entry.marker.getLatLng(),15,{animate:false});entry.marker.openTooltip();return true;}
 export function zoomMap(direction){if(current)direction>0?current.map.zoomIn():current.map.zoomOut();}
+// PAN-02: ampliar o mesmo mapa, preservando seleção, marcadores e atualizações.
+export function expandMap(){
+ const context=current,panel=context?.container.closest('.panorama .map-panel');
+ if(!panel||context.expanded)return;
+ const previous={center:context.map.getCenter(),zoom:context.map.getZoom(),wheel:context.map.scrollWheelZoom.enabled(),focus:document.activeElement,background:[]};
+ context.expanded=previous;
+ for(let node=panel;node.parentElement&&node!==document.body;node=node.parentElement){
+  for(const sibling of node.parentElement.children){if(sibling===node||sibling.inert)continue;sibling.inert=true;previous.background.push(sibling);}
+ }
+ panel.classList.add('map-expanded');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+ document.body.classList.add('map-expanded-open');
+ context.map.invalidateSize({pan:false});context.map.setView(previous.center,previous.zoom,{animate:false});
+ context.map.scrollWheelZoom.enable();
+ previous.onKey=e=>{
+  // Diálogos de hardware/fotos continuam na camada superior, com seu próprio foco.
+  if(document.querySelector('dialog[open]'))return;
+  if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();collapseMap();return;}
+  if(e.key!=='Tab')return;
+  const focusable=[...panel.querySelectorAll('button:not([disabled]),a[href],summary,[tabindex]:not([tabindex="-1"])')].filter(n=>n.getClientRects().length);
+  const first=focusable[0],last=focusable.at(-1),active=document.activeElement;
+  if(!panel.contains(active)||(e.shiftKey?active===first:active===last)){e.preventDefault();(e.shiftKey?last:first)?.focus();}
+ };
+ document.addEventListener('keydown',previous.onKey,true);
+ panel.querySelector('[data-action="map-collapse"]').focus({preventScroll:true});
+}
+export function collapseMap({restoreFocus=true}={}){
+ const context=current,previous=context?.expanded;if(!previous)return;
+ const panel=context.container.closest('.map-panel');
+ delete context.expanded;document.removeEventListener('keydown',previous.onKey,true);
+ panel.classList.remove('map-expanded');panel.removeAttribute('role');panel.removeAttribute('aria-modal');
+ document.body.classList.remove('map-expanded-open');
+ for(const node of previous.background)node.inert=false;
+ context.map.scrollWheelZoom[previous.wheel?'enable':'disable']();
+ context.map.invalidateSize({pan:false});context.map.setView(previous.center,previous.zoom,{animate:false});
+ if(restoreFocus&&previous.focus?.isConnected)previous.focus.focus({preventScroll:true});
+}
 function frameMunicipality(context){
  context.map.fitBounds(context.boundary.getBounds(),{padding:[24,32],maxZoom:12,animate:false});
 }

@@ -25,7 +25,7 @@ import {metricIcon} from './metric-icons.js';
 import {unitTypes,isOutOfScope} from './unit-schema.js';
 import {unitMapLegend} from './unit-map-palette.js';
 import {collectorUrl,authEnabled} from './runtime-config.js';
-import {mountMap,unmountMap,zoomMap,fitMap,changeBasemap,toggleMapBoundary,toggleMapExamples} from './desktop-map.js';
+import {mountMap,unmountMap,zoomMap,fitMap,changeBasemap,toggleMapBoundary,toggleMapExamples,expandMap,collapseMap} from './desktop-map.js';
 import {sampleUnits,categories,regionShapes} from './desktop-data.js';
 const authUser=authEnabled?await fetch('/api/auth/me').then(r=>r.ok?r.json():null):null;
 let catalogue=[],catalogueLoaded=false,inventory={equipment:[],visits:[],environments:0},inventoryError='';
@@ -77,7 +77,7 @@ function stats(){
 }
 function mapTitle(){if(state.page==='Mapa da Rede')return '';return '<div class="panel-title"><div><h3>'+icon('pin')+'Mapa da Rede Municipal de Educação</h3><small>Paço do Lumiar</small></div></div>';}
 function mapPanel(){
- return '<section class="panel map-panel" aria-label="Mapa de Paço do Lumiar">'+mapTitle()+unitMapLegend()+'<div class="map-canvas" id="municipal-map" role="region" aria-label="Mapa navegável de Paço do Lumiar" tabindex="0"></div><div class="map-tools"><button class="icon-button" data-action="zoom-in" aria-label="Ampliar mapa">'+icon('plus')+'</button><button class="icon-button" data-action="zoom-out" aria-label="Reduzir mapa">'+icon('minus')+'</button><button class="icon-button" data-action="reset-map" aria-label="Enquadrar mapa">'+icon('target')+'</button></div><div class="cartography-controls" aria-label="Camadas do mapa"><button data-action="map-base" data-map-base="satellite" aria-pressed="false">Satélite</button><button data-action="map-base" data-map-base="streets" aria-pressed="true">Ruas</button><button data-action="map-boundary" aria-pressed="false">Limite do município</button>'+(state.page==='Panorama'?'<button data-action="map-expand" aria-label="Ampliar área do mapa">'+icon('fullscreen')+'</button>':'')+'</div><button class="map-info" data-action="map-info" aria-label="Sobre os dados do mapa">i</button><div class="cartography-status" role="status">Carregando cartografia…</div></section>';
+ return '<section class="panel map-panel" aria-label="Mapa de Paço do Lumiar">'+mapTitle()+unitMapLegend()+'<div class="map-canvas" id="municipal-map" role="region" aria-label="Mapa navegável de Paço do Lumiar" tabindex="0"></div><div class="map-tools"><button class="icon-button" data-action="zoom-in" aria-label="Ampliar mapa">'+icon('plus')+'</button><button class="icon-button" data-action="zoom-out" aria-label="Reduzir mapa">'+icon('minus')+'</button><button class="icon-button" data-action="reset-map" aria-label="Enquadrar mapa">'+icon('target')+'</button></div><div class="cartography-controls" aria-label="Camadas do mapa"><button data-action="map-base" data-map-base="satellite" aria-pressed="false">Satélite</button><button data-action="map-base" data-map-base="streets" aria-pressed="true">Ruas</button><button data-action="map-boundary" aria-pressed="false">Limite do município</button>'+(state.page==='Panorama'?'<button data-action="map-expand" aria-label="Ampliar área do mapa" aria-haspopup="dialog" title="Ampliar mapa e usar zoom pela roda do mouse">'+icon('fullscreen')+'</button><button data-action="map-collapse" title="Restaurar tamanho, posição e zoom anteriores">← Voltar ao Panorama</button>':'')+'</div><button class="map-info" data-action="map-info" aria-label="Sobre os dados do mapa">i</button><div class="cartography-status" role="status">Carregando cartografia…</div></section>';
 }
 function heatColor(value,max){const t=value/max;return `hsl(${Math.round(t*137)} 63% ${t>.65?47:61}%)`;}
 function matrixPanel(expanded=false){
@@ -243,7 +243,8 @@ document.addEventListener('click',e=>{
  if(a==='layers'||a==='map-boundary'){toggleMapBoundary();return;}
  if(a==='map-examples'){toggleMapExamples();return;}
  if(a==='map-base'){changeBasemap(b.dataset.mapBase);return;}
- if(a==='map-expand'){navigate('Mapa da Rede');return;}
+ if(a==='map-expand'){if(state.page==='Panorama')expandMap();else navigate('Mapa da Rede');return;}
+ if(a==='map-collapse'){collapseMap();return;}
  if(a==='map-info'){dialog('Mapa de Paço do Lumiar','<p>Consulte as unidades com coordenadas cadastradas. Use Satélite ou Ruas para alterar a visualização. A cartografia depende de conexão com a internet.</p>');return;}
  if(a==='filters'){
   dialog('Filtros avançados',`<p>Filtre as unidades cadastradas por polo, tipo e situação.</p>${select('Regional','region',['Todas',...new Set(catalogue.map(u=>u.region).filter(Boolean))])}${select('Tipo de Unidade','type',unitTypes.length?['Todas',...new Set(catalogue.map(u=>u.unit_type).filter(Boolean))]:['Todas'])}${select('Situação','status',['Todas','Ativa','Inativa'])}${btn('Limpar filtros','clear-filters')}<p>Os filtros usam os cadastros da administração.</p>`);return;

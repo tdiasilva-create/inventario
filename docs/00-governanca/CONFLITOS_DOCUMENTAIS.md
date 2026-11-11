@@ -98,3 +98,7 @@ O pacote externo é fonte de diagnóstico, não aprovação automática. CL-08 r
 ## D-090 — contagem sobreposta intencional e dados escolares
 
 D-066/D-068 preservam os tipos distintos no cadastro, mas D-090 manda contar militares dentro de Escolas municipais e explicitar Das quais militares. Não somar os dois cartões nem alterar o tipo real; creches continuam separadas. Números históricos no relatório externo não são constantes oficiais do sistema. A planilha contém dados de múltiplas fontes e setores: somente cadastro escolar foi aprovado, sem importação ou conciliação automática. CONTRATO não entra no esquema; quantidade de servidores contratados é conceito distinto. Campos antigos e fonte/data são reaproveitados; fotografias, equipamentos e internet continuam no inventário, sem cadastros duplicados.
+
+## D-091 — ambiguidade resolvida no pedido do Panorama
+
+PAN-02 foi confirmado como ampliar o mapa e habilitar a roda, não somente ativar zoom. PAN-05 estava marcado A sem descrição: responsável confirmou manter como está. PAN-03 interpretado e comunicado como 30% menor (70% do tamanho anterior). Nenhum item desmarcado é removido ou transferido.

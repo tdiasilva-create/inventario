@@ -229,3 +229,7 @@ Implementar/publicar correções descritas no [aceite D-082](../05-qualidade/TOU
 - [ ] Outros tipos de unidade, indicadores pedagógicos e histórico por ano seguem fora do escopo. Fases 4/5 não retomadas.
 
 [Contrato e limites](../04-dados-apis/CADASTRO_ESCOLAS_D090.md).
+
+## D-091 — decisões do Panorama
+
+PAN-02 esclarecido: ampliar e habilitar roda; PAN-05 esclarecido: manter matriz. Não há decisão funcional pendente neste lote. Aceite visual do responsável após publicação ainda a conferir. As demais decisões e fases não foram antecipadas.

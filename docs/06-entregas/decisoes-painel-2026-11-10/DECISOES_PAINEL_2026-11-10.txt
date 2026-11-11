@@ -1,0 +1,38 @@
+﻿FORMULÁRIO DE DECISÕES — ABAS E ITENS DO PAINEL (decisões do responsável)
+Base: SEMED_PAINEL_ABAS_E_ITENS_PARA_REVISAO_2026-11-10.txt (levantamento do Codex, publicação af9c6bf).
+Preenche: responsável.  Lê: desenvolvimento (Codex).  Data: 10/11/2026
+Exportado em: 10/11/2026 22:22
+
+RESUMO: 3 itens marcados (R 0 · A 3 · T 0) · abas no menu: 0 · novos: 0 · repetições respondidas: 0/14
+ATENÇÃO: 1 marcação(ões) A/T sem descrição — o desenvolvimento deve PERGUNTAR antes de fazer.
+REGRA: tudo que NÃO aparece neste arquivo fica exatamente como está.
+Legenda: R = retirar da tela · A = alterar → como quero que fique · T = transferir → para: tela
+
+======================================================================
+B. PANORAMA [PAN]
+======================================================================
+[A] PAN-02  Controles do mapa (zoom, ruas/satélite, limite do município, tela cheia)  → o botao de tela cheia quero que acione o zoom atraves srool do mouse , e que tenho um botao de voltar para o estado inicial
+[A] PAN-03  "Escolas offline" / "Escolas online" sobre o mapa  → esses indicativos devem se mostrar menores 30% do seu tamanho atual
+[A] PAN-05  Matriz Equipamentos por unidade (computadores, notebooks, tablets, projetores, impressoras, TVs, rede, outros, total)  → (FALTA DESCREVER — perguntar ao responsável)
+
+======================================================================
+SEM ALTERAÇÕES (manter como está)
+======================================================================
+A. Menu e estrutura geral · C. Coletas em andamento · D. Mapa da rede · E. Unidades · F. Ambientes · G. Computadores · H. Log de comunicação · I. Equipamentos · J. Ocorrências · K. Relatórios · L. Central de demandas · M. Planejamento · N. Exportar dados · O. Cadastro de unidades · P. Usuários · Q. Operadores × unidades · R. Segurança e auditoria · S. Configurações · T. Detalhe da unidade · U. Outras telas · V. Repetições — responda com uma palavra ou o nome da tela · W. Regras de acesso · X. Prioridade e entrega
+
+======================================================================
+PARA O DESENVOLVIMENTO — COMO LER ESTE ARQUIVO (não apagar)
+======================================================================
+1. Linha sem marca = manter exatamente como está. Nada além do marcado deve mudar.
+2. R = retirar da interface. Não apagar dados, rotas, nem permissões no servidor; não remover testes que
+   cobrem a regra de negócio — só a exibição. Registrar em DECISOES.md o que saiu da tela.
+3. A = alterar conforme o texto após "→". Se o texto não bastar para implementar, PERGUNTAR; não inferir.
+4. T = mover para a tela indicada, com os mesmos dados e a mesma fonte; a tela de origem deixa de mostrar.
+5. "+ NOVO" só é implementável quando "de onde vem" aponta um dado que já existe (cadastro, inventário
+   publicado, telemetria, demandas, ocorrências). Se não existir, responder com o que seria preciso criar
+   (campo, migração, coleta) e aguardar decisão — não inventar classificação nem número.
+6. "ABA: R" = retirar do menu; a rota pode continuar acessível por atalho só se o responsável disser.
+7. Respeitar D-066 (tipos contados separadamente), D-087 (cores), D-090 (campos escolares opcionais),
+   e a regra de que remover botão não altera permissão no servidor.
+8. Antes de codificar: devolver um resumo de 1 linha por código marcado ("PAN-12: retirado") para o
+   responsável confirmar; depois implementar por fases pequenas com captura de tela antes/depois.
