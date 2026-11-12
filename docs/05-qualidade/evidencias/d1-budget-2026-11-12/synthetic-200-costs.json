@@ -1,0 +1,295 @@
+{
+  "at": "2026-11-12T22:55:06.597Z",
+  "runtime": "Miniflare/workerd isolated D1, not current production",
+  "dataset": "200 agents, 76 units, 6000 historical snapshots, synthetic",
+  "pairs": [
+    {
+      "name": "pending.collections",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 1
+        },
+        "duration": 1,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 6018,
+        "rows_written": 0
+      },
+      "resultCount": 2,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 5599232,
+        "rows_read": 3,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 100,
+      "plan": [
+        "SCAN panel_collection_counts"
+      ]
+    },
+    {
+      "name": "fleet.catalogue",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 3
+        },
+        "duration": 3,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 7514,
+        "rows_written": 0
+      },
+      "resultCount": 76,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 5599232,
+        "rows_read": 224,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 97,
+      "plan": [
+        "SCAN u",
+        "SEARCH c USING INDEX sqlite_autoindex_computer_context_1 (target_id=?) LEFT-JOIN",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH i USING COVERING INDEX inspection_unit_state (unit_id=? AND state=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ]
+    },
+    {
+      "name": "fleet.presence",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 3
+        },
+        "duration": 3,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 1059,
+        "rows_written": 0
+      },
+      "resultCount": 256,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 2
+        },
+        "duration": 2,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 5599232,
+        "rows_read": 859,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 18.9,
+      "plan": [
+        "COMPOUND QUERY",
+        "LEFT-MOST SUBQUERY",
+        "SCAN equipments",
+        "SEARCH l USING INDEX uq_agent_link_active_equipment (equipment_id=?) LEFT-JOIN",
+        "SEARCH d USING INDEX sqlite_autoindex_agent_devices_1 (device_id=?) LEFT-JOIN",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN",
+        "UNION ALL",
+        "SCAN miscellaneous_equipments",
+        "SEARCH l USING INDEX uq_agent_link_active_equipment (equipment_id=?) LEFT-JOIN",
+        "SEARCH d USING INDEX sqlite_autoindex_agent_devices_1 (device_id=?) LEFT-JOIN",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN"
+      ]
+    },
+    {
+      "name": "monitor.presence",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 4
+        },
+        "duration": 4,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 1600,
+        "rows_written": 0
+      },
+      "resultCount": 200,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 2
+        },
+        "duration": 2,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 5599232,
+        "rows_read": 1000,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 37.5,
+      "plan": [
+        "SCAN d",
+        "SEARCH l USING INDEX uq_agent_link_active_device (device_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_equipments_1 (id=?)",
+        "SEARCH u USING INDEX sqlite_autoindex_units_1 (id=?)",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN"
+      ]
+    },
+    {
+      "name": "monitor.snapshots",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 9
+        },
+        "duration": 9,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 13202,
+        "rows_written": 0
+      },
+      "resultCount": 1,
+      "after": {
+        "rows_read": 622,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 95.3,
+      "plan": [
+        "MERGE (UNION ALL)",
+        "LEFT",
+        "MATERIALIZE bounds",
+        "SCAN 20 CONSTANT ROWS",
+        "SCAN a",
+        "SEARCH c USING INDEX sqlite_autoindex_agent_current_snapshot_1 (device_id=?)",
+        "SEARCH s USING INDEX sqlite_autoindex_agent_inventory_snapshots_1 (inventory_id=?)",
+        "USE TEMP B-TREE FOR ORDER BY",
+        "RIGHT",
+        "SCAN a",
+        "SEARCH s USING COVERING INDEX agent_snap_monitor_range (device_id=? AND equipment_id=? AND <expr>>?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ]
+    },
+    {
+      "name": "demands.pending",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 1
+        },
+        "duration": 1,
+        "changes": 0,
+        "last_row_id": 1,
+        "changed_db": false,
+        "size_after": 4755456,
+        "rows_read": 1,
+        "rows_written": 0
+      },
+      "resultCount": 0,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 5599232,
+        "rows_read": 1,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 0,
+      "plan": [
+        "SCAN service_requests USING INDEX service_requests_pending_unit"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "path": "/api/inventory/panel-status",
+      "status": 200,
+      "d1_calls": 5,
+      "d1_rows_read": 9,
+      "d1_rows_written": 0
+    },
+    {
+      "path": "/api/operations/units",
+      "status": 200,
+      "d1_calls": 4,
+      "d1_rows_read": 1086,
+      "d1_rows_written": 0
+    },
+    {
+      "path": "/api/operations/computers?presence=lost",
+      "status": 200,
+      "d1_calls": 3,
+      "d1_rows_read": 2349,
+      "d1_rows_written": 0
+    },
+    {
+      "path": "/api/dispatch/map",
+      "status": 200,
+      "d1_calls": 2,
+      "d1_rows_read": 3,
+      "d1_rows_written": 0
+    },
+    {
+      "path": "cron:monitor",
+      "d1_calls": 7,
+      "d1_rows_read": 1832,
+      "d1_rows_written": 2
+    }
+  ]
+}

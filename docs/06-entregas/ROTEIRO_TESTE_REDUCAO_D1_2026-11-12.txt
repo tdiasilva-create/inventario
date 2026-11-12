@@ -1,0 +1,49 @@
+SEMED — CONFERÊNCIA APÓS REDUÇÃO DO CONSUMO D1
+Data: 12/11/2026. Usar após confirmação da publicação.
+
+Painel:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+Objetivo: conferir que as funções permanecem e registrar lentidão/falhas.
+Não excluir unidades/equipamentos nem criar chamados fictícios na base oficial.
+
+1. Entre como root e abra o Panorama. Aguarde os indicadores e o mapa.
+   Anote horário de Fortaleza e eventual mensagem. Uma falha de consulta não
+   deve ser apresentada como zero escolas ou ausência de demandas.
+
+2. Abra as listas de escolas online e offline. Nomes e contagem devem concordar
+   com os filtros. Troque de aba do navegador e volte: a atualização deve retomar.
+
+3. Abra Computadores. Selecione uma unidade e um computador com agente.
+   Confira hostname, ambiente, último contato, IP público e IP interno separados.
+   Os filtros de toda a rede devem manter paginação e identificação dos itens.
+
+4. Na Central, confira demandas existentes. No mapa, unidades com demanda
+   continuam com o anel. Se houver atendimento real ativo, confira imagem/nome
+   do técnico e rota pelas ruas. Não deve aparecer uma reta quando o cálculo falhar.
+   Ao concluir um atendimento real, a localização/rota desse atendimento deve sair.
+
+5. Se houver alerta real de hardware pendente, abra pelo sino e confira antes,
+   depois, unidade e equipamento. Não aceite um alerta só para testar.
+   Se for executar troca física planejada, registre horário e aguarde o agente
+   enviar inventário; o monitor compara a cada minuto após o recebimento.
+
+6. Perda de comunicação: status recente continua usando 17 minutos. Sino não
+   avisa perda; o log avisa somente após mais de 48 horas. Não é preciso deixar
+   uma máquina desconectada por 48 horas para esta conferência cotidiana.
+
+7. Abra uma coleta real em andamento, sem alterar respostas para testar.
+   Confirme que o rascunho e as fotos existentes continuam acessíveis.
+   Na próxima operação necessária, salve normalmente e confira a confirmação.
+
+8. Relate: tela/URL, horário, ação feita, resultado esperado, resultado observado,
+   mensagem exata e screenshot. Não envie senhas, tokens ou códigos de instalação.
+
+PARA A VERIFICAÇÃO TÉCNICA
+
+- Comparar leituras/escritas da conta por dia UTC, não apenas janela móvel de 24h.
+- Registrar quantidade de agentes, painéis e técnicos ativos e tempo de uso.
+- Conferir Server-Timing de pequena amostra: d1_rows_read/d1_rows_written.
+- Conferir saúde do cron, sem gerar alertas ou coordenadas falsos na produção.
+- Primeiro dia completo ainda precisa ser observado; ensaio local não garante
+  permanência ilimitada no gratuito. Nenhum plano pago foi habilitado.

@@ -2,6 +2,7 @@ import {hardwareSummary,notificationJoins,notificationColumns,notificationItem} 
 import {readPendingSummary} from './pending-indicators.mjs';
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {communicationLog,communicationLossSeconds} from './communication-log.mjs';
+import {readPendingSnapshots} from './monitoring-queries.mjs';
 const parse=s=>s?JSON.parse(s):{};
 const clean=v=>typeof v==='string'?v.trim().replace(/\s+/g,' ').toUpperCase():v;
 const serial=v=>v?.reliability==='ok'&&typeof v.value==='string'&&v.value.trim()?clean(v.value):null;
@@ -33,13 +34,22 @@ export function hardwareComponents(sections){
 export const componentNames={gpu:'Adaptadores de vídeo (PCI)',cpu:'Processador',memory_total:'Memória total',memory_types:'Tipos dos módulos de memória',memory_modules:'Módulos de memória',memory_serials:'Séries da memória',storage:'Discos físicos',storage_serials:'Séries dos discos',board:'Placa-mãe',board_serial:'Série da placa-mãe'};
 const active=`FROM agent_equipment_links l JOIN agent_devices d ON d.device_id=l.device_id JOIN equipments e ON e.id=l.equipment_id JOIN units u ON u.id=e.unit_id LEFT JOIN agent_presence p ON p.device_id=d.device_id WHERE l.ended_at IS NULL AND d.state='linked' AND u.active=1`;
 const liveSelect=`SELECT l.link_id,l.device_id,l.equipment_id,l.linked_at,e.unit_id,e.environment_id,e.position_label,e.published_json,e.data_json,u.name AS unit_name,(SELECT name FROM environments WHERE id=e.environment_id AND unit_id=e.unit_id) AS environment_name,(SELECT name FROM equipment_names WHERE equipment_id=e.id AND unit_id=e.unit_id) AS display_name,(SELECT json_extract(s.sections_json,'$.system.data.hostname') FROM agent_current_snapshot c JOIN agent_inventory_snapshots s ON s.inventory_id=c.inventory_id WHERE c.device_id=d.device_id) AS hostname,d.state,p.data_json AS presence_json ${active}`;
+export const livePresenceSql=`SELECT l.link_id,l.device_id,l.equipment_id,e.unit_id,d.state,p.data_json AS presence_json ${active}`;
 // Uma rodada em lote; sem painel aberto também funciona. Repetições/concorrrência não duplicam eventos.
 export async function runAgentMonitoring(env,now=Date.now()){
- const db=env.DB,threshold=presenceThreshold(env),rows=(await db.prepare(liveSelect).all()).results;
+ const db=env.DB,threshold=presenceThreshold(env),rows=(await db.prepare(livePresenceSql).all()).results;
  const cursors=new Map((await db.prepare('SELECT * FROM agent_monitor_cursors').all()).results.map(r=>[r.device_id,r]));
- const snapshots=(await db.prepare(`SELECT s.*,l.link_id FROM agent_inventory_snapshots s JOIN agent_equipment_links l ON l.device_id=s.device_id AND l.equipment_id=s.equipment_id AND l.ended_at IS NULL JOIN equipments e ON e.id=s.equipment_id JOIN units u ON u.id=e.unit_id LEFT JOIN agent_monitor_cursors m ON m.device_id=s.device_id JOIN agent_current_snapshot c ON c.device_id=s.device_id JOIN agent_devices d ON d.device_id=s.device_id WHERE u.active=1 AND d.state='linked' AND ((m.device_id IS NULL OR m.link_id<>l.link_id) AND s.inventory_id=c.inventory_id OR (m.link_id=l.link_id AND CAST((julianday(s.collected_at)-2440587.5)*86400000+0.5 AS INTEGER)>m.collected_ms)) ORDER BY julianday(s.collected_at),s.inventory_id LIMIT 200`).all()).results;
+ const snapshots=await readPendingSnapshots(db,rows,cursors);
  const statements=[],q=(sql,...args)=>db.prepare(sql).bind(...args);
  const open=(await db.prepare("SELECT * FROM agent_notifications WHERE kind='communication_lost' AND resolved_at IS NULL").all()).results;
+ const openKeys=new Set(open.map(n=>n.event_key));
+ // Fetch detailed context only when processing new snapshots or a new loss.
+ // The steady-state minute no longer reads every hardware JSON and room/name.
+ const needsContext=new Set(snapshots.map(s=>s.device_id));
+ for(const r of rows){const p=parse(r.presence_json);if(presenceState(r,p,now,communicationLossSeconds)==='no_recent_communication'&&!openKeys.has('loss|'+r.link_id+'|'+p.last_live_contact_at))needsContext.add(r.device_id);}
+ const contextIds=[...needsContext],context=new Map();
+ for(let i=0;i<contextIds.length;i+=50){const ids=contextIds.slice(i,i+50);for(const r of (await db.prepare(liveSelect+` AND d.device_id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all()).results)context.set(r.device_id,r);}
+ for(const r of rows){const detail=context.get(r.device_id);if(detail?.link_id===r.link_id)Object.assign(r,detail);}
  const links=new Map(rows.map(r=>[r.link_id,r]));
  for(const n of open){const r=links.get(n.link_id),p=parse(r?.presence_json),state=presenceState(r,p,now,threshold);
   if(!r||state!=='no_recent_communication'||p.last_live_contact_at!==n.observed_at){
@@ -49,13 +59,14 @@ export async function runAgentMonitoring(env,now=Date.now()){
  }
  for(const r of rows){const p=parse(r.presence_json);if(presenceState(r,p,now,communicationLossSeconds)!=='no_recent_communication')continue;
   const key='loss|'+r.link_id+'|'+p.last_live_contact_at;
+  if(openKeys.has(key))continue;
   // Confere novamente o contato no momento da escrita: heartbeat concorrente não gera perda falsa.
   statements.push(q(`INSERT OR IGNORE INTO agent_notifications(id,event_key,device_id,link_id,equipment_id,unit_id,kind,observed_at,detected_at,details_json) SELECT ?,?,?,?,?,?,'communication_lost',?,?,? WHERE EXISTS(SELECT 1 FROM agent_presence p JOIN agent_equipment_links l ON l.device_id=p.device_id JOIN agent_devices d ON d.device_id=l.device_id WHERE l.link_id=? AND l.ended_at IS NULL AND d.state='linked' AND p.data_json=?)`,crypto.randomUUID(),key,r.device_id,r.link_id,r.equipment_id,r.unit_id,p.last_live_contact_at,now,JSON.stringify({threshold_seconds:communicationLossSeconds,context:{unit_name:r.unit_name,environment_name:r.environment_name||parse(r.data_json).environmentName||null,environment_id:r.environment_id,position_label:r.position_label,display_name:r.display_name,hostname:r.hostname}}),r.link_id,r.presence_json));
  }
  const grouped=new Map();for(const s of snapshots){if(!grouped.has(s.device_id))grouped.set(s.device_id,[]);grouped.get(s.device_id).push(s);}
  for(const [deviceId,list]of grouped){const row=rows.find(r=>r.device_id===deviceId);if(!row)continue;
   const old=cursors.get(deviceId),same=old?.link_id===row.link_id,components=same?parse(old.components_json):{},changes=[];let watermark=same?old.collected_ms:0;
-  for(const s of list){const ms=Date.parse(s.collected_at);if(!Number.isFinite(ms)||ms<=watermark||ms>now+300000)continue;
+  for(const s of list){const ms=Date.parse(s.collected_at);if(s.link_id!==row.link_id||!Number.isFinite(ms)||ms<=watermark||ms>now+300000)continue;
    const next=hardwareComponents(parse(s.sections_json)),diff=[];
    for(const [k,value]of Object.entries(next)){if(components[k]&&JSON.stringify(components[k].value)!==JSON.stringify(value))diff.push({component:k,label:componentNames[k],before:components[k].value,after:value,previous_collected_at:components[k].at});components[k]={value,at:s.collected_at};}
    if(diff.length)changes.push({snapshot:s,changes:diff});watermark=ms;
@@ -83,7 +94,7 @@ export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
  const offset=Number(url.searchParams.get('offset')||0),ids=(url.searchParams.get('equipmentIds')||'').split(',').filter(Boolean);
  if(!Number.isSafeInteger(offset)||offset<0||ids.length>50||ids.some(id=>!/^[-a-f0-9]{36}$/i.test(id)))return fail('Filtro inválido.',422);
  if(url.pathname==='/api/inventory/panel-status'){
-  const [hardware,health,statuses]=await Promise.all([hardwareSummary(db),db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),ids.length?db.prepare(liveSelect+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})]);
+  const [hardware,health,statuses]=await Promise.all([hardwareSummary(db),db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),ids.length?db.prepare(livePresenceSql+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})]);
   const pending=await readPendingSummary(db,hardware.pending);
   return json({pending,monitoring:{hardware,server_time:new Date(now).toISOString(),monitor_last_success_at:health?.last_success_at??null,statuses:[...ids.filter(id=>!statuses.results.some(r=>r.equipment_id===id)).map(id=>({equipment_id:id,state:'not_linked',last_live_contact_at:null})),...statuses.results.map(r=>({equipment_id:r.equipment_id,state:presenceState(r,parse(r.presence_json),now,presenceThreshold(env)),last_live_contact_at:parse(r.presence_json).last_live_contact_at??null}))]}});
  }
@@ -93,7 +104,7 @@ export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
   db.prepare(`SELECT ${notificationColumns},r.read_at ${joins} WHERE n.kind='hardware_change' ${onlyUnread?'AND r.read_at IS NULL':''} ORDER BY n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(user.id,offset).all(),
   db.prepare(`SELECT COUNT(*) AS total,SUM(r.read_at IS NULL) AS unread ${joins} WHERE n.kind='hardware_change'`).bind(user.id).first(),
   db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),
-  ids.length?db.prepare(liveSelect+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})
+  ids.length?db.prepare(livePresenceSql+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})
  ]);
  const total=Number(onlyUnread?count.unread:count.total)||0;
  return json({hardware:await hardwareSummary(db),items:page.results.map(notificationItem),total,unread:Number(count.unread)||0,communication_lost:Number(count.communication_lost)||0,nextOffset:offset+page.results.length<total?offset+25:null,server_time:new Date(now).toISOString(),monitor_last_success_at:health?.last_success_at??null,statuses:[...ids.filter(id=>!statuses.results.some(r=>r.equipment_id===id)).map(id=>({equipment_id:id,state:'not_linked',last_live_contact_at:null})),...statuses.results.map(r=>({equipment_id:r.equipment_id,state:presenceState(r,parse(r.presence_json),now,presenceThreshold(env)),last_live_contact_at:parse(r.presence_json).last_live_contact_at??null}))]});

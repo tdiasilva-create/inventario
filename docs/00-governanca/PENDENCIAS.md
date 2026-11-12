@@ -350,3 +350,15 @@ D-106 — autorização recebida em 12/11/2026: responsável respondeu “Sim, u
 
 
 D-106 — resolvido: autorização do OSRM/FOSSGIS, migração 0028 e publicação real concluídas em 12/11/2026. Sem bloqueio de implantação. Conferência em campo com técnico ativo permanece como aceite de uso: no momento da checagem root havia zero posições recentes. Demais pendências Android/FCM e fases anteriores preservadas.
+
+## D-108 — consumo diário e recuperação após cota D1, 12/11/2026
+
+Plano gratuito mantido por decisão explícita. Pendentes: confirmar recuperação após reset, implementar/testar otimizações, medir linhas lidas/escritas por dia UTC e capacidade com cinco usuários e crescimento de agentes; conferir orçamento após publicação durante dias completos. [Plano e metas propostas](../06-entregas/PLANO_REDUCAO_CONSUMO_D1_GRATUITO_2026-11-12.txt). Limiares/avisos são propostas, não recursos ativos. Não houve deploy, migração, cobrança nem alteração de intervalos nesta entrega documental.
+
+D108 — avanço posterior: implementação local e 250 testes aprovados; rota,
+GPS, alertas e indicadores conferidos em navegador isolado. Migração/publicação
+autorizadas após reset; aguardando horário. Consumo da rede atual em produção
+e dia UTC completo continuam pendentes. Ensaio de crescimento não garante
+franquia para 200 agentes: cinco painéis por oito horas mais cron já projetam
+5,33 milhões de leituras, sem demais tráfegos. Não reduzir frequências nem
+contratar plano sem decisão posterior. Ver registro de qualidade D108.

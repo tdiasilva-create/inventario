@@ -1,8 +1,8 @@
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
-export function collectorFixture(){
+export function collectorFixture({beforeMigration}={}){
  const sqlite=new DatabaseSync(':memory:');
- for(const f of readdirSync('migrations').filter(f=>f.endsWith('.sql')).sort())sqlite.exec(readFileSync('migrations/'+f,'utf8'));
+ for(const f of readdirSync('migrations').filter(f=>f.endsWith('.sql')&&(!beforeMigration||f<beforeMigration)).sort())sqlite.exec(readFileSync('migrations/'+f,'utf8'));
  function prepare(sql,params=[]){params=params.map(p=>p instanceof ArrayBuffer?new Uint8Array(p):p);return {bind:(...p)=>prepare(sql,p),first:async()=>sqlite.prepare(sql).get(...params)||null,all:async()=>({results:sqlite.prepare(sql).all(...params)}),run:async()=>{const statement=sqlite.prepare(sql);if(statement.columns().length)return {results:statement.all(...params),meta:{changes:0}};const r=statement.run(...params);return {results:[],meta:{changes:Number(r.changes)}};}};}
  const db={prepare,batch:async statements=>{sqlite.exec('BEGIN');try{const results=[];for(const s of statements)results.push(await s.run());sqlite.exec('COMMIT');return results;}catch(e){sqlite.exec('ROLLBACK');throw e;}}};
  const root={id:crypto.randomUUID(),role:'root',username:'root'},operator={id:crypto.randomUUID(),role:'operador',username:'operador',displayName:'Operador · teste isolado'};

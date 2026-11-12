@@ -14,8 +14,9 @@ export const hardwarePendingFrom=`FROM agent_notifications n
  JOIN units u ON u.id=n.unit_id JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id
  LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id
  WHERE n.kind='hardware_change' AND hr.notification_id IS NULL`;
+export const collectionCountsSql='SELECT state,total FROM panel_collection_counts WHERE total>0';
 export async function readPendingSummary(db,hardwareTotal){
- const statements=[db.prepare(collectionCTE+' SELECT state,COUNT(*) AS total FROM pending GROUP BY state'),db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id")];
+ const statements=[db.prepare(collectionCountsSql),db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id")];
  if(hardwareTotal===undefined)statements.push(db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom));
  const [collections,demands,hardware]=await db.batch(statements);
  const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;

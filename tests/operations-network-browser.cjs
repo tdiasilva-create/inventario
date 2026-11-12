@@ -9,7 +9,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   f.sqlite.prepare('INSERT INTO agent_equipment_links(link_id,device_id,equipment_id,inspection_id,linked_by,linked_at,device_confirmed_at) VALUES(?,?,?,?,?,?,?)').run(crypto.randomUUID(),id,equipmentId,seed.visit,f.root.id,iso,iso);
   f.sqlite.prepare('INSERT INTO agent_presence(device_id,data_json,updated_at) VALUES(?,?,?)').run(id,JSON.stringify({last_live_contact_at:contact,last_reason_at:reason?new Date(Date.now()-contactAgo+1000).toISOString():contact,last_reason:reason||'periodic'}),iso);};
  device(seed.items[1].id,60000);device(seed.items[2].id,7200000);device(seed.items[3].id,5400000);device(seed.items[4].id,120000,'shutdown');
- const output='docs/05-qualidade/evidencias/tour-logica-2026-11-10';fs.mkdirSync(output,{recursive:true});
+ const output=process.env.SEMED_EVIDENCE_DIR||'docs/05-qualidade/evidencias/tour-logica-2026-11-10';fs.mkdirSync(output,{recursive:true});
  const shot=async name=>{await page.evaluate(()=>{const b=document.createElement('div');b.textContent='TESTE LOCAL · Dados sintéticos · Sem gravação em produção';b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#16191d;color:white;text-align:center;padding:5px;font:12px sans-serif;pointer-events:none';b.className='test-label';document.querySelectorAll('.test-label').forEach(n=>n.remove());document.body.append(b);});await page.screenshot({path:output+'/'+name+'.png'});};
  f.sqlite.prepare('UPDATE equipments SET unit_id=? WHERE id=?').run(f.ids.progress,seed.items[3].id);
  try{

@@ -8,7 +8,7 @@ const computerWhere="COALESCE(NULLIF(e.category,''),json_extract(e.data_json,'$.
 const joins=`FROM inventory_equipment_all e
  LEFT JOIN equipment_names n ON n.equipment_id=e.id AND n.unit_id=e.unit_id
  LEFT JOIN environments room ON room.id=e.environment_id AND room.unit_id=e.unit_id
- LEFT JOIN agent_equipment_links l ON l.link_id=(SELECT ll.link_id FROM agent_equipment_links ll WHERE ll.equipment_id=e.id AND ll.ended_at IS NULL ORDER BY ll.linked_at DESC,ll.link_id DESC LIMIT 1)
+ LEFT JOIN agent_equipment_links l ON l.equipment_id=e.id AND l.ended_at IS NULL
  LEFT JOIN agent_devices d ON d.device_id=l.device_id
  LEFT JOIN agent_presence p ON p.device_id=l.device_id
  LEFT JOIN agent_current_snapshot cs ON cs.device_id=l.device_id
@@ -22,6 +22,26 @@ const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,n.nam
  (SELECT COUNT(*) FROM service_requests sr WHERE sr.equipment_id=e.id AND sr.status!='Concluída') AS demands`;
 function item(row,env,now=Date.now()){const p=JSON.parse(row.presence_json||'{}');const {presence_json,device_state,...rest}=row;return {...rest,partial:!!row.partial,presence_state:row.device_id?presenceState({state:device_state},p,now,presenceThreshold(env)):'unlinked',last_contact_at:p.last_live_contact_at||null};}
 export const presenceGroup=st=>['communicating','communicating_with_failure'].includes(st)?'online':st==='no_recent_communication'?'lost':st==='unlinked'?'unlinked':'other';
+// An active link is unique by equipment (0014); no sorted correlated subquery.
+// The ribbon needs presence only, never snapshots, room names or enrollments.
+export const fleetPresenceSql=`SELECT e.unit_id,l.device_id,d.state,p.data_json AS presence_json
+ FROM inventory_equipment_all e
+ LEFT JOIN agent_equipment_links l ON l.equipment_id=e.id AND l.ended_at IS NULL
+ LEFT JOIN agent_devices d ON d.device_id=l.device_id
+ LEFT JOIN agent_presence p ON p.device_id=l.device_id
+ WHERE ${computerWhere}`;
+export const fleetCatalogueSql="SELECT u.id,u.name,u.unit_type,u.active,c.value AS computer_declaration,c.version AS context_version,EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='completed') AS collected FROM units u LEFT JOIN computer_context c ON c.target_id=u.id AND c.kind='unit' WHERE u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,u.id";
+export const networkPresenceSql=`SELECT e.id,e.unit_id,l.device_id,d.state AS device_state,p.data_json AS presence_json,
+ COALESCE(room.name,json_extract(e.data_json,'$.environmentName'),'Ambiente não informado') AS environment_name,
+ e.position_label,u.name AS unit_name
+ FROM inventory_equipment_all e
+ JOIN units u ON u.id=e.unit_id
+ LEFT JOIN environments room ON room.id=e.environment_id AND room.unit_id=e.unit_id
+ LEFT JOIN agent_equipment_links l ON l.equipment_id=e.id AND l.ended_at IS NULL
+ LEFT JOIN agent_devices d ON d.device_id=l.device_id
+ LEFT JOIN agent_presence p ON p.device_id=l.device_id
+ WHERE ${computerWhere} AND u.unit_type!='Escola conveniada'
+ ORDER BY u.name COLLATE NOCASE,environment_name,e.position_label,e.id`;
 export {computerWhere as computerWhereSql,joins as computerJoins,columns as computerColumns,item as computerItem};
 function text(value,max=200){return typeof value==='string'&&value.trim().length<=max?value.trim():null;}
 async function result(db,id){const r=await db.prepare('SELECT * FROM service_requests WHERE id=?').bind(id).first();return r?{...r,context:JSON.parse(r.context_json)}:null;}
@@ -38,21 +58,30 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   return json({pending:summary.filter(r=>r.status!=='Concluída').reduce((n,r)=>n+r.total,0),summary});
  }
  if(path==='/api/operations/units'&&request.method==='GET'){
-  const units=(await db.prepare("SELECT u.id,u.name,u.unit_type,u.active,c.value AS computer_declaration,c.version AS context_version,EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='completed') AS collected FROM units u LEFT JOIN computer_context c ON c.target_id=u.id AND c.kind='unit' WHERE u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,u.id").all()).results;
+  const units=(await db.prepare(fleetCatalogueSql).all()).results;
   // Compact presence records only: no technical snapshots, account lists or passwords in this response.
-  const rows=(await db.prepare(`SELECT e.unit_id,l.device_id,d.state,p.data_json AS presence_json ${joins} WHERE ${computerWhere}`).all()).results;
+  const rows=(await db.prepare(fleetPresenceSql).all()).results;
   const counts=new Map();for(const r of rows){const c=counts.get(r.unit_id)||{computers:0,online:0,lost:0,unlinked:0,other:0};c.computers++;const st=r.device_id?presenceState({state:r.state},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):'unlinked';if(['communicating','communicating_with_failure'].includes(st))c.online++;else if(st==='no_recent_communication')c.lost++;else if(st==='unlinked')c.unlinked++;else c.other++;counts.set(r.unit_id,c);}
   const pending=(await db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id").all()).results;
   return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});
  }
  if(path==='/api/operations/computers'&&request.method==='GET'){
   // 10/11/2026: sem unitId, lista os computadores de TODA a rede num estado de comunicação (pulso e ribbon do painel).
-  // O estado é calculado em JS como em /units; a paginação vem depois do filtro. Mesmas colunas da listagem por unidade.
+  // Classify compact records with the SAME presence function as /units, then
+  // hydrate ONLY this page. Do not load every technical snapshot/enrollment to
+  // display 60 computers. Invalid dates and the exact timeout keep JS semantics.
   const presence=s.get('presence')||'';
   if(!unitId&&['online','lost','unlinked','other'].includes(presence)){
-   const rows=(await db.prepare(`SELECT ${columns},u.name AS unit_name ${joins} JOIN units u ON u.id=e.unit_id WHERE ${computerWhere} AND u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,environment_name,e.position_label,e.id`).all()).results;
-   const all=rows.map(r=>item(r,env)).filter(i=>presenceGroup(i.presence_state)===presence),page=all.slice(offset,offset+60);
-   return json({unit:null,presence,items:page,total:all.length,offset,nextOffset:offset+page.length<all.length?offset+60:null,environments:[],server_time:new Date().toISOString()});
+   const now=Date.now(),rows=(await db.prepare(networkPresenceSql).all()).results;
+   const all=rows.map(r=>item(r,env,now)).filter(i=>presenceGroup(i.presence_state)===presence),selected=all.slice(offset,offset+60);
+   const details=selected.length?(await db.prepare(`SELECT ${columns},u.name AS unit_name ${joins} JOIN units u ON u.id=e.unit_id WHERE e.id IN (${selected.map(()=>'?').join(',')}) AND ${computerWhere} AND u.unit_type!='Escola conveniada'`).bind(...selected.map(r=>r.id)).all()).results:[];
+   const byId=new Map(details.map(r=>[r.id,item(r,env,now)])),page=selected.map(r=>{
+    const detail=byId.get(r.id);if(!detail||detail.unit_id!==r.unit_id||detail.device_id!==r.device_id)return null;
+    // A heartbeat between these reads must not put an online machine in a lost
+    // page. Keep the presence snapshot used for filtering/counting this response.
+    return {...detail,presence_state:r.presence_state,last_contact_at:r.last_contact_at};
+   }).filter(Boolean);
+   return json({unit:null,presence,items:page,total:all.length,offset,nextOffset:offset+selected.length<all.length?offset+60:null,environments:[],server_time:new Date().toISOString()});
   }
   if(!uuid(unitId))return fail('Selecione uma unidade.');
   const unit=await db.prepare("SELECT id,name FROM units WHERE id=? AND unit_type!='Escola conveniada'").bind(unitId).first();if(!unit)return fail('Unidade não encontrada.',404);

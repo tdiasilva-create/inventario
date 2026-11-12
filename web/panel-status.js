@@ -1,4 +1,5 @@
 // One live read per tab for the bell, map and pending indicators. No persisted cache.
+import {readPanelJson} from './desktop-request.js';
 const listeners=new Set();
 let stop=null,inflight=null,queued=false,last=null;
 function emit(value){last=value;for(const listener of listeners)listener(value);}
@@ -11,9 +12,7 @@ async function update(force=false){
   const timeout=setTimeout(()=>request.abort('timeout'),12000);
   try{
    const ids=[...new Set([...document.querySelectorAll('[data-monitor-equipment]')].map(el=>el.dataset.monitorEquipment))].sort().slice(0,50);
-   const r=await fetch('/api/inventory/panel-status?'+new URLSearchParams({equipmentIds:ids.join(',')}),{signal:request.signal,cache:'no-store'});
-   if(!r.ok)throw Error(r.status===401?'Sessão expirada. Entre novamente.':'Não foi possível atualizar os indicadores. Tente novamente.');
-   const data=await r.json();if(request.signal.aborted)return;
+   const data=await readPanelJson('/api/inventory/panel-status?'+new URLSearchParams({equipmentIds:ids.join(',')}),{signal:request.signal,timeoutMs:12000});if(request.signal.aborted)return;
    if(!data.pending||!data.monitoring)throw Error('Indicadores indisponíveis. Tente atualizar.');
    emit({data,error:'',checkedAt:new Date()});
   }catch(e){if(!['hidden','stopped'].includes(request.signal.reason))emit({data:last?.data||null,error:request.signal.reason==='timeout'?'Atualização demorou demais. Tentaremos novamente.':e.message,checkedAt:last?.checkedAt||null});}

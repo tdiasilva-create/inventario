@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "elapsedSeconds": 3603,
+  "tabs": 5,
+  "localOnly": true,
+  "sameRootSession": true,
+  "requests": {
+    "0": {
+      "status": 238,
+      "fleet": 61
+    },
+    "1": {
+      "status": 241,
+      "fleet": 61
+    },
+    "2": {
+      "status": 241,
+      "fleet": 61
+    },
+    "3": {
+      "status": 241,
+      "fleet": 61
+    },
+    "4": {
+      "status": 241,
+      "fleet": 61
+    }
+  },
+  "pageErrors": 0,
+  "hiddenPauseAndResume": true
+}

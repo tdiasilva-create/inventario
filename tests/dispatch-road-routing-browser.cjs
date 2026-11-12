@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
-(async()=>{const h=await require('./helpers/panel-browser.cjs')(),{page,origin,f}=h;const dir='docs/05-qualidade/evidencias/mapa-limpo-2026-11-12';fs.mkdirSync(dir,{recursive:true});
+(async()=>{const h=await require('./helpers/panel-browser.cjs')(),{page,origin,f}=h;const dir=process.env.SEMED_EVIDENCE_DIR||'docs/05-qualidade/evidencias/mapa-limpo-2026-11-12';fs.mkdirSync(dir,{recursive:true});
  const sample=JSON.parse(fs.readFileSync('tests/fixtures/public-road-paco-d106.json','utf8'));
  let upstream=0;h.env.ROUTING_FETCH=async()=>{upstream++;return Response.json(sample);};
  try{
@@ -10,8 +10,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await post('/api/dispatch/technician',cmd({userId:f.root.id,enabled:true}));await post('/api/dispatch/assign',cmd({id,userIds:[f.root.id]}));
   await post('/api/technician/accept',cmd({id,version:f.sqlite.prepare('SELECT version FROM service_requests WHERE id=?').get(id).version,position:{latitude:-2.54,longitude:-44.17,accuracy:10,observedAt:Date.now()}}));
   await page.goto(origin+'/panorama');await page.locator('.dispatch-route-line').waitFor();assert.match(await page.locator('.dispatch-map-status').textContent(),/pelas ruas, na ordem do root/);assert.equal(await page.locator('.dispatch-map-control').count(),0);assert.equal(await page.getByRole('combobox',{name:'Roteiro do técnico'}).count(),0);assert.equal(upstream,1);
-  await page.getByRole('button',{name:'Ampliar área do mapa',exact:true}).click();await page.getByRole('button',{name:'Ampliar mapa',exact:true}).click();await page.getByRole('button',{name:'Ampliar mapa',exact:true}).click();
-  await page.mouse.move(350,900);await page.mouse.down();await page.mouse.move(820,520,{steps:12});await page.mouse.up();await page.getByRole('button',{name:'Ampliar mapa',exact:true}).click();await page.waitForTimeout(700);
+  await page.getByRole('button',{name:'Ampliar área do mapa',exact:true}).click();
+  // Zoom at the actual technician, rather than dragging to viewport-dependent coordinates.
+  const marker=await page.locator('.dispatch-technician-marker').boundingBox();assert.ok(marker);
+  await page.mouse.move(marker.x+marker.width/2,marker.y+marker.height/2);await page.mouse.wheel(0,-350);await page.waitForTimeout(700);
   await page.evaluate(()=>{let b=document.createElement('div');b.textContent='TESTE LOCAL · Dados sintéticos · geometria pública OSRM';b.style.cssText='position:fixed;bottom:0;right:0;z-index:99999;background:#16191d;color:white;padding:5px;font:12px sans-serif;pointer-events:none';document.body.append(b);});
   await page.screenshot({path:dir+'/01-trajeto-ruas-local.png',fullPage:false,animations:'disabled'});
   assert.ok((await page.locator('.dispatch-route-line').getAttribute('d')).length>20);assert.ok(await page.getByRole('link',{name:'Corrigir mapa',exact:true}).count());

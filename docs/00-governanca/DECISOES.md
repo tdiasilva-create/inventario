@@ -693,3 +693,16 @@ D-106 — adendo visual de 12/11/2026: responsável pediu retirar o quadro Atend
 ## D-107 — imagens dos técnicos anexadas pelo root, 12/11/2026
 
 Responsável pediu imagem por técnico no mapa e confirmou que somente o administrador root a anexa. Implementar gestão em Central → Organizar atendimentos → Técnicos, com prévia, envio, troca e remoção; marcador com imagem e fallback de iniciais. Arquivos no Drive privado atual, D1 somente metadados/auditoria e controle de versão (0029 aditiva), sem ampliar a exceção D-072. Preservar GPS, sessões, demandas, ruas, anéis, coletor e APK. Exemplo recebido não deve ser associado automaticamente a uma conta. Publicação sob autorização contínua da sessão. [Contrato](../03-painel-desktop/AVATARES_TECNICOS_D107.md), [testes e publicação](../05-qualidade/AVATARES_TECNICOS_2026-11-12.md).
+
+## D-108 — permanecer no gratuito e planejar redução de consumo, 12/11/2026
+
+Após bloqueio D1 código 7500 por limite diário de leituras, o responsável decidiu aguardar o reset das 21h Fortaleza e continuar no plano gratuito. Solicitou plano de ação, observando que há apenas cinco usuários. Não contratar plano pago nem iniciar migração para servidor físico neste escopo. [Plano TXT](../06-entregas/PLANO_REDUCAO_CONSUMO_D1_GRATUITO_2026-11-12.txt) registra evidências, prioridades, testes e metas PROPOSTAS, ainda não implantadas. Otimização deve preservar regras, dados, localização, permissões e intervalos aprovados; qualquer mudança funcional de frequência/atraso exige decisão explícita. Preparação deste plano não configura publicação nem confirmação de que o serviço foi restabelecido.
+
+D-108 — execução autorizada posteriormente na mesma data: corrigir/testar agora,
+validar e publicar no ambiente real após 21h Fortaleza. Preservar gratuito,
+GPS/rotas e alertas. Implementação local: migração aditiva 0030 com índices e
+projeção transacional da contagem D-085; leituras compactas de presença; cron
+incremental mantendo todos os snapshots posteriores ao cursor; medição de linhas
+e tratamento explícito de cota. Sem mudança de intervalos, protocolo ou permissões.
+[Contrato](../04-dados-apis/ORCAMENTO_D1_D108.md) e
+[testes/publicação](../05-qualidade/REDUCAO_D1_2026-11-12.md).

@@ -556,3 +556,16 @@ D106, ajuste visual: captura e pedido direto do responsável → remoção do qu
 D-107: pedido de imagem por técnico + confirmação root exclusivo → server/technician-avatars.mjs, web/technician-avatar.js, gestão/mapa de atendimentos e armazenamento privado; 0029 metadados/eventos. testes technician-avatars.test.mjs e technician-avatars-browser.cjs, regressões D105/D106. Sem perguntas novas do TXT ou alteração do coletor. Registro: docs/05-qualidade/AVATARES_TECNICOS_2026-11-12.md.
 
 D107 publicado: 0029 aplicada; painel 18002f7f-e6b8-4954-8bb3-ef53371feb28 (100%) em 12/11/2026 13:03:45 Fortaleza. 242 testes de servidor, runtime workerd, três roteiros de navegador e 51 verificações públicas aprovados. UI root real conferida, sem atribuir imagens/testes a contas reais. Coletor/APK preservados. Evidências no registro de qualidade D107.
+
+## D-108 — diagnóstico de cota e plano de ação, 12/11/2026
+
+Erro remoto 7500 + D1 Info/Insights privados + decisão do responsável por gratuito → [plano TXT de redução](../06-entregas/PLANO_REDUCAO_CONSUMO_D1_GRATUITO_2026-11-12.txt). Distingue janela móvel de 24h do dia UTC, linhas varridas de chamadas e tráfego automático de usuários; identifica prioridades em pending-indicators/service-desk/agent-monitoring. Metas e testes são propostos, não ganhos observados. Somente documentação alterada; Base de Coleta, código, dados, intervalos e publicações preservados. Recuperação/otimização/medição diária permanecem pendentes.
+
+D108 — autorização de execução → 0030_d1_read_budget.sql,
+pending-indicators/service-desk/agent-monitoring/monitoring-queries,
+request-timing/d1-budget/worker e tratamento GET desktop. Contadores derivados
+testados contra regra canônica; backlog de 350 alterações sem perda; regressões
+GPS/sino/mapa e 250 testes aprovados. Ganhos locais medidos em runtime D1 e
+documentados em [REDUCAO_D1](../05-qualidade/REDUCAO_D1_2026-11-12.md).
+Publicação só após liberação das 21h, conforme solicitação; nenhum teste fictício
+gravado em produção. Custos locais não equivalem a garantia de franquia diária.

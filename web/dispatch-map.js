@@ -1,4 +1,5 @@
 import {avatarElement} from './technician-avatar.js';
+import {readPanelJson} from './desktop-request.js';
 const distance=(a,b)=>{const rad=Math.PI/180,h=Math.sin((a[0]-b[0])*rad/2)**2+Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin((a[1]-b[1])*rad/2)**2;return 12742000*Math.asin(Math.min(1,Math.sqrt(h)));};
 export function mountDispatchMap(map,container){
  const L=window.L,group=L.layerGroup().addTo(map);
@@ -38,8 +39,7 @@ export function mountDispatchMap(map,container){
   const p=visible().find(p=>!valid(routes.get(p.user_id),p));if(!p)return;
   calculating=true;routeAbort=new AbortController();const timeout=setTimeout(()=>routeAbort?.abort(),13000);let delay=1300;
   try{
-   const response=await fetch('/api/dispatch/road-route?technician='+encodeURIComponent(p.user_id),{signal:routeAbort.signal});
-   if(!response.ok)throw Error('routing');const r=await response.json();
+   const r=await readPanelJson('/api/dispatch/road-route?technician='+encodeURIComponent(p.user_id),{signal:routeAbort.signal,timeoutMs:13000});
    const current=last?.positions.find(x=>x.user_id===p.user_id);
    if(stopped||document.hidden||!current||current.routeKey!==p.routeKey||!fresh(current))return;
    if(r.status==='waiting')delay=Math.max(1300,Math.min(10000,r.retryAfterMs||1800));
@@ -52,7 +52,7 @@ export function mountDispatchMap(map,container){
  }
  async function update(){
   if(stopped||busy||document.hidden)return;busy=true;
-  try{const r=await fetch('/api/dispatch/map',{signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error('map');const value=await r.json();if(stopped||document.hidden)return;last=value;paint();schedule();}
+  try{const value=await readPanelJson('/api/dispatch/map',{timeoutMs:12000});if(stopped||document.hidden)return;last=value;paint();schedule();}
   catch{if(stopped)return;last=null;routes.clear();avatars.clear();group.clearLayers();status.textContent='Localização indisponível. Aguardando atualização.';}
   finally{busy=false;}
  }

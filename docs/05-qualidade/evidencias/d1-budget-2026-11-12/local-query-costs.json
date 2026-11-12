@@ -1,0 +1,260 @@
+{
+  "at": "2026-11-12T22:55:35.647Z",
+  "runtime": "Miniflare/workerd isolated D1, not current production",
+  "dataset": "historical private export",
+  "pairs": [
+    {
+      "name": "pending.collections",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 1
+        },
+        "duration": 1,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 737,
+        "rows_written": 0
+      },
+      "resultCount": 2,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 10305536,
+        "rows_read": 3,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 99.6,
+      "plan": [
+        "SCAN panel_collection_counts"
+      ]
+    },
+    {
+      "name": "fleet.catalogue",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 804,
+        "rows_written": 0
+      },
+      "resultCount": 76,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 10305536,
+        "rows_read": 158,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 80.3,
+      "plan": [
+        "SCAN u",
+        "SEARCH c USING INDEX sqlite_autoindex_computer_context_1 (target_id=?) LEFT-JOIN",
+        "CORRELATED SCALAR SUBQUERY 1",
+        "SEARCH i USING COVERING INDEX inspection_unit_state (unit_id=? AND state=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ]
+    },
+    {
+      "name": "fleet.presence",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 1
+        },
+        "duration": 1,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 346,
+        "rows_written": 0
+      },
+      "resultCount": 73,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 10305536,
+        "rows_read": 280,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 19.1,
+      "plan": [
+        "COMPOUND QUERY",
+        "LEFT-MOST SUBQUERY",
+        "SCAN equipments",
+        "SEARCH l USING INDEX uq_agent_link_active_equipment (equipment_id=?) LEFT-JOIN",
+        "SEARCH d USING INDEX sqlite_autoindex_agent_devices_1 (device_id=?) LEFT-JOIN",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN",
+        "UNION ALL",
+        "SCAN miscellaneous_equipments",
+        "SEARCH l USING INDEX uq_agent_link_active_equipment (equipment_id=?) LEFT-JOIN",
+        "SEARCH d USING INDEX sqlite_autoindex_agent_devices_1 (device_id=?) LEFT-JOIN",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN"
+      ]
+    },
+    {
+      "name": "monitor.presence",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 2
+        },
+        "duration": 2,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 533,
+        "rows_written": 0
+      },
+      "resultCount": 66,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 10305536,
+        "rows_read": 335,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 37.1,
+      "plan": [
+        "SCAN d",
+        "SEARCH l USING INDEX uq_agent_link_active_device (device_id=?)",
+        "SEARCH e USING INDEX sqlite_autoindex_equipments_1 (id=?)",
+        "SEARCH u USING INDEX sqlite_autoindex_units_1 (id=?)",
+        "SEARCH p USING INDEX sqlite_autoindex_agent_presence_1 (device_id=?) LEFT-JOIN"
+      ]
+    },
+    {
+      "name": "monitor.snapshots",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 2
+        },
+        "duration": 2,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 673,
+        "rows_written": 0
+      },
+      "resultCount": 0,
+      "after": {
+        "rows_read": 206,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 69.4,
+      "plan": [
+        "MERGE (UNION ALL)",
+        "LEFT",
+        "MATERIALIZE bounds",
+        "SCAN 20 CONSTANT ROWS",
+        "SCAN a",
+        "SEARCH c USING INDEX sqlite_autoindex_agent_current_snapshot_1 (device_id=?)",
+        "SEARCH s USING INDEX sqlite_autoindex_agent_inventory_snapshots_1 (inventory_id=?)",
+        "USE TEMP B-TREE FOR ORDER BY",
+        "RIGHT",
+        "SCAN a",
+        "SEARCH s USING COVERING INDEX agent_snap_monitor_range (device_id=? AND equipment_id=? AND <expr>>?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ]
+    },
+    {
+      "name": "demands.pending",
+      "before": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 13,
+        "changed_db": false,
+        "size_after": 10248192,
+        "rows_read": 19,
+        "rows_written": 0
+      },
+      "resultCount": 10,
+      "after": {
+        "served_by": "miniflare.db",
+        "served_by_primary": true,
+        "total_attempts": 1,
+        "timings": {
+          "sql_duration_ms": 0
+        },
+        "duration": 0,
+        "changes": 0,
+        "last_row_id": 76,
+        "changed_db": false,
+        "size_after": 10305536,
+        "rows_read": 10,
+        "rows_written": 0
+      },
+      "equivalent": true,
+      "reductionPercent": 47.4,
+      "plan": [
+        "SCAN service_requests USING INDEX service_requests_pending_unit"
+      ]
+    }
+  ],
+  "scenarios": []
+}

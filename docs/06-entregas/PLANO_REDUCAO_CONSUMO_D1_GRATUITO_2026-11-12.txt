@@ -1,0 +1,264 @@
+SEMED — PLANO DE AÇÃO PARA PERMANECER NO PLANO GRATUITO
+Data: 12/11/2026 — Fortaleza
+Estado: diagnóstico e plano preparados; correções deste plano NÃO implantadas.
+
+1. DECISÃO DO RESPONSÁVEL
+
+Manter Cloudflare Workers + D1 no plano gratuito e aguardar a renovação da
+cota, prevista para 12/11 às 21h de Fortaleza (13/11 às 00h UTC).
+Não contratar plano pago nem iniciar migração para servidor físico neste escopo.
+A renovação libera a cota; não corrige o consumo excessivo do código.
+Este documento registra um plano de execução, não uma publicação realizada.
+
+2. POR QUE O SISTEMA PAROU MESMO COM POUCOS USUÁRIOS
+
+CONFIRMADO: D1 recusou uma consulta simples com erro 7500, informando que a
+conta atingiu o limite diário de linhas lidas do plano gratuito.
+Páginas públicas de login responderam, mas consultas autenticadas falharam.
+
+O limite não conta pessoas nem apenas registros novos. Uma mesma linha
+consultada repetidamente entra novamente no consumo. Consultas podem ler
+mais linhas do que retornam à interface, inclusive ao cruzar tabelas.
+
+Existem relógios no painel que consultam dados com a aba visível: 15 segundos
+nos indicadores operacionais e 60 segundos no pulso geral. Existem também
+rotinas de servidor e comunicações dos agentes, sem depender de painel aberto.
+
+EXEMPLO DE DIMENSIONAMENTO, NÃO MEDIÇÃO DO USO DOS CINCO USUÁRIOS:
+757 linhas por consulta x 4 consultas/minuto x 60 minutos x 8 horas
+= 1.453.440 linhas lidas por uma aba, por uma única consulta.
+Cinco abas nessa condição = 7.267.200 linhas, antes das demais operações.
+Os cinco usuários podem ter papéis/tempos diferentes; não presumir que todos
+deixaram o Panorama aberto oito horas. A conta inclui testes e rotinas do sistema.
+
+As correções D-103/D-104 reduziram chamadas, tempo de carregamento e trabalho
+visual. Faltou validar um orçamento diário de linhas lidas/escritas sob uso
+simultâneo. Uma consulta rápida ainda pode ser cara em linhas varridas.
+
+3. EVIDÊNCIAS E LIMITES DA MEDIÇÃO
+
+Métricas administrativas do banco, janela móvel de 24 horas após o incidente:
+- Linhas lidas: 8.422.013.
+- Linhas escritas: 61.850.
+- Consultas de leitura: 110.388.
+- Consultas de escrita: 25.597.
+- Tamanho do banco: 11.927.552 bytes, aproximadamente 12 MB.
+
+Essa janela móvel NÃO é o dia de cobrança UTC. Não interpretar 8.422.013 como
+leituras permitidas num único dia gratuito, nem como tráfego exclusivo humano.
+O limite é compartilhado pela conta; a medição acima é deste banco.
+
+Maiores consultas identificadas pelo D1 Insights:
+
+Finalidade                                     Linhas lidas      Execuções
+Contagem de coletas pendentes                     2.303.511          3.039
+Catálogo/contexto de unidades na frota            1.800.893          2.189
+Busca de snapshots a comparar no monitoramento      834.905          1.309
+Contexto de agentes ativos no monitoramento          734.241          1.451
+Presença agregada de computadores por unidade        676.127          1.961
+Computadores filtrados por estado em toda a rede      502.920            360
+
+As duas primeiras somam 4.104.404 linhas. São a prioridade inicial.
+Nas 100 consultas de maior consumo, foram contabilizadas 8.330.305 leituras;
+as 16 consultas identificadas de técnicos/roteiros/localização/avatares somam
+124.578, aproximadamente 1,5% desse subtotal. Essa classificação não atribui
+autenticação compartilhada a um módulo e não é auditoria completa por usuário.
+Não há evidência de que a localização dos técnicos seja a causa predominante.
+
+Evidências brutas privadas, não enviar para o Git:
+private-data/avatar-d107/incident-d1-info.json
+private-data/avatar-d107/incident-d1-insights-100.json
+
+4. METAS PROPOSTAS E COMO COMPROVAR
+
+Meta inicial: projetar e confirmar até 3 milhões de linhas lidas por dia UTC
+num cenário declarado de cinco usuários, preservando margem de 2 milhões.
+Meta complementar: até 70 mil linhas escritas/dia; acompanhar requisições e
+CPU dos Workers e espaço ocupado. O gratuito também limita essas dimensões.
+Metas são critérios de engenharia a validar, não garantias já alcançadas.
+
+Registrar separadamente:
+- Consumo de base em 24h: agentes, monitoramento e tarefas agendadas.
+- Consumo por hora de painel e por operação de coleta/atendimento.
+- Consumo de testes, migrações e manutenção.
+- Consumo da conta por dia UTC, além da janela móvel de 24h.
+- Linhas lidas/escritas por consulta, chamadas por rota e duração p50/p95.
+
+Fórmula de projeção:
+consumo diário = rotinas de 24h + agentes + sessões humanas + manutenção.
+Não multiplicar uma única hora agitada por 24 e chamá-la de medição real.
+Comparar o mesmo conjunto de dados, usuários, ações e duração antes/depois.
+
+5. FASE 1 — REDUZIR AS DUAS CONSULTAS MAIS CARAS
+
+Arquivos candidatos:
+server/pending-indicators.mjs
+server/service-desk.mjs
+migrations/0030_*.sql, apenas se um índice novo for comprovadamente útil;
+verificar o próximo número disponível antes de criar a migração.
+
+Ações:
+- Medir os planos de execução da busca de vistorias por unidade e estado.
+- Testar índice composto/índices parciais adequados a unidade, estado e
+  conclusão. Índices existentes não comprovam cobertura dessas buscas.
+- Evitar procurar repetidamente visitas antigas para cada unidade.
+- Separar catálogo cadastral da leitura frequente de presença dos computadores.
+- Reaproveitar agregados existentes quando tiverem exatamente a mesma regra.
+- Se índices/reformulação não bastarem, avaliar resumo mantido na mesma
+  transação da alteração, com conferência/reconstrução controlada.
+
+Aceite:
+- Mesmos totais/IDs antes e depois para todas as situações de visita/unidade.
+- Null, inativa, obra, conveniada fora do escopo, concluída e revisita preservados.
+- Menos linhas lidas nas consultas medidas; registrar custo extra de escrita.
+- Não considerar apenas redução de tempo ou de número de instruções SQL.
+
+6. FASE 2 — RESUMOS ECONÔMICOS NO PAINEL
+
+Arquivos candidatos:
+server/service-desk.mjs, server/agent-monitoring.mjs
+web/panel-pulse.js, web/panel-status.js, web/operations.js
+web/desktop-request.js e consumidores dos resumos, conforme diagnóstico.
+
+Ações:
+- Consultar somente os campos/tabelas necessários a cada contador.
+- Retirar cruzamentos desnecessários do resumo de presença.
+- Fazer filtros/paginação de computadores no banco quando equivalentes,
+  evitando carregar toda a rede para mostrar uma página.
+- Distinguir cadastro pouco alterado de presença, pendências e posição ao vivo.
+- Reutilizar o mesmo resultado entre componentes; compartilhar resumos entre
+  usuários somente após autorização e quando o escopo for idêntico.
+- Qualquer cache de catálogo/agregado deve tratar alterações dos dois Workers,
+  erro, expiração, exclusão e invalidação. Não cachear sessão/permissão, CSRF,
+  fotos privadas ou respostas pessoais como se fossem dados públicos.
+- Não depender exclusivamente da memória de uma instância Worker: reinícios
+  e instâncias diferentes não podem quebrar consistência ou o orçamento.
+- Identificar chamadas redundantes entre telas/abas sem presumir sua existência
+  onde D-103 já eliminou duplicação; manter leituras somente em telas visíveis.
+
+Aceite:
+- Alterações confirmadas aparecem dentro dos prazos vigentes.
+- Uma escola perde estado online pelo tempo decorrido mesmo sem nova escrita.
+- Reabrir a aba atualiza; aba oculta não mantém consultas gerenciais repetidas.
+- Resultado privado jamais atravessa usuário, papel ou ambiente indevido.
+- Cache frio/reinício também cabe na projeção de consumo.
+
+7. FASE 3 — MONITORAMENTO INCREMENTAL DOS AGENTES
+
+Arquivos candidatos:
+server/agent-monitoring.mjs, server/agentes/presence.mjs
+consultas/índices de agent_inventory_snapshots e agent_monitor_cursors.
+
+Ações:
+- Ler apenas snapshots ainda necessários ao cursor de comparação.
+- Testar comparação de datas indexável, respeitando o formato real dos dados;
+  não trocar ordenação por texto sem provar equivalência para todos os formatos.
+- Separar leitura mínima de presença da montagem do contexto detalhado.
+- Montar contexto completo quando necessário a um evento/detalhe.
+- Evitar reprocessamento e escrita sem mudança onde isso for demonstrado.
+- Preservar sequências intermediárias de alteração de hardware; não consultar
+  só o último snapshot se isso esconder uma troca e uma reversão.
+
+Aceite:
+- Detecção de alterações, deduplicação, histórico e parecer administrativo iguais.
+- Presença de 17 minutos e perda inesperada acima de 48 horas preservadas.
+- Suspensão/desligamento informados continuam distintos de perda inesperada.
+- Corridas com heartbeat, reenvio, vínculo encerrado e chegada tardia testadas.
+- Nenhuma reinstalação de agente, redução de coleta ou eliminação de histórico.
+
+8. FASE 4 — MEDIÇÃO CONTÍNUA E FALHAS EXPLICÁVEIS
+
+Arquivos candidatos:
+server/request-timing.mjs, server/worker.mjs
+scripts de medição e tratamento de erro nas leituras do painel.
+
+Ações propostas:
+- Complementar tempos/chamadas com meta.rows_read/meta.rows_written onde
+  disponíveis, sem modificar silenciosamente os contratos dos drivers.
+- Métodos sem metadados exigem medição controlada ou Analytics; não atribuir zero.
+- Usar Analytics da Cloudflare para total da conta e dia UTC. Identificar
+  separadamente tráfego do painel, coletor, técnicos, agentes e cron.
+- Não gravar uma linha de telemetria no D1 para cada consulta observada.
+- Produzir aviso administrativo de consumo com fonte, horário e última medição;
+  sua configuração exata é uma proposta, ainda não implementada.
+- Limiares propostos: atenção em 50%, prioridade em 70%, situação crítica em 85%.
+  Projeção de esgotamento antes do próximo reset também deve gerar atenção.
+- Exibir indisponibilidade do banco sem acusar senha errada, zerar contadores
+  ou confirmar uma gravação que não aconteceu.
+- Repetir leituras com atraso progressivo em falhas, evitando várias telas
+  insistindo sem pausa. Escritas continuam com idempotência/estado explícito.
+
+Não desligar funções, aumentar intervalos ou criar um modo reduzido de forma
+silenciosa ao atingir esses limiares. Isso depende de decisão funcional separada.
+
+9. TESTES NECESSÁRIOS
+
+Base privada isolada ou sintética; testes de carga NUNCA contra produção.
+Comparação antes/depois na mesma base, preservando a versão de referência.
+
+Cenários:
+1) Uma aba de Panorama sem cliques, cinco minutos e uma hora.
+2) Cinco sessões simultâneas de painel, com intervalos vigentes.
+3) Cinco usuários em uso misto: painel, coleta e atendimento técnico.
+4) Duas abas de uma conta; ocultar/retomar; encerrar sessões.
+5) Vários técnicos com localização, aceite e conclusão de demandas.
+6) Equipamentos atuais simulados e cenário de crescimento para 200 agentes.
+7) Rotinas de 24h simuladas sem nenhum navegador aberto.
+8) Alteração real simulada: cadastro, foto, conclusão de assunto/visita,
+   demanda, localização, hardware e entrada/saída de presença recente.
+9) Falha de rede, D1 indisponível, resposta perdida, cache frio e reinício.
+10) Histórico aumentado para conferir que consultas não crescem sem limite.
+
+Executar regressões de auth/perfis, indicadores, escolas online, demandas,
+hardware, revisitas, fotos, rotas e mapa. Manter identidade visual atual.
+Os números simulados demonstram comportamento controlado; consumo faturável
+final deve ser confrontado com D1 real, sem teste de carga na conta gratuita.
+
+10. O QUE FAZER AGORA E APÓS 21H
+
+ANTES DAS 21H:
+- Implementar/testar localmente as fases em pequenos lotes a partir deste plano.
+- Preparar migração aditiva, se necessária, e ensaiar na base isolada.
+- Preparar comparação antes/depois e procedimento de retorno.
+- Não repetir testes remotos no banco bloqueado nem tentar zerar a cota.
+
+APÓS A LIBERAÇÃO, NA EXECUÇÃO DA CORREÇÃO:
+- Confirmar que D1 voltou a responder e verificar a saúde dos três ambientes.
+- Registrar baseline do novo dia UTC e backup consistente antes de migração.
+- Aplicar somente alterações aprovadas/testadas; medir uma pequena amostra real.
+- Conferir com usuários, sem criar demandas, GPS ou cadastros fictícios oficiais.
+- Avaliar a primeira hora, o primeiro dia UTC completo e mais dois dias de uso.
+  Esses são marcos de acompanhamento propostos; não há automação agendada por
+  este documento, nem promessa de observação contínua já em execução.
+- Comparar consumo diário completo com a meta e com o uso efetivo.
+
+O reset sozinho não evita nova interrupção amanhã. Também não é possível
+prometer uso gratuito ilimitado: se o uso validado exceder a capacidade após
+otimizar, apresentar os números e as opções ao responsável, sem contratar nada.
+
+11. REGRAS QUE NÃO MUDAM NESTE PLANO
+
+Intervalos aprovados 15/60s e cron de monitoramento preservados por padrão.
+GPS/rotas/imagens de técnicos permanecem. Autorização sempre no servidor.
+Estados parcial/publicado, fotos privadas, IDs, auditoria e dados preservados.
+Não apagar registros para economizar; não contornar cotas com contas/bases novas.
+Não habilitar cobrança, fazer migração de servidor ou mudar questionário.
+Caso uma solução exija alterar frequência/atraso perceptível, trazer a decisão
+ao responsável com medição de economia e efeito no atendimento.
+
+12. DOCUMENTOS E FONTES CONSULTADOS
+
+00_LEIA_ANTES_DE_TUDO.md; AGENTS.md; REGRAS_DE_PRECEDENCIA.md;
+DECISOES.md/PENDENCIAS.md/CONFLITOS_DOCUMENTAIS.md (trechos operacionais atuais);
+MEDICOES_DESEMPENHO_PAINEL_2026-11-12.txt;
+DESEMPENHO_PAINEL_2026-11-12.md (D-103);
+DESEMPENHO_D104_2026-11-12.md;
+docs/07-operacao/06_BACKUP_E_RESTAURACAO.md;
+código de pendências, frota, monitoramento, métricas e índices de vistorias/agentes;
+D1 Info e D1 Insights obtidos diretamente da conta durante o incidente.
+
+Limites oficiais consultados em 12/11/2026:
+https://developers.cloudflare.com/d1/platform/pricing/
+https://developers.cloudflare.com/workers/platform/limits/
+
+Este plano não é resultado de teste de carga nem confirmação de recuperação.
