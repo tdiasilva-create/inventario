@@ -1,3 +1,4 @@
+import {measuredEnvironment,timed,timingHeader} from './request-timing.mjs';
 import {hardwareReviewRoutes} from './hardware-review.mjs';
 import {panelSearch} from './panel-search.mjs';
 import {pendingIndicatorsRoutes} from './pending-indicators.mjs';
@@ -56,7 +57,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  }
  // Retorno do Google: navegação de outro site, sem cookie de sessão; validado por estado + cookie Lax (ver google-auth.mjs).
  if(env.APP_KIND!=='collector'){const callback=await googleCallback(request,url,env,{audit});if(callback)return callback;}
- const user=await current(request,db);
+ const user=await timed(env,'auth',()=>current(request,db));
  if(!user){if(path.startsWith('/api/'))return fail('Autenticação necessária.',401);return new Response(null,{status:302,headers:{Location:'/login','Cache-Control':'no-store'}});}
  if(request.method==='POST'&&!equal(request.headers.get('X-CSRF-Token')||'',user.csrf))return fail('Solicitação inválida.',403);
  if(path==='/api/auth/me')return json({username:user.username,role:user.role,mustChange:!!user.must_change,csrf:user.csrf,canView:canView(user.role),displayName:user.display_name,homeUrl:operatorOnPanel(user,env)?collectorOrigin+'/':'/'});
@@ -158,7 +159,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
 // Disparada pelo cron do Worker do painel (wrangler.jsonc → triggers.crons); também disponível ao root em POST /api/root/agent-maintenance.
 // Preserva sempre o snapshot atual, a linha de base e o histórico de vínculos/localização/auditoria (ver D1Store.purgeExpired).
 export async function scheduled(event,env,ctx){if(!env.DB)return;const now=Date.now();const run=event.cron==='23 3 * * *'?manutencaoAgentes(env,now):Promise.all([runAgentMonitoring(env,now),runProviderReports(env,now)]);if(ctx?.waitUntil)ctx.waitUntil(run);return run;}
-export default {scheduled,async fetch(request,env){let response;try{response=await handle(request,env);}catch(error){response=String(error.message).includes('EQUIPMENT_DELETED')?fail('Este cadastro foi apagado pelo root. Atualize a lista de equipamentos.',410):error instanceof UnitScopeError?json({error:error.message,code:error.code},422):error.message==='body'?fail('A requisição excedeu o tamanho permitido.',413):error instanceof SyntaxError?fail('Conteúdo JSON inválido.',400):fail(env.DEBUG_COLLECTION==='1'?String(error.message):'Não foi possível concluir. Tente novamente.',503);}response=new Response(response.body,response);if(!response.headers.has('Cache-Control'))response.headers.set('Cache-Control','no-store');response.headers.set('X-Content-Type-Options','nosniff');response.headers.set('Referrer-Policy','same-origin');response.headers.set('X-Frame-Options','DENY');return response;}};
+export default {scheduled,async fetch(request,env){env=measuredEnvironment(request,env);let response;try{response=await handle(request,env);}catch(error){response=String(error.message).includes('EQUIPMENT_DELETED')?fail('Este cadastro foi apagado pelo root. Atualize a lista de equipamentos.',410):error instanceof UnitScopeError?json({error:error.message,code:error.code},422):error.message==='body'?fail('A requisição excedeu o tamanho permitido.',413):error instanceof SyntaxError?fail('Conteúdo JSON inválido.',400):fail(env.DEBUG_COLLECTION==='1'?String(error.message):'Não foi possível concluir. Tente novamente.',503);}response=new Response(response.body,response);if(!response.headers.has('Cache-Control'))response.headers.set('Cache-Control','no-store');const timing=timingHeader(env);if(timing)response.headers.set('Server-Timing',timing);response.headers.set('X-Content-Type-Options','nosniff');response.headers.set('Referrer-Policy','same-origin');response.headers.set('X-Frame-Options','DENY');return response;}};
 
 
 

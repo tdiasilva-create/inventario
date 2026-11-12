@@ -1,7 +1,8 @@
+import {photoReadColumns,readPhotoAndStore} from './photo-read.mjs';
 import {thumbnailResponse} from './photo-thumbnails.mjs';
 import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
-import {photoStore, StorageError} from './photo-storage.mjs';
+import {StorageError} from './photo-storage.mjs';
 
 const uuid=value=>typeof value==='string'&&/^[a-f0-9-]{36}$/i.test(value);
 function cursorValue(value){
@@ -18,7 +19,8 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
  const id=url.searchParams.get('id');if(!uuid(id))return fail('Vistoria inválida.');
  const db=env.DB,photoId=url.searchParams.get('photoId');
  const binary=url.pathname.endsWith('-photo');if(binary&&!uuid(photoId))return fail('Fotografia inválida.');
- const joined=binary?await db.prepare("SELECT p.*,i.state AS inspection_state FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id JOIN units u ON u.id=p.unit_id WHERE p.id=? AND i.id=? AND u.active=1 AND u.unit_type<>'Escola conveniada' AND p.status='ready'").bind(photoId,id).first():null;
+ const photo=binary?await readPhotoAndStore(env,db.prepare(`SELECT ${photoReadColumns(request)},i.state AS inspection_state FROM collection_photos p JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id JOIN units u ON u.id=p.unit_id WHERE p.id=? AND i.id=? AND u.active=1 AND u.unit_type<>'Escola conveniada' AND p.status='ready'`).bind(photoId,id)):null;
+ const joined=photo?.row;
  if(binary&&!joined)return fail('Fotografia recebida não encontrada nesta coleta.',404);
  const inspection=binary?{id,unit_id:joined.unit_id,state:joined.inspection_state}:await db.prepare("SELECT i.id,i.unit_id,i.state FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=? AND u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\')").bind(id).first();
  if(!inspection)return fail('Vistoria indisponível.',404);
@@ -44,7 +46,7 @@ export async function inProgressPhotoRead(request,url,user,env,{json,fail}){
  const row=joined;
  if(!row)return fail('Fotografia recebida não encontrada nesta coleta.',404);
  try{
-  const store=photoStore(env);
+  const store=photo.store;
   if(!await store.enabled())return fail('Armazenamento de fotografias indisponível.',503);
   if(row.storage_provider&&store.provider!==row.storage_provider)return fail('O provedor desta fotografia não está ativo.',503);
   const thumbnail=thumbnailResponse(request,row);if(thumbnail)return thumbnail;const unchanged=photoNotModified(request,row);if(unchanged)return unchanged;const object=await store.get(row);if(!object)return fail('Arquivo da fotografia não encontrado.',404);

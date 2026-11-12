@@ -1,0 +1,101 @@
+SEMED — ROTEIRO DE CONFERÊNCIA DA SEGUNDA RODADA DE DESEMPENHO
+Data: 12/11/2026 | Painel desktop | D-104
+
+ENDEREÇO
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+OBJETIVO
+Verificar fluidez do mapa, abertura das coletas em andamento e fotografias.
+O visual e as regras de contagem continuam iguais. Não é necessário
+reinstalar agentes ou cadastrar equipamentos/demandas fictícios.
+
+PREPARAÇÃO
+1. Entre no painel e atualize a página uma vez para receber o novo código.
+2. Use o mesmo computador, navegador e conexão dos testes anteriores.
+3. Anote navegador, hora de Fortaleza e se a conexão é Wi-Fi ou cabo.
+4. Feche downloads pesados. Não apague cache entre cada tentativa.
+5. Se a sessão expirar, entre novamente. Isso não representa falha no banco.
+
+TESTE 1 — MAPA PARADO E NAVEGAÇÃO
+Abra Panorama. Espere os dados e o mapa aparecerem.
+Deixe a página aberta por dois minutos sem clicar.
+Observe se os marcadores ficam estáveis e se a atualização normal continua.
+Mova o mapa e use zoom. Passe o mouse sobre três escolas.
+Esperado: nome, alunos e vagas continuam corretos; navegação sem travadas
+periódicas perceptíveis. As consultas mantêm os intervalos de 15/60 segundos.
+Não é esperado que unidades desapareçam ou que dados sejam substituídos por
+zero quando uma consulta falha.
+
+TESTE 2 — AVISOS E DESTINOS
+Se já existir uma demanda aberta, observe o anel verde-petróleo da unidade.
+Clique e confira se abre a Central filtrada pela unidade.
+Em uma unidade sem demanda aberta, o clique abre o cadastro da unidade.
+Se houver hardware aguardando parecer, confira o sino e o círculo do mapa.
+Não aceite/encerre eventos reais apenas para testar aparência.
+Caso não existam eventos pendentes, marque este cenário como não aplicável.
+
+TESTE 3 — COLETAS EM ANDAMENTO
+Abra Planejamento e depois Coletas em andamento.
+Espere a lista e abra uma coleta existente.
+Volte à lista e selecione outra coleta, se houver.
+Esperado: o nome e as informações correspondem à seleção atual, sem voltar
+sozinhos para a coleta anterior. Abertura repetida da mesma tela não deve
+provocar carregamentos adicionais em sequência.
+Use Atualizar agora uma vez: essa ação deve continuar buscando dados novos.
+Não altere respostas para testar esta consulta do painel.
+
+TESTE 4 — MINIATURA E FOTO COMPLETA
+Abra uma unidade que já tenha fotos recebidas (por exemplo, EMI ALANA LUDMILA).
+Observe as miniaturas. Clique numa fotografia e espere a imagem completa.
+Feche a ampliação e abra a mesma foto outra vez.
+Esperado: foto correta, legível, mesmo equipamento/unidade, sem novo envio.
+Miniatura e original continuam privados. Uma foto antiga sem miniatura pode
+usar o original como alternativa; isso não é prova de falha do novo código.
+Anote separadamente tempo da primeira abertura e tempo da segunda.
+
+TESTE 5 — FALHA DE CONEXÃO (OPCIONAL)
+Somente no computador de consulta, desconecte brevemente a internet.
+Clique Atualizar e espere o aviso de falha/tempo excedido (até 15 segundos
+mais o tempo normal da interface). Restaure a conexão e atualize novamente.
+Esperado: mensagem clara, preservação da última leitura quando disponível
+e retomada ao consultar. Não interprete dados antigos como atualização nova.
+
+COMPARAÇÃO SIMPLES DE TEMPOS
+Para Panorama, Computadores e Central de demandas:
+- Faça cinco recargas, aguardando os dados aparecerem em cada uma.
+- Registre o tempo desde a recarga até a tabela/lista utilizável.
+- Compare a mediana (terceiro valor após ordenar os cinco tempos).
+- Compare com seu próprio teste anterior, mantendo a mesma tela/unidade.
+- Primeira carga, fotos e troca de tela são medições diferentes.
+Não há promessa de tempo fixo: rede, Drive e localização do banco interferem.
+
+CONFERÊNCIA TÉCNICA OPCIONAL (DEVTOOLS > NETWORK)
+- GET de API do painel contém Server-Timing.
+- auth = validação da sessão; d1 = espera acumulada das chamadas ao banco;
+  drive_headers = espera de headers do Drive; total = tempo do Worker até
+  preparar a resposta. O download completo da foto não está incluído.
+- d1_calls conta chamadas ao binding, não instruções SQL.
+- Os tempos podem se sobrepor. Não somar auth + d1 + total.
+- Foto típica como root: d1_calls=2 (sessão e batch foto+integração).
+  Regras específicas de outros perfis e renovação de token podem acrescentar
+  consultas. Miniatura válida não consulta o arquivo no Drive.
+- Não exportar cookies, tokens, credenciais ou HAR completo no relatório.
+
+MODELO PARA SUA DEVOLUTIVA
+Data/hora:
+Navegador/dispositivo/conexão:
+Teste e tela:
+Unidade consultada:
+O que fiz:
+O que apareceu:
+Resultado esperado:
+Cinco tempos, quando aplicável:
+Foto: primeira abertura / segunda abertura:
+Captura da tela (sem credenciais):
+
+LIMITES DESTA ENTREGA
+Esta rodada não muda o questionário, os agentes, a região do banco ou a
+frequência de atualização. Smart Placement fica para avaliação separada.
+As verificações de acesso às fotos continuam acontecendo em cada pedido.
+O ganho controlado do mapa foi eliminar repinturas quando nada mudou;
+isso não significa remover atualizações reais ou garantir uma latência fixa.

@@ -1,0 +1,35 @@
+{
+  "method": "Five GET auth/me with intentionally nonexistent synthetic session; no login attempts or credentials. Tests native D1 wrapper and timing headers, not authenticated page performance.",
+  "checks": [
+    {
+      "status": 401,
+      "elapsedMs": 703,
+      "timing": "d1;dur=132.0, auth;dur=132.0, total;dur=132.0, d1_calls;desc=\"1\"",
+      "cache": "no-store"
+    },
+    {
+      "status": 401,
+      "elapsedMs": 340,
+      "timing": "d1;dur=137.0, auth;dur=137.0, total;dur=137.0, d1_calls;desc=\"1\"",
+      "cache": "no-store"
+    },
+    {
+      "status": 401,
+      "elapsedMs": 727,
+      "timing": "d1;dur=131.0, auth;dur=131.0, total;dur=131.0, d1_calls;desc=\"1\"",
+      "cache": "no-store"
+    },
+    {
+      "status": 401,
+      "elapsedMs": 218,
+      "timing": "d1;dur=132.0, auth;dur=132.0, total;dur=132.0, d1_calls;desc=\"1\"",
+      "cache": "no-store"
+    },
+    {
+      "status": 401,
+      "elapsedMs": 208,
+      "timing": "d1;dur=132.0, auth;dur=132.0, total;dur=132.0, d1_calls;desc=\"1\"",
+      "cache": "no-store"
+    }
+  ]
+}

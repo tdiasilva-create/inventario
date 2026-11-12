@@ -40,3 +40,7 @@ HEIC/HEIF: primeiro tenta decodificação nativa; fallback local `heic-to 1.6.7`
 Derivadas estão na mesma linha da fotografia: excluir essa linha pelo fluxo autorizado remove também a miniatura, sem objeto órfão separado. Backup D1 passa a incluir BLOBs privados. Não publicar dumps no Git nem em logs. Backup dos originais continua independente no Drive/R2. Autorizações, chaves e processo de recuperação não mudaram.
 
 Retorno de código: versões anteriores ignoram as colunas e continuam lendo o integral. Não remover as colunas nem restaurar dados antigos sobre a produção. Futuras mudanças de provedor precisam preservar metadados de origem e as verificações de acesso.
+
+## Otimização desktop D-104 (12/11/2026)
+
+No Worker do painel, as duas consultas de domínio agora são enviadas no mesmo batch D1. Com a consulta de sessão: três instruções SQL, duas chamadas ao binding (antes três chamadas). Perfis que exigem consultas adicionais continuam executando-as. Nenhuma autorização é reutilizada entre requisições; integração/foto são lidas novamente inclusive para 304. Pedido de original não seleciona thumb_blob. Worker do coletor permanece na versão publicada anterior. Ver [D-104](../03-painel-desktop/DESEMPENHO_D104.md).

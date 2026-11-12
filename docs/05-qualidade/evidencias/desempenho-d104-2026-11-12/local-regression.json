@@ -1,0 +1,19 @@
+{
+  "method": "76 synthetic map markers; identical monitoring/pending-summary event pair, 20 cycles. Counts of SVG path attribute mutations after initial map stabilization. Local only.",
+  "before": {
+    "markers": 76,
+    "cycles": 20,
+    "pathAttributeMutations": 45600
+  },
+  "after": {
+    "markers": 76,
+    "cycles": 20,
+    "pathAttributeMutations": 0
+  },
+  "progress": {
+    "initialAttach": 1,
+    "selectedAttach": 1,
+    "manualRefresh": 1,
+    "errors": []
+  }
+}

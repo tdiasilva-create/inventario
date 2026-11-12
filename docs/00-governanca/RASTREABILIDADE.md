@@ -522,3 +522,10 @@ Relatório externo e autorização para iniciar a medição → navegação root
 Pedido explícito de correção/publicação e roteiro de testes → `scripts/bundle-desktop.mjs`, build desktop, `web/panel-status.js`, `desktop-request.js`, consumidores de indicadores e carregamento paralelo → endpoint compartilhado em `server/agent-monitoring.mjs`, contagem reutilizada em `pending-indicators.mjs` e cache privado de bundles no Worker. Evidência: `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`; testes novos `panel-performance.test.mjs`/`panel-performance-browser.cjs` e regressão existente; roteiro `docs/06-entregas/ROTEIRO_TESTES_DESEMPENHO_PAINEL_2026-11-12.txt`. Sem alteração das perguntas da Base, migração, coletor, EXE ou fotos.
 
 Publicação D-103 conferida: painel versão `48d75e7d-b4bb-4f7d-ae56-35adf1ce461f` em 12/11/2026 às 06:41 Fortaleza, coletor anterior preservado. 51 verificações HTTP aprovadas; comparação real cinco recargas por tela e janela de cinco minutos (73 → 54 consultas, todas 200), foto/configurações/cadastro conferidos. Relatório e roteiro vinculados acima.
+
+
+## D-104 — desempenho após revisão externa, 12/11/2026
+
+A1 (repaint sem mudança) → desktop-map.js, coalescência e comparação de estado; A3 (attach repetido) → desktop-progress.js, demanda de atualização pelo contexto; A2 (foto/integração sequenciais) → photo-read.mjs, batch fresco e projeção sem BLOB para original nas três rotas desktop. request-timing.mjs/worker/photo-storage medem auth, D1 e headers Drive, sem parâmetros/segredos e sem cache de permissão. Testes panel-performance-round2.test.mjs e browser.cjs; regressões de fotos, mapa, hardware, layout e navegação. [Aceite](../05-qualidade/DESEMPENHO_D104_2026-11-12.md). Nenhum campo da Base original alterado; Smart Placement separado.
+
+D-104 publicada em 12/11/2026 às 07:25:43 Fortaleza: b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2 (100%); coletor preservado. 51 verificações públicas de acesso aprovadas. Conferência root/novos tempos reais aguardam renovação de sessão, sem alegação de medição concluída.

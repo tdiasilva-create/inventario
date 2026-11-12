@@ -326,3 +326,10 @@ Sem decisões adicionais. [Aceite](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_20
 ### Desempenho do painel — D-103 (12/11/2026)
 
 Correção de carregamento/consultas autorizada e testada; publicação e comparação real registradas em `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`. Mantidos para avaliação futura, sem aprovação implícita: mudança de região/arquitetura do banco, aumento dos intervalos de atualização, cache de dados privados e alterações funcionais fora do pedido. Conferência na rede/dispositivo do responsável pelo roteiro TXT; tempos locais não são garantia de latência de produção.
+
+
+## D-104 — rodada seguinte de desempenho
+
+Correções de marcador/coletas/fotos e instrumentação aprovadas em 12/11/2026. [Resultados e publicação](../05-qualidade/DESEMPENHO_D104_2026-11-12.md). Smart Placement permanece para experimento separado; cache de autorização da integração não foi adotado. Aceite na rede do responsável pelo roteiro D104. Demais decisões pendentes preservadas.
+
+D-104: publicação concluída na versão b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2. Falta renovar sessão root para repetir medições autenticadas de navegação/fotos; solicitação aberta ao responsável. Testes locais e controle de acesso externo concluídos.

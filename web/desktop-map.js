@@ -3,9 +3,10 @@ import {icon} from './desktop-icons.js';
 import {unitMapColor} from './unit-map-palette.js';
 import {getPendingState} from './desktop-demand-count.js';
 let current=null,generation=0;
-let hardwareUnits=new Map();
-window.addEventListener('semed:monitoring',e=>{hardwareUnits=new Map((e.detail?.hardware?.units||[]).map(u=>[u.unit_id,u]));paintHardware();});
-window.addEventListener('semed:pending-summary',()=>paintHardware());
+let hardwareUnits=new Map(),paintFrame=null;
+function schedulePaint(){if(!current||paintFrame!==null)return;paintFrame=requestAnimationFrame(()=>{paintFrame=null;paintHardware();});}
+window.addEventListener('semed:monitoring',e=>{hardwareUnits=new Map((e.detail?.hardware?.units||[]).map(u=>[u.unit_id,u]));schedulePaint();});
+window.addEventListener('semed:pending-summary',schedulePaint);
 const openDemandCount=id=>getPendingState().data?.demands?.units?.find(u=>u.unit_id===id)?.total||0;
 const mapFigure=value=>Number.isSafeInteger(value)&&value>=0?value.toLocaleString('pt-BR'):'Não informado';
 const tooltipOptions={className:'v33-tooltip unit-map-tooltip',direction:'top'};
@@ -49,13 +50,16 @@ function paintHardware(){
  const pendingState=getPendingState(),demandRows=pendingState.data?.demands?.units,demandReady=Array.isArray(demandRows);
  const counts=new Map((demandReady?demandRows:[]).map(u=>[u.unit_id,u.total]));
  const mapStatus=context.container.closest('.map-panel').querySelector('[data-map-demand-status]');
- if(mapStatus){mapStatus.hidden=demandReady&&!pendingState.error;mapStatus.textContent=pendingState.error?'Demandas: consulta indisponível. Última leitura preservada.':'Consultando demandas abertas…';}
+ if(mapStatus){const hidden=demandReady&&!pendingState.error,message=pendingState.error?'Demandas: consulta indisponível. Última leitura preservada.':'Consultando demandas abertas…';if(mapStatus.hidden!==hidden)mapStatus.hidden=hidden;if(mapStatus.textContent!==message)mapStatus.textContent=message;}
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
-  const openDemands=counts.get(id)||0;
+  const openDemands=counts.get(id)||0,node=entry.marker.getElement(),position=entry.marker.getLatLng();
+  const paintKey=JSON.stringify([entry.name,entry.type,entry.color,entry.students,entry.seats,pending,demands,openDemands,!!pendingState.error,position.lat,position.lng]);
+  if(entry.paintKey===paintKey&&entry.paintedNode===node)continue;
+  entry.paintKey=paintKey;entry.paintedNode=node;
   entry.label.textContent=entry.name+' · '+entry.type+'\nAlunos: '+mapFigure(entry.students)+'\nVagas disponíveis: '+mapFigure(entry.seats)+(pending?'\n'+pending+' alteração(ões) de hardware aguardando decisão':'')+(openDemands?'\n'+openDemands+' demanda(s) aberta(s)':'');
   if(pendingState.error&&openDemands)entry.label.textContent+=' · Demandas: última leitura, atualização indisponível';
-  entry.marker.setStyle({fillColor:entry.color});
-  const node=entry.marker.getElement();if(node){node.dataset.unitId=id;node.dataset.unitType=entry.type;node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click',{keyboard:true});}};}
+  if(entry.marker.options.fillColor!==entry.color)entry.marker.setStyle({fillColor:entry.color});
+  if(node){node.dataset.unitId=id;node.dataset.unitType=entry.type;node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click',{keyboard:true});}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
   if(pending||demands){
    const state=pending?'pending':'demand';
@@ -80,6 +84,7 @@ const basemaps={
 };
 export function unmountMap(){
  generation++;
+ if(paintFrame!==null){cancelAnimationFrame(paintFrame);paintFrame=null;}
  if(!current)return;
  collapseMap({restoreFocus:false});
  preference.camera={center:current.map.getCenter(),zoom:current.map.getZoom()};
@@ -163,8 +168,8 @@ export function updateMarkers(units,selected){
    const label=document.createElement('span');marker.bindTooltip(label,tooltipOptions);marker.on('click',e=>selectMapUnit(context,unit.id,e));marker.addTo(context.unitGroup);
    entry={marker,label};context.markers.set(unit.id,entry);
   }
-  entry.selected=unit.id===selected;entry.name=unit.name||unit.nome||'Unidade sem nome';entry.type=type;entry.color=color;entry.students=unit.students_total;entry.seats=unit.seats_available;entry.marker.setLatLng(coordinates);entry.marker.setRadius(entry.selected?9:6);
-  const node=entry.marker.getElement();if(node){node.dataset.unitId=unit.id;node.dataset.unitType=type;}
+  entry.selected=unit.id===selected;entry.name=unit.name||unit.nome||'Unidade sem nome';entry.type=type;entry.color=color;entry.students=unit.students_total;entry.seats=unit.seats_available;if(!entry.marker.getLatLng().equals(window.L.latLng(coordinates)))entry.marker.setLatLng(coordinates);if(entry.marker.getRadius()!==(entry.selected?9:6))entry.marker.setRadius(entry.selected?9:6);
+
  }
  for(const [id,entry]of context.markers)if(!keep.has(id)){context.unitGroup.removeLayer(entry.marker);if(entry.notice)context.unitGroup.removeLayer(entry.notice);if(entry.demandNotice)context.unitGroup.removeLayer(entry.demandNotice);context.markers.delete(id);}
  if(context.choice?.ids.some(id=>!keep.has(id)))context.map.closePopup();

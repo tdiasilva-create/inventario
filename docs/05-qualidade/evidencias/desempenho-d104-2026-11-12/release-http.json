@@ -1,0 +1,210 @@
+{
+  "status": "PASS",
+  "base": "https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev",
+  "checks": [
+    {
+      "path": "/login",
+      "status": 200
+    },
+    {
+      "path": "/login.html",
+      "status": 200
+    },
+    {
+      "path": "/login.css",
+      "status": 200
+    },
+    {
+      "path": "/login.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/prefeitura-paco.png",
+      "status": 200
+    },
+    {
+      "path": "/assets/paisagem-coleta.jpg",
+      "status": 200
+    },
+    {
+      "path": "/tokens.css",
+      "status": 200
+    },
+    {
+      "path": "/painel-favicon.svg",
+      "status": 200
+    },
+    {
+      "path": "/vendor/chakra-petch/ChakraPetch-700.woff2",
+      "status": 200
+    },
+    {
+      "path": "/vendor/chakra-petch/ChakraPetch-600.woff2",
+      "status": 200
+    },
+    {
+      "path": "/vendor/barlow/Barlow-400.woff2",
+      "status": 200
+    },
+    {
+      "path": "/panorama",
+      "status": 302
+    },
+    {
+      "path": "/mapa",
+      "status": 302
+    },
+    {
+      "path": "/unidades",
+      "status": 302
+    },
+    {
+      "path": "/ambientes",
+      "status": 302
+    },
+    {
+      "path": "/equipamentos",
+      "status": 302
+    },
+    {
+      "path": "/ocorrencias",
+      "status": 302
+    },
+    {
+      "path": "/relatorios",
+      "status": 302
+    },
+    {
+      "path": "/planejamento",
+      "status": 302
+    },
+    {
+      "path": "/exportar",
+      "status": 302
+    },
+    {
+      "path": "/configuracoes",
+      "status": 302
+    },
+    {
+      "path": "/operadores-unidades",
+      "status": 302
+    },
+    {
+      "path": "/seguranca",
+      "status": 302
+    },
+    {
+      "path": "/panel-shell.js",
+      "status": 302
+    },
+    {
+      "path": "/unit-name-picker.js",
+      "status": 302
+    },
+    {
+      "path": "/unit-schema.js",
+      "status": 302
+    },
+    {
+      "path": "/spreadsheet-io.js",
+      "status": 302
+    },
+    {
+      "path": "/vendor/exceljs/exceljs.min.js",
+      "status": 302
+    },
+    {
+      "path": "/",
+      "status": 302
+    },
+    {
+      "path": "/index.html",
+      "status": 302
+    },
+    {
+      "path": "/desktop.js",
+      "status": 302
+    },
+    {
+      "path": "/account.html",
+      "status": 302
+    },
+    {
+      "path": "/account.js",
+      "status": 302
+    },
+    {
+      "path": "/conta",
+      "status": 302
+    },
+    {
+      "path": "/administracao",
+      "status": 302
+    },
+    {
+      "path": "/cadastro-unidades",
+      "status": 302
+    },
+    {
+      "path": "/usuarios",
+      "status": 302
+    },
+    {
+      "path": "/admin-units.js",
+      "status": 302
+    },
+    {
+      "path": "/data/map-v33.json",
+      "status": 302
+    },
+    {
+      "path": "/assets/referencia-visual.png",
+      "status": 302
+    },
+    {
+      "path": "/.env",
+      "status": 302
+    },
+    {
+      "path": "/.dev.vars",
+      "status": 302
+    },
+    {
+      "path": "/private-data/ACESSOS_INICIAIS_SEMED.txt",
+      "status": 302
+    },
+    {
+      "path": "/server/worker.mjs",
+      "status": 302
+    },
+    {
+      "path": "/%64esktop.js",
+      "status": 302
+    },
+    {
+      "path": "/api/auth/me",
+      "status": 401
+    },
+    {
+      "path": "/api/admin/users",
+      "status": 401
+    },
+    {
+      "path": "/api/inspections",
+      "status": 401
+    },
+    {
+      "path": "/api/root/units",
+      "status": 401
+    },
+    {
+      "path": "/api/root/assignments",
+      "status": 401
+    },
+    {
+      "path": "/api/units",
+      "status": 401
+    }
+  ]
+}

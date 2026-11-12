@@ -1,3 +1,4 @@
+import {readPanelJson} from './desktop-request.js';
 import {deleteEquipment,showDeletedEquipment} from './equipment-deletion.js';
 import {editEquipmentName} from './equipment-name-editor.js';
 import {topics as v3Topics} from './collector-v3-schema.js';
@@ -13,7 +14,7 @@ const events={equipment_deleted:'Cadastro de equipamento apagado pelo root',insp
 export function createProgressView({onCompleted=async()=>{},canRename=()=>false,csrf=()=>''}={}){
  const photographs=createProgressPhotos();
  let list={items:[],total:0,nextCursor:null},selected=null,detail=null,equipment={items:[],nextCursor:null},listCursors=[null],equipmentCursors=[null],error='',lastChecked=null,loading=false,loaded=false,requestToken=0,filter='',refreshPending=false;
- async function get(path){const r=await fetch(path);if(!r.ok){let v;try{v=await r.json();}catch{}throw Error(v?.error||'Não foi possível atualizar o acompanhamento.');}return r.json();}
+ const get=readPanelJson;
  function badges(states,version){const labels=states.__visit?Object.keys(states).filter(k=>k!=='__visit').map(k=>[k,k]):version==='coleta-3.0'?v3Topics:version===v2Version?topics.map(([g,name])=>[g,name]):groups;return '<div class="progress-states">'+labels.map(([g,name])=>{const state=states[g]?.state||states[g]||'Pendente';return '<span class="'+(state==='Concluído'?'done':state==='Em andamento'?'working':'')+'" title="'+esc(name)+'">'+esc(g)+' · '+esc(state)+'</span>';}).join('')+'</div>';}
  function rows(items){return items.map(row=>'<article class="progress-card"><div><span class="partial-badge">PARCIAL · EM ANDAMENTO</span><h3>'+esc(row.unit_name)+'</h3><p>Iniciada por '+esc(row.created_by_name)+' · '+date(row.created_at)+'</p><p>Última atividade no servidor: '+date(row.updated_at)+'</p></div>'+badges(row.states,row.questionnaire_version)+'<div class="progress-counts"><span><b>'+number(row.records)+'</b> fichas trabalhadas nesta coleta</span><span><b>'+number(row.items)+'</b> itens físicos nessas fichas</span><span>'+number(row.new_records)+' fichas novas · '+number(row.changed_records)+' de bens já publicados</span></div>'+action('Ver dados parciais','open','data-id="'+esc(row.id)+'"')+'</article>').join('');}
  function overview(){return '<div class="progress-banner"><div><h3>Coletas em andamento <span>'+number(list.total)+'</span></h3><p>Informações parciais já salvas pelos operadores.</p><small data-progress-time>'+(lastChecked?'Consulta: '+date(lastChecked):'Carregando acompanhamento…')+'</small></div><a class="btn" href="/coletas-em-andamento">Acompanhar coletas</a></div>'+(error?'<p class="progress-error" role="alert">'+esc(error)+'</p>':'')+(list.items.length?'<div class="progress-preview">'+list.items.slice(0,3).map(r=>'<a href="/coletas-em-andamento?vistoria='+encodeURIComponent(r.id)+'"><strong>'+esc(r.unit_name)+'</strong><span>'+number(r.records)+' fichas · '+esc(r.created_by_name)+'</span><small>'+date(r.updated_at)+'</small></a>').join('')+'</div>':loaded?'<p class="empty">Nenhuma coleta em andamento.</p>':'');}
@@ -54,5 +55,5 @@ export function createProgressView({onCompleted=async()=>{},canRename=()=>false,
  }catch(e){error=e.message;draw();}});
  setInterval(()=>{if(!document.hidden&&(document.querySelector('#progress-overview')||document.querySelector('#progress-content')))refresh();},15000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(document.querySelector('#progress-overview')||document.querySelector('#progress-content')))refresh();});
- return {attach(id=null,query=''){filter=query;if(document.querySelector('#progress-content')&&id!==selected){selected=id;detail=null;}draw();if(!loaded||selected&&!detail)refresh(true);},refresh,overview,full};
+ return {attach(id=null,query=''){filter=query;const changed=!!document.querySelector('#progress-content')&&id!==selected;if(changed){selected=id;detail=null;}draw();if(changed||!loaded||selected&&!detail)refresh(changed);},refresh,overview,full};
 }

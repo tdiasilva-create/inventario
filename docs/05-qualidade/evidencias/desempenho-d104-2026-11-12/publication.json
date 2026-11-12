@@ -1,0 +1,25 @@
+{
+  "panel": {
+    "version": [
+      {
+        "version_id": "b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2",
+        "percentage": 100
+      }
+    ],
+    "createdAt": "2026-11-12T10:25:43.943444Z",
+    "deployment": "ee467207-206d-43f5-88d7-f6370a49f4b2"
+  },
+  "collector": {
+    "unchanged": true,
+    "version": [
+      {
+        "version_id": "2dac8571-2671-4eec-8ab0-7492753a0255",
+        "percentage": 100
+      }
+    ],
+    "createdAt": "2026-11-11T20:29:50.411559Z"
+  },
+  "migration": false,
+  "smartPlacement": false,
+  "authenticatedReview": "Pending renewed root session; browser is on login."
+}

@@ -1,3 +1,4 @@
+import {databaseIdentity,timed} from './request-timing.mjs';
 // Camada de armazenamento de fotografias (proposta D-047).
 // Provedores: 'r2' (binding env.PHOTOS, implementação original preservada) e 'google-drive'
 // (pasta privada criada pela aplicação no Meu Drive da conta institucional, escopo drive.file).
@@ -31,13 +32,13 @@ export const logIntegration=(db,event,actor,detail)=>db.prepare('INSERT INTO int
 const tokenMemo=new WeakMap();
 export async function accessToken(env,db,{fetchImpl=fetch,now=Date.now(),row:loadedRow}={}){
  if(!driveConfigured(env))throw new StorageError('Integração Google Drive não configurada no servidor.',503,'not_configured');
- const row=loadedRow===undefined?await integrationRow(db):loadedRow;if(!row||!row.refresh_token_enc||row.revoked_at){tokenMemo.delete(db);throw new StorageError('Google Drive não autorizado. Solicite ao root a conexão em Configurações.',503,'not_connected');}
+ const row=loadedRow===undefined?await integrationRow(db):loadedRow;if(!row||!row.refresh_token_enc||row.revoked_at){tokenMemo.delete(databaseIdentity(db));throw new StorageError('Google Drive não autorizado. Solicite ao root a conexão em Configurações.',503,'not_connected');}
  if(row.access_token_enc&&row.access_token_expires_at>now+60000){
-  const hit=tokenMemo.get(db),context=[env.GOOGLE_CLIENT_ID,env.GOOGLE_CLIENT_SECRET,env.GOOGLE_TOKEN_KEY,row.refresh_token_enc,row.access_token_enc,row.folder_id];
+  const hit=tokenMemo.get(databaseIdentity(db)),context=[env.GOOGLE_CLIENT_ID,env.GOOGLE_CLIENT_SECRET,env.GOOGLE_TOKEN_KEY,row.refresh_token_enc,row.access_token_enc,row.folder_id];
   if(hit&&hit.until>now&&context.every((v,i)=>v===hit.context[i]))return {token:hit.token,row};
-  const token=await open(env,row.access_token_enc);tokenMemo.set(db,{context,token,until:Math.min(now+60000,row.access_token_expires_at-60000)});return {token,row};
+  const token=await open(env,row.access_token_enc);tokenMemo.set(databaseIdentity(db),{context,token,until:Math.min(now+60000,row.access_token_expires_at-60000)});return {token,row};
  }
- tokenMemo.delete(db);
+ tokenMemo.delete(databaseIdentity(db));
  const refresh=await open(env,row.refresh_token_enc);
  const response=await fetchImpl(TOKEN_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:env.GOOGLE_CLIENT_ID,client_secret:env.GOOGLE_CLIENT_SECRET,refresh_token:refresh,grant_type:'refresh_token'})});
  const data=await response.json().catch(()=>({}));
@@ -82,8 +83,8 @@ function r2Store(bucket){
   async get(row){if(!bucket)throw new StorageError('Fotografias indisponíveis.');const object=await bucket.get(row.object_key);return object?{body:object.body,contentLength:object.size}:null;},
   async delete(row){if(!bucket)throw new StorageError('Armazenamento indisponível.');if(row.storage_provider&&row.storage_provider!==R2_PROVIDER)throw new StorageError('Arquivo pertence a outro provedor ('+row.storage_provider+').',409,'provider_mismatch');await bucket.delete(row.object_key);return true;}};
 }
-function driveStore(env,db,fetchImpl){
- let cached=null;const row=async()=>cached??=await integrationRow(db);
+function driveStore(env,db,fetchImpl,integration){
+ let cached=integration;const row=async()=>cached===undefined?(cached=await integrationRow(db)):cached;
  const ready=async()=>{if(!driveConfigured(env))return false;const r=await row();return !!(r&&r.refresh_token_enc&&!r.revoked_at&&r.folder_id);};
  const tok=async()=>accessToken(env,db,{fetchImpl,row:await row()});
  async function unitFolder(token,unitId,unitName,rootFolder){
@@ -105,17 +106,17 @@ function driveStore(env,db,fetchImpl){
    const file=await multipartUpload(token,fetchImpl,{name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,semedUnitId:unitId,semedInspectionId:inspectionId,semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});
    return {ref:file.id,provider:DRIVE_PROVIDER,reused:false};
   },
-  async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true');if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body,contentLength:r.headers.get('Content-Length')};},
+  async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await timed(env,'drive_headers',()=>driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true'));if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body,contentLength:r.headers.get('Content-Length')};},
   async delete(row){if(row.storage_provider&&row.storage_provider!==DRIVE_PROVIDER)throw new StorageError('Arquivo pertence a outro provedor ('+row.storage_provider+').',409,'provider_mismatch');if(!await ready())throw new StorageError('Armazenamento indisponível.',503,'not_connected');if(!row.storage_ref)return true;const {token}=await tok();return deleteFile(token,fetchImpl,row.storage_ref);},
-  async selfTest(actor){const {token,row:r}=await tok();const started=Date.now();const png=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aKxkAAAAASUVORK5CYII='),c=>c.charCodeAt(0));const name='TESTE_CONEXAO_SEMED_'+new Date(started).toISOString().replace(/[:.]/g,'-')+'.png';let result;try{const file=await multipartUpload(token,fetchImpl,{name,mime:'image/png',bytes:png,parents:[r.folder_id],appProperties:{semedTest:'1'},description:'Arquivo de teste da integração; pode ser removido.'});await deleteFile(token,fetchImpl,file.id);result={ok:true,fileId:file.id,name,durationMs:Date.now()-started};}catch(error){result={ok:false,error:error.message,durationMs:Date.now()-started};}await db.batch([db.prepare('UPDATE integration_tokens SET last_test_at=?,last_test_result=? WHERE provider=?').bind(started,result.ok?'ok':'erro: '+result.error,DRIVE_PROVIDER),logIntegration(db,result.ok?'self_test_ok':'self_test_failed',actor,result.ok?name:result.error)]);cached=null;return result;}};
+  async selfTest(actor){const {token,row:r}=await tok();const started=Date.now();const png=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aKxkAAAAASUVORK5CYII='),c=>c.charCodeAt(0));const name='TESTE_CONEXAO_SEMED_'+new Date(started).toISOString().replace(/[:.]/g,'-')+'.png';let result;try{const file=await multipartUpload(token,fetchImpl,{name,mime:'image/png',bytes:png,parents:[r.folder_id],appProperties:{semedTest:'1'},description:'Arquivo de teste da integração; pode ser removido.'});await deleteFile(token,fetchImpl,file.id);result={ok:true,fileId:file.id,name,durationMs:Date.now()-started};}catch(error){result={ok:false,error:error.message,durationMs:Date.now()-started};}await db.batch([db.prepare('UPDATE integration_tokens SET last_test_at=?,last_test_result=? WHERE provider=?').bind(started,result.ok?'ok':'erro: '+result.error,DRIVE_PROVIDER),logIntegration(db,result.ok?'self_test_ok':'self_test_failed',actor,result.ok?name:result.error)]);cached=undefined;return result;}};
 }
 function disabledStore(reason){return {provider:null,reason,async enabled(){return false;},async status(){return {provider:null,enabled:false,reason};},async put(){throw new StorageError('Armazenamento de fotos ainda indisponível. Nenhum upload confirmado.',503,'disabled');},async get(){throw new StorageError('Fotografias indisponíveis.',503,'disabled');},async delete(){throw new StorageError('Armazenamento indisponível.',503,'disabled');}};}
 
 // Ponto único de escolha do provedor. `photos` mantém compatibilidade com chamadas antigas que passavam o binding R2.
-export function photoStore(env,{db=env?.DB,fetchImpl=fetch,photos}={}){
+export function photoStore(env,{db=env?.DB,fetchImpl=fetch,photos,integration}={}){
  if(photos)return r2Store(photos);
  const provider=providerFor(env||{});
- if(provider===DRIVE_PROVIDER)return db?driveStore(env,db,fetchImpl):disabledStore('Banco indisponível para a integração Google Drive.');
+ if(provider===DRIVE_PROVIDER)return db?driveStore(env,db,fetchImpl,integration):disabledStore('Banco indisponível para a integração Google Drive.');
  if(provider===R2_PROVIDER)return r2Store(env.PHOTOS);
  return disabledStore(env?.PHOTO_STORAGE_PROVIDER?'Provedor de fotos desconhecido: '+env.PHOTO_STORAGE_PROVIDER:'Nenhum armazenamento de fotos configurado.');
 }

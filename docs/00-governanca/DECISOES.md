@@ -662,3 +662,8 @@ Responsável apontou reabertura indevida após cadastrar. Retirar chamada autom�
 ## D-103 — 12/11/2026 — desempenho do painel
 
 Autorizado pelo responsável: reduzir consultas repetidas, melhorar carregamento, testar/comparar com as medições anteriores, publicar no ambiente real e entregar roteiro TXT. Bundles de código/CSS com hash e cache privado; leituras independentes em paralelo; controlador compartilhado de pendências/monitoramento a cada 15 s, com endpoint autenticado sem histórico desnecessário; pulso continua 60 s. Autorização/perfis, fotos, dados, identidade, coletor, EXE e cron preservados. Não altera regras pendentes nem aumenta intervalos aprovados. Ver `docs/03-painel-desktop/DESEMPENHO_D103.md` e `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`.
+
+
+## D-104 — segunda rodada de desempenho, 12/11/2026
+
+Responsável aprovou as recomendações da revisão do relatório pós-D103: eliminar reaplicações de estado dos marcadores, consulta inicial repetida das coletas, reduzir viagens ao D1 nas fotos sem cache de autorização e instrumentar tempos internos. Implementação/testes/publicação no painel sob autorização contínua. Smart Placement fica para teste separado; intervalos, dados, permissões, mapa/identidade, coletor e EXE preservados. Sem migração. Ver [contrato](../03-painel-desktop/DESEMPENHO_D104.md) e [aceite](../05-qualidade/DESEMPENHO_D104_2026-11-12.md).
