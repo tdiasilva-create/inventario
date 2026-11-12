@@ -14,6 +14,13 @@ export const hardwarePendingFrom=`FROM agent_notifications n
  JOIN units u ON u.id=n.unit_id JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id
  LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id
  WHERE n.kind='hardware_change' AND hr.notification_id IS NULL`;
+export async function readPendingSummary(db,hardwareTotal){
+ const statements=[db.prepare(collectionCTE+' SELECT state,COUNT(*) AS total FROM pending GROUP BY state'),db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id")];
+ if(hardwareTotal===undefined)statements.push(db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom));
+ const [collections,demands,hardware]=await db.batch(statements);
+ const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;
+ return {collections:{total:Object.values(states).reduce((a,b)=>a+b,0),...states},demands:{total:demands.results.reduce((sum,row)=>sum+row.total,0),units:demands.results},hardware:{total:hardwareTotal??hardware.results[0].total},scope:'network',server_time:new Date().toISOString()};
+}
 export async function pendingIndicatorsRoutes(request,url,user,env,{json,fail}){
  const path=url.pathname;
  if(!['/api/inventory/pending-summary','/api/inventory/pending-collections'].includes(path))return null;
@@ -22,13 +29,7 @@ export async function pendingIndicatorsRoutes(request,url,user,env,{json,fail}){
  if(request.method!=='GET')return fail('Consulta somente para leitura.',405);
  const db=env.DB;
  if(path.endsWith('/pending-summary')){
-  const [collections,demands,hardware]=await db.batch([
-   db.prepare(collectionCTE+' SELECT state,COUNT(*) AS total FROM pending GROUP BY state'),
-   db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id"),
-   db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom)
-  ]);
-  const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;
-  return json({collections:{total:Object.values(states).reduce((a,b)=>a+b,0),...states},demands:{total:demands.results.reduce((sum,row)=>sum+row.total,0),units:demands.results},hardware:{total:hardware.results[0].total},scope:'network',server_time:new Date().toISOString()});
+  return json(await readPendingSummary(db));
  }
  const offset=Number(url.searchParams.get('offset')||0),state=url.searchParams.get('state')||'',q=(url.searchParams.get('q')||'').trim();
  if(!Number.isSafeInteger(offset)||offset<0||!['','not_started','in_progress','preserved'].includes(state)||q.length>120)return fail('Filtros inválidos.');

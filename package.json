@@ -53,9 +53,12 @@
     "test:agent-connection:browser": "node tests/agent-connection-browser.cjs",
     "test:providers:browser": "node tests/provider-report-browser.cjs",
     "test:demand-unit-search:browser": "node tests/demand-unit-search-browser.cjs",
-    "test:demand-save:browser": "node tests/demand-save-browser.cjs"
+    "test:demand-save:browser": "node tests/demand-save-browser.cjs",
+    "test:panel-performance": "node --test tests/panel-performance.test.mjs",
+    "measure:panel:local": "node tests/panel-performance-browser.cjs"
   },
   "devDependencies": {
+    "esbuild": "0.25.12",
     "playwright": "1.62.1",
     "qrcode": "1.5.4",
     "wrangler": "4.153.0"

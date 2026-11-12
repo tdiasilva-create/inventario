@@ -511,3 +511,14 @@ Pedido direto e inspeção da produção → web/unit-name-picker.js controla se
 ## D-102 — retorno após salvar demanda
 
 Relato direto → retirada de openRequest automático no sucesso de request-save em web/operations.js, confirmação persistente com consulta explícita e estilo sem mudança de identidade. demand-save-browser.cjs verifica criação/edição, ausência de navegação/reabertura, falha/ACK perdido e repetição sem duplicidade, foco, histórico e lista desatualizada; regressões de operações, busca de unidades e tour aprovadas. [Aceite/publicação](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md). Persistência, Base TXT, coleta e demais pendências preservadas.
+
+## Diagnóstico de desempenho — 12/11/2026, sem mudança funcional
+
+Relatório externo e autorização para iniciar a medição → navegação root real (cinco recargas por tela), fotografia real, cinco minutos de Panorama sem cliques, tail sanitizado e trinta SELECTs com seis planos no D1. Evidências e limites em [medições iniciais](../05-qualidade/MEDICOES_DESEMPENHO_PAINEL_2026-11-12.txt). Utilitários locais `capture-panel-performance.mjs` e `measure-panel-sql.mjs`; sem deploy, migração, escrita de cadastros ou alteração de intervalos. Tempos CUA incluem automação, não são LCP/TTFB. SQL rápido não descarta latência entre serviços. Ganhos previstos no relatório externo continuam sem homologação antes/depois; D-072 e prazos de 15/60 segundos preservados.
+
+
+### D-103 — desempenho do painel (12/11/2026)
+
+Pedido explícito de correção/publicação e roteiro de testes → `scripts/bundle-desktop.mjs`, build desktop, `web/panel-status.js`, `desktop-request.js`, consumidores de indicadores e carregamento paralelo → endpoint compartilhado em `server/agent-monitoring.mjs`, contagem reutilizada em `pending-indicators.mjs` e cache privado de bundles no Worker. Evidência: `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`; testes novos `panel-performance.test.mjs`/`panel-performance-browser.cjs` e regressão existente; roteiro `docs/06-entregas/ROTEIRO_TESTES_DESEMPENHO_PAINEL_2026-11-12.txt`. Sem alteração das perguntas da Base, migração, coletor, EXE ou fotos.
+
+Publicação D-103 conferida: painel versão `48d75e7d-b4bb-4f7d-ae56-35adf1ce461f` em 12/11/2026 às 06:41 Fortaleza, coletor anterior preservado. 51 verificações HTTP aprovadas; comparação real cinco recargas por tela e janela de cinco minutos (73 → 54 consultas, todas 200), foto/configurações/cadastro conferidos. Relatório e roteiro vinculados acima.

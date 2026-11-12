@@ -657,3 +657,8 @@ Responsável relatou dificuldade em procurar unidades no controle suspenso da Ce
 ## D-102 — não reabrir demanda após salvar, 11/11/2026
 
 Responsável apontou reabertura indevida após cadastrar. Retirar chamada automática ao detalhe; sucesso fecha modal, atualiza listagem e confirma número da demanda. Mesmo fluxo para edição. Consulta posterior somente por clique (Ver demanda/Atender e histórico). Preservar erro e preenchimento quando não houver confirmação, idempotência e histórico. Não recarregar página nem misturar falha de atualização da lista com falha de gravação. Publicação sob autorização contínua da sessão; sem migração ou servidor/coletor. [Aceite/publicação](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).
+
+
+## D-103 — 12/11/2026 — desempenho do painel
+
+Autorizado pelo responsável: reduzir consultas repetidas, melhorar carregamento, testar/comparar com as medições anteriores, publicar no ambiente real e entregar roteiro TXT. Bundles de código/CSS com hash e cache privado; leituras independentes em paralelo; controlador compartilhado de pendências/monitoramento a cada 15 s, com endpoint autenticado sem histórico desnecessário; pulso continua 60 s. Autorização/perfis, fotos, dados, identidade, coletor, EXE e cron preservados. Não altera regras pendentes nem aumenta intervalos aprovados. Ver `docs/03-painel-desktop/DESEMPENHO_D103.md` e `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`.

@@ -37,10 +37,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.getByRole('button',{name:'Ampliar área do mapa',exact:true}).click();await page.clock.runFor(400);await untilAnchored();await shot('mapa-ampliado');await page.keyboard.press('Escape');
   await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await ring(unit).locator('.demand-map-ring').evaluate(e=>getComputedStyle(e).animationName),'none');await page.emulateMedia({reducedMotion:'no-preference'});
   // Falha mantém a última leitura, explicitamente desatualizada, sem inventar zero.
-  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,body:'{}'}));await tick();
+  await page.route('**/api/inventory/panel-status?*',r=>r.fulfill({status:503,body:'{}'}));await tick();
   await page.waitForFunction(()=>document.querySelector('.demand-map-notice')?.dataset.stale==='true');assert.equal(await ring(unit).getAttribute('data-demands'),'2');
   await page.locator('.unit-map-legend summary').click();await page.getByText('Demandas: consulta indisponível. Última leitura preservada.',{exact:true}).waitFor();await shot('leitura-desatualizada');
-  await page.unroute('**/api/inventory/pending-summary');await tick();await page.waitForFunction(()=>document.querySelector('.demand-map-notice')?.dataset.stale==='false');await page.locator('.unit-map-legend summary').click();
+  await page.unroute('**/api/inventory/panel-status?*');await tick();await page.waitForFunction(()=>document.querySelector('.demand-map-notice')?.dataset.stale==='false');await page.locator('.unit-map-legend summary').click();
   // Concluir uma de duas não remove o anel; concluir a última remove. Reabrir restaura.
   f.sqlite.prepare("UPDATE service_requests SET status='Concluída' WHERE id=?").run(seed.ids[0]);await tick();await expectCount(unit,1);
   f.sqlite.prepare("UPDATE service_requests SET status='Concluída' WHERE unit_id=?").run(unit);await tick();await ring(unit).waitFor({state:'detached'});assert.equal(await ring(f.ids.progress).count(),1);assert.equal(await page.locator('.hardware-map-notice').count(),1,'hardware sem parecer continua');

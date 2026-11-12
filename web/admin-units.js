@@ -1,3 +1,4 @@
+import {initialPanelIdentity} from './desktop-request.js';
 import {confirmAction} from './panel-confirm.js';
 import {unitTypes,unitColumns,validateUnitFields,requiresInep,compareUnitCodes,extraUnitColumns,numericUnitColumns,schoolFieldGroups,schoolFields,schoolTypes,isOutOfScope,collectorHiddenTypes} from './unit-schema.js';
 import {downloadUnits,readUnitFile} from './spreadsheet-io.js';
@@ -9,7 +10,7 @@ const el=(tag,text,cls='')=>{const n=document.createElement(tag);if(text!==undef
 function updateSchoolFields(){const visible=schoolTypes.includes($('unit-type').value);for(const group of document.querySelectorAll('.school-registration-group'))group.hidden=!visible;}
 function updateInep(){updateSchoolFields();const required=requiresInep($('unit-type').value);$('unit-code').required=required;$('unit-code').setAttribute('aria-required',String(required));document.querySelector('label[for="unit-code"]').textContent='Código INEP (8 dígitos · obrigatório para escolas)'+(required?' *':'');$('error-code').textContent='';$('unit-code').setAttribute('aria-invalid','false');}
 document.addEventListener('change',event=>{if(event.target.id==='unit-type'){updateInep();updatePreview();}});
-async function api(path,data){const r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':identity.csrf}:{},body:data?JSON.stringify(data):undefined});const value=await r.json();if(!r.ok){const error=Error(value.error||'Falha no servidor.');error.fields=value.fields;throw error;}return value;}
+async function api(path,data){if(!data&&path==='/api/auth/me')return initialPanelIdentity();const r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':identity.csrf}:{},body:data?JSON.stringify(data):undefined});const value=await r.json();if(!r.ok){const error=Error(value.error||'Falha no servidor.');error.fields=value.fields;throw error;}return value;}
 function note(text){$('status').textContent=text;}
 function btn(text,action){const b=el('button',text,'reset');b.type='button';b.onclick=async()=>{b.disabled=true;try{await action();}catch(e){note(e.message);}finally{b.disabled=false;}};return b;}
 function createFields(){

@@ -1,0 +1,137 @@
+SEMED — ROTEIRO DE TESTES DO PAINEL APÓS CORREÇÕES DE DESEMPENHO
+Data: 12/11/2026 · horários de Fortaleza
+
+ACESSO
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+OBJETIVO
+Conferir rapidez, estabilidade e atualização dos dados sem mudar a identidade visual.
+Esta entrega é do painel desktop. Não exige reinstalação dos agentes nem altera
+o questionário do coletor. Os testes abaixo não precisam de exclusões ou dados fictícios.
+
+COMO REGISTRAR
+Para cada teste anote: PASSOU / FALHOU / NÃO TESTADO, horário, nome da unidade,
+navegador, computador ou celular e o que apareceu. Se houve lentidão, estime os
+segundos e diga se era a primeira abertura, uma recarga ou troca de aba interna.
+Envie screenshot do problema, evitando senhas, códigos de autorização e dados pessoais.
+
+PREPARAÇÃO
+1. Feche abas duplicadas do painel para não misturar consultas.
+2. Entre normalmente como root, admin ou visualizador.
+3. Atualize a página uma vez. A primeira abertura baixa o pacote novo; as próximas
+   reutilizam o código já recebido. Não é necessário limpar cookies ou apagar dados.
+4. Use a mesma conexão e o mesmo navegador ao comparar duas tentativas.
+5. Não conclua visitas, aceite alertas ou apague registros apenas para testar desempenho.
+
+T01 — ABERTURA DO PANORAMA
+Acesse o endereço acima. Confira mapa, matriz e os três indicadores de pendências.
+Recarregue cinco vezes, esperando os dados aparecerem antes de repetir.
+Anote os tempos aproximados de cada vez.
+Esperado: dados aparecem; nenhuma área fica indefinidamente em “Consultando”.
+Mapa, cores, contagens por categoria e localização das unidades permanecem iguais.
+Não compare “rápido/lento” somente pelo carregamento dos tiles externos do mapa.
+
+T02 — NAVEGAÇÃO E FILTROS
+Abra Unidades, volte ao Panorama, selecione uma escola e abra seus detalhes.
+Filtre por tipo ou nome; limpe o filtro. Use Voltar/Avançar do navegador.
+Esperado: nome e conteúdo pertencem à unidade selecionada; nenhum resultado da
+unidade anterior aparece como se fosse da nova. Filtros não somem durante consultas.
+
+T03 — PAINEL PARADO POR CINCO MINUTOS
+No Panorama, abra um bloco de questionário e deixe a página parada por cinco minutos.
+Observe também o mapa e o menu.
+Esperado: não há piscadas/reinicialização do mapa ou fechamento do bloco aberto.
+Pendências/sino atualizam em ciclos de aproximadamente 15 segundos. Comunicação
+da rede/escolas mantém o ciclo de 60 segundos. O tempo de resposta da rede se soma
+ao intervalo. Não é necessário haver alteração nos números para a consulta ocorrer.
+
+T04 — ESCOLAS ONLINE E OFFLINE
+Clique em Escolas online e depois em Escolas offline. Feche cada modal.
+Esperado: somente nomes; número de nomes corresponde ao indicador e aos filtros.
+Se não houver escola online, a lista deve explicar o vazio. Falha de rede não pode
+ser mostrada como “zero escolas”. A regra de presença do agente não foi alterada.
+
+T05 — COMPUTADORES
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores
+Escolha uma unidade com vários computadores. Troque o filtro de ambiente e de vínculo.
+Abra uma ficha e confira hostname, unidade, ambiente e último contato. Feche-a.
+Esperado: dados corretos, etiqueta de agente/manual preservada, navegação responsiva.
+Unidade sem computadores não recebe equipamentos inventados. Não apagar cadastros.
+
+T06 — CENTRAL DE DEMANDAS
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/demandas
+Procure a unidade por nome, selecione-a, filtre a lista e abra uma demanda existente.
+Teste também Situação = Todas se a lista de pendentes estiver vazia.
+Esperado: filtro responde e a lista chega a um resultado ou informa que está vazia.
+Opcional, SOMENTE se houver uma demanda real a registrar: salve-a uma vez. Ela deve
+aparecer na lista com confirmação e número; o formulário não deve reabrir sozinho.
+Ver demanda abre os detalhes somente quando você clicar.
+
+T07 — FOTOGRAFIAS
+Abra uma unidade que já tenha fotos. Confira miniaturas, amplie uma e feche.
+Abra a mesma imagem novamente e navegue entre duas fotos.
+Esperado: contexto/legendas corretos, miniatura não fica quebrada e a ampliação funciona.
+Esta entrega não muda o armazenamento: a primeira foto integral ainda pode depender
+do Google Drive. Anote separadamente lentidão da imagem e lentidão do restante da tela.
+
+T08 — SINO E ALERTAS DO MAPA
+Se houver alerta real de hardware pendente, clique no sino e confira a descrição.
+Feche sem dar parecer só para testar. Confira o anel de unidade com demanda aberta.
+Esperado: contagens coerentes e modal por clique; atualização não abre modal sozinha.
+Perda de comunicação acima de 48 h continua no Log de comunicação, não no sino.
+Caso não exista alerta real, marque esta parte como NÃO TESTADO; não invente ocorrência.
+
+T09 — ABA EM SEGUNDO PLANO
+Deixe o painel em uma aba, vá a outra por um minuto e retorne.
+Esperado: atualização retoma; o painel não exige repetidos cliques nem mostra zero
+apenas porque a consulta foi pausada. Não deve surgir uma sequência de telas recarregando.
+
+T10 — FALHA DE CONEXÃO E RECUPERAÇÃO (OPCIONAL)
+Somente em seu computador de consulta, se puder interromper a rede sem afetar trabalho:
+desconecte a internet temporariamente, aguarde uma consulta e volte a conectar.
+Esperado: aviso claro de indisponibilidade/tempo excedido; dados anteriores não são
+apresentados como atualizados. A próxima consulta ou Atualizar recupera a apresentação.
+Não interrompa a rede da escola ou dos agentes para esse teste do navegador.
+
+T11 — LOGIN, PRIMEIRO ACESSO E PERMISSÕES
+Na próxima ocasião normal, confira que login e troca obrigatória da senha continuam
+funcionando. Não crie uma conta fictícia só para este teste.
+Visualizador permanece somente leitura; operador permanece no coletor.
+Esperado: nenhuma liberação de cadastro/edição indevida e nenhuma senha solicitada novamente
+por causa desta publicação. Não compartilhe a senha no relato.
+
+T12 — RELATÓRIOS E ADMINISTRAÇÃO
+Abra Relatórios → Provedores → Dados atuais e Histórico semanal.
+Confira uma unidade já conhecida e, se desejar, exporte o relatório.
+Como root, abra Cadastro de unidades e Usuários, apenas para consultar.
+Esperado: menus, pesquisa, dados e exportações funcionam; não ficam carregando para sempre.
+
+CONFERÊNCIA TÉCNICA OPCIONAL — F12 / NETWORK
+Com cache habilitado (Disable cache DESMARCADO), recarregue o Panorama.
+O documento deve referenciar /bundles/desktop-....js e /bundles/painel-....css.
+Não deve carregar a cadeia antiga de cerca de 40 módulos próprios na mesma abertura.
+Leaflet, fontes, tiles e fotos são recursos separados e continuam existindo.
+Em cinco minutos sem interação: cerca de 20 consultas a /api/inventory/panel-status
+e 20 a /api/inventory/results no Panorama. Resumo/frota mantêm leituras de 60 s.
+Não deve haver, nessa nova página, polls separados e contínuos de /monitoring e
+/pending-summary. Páginas antigas ainda abertas podem usar as rotas antigas até recarregar.
+401/403 indicam sessão/permissão; não publique cookies, cabeçalhos ou HAR em canais abertos.
+
+MODELO PARA DEVOLVER O RELATÓRIO
+Data e horário:
+Perfil (sem senha):
+Navegador e versão:
+Dispositivo e conexão:
+Teste:
+Página/unidade:
+Passos executados:
+Resultado esperado:
+Resultado observado:
+Tempo aproximado / frequência do problema:
+Screenshot (se houver):
+Conseguiu recuperar com Atualizar ou recarregar?
+
+CRITÉRIO FINAL
+Identidade e funções preservadas, menos consultas repetidas, carregamento sem espera
+indefinida, alterações reais aparecendo nos prazos existentes e falhas bem sinalizadas.
+Se algo falhar, não repita gravações várias vezes; registre a mensagem e o horário.

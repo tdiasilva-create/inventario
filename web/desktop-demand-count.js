@@ -1,4 +1,5 @@
 // D-085: uma consulta compartilhada a cada 15 s; três conceitos, sem total misturado.
+import {subscribePanelStatus,refreshPanelStatus} from './panel-status.js';
 let stop=null,refresh=null;
 let state={data:null,error:'',checkedAt:null};
 const num=n=>new Intl.NumberFormat('pt-BR').format(n);
@@ -16,19 +17,15 @@ export function refreshPendingIndicators(){return refresh?.();}
 export function startDemandCount(user){
  stop?.();stop=null;refresh=null;state={data:null,error:'',checkedAt:null};
  if(user?.mustChange||!['root','admin','visualizador'].includes(user?.role))return;
- const controller=new AbortController(),signal=controller.signal;let busy=false,queued=false;
- async function update(force=false){
-  if(signal.aborted||document.hidden)return;if(busy){if(force)queued=true;return;}busy=true;
-  try{const r=await fetch('/api/inventory/pending-summary',{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error(r.status===401?'Sessão expirada. Entre novamente.':'Não foi possível atualizar as pendências. Use Atualizar para tentar novamente.');const data=await r.json();for(const key of ['collections','demands','hardware'])if(!Number.isSafeInteger(data[key]?.total)||data[key].total<0)throw Error('Contagens indisponíveis. Tente atualizar.');
+ const controller=new AbortController(),signal=controller.signal;
+ const unsubscribe=subscribePanelStatus(result=>{
+  try{if(result.error)throw Error(result.error);const data=result.data.pending;for(const key of ['collections','demands','hardware'])if(!Number.isSafeInteger(data[key]?.total)||data[key].total<0)throw Error('Contagens indisponíveis. Tente atualizar.');
    if(data.demands.units!==undefined&&(!Array.isArray(data.demands.units)||data.demands.units.some(u=>typeof u.unit_id!=='string'||!u.unit_id||!Number.isSafeInteger(u.total)||u.total<1)||new Set(data.demands.units.map(u=>u.unit_id)).size!==data.demands.units.length||data.demands.units.reduce((n,u)=>n+u.total,0)!==data.demands.total))throw Error('Demandas por unidade indisponíveis. Tente atualizar.');
    if(signal.aborted)return;state={data,error:'',checkedAt:new Date()};}
   catch(e){if(signal.aborted)return;state={...state,error:e.message};}
-  finally{busy=false;if(!signal.aborted){paintPendingIndicators();window.dispatchEvent(new CustomEvent('semed:pending-summary',{detail:state}));if(queued){queued=false;update();}}}
- }
- refresh=()=>update(true);
- const timer=setInterval(update,15000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();},{signal});
- window.addEventListener('semed:pending-refresh',()=>update(true),{signal});
- document.addEventListener('click',e=>{if(e.target.closest('[data-pending-refresh]'))update(true);if(e.target.closest('[data-pending-hardware]'))window.dispatchEvent(new CustomEvent('semed:hardware-open',{detail:{state:'pending'}}));},{signal});
- stop=()=>{clearInterval(timer);controller.abort();};update();
+  finally{if(!signal.aborted){paintPendingIndicators();window.dispatchEvent(new CustomEvent('semed:pending-summary',{detail:state}));}}
+ });
+ refresh=refreshPanelStatus;
+ document.addEventListener('click',e=>{if(e.target.closest('[data-pending-refresh]'))refreshPanelStatus();if(e.target.closest('[data-pending-hardware]'))window.dispatchEvent(new CustomEvent('semed:hardware-open',{detail:{state:'pending'}}));},{signal});
+ stop=()=>{controller.abort();unsubscribe();};
 }

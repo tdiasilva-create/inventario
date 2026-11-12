@@ -20,7 +20,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const metric=()=>page.locator('[data-schools-online] strong');
  const expect=async value=>page.waitForFunction(v=>document.querySelector('[data-schools-online] strong')?.textContent===v,String(value));
  const expectOffline=async value=>page.waitForFunction(v=>document.querySelector('[data-schools-offline] strong')?.textContent===v,String(value));
- const refresh=()=>page.evaluate(async()=>{(await import('/panel-pulse.js')).startPulse({role:'root'});});
+ const refresh=()=>page.evaluate(async()=>{document.dispatchEvent(new Event('visibilitychange'));});
  const dialog=page.locator('.school-presence-dialog');
  const names=keys=>keys.map(key=>f.sqlite.prepare('SELECT name FROM units WHERE id=?').get(f.ids[key]).name).sort((a,b)=>a.localeCompare(b,'pt-BR'));
  const expectNames=async expected=>{
@@ -55,7 +55,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   setPresence(second);await refresh();await expect(2);await expectOffline(1);await expectNames(names(['assigned']));await closeList();
   setPresence(creche,0,'shutdown');await refresh();await expect(1);setPresence(creche);await refresh();await expect(2);
   // Erro de outra seção não invalida comunicação recebida; erro de presença nunca vira zero.
-  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,body:'{}'}));await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});await refresh();await page.locator('#panel-pulse[data-state=ok]').waitFor();await expect(2);await page.unroute('**/api/inventory/pending-summary');
+  await page.route('**/api/inventory/panel-status?*',r=>r.fulfill({status:503,body:'{}'}));await page.evaluate(async()=>{document.querySelector('[data-pending-refresh]')?.click() || window.dispatchEvent(new Event('semed:pending-refresh'));});await refresh();await page.locator('#panel-pulse[data-state=ok]').waitFor();await expect(2);await page.unroute('**/api/inventory/panel-status?*');
   await page.locator('[data-schools-online]').click();await page.route('**/api/operations/units',r=>r.fulfill({status:503,body:'{}'}));await refresh();await expect('—');await expectOffline('—');assert.match(await page.locator('[data-schools-online]').innerText(),/indisponível/);assert.equal(await page.locator('[data-schools-online]').isDisabled(),true);assert.match(await dialog.innerText(),/Lista indisponível/);assert.equal(await dialog.locator('li').count(),0);await shot('falha-consulta');
   await page.unroute('**/api/operations/units');await refresh();await expect(2);await expectNames(names(['pending','progress']));await closeList();
   // Dialog nativo fica acima do mapa ampliado; Escape fecha só a lista.

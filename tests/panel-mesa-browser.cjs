@@ -6,7 +6,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const out='docs/05-qualidade/evidencias/mesa-dados-2026-11-10';fs.mkdirSync(out,{recursive:true});
  const shot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png',animations:'disabled'});};
  const pulseReady=async()=>{await page.locator('#panel-pulse[data-state=ok]').waitFor();await page.waitForFunction(()=>document.querySelector('#panel-pulse a[href="/coletas-pendentes"] b')?.textContent!=='—');};
- const restartPulse=()=>page.evaluate(async()=>{const m=await import('/panel-pulse.js');m.startPulse({role:'root'});});
+ const restartPulse=()=>page.evaluate(async()=>{document.dispatchEvent(new Event('visibilitychange'));});
  try{
   await page.setViewportSize({width:1440,height:900});await page.goto(origin+'/computadores?unidade='+s.unit);await pulseReady();
   await page.locator('.ops-machine [data-link-state=linked]').first().waitFor();
@@ -25,9 +25,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.locator('[data-action=rail-pin]').click();await page.locator('h2').first().click();
   await page.keyboard.press('/');assert.equal(await page.locator('.search input').evaluate(e=>document.activeElement===e),true);
   // Rede indisponível não vira contagem zero nem erro infinito; a próxima leitura recupera.
-  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"Falha isolada de teste"}'}));
-  await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});assert.equal(await page.locator('#panel-pulse a[href="/coletas-pendentes"] b').textContent(),'—');assert.equal(await page.locator('#panel-pulse').getAttribute('data-state'),'ok');
-  await page.unroute('**/api/inventory/pending-summary');await page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});await pulseReady();
+  await page.route('**/api/inventory/panel-status?*',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"Falha isolada de teste"}'}));
+  await page.evaluate(async()=>{document.querySelector('[data-pending-refresh]')?.click() || window.dispatchEvent(new Event('semed:pending-refresh'));});await page.waitForFunction(()=>document.querySelector('#panel-pulse a[href="/coletas-pendentes"] b').textContent==='—');assert.equal(await page.locator('#panel-pulse').getAttribute('data-state'),'ok');
+  await page.unroute('**/api/inventory/panel-status?*');await page.evaluate(async()=>{document.querySelector('[data-pending-refresh]')?.click() || window.dispatchEvent(new Event('semed:pending-refresh'));});await pulseReady();
   await page.route('**/api/operations/units',r=>r.fulfill({status:200,contentType:'application/json',body:'{}'}));
   await restartPulse();await page.locator('#panel-pulse[data-state=erro]').waitFor();await page.unroute('**/api/operations/units');
   // Reinstalar a moldura cancela leituras e listeners antigos.

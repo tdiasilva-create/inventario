@@ -1,4 +1,5 @@
 import {hardwareSummary,notificationJoins,notificationColumns,notificationItem} from './hardware-review.mjs';
+import {readPendingSummary} from './pending-indicators.mjs';
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {communicationLog,communicationLossSeconds} from './communication-log.mjs';
 const parse=s=>s?JSON.parse(s):{};
@@ -69,7 +70,7 @@ export async function runAgentMonitoring(env,now=Date.now()){
 }
 export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
  if(url.pathname==='/api/inventory/communication-log')return communicationLog(request,url,user,env,{json,fail});
- if(!['/api/inventory/monitoring','/api/inventory/notifications/read'].includes(url.pathname))return null;
+ if(!['/api/inventory/monitoring','/api/inventory/panel-status','/api/inventory/notifications/read'].includes(url.pathname))return null;
  if(env.APP_KIND==='collector'||!['root','admin','visualizador'].includes(user.role))return fail('Consulta disponível somente no painel gerencial.',403);
  const db=env.DB,now=Date.now();
  if(url.pathname.endsWith('/read')){
@@ -81,6 +82,11 @@ export async function monitoringRoutes(request,url,user,env,{json,fail,body}){
  if(request.method!=='GET')return fail('Método não permitido.',405);
  const offset=Number(url.searchParams.get('offset')||0),ids=(url.searchParams.get('equipmentIds')||'').split(',').filter(Boolean);
  if(!Number.isSafeInteger(offset)||offset<0||ids.length>50||ids.some(id=>!/^[-a-f0-9]{36}$/i.test(id)))return fail('Filtro inválido.',422);
+ if(url.pathname==='/api/inventory/panel-status'){
+  const [hardware,health,statuses]=await Promise.all([hardwareSummary(db),db.prepare('SELECT last_success_at FROM agent_monitor_health WHERE id=1').first(),ids.length?db.prepare(liveSelect+` AND e.id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all():Promise.resolve({results:[]})]);
+  const pending=await readPendingSummary(db,hardware.pending);
+  return json({pending,monitoring:{hardware,server_time:new Date(now).toISOString(),monitor_last_success_at:health?.last_success_at??null,statuses:[...ids.filter(id=>!statuses.results.some(r=>r.equipment_id===id)).map(id=>({equipment_id:id,state:'not_linked',last_live_contact_at:null})),...statuses.results.map(r=>({equipment_id:r.equipment_id,state:presenceState(r,parse(r.presence_json),now,presenceThreshold(env)),last_live_contact_at:parse(r.presence_json).last_live_contact_at??null}))]}});
+ }
  const onlyUnread=url.searchParams.get('unread')==='1';
  const joins=notificationJoins+' LEFT JOIN agent_notification_reads r ON r.notification_id=n.id AND r.user_id=?';
  const [page,count,health,statuses]=await Promise.all([

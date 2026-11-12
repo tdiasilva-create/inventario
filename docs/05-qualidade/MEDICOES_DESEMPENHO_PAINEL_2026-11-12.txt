@@ -1,0 +1,246 @@
+SEMED — MEDIÇÃO INICIAL DE DESEMPENHO DO PAINEL REAL
+Data: 12/11/2026 · horário de Fortaleza (UTC−3)
+Estado: diagnóstico executado; nenhuma correção funcional ou publicação nesta etapa.
+
+Painel:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+1. O QUE FOI CONFERIDO
+
+Relatório recebido: RELATORIO_DESEMPENHO_PAINEL_2026-11-12.txt, em Downloads.
+Código local: commit dcbf75e, sem mudanças funcionais durante a medição.
+Navegação autenticada como root, no navegador integrado do PC do responsável.
+Janela integrada estreita: screenshots de 675×1012 e 675×990 pixels. Não houve
+simulação de rede nem controle de viewport; não equivale a medir desktop 1440 px
+ou celular físico. A comparação futura deve fixar também essas condições.
+Cinco recargas de Panorama, cinco de Computadores e cinco de Central de demandas.
+Computadores: unidade com 27 fichas. Demandas: filtro inicial de pendentes, com
+zero correspondências; também conferida, separadamente, a consulta com as nove
+demandas existentes. Nenhuma demanda criada, editada ou excluída nesta análise.
+Cinco aberturas da mesma fotografia real e conferência das miniaturas.
+Cinco minutos de Panorama aberto, sem cliques, de 05:54:49 a 05:59:49.
+Registros do Worker por Wrangler tail e consultas somente de leitura no D1.
+
+Documentos consultados: 00_LEIA_ANTES_DE_TUDO.md, AGENTS.md,
+REGRAS_DE_PRECEDENCIA.md, registros de decisões/pendências/rastreabilidade,
+CORRECOES_PRODUCAO_FASE_1_2026-11-09.md,
+CORRECOES_PRODUCAO_FASE_2_2026-11-09.md e documentação de miniaturas.
+Regras preservadas: permissões, fotos privadas, miniaturas D-072, indicadores,
+atualização operacional de 15 s e pulso de 60 s. Coletor e agente preservados.
+
+Critério desta etapa: obter evidências reproduzíveis e separar observação,
+leitura do código, inferência e pontos ainda não medidos. Não prometer ganhos
+antes de comparar a mesma medição com uma versão corrigida.
+
+2. TEMPOS OBSERVADOS NA NAVEGAÇÃO
+
+Tela                         Mediana       Pior amostra       Repetições
+Panorama                     3,081 s       3,207 s            5
+Computadores (27 fichas)      3,395 s       3,555 s            5
+Central de demandas          3,188 s       3,446 s            5
+
+IMPORTANTE: esses tempos incluem a automação do navegador: comando de recarga,
+esperas da ferramenta e confirmação da presença dos componentes/dados no DOM.
+São tempos de observação ponta a ponta deste roteiro, não LCP, TTFB, tempo puro
+de servidor ou tempo exato até a primeira interação humana. O cache não foi
+limpo/controlado; são recargas com sessão e cache já usados. A interface do
+navegador não expôs performance.timeOrigin/Navigation Timing nesta execução.
+Não foi calculado p95 com apenas cinco amostras.
+
+Todas as telas chegaram ao estado esperado. Não reproduzi carregamento infinito
+nessas quinze recargas. Isso não descarta a lentidão intermitente relatada pelo
+responsável, em outros horários, redes, unidades ou com outros filtros.
+
+3. CONSULTAS AUTOMÁTICAS COM O PANORAMA PARADO
+
+Nos cinco minutos definidos, foram observadas 73 consultas de API no tail
+filtrado pelo IP público do PC, todas com resposta 200:
+
+Rota                           Quantidade
+/api/inventory/results         20
+/api/inventory/pending-summary 20
+/api/inventory/monitoring      19
+/api/inventory/summary          5
+/api/operations/units           5
+/api/inventory/unit             2
+/api/root/environments          2
+
+As cinco rotas periódicas principais responderam por 69 consultas. A ordem de
+grandeza corresponde aos relógios de 15/60 segundos encontrados no código.
+As quatro consultas adicionais de detalhe são compatíveis com sua renovação.
+
+Limites: tail observa o Worker, não um HAR exclusivo da aba. Outro cliente no
+mesmo IP pode aparecer. A sessão complementar sem filtro de IP cobriu só a
+parte final da janela; não deve ser somada à primeira. Nas recargas rápidas,
+os registros capturados não cobrem todas as requisições esperadas; por isso
+não uso suas contagens como totais de arquivos baixados por navegação.
+Os eventos não forneceram CPU, duração total do Worker nem Server-Timing.
+Não transformar diferença entre horário do evento e chegada do log em latência.
+
+Resultado confirmado: há atividade de consulta contínua mesmo sem ação humana.
+Isso, isoladamente, não é defeito: parte é necessária aos indicadores em tempo
+real. A correção deve eliminar duplicação e recomputação dispensável sem mudar
+silenciosamente os prazos aprovados para alertas e demandas.
+
+4. BANCO DE DADOS: MEDIÇÕES DE SQL, SEPARADAS DA REDE
+
+Foram aproveitadas 30 execuções SELECT: seis consultas reais, repetidas cinco
+vezes, mais seis EXPLAIN QUERY PLAN. Saídas salvas contêm metadados e planos,
+sem os registros de usuários, unidades ou equipamentos retornados pelos SELECTs.
+
+Consulta                        Mediana SQL        Maior SQL
+Pendências de coleta            0,3721 ms           0,9444 ms
+Demandas agrupadas               0,0975 ms           0,1939 ms
+Hardware aguardando parecer     0,0613 ms           0,1879 ms
+Catálogo de unidades da frota    0,7029 ms           1,0380 ms
+Presença dos computadores        0,9812 ms           2,1895 ms
+Demandas da frota                0,1150 ms           0,1673 ms
+
+Soma das durações SQL das 30 consultas: 13,2757 ms.
+Linhas lidas nessa série: 9.625. Linhas escritas: ZERO.
+Catálogo retornou 76 unidades; presença retornou 72 fichas no instante consultado.
+
+O D1 informou WEUR / LIS, atendimento pela base primária, nesta execução.
+A leitura HTTP pública de /login no mesmo PC informou borda GRU. São medições
+de caminhos distintos: isso não mede sozinho a latência Worker–D1 nem prova a
+localização usada por todas as chamadas do painel. A distância entre serviços
+continua uma hipótese a medir, especialmente com consultas em sequência.
+
+Conclusão permitida: as seis consultas SQL medidas são rápidas no volume atual.
+Conclusão NÃO permitida: “todo o backend é rápido” ou “o servidor está descartado”.
+Faltam tempos separados de autenticação, ida/volta ao D1, processamento do
+Worker, serialização e resposta HTTP autenticada.
+
+Os planos já usam índices de vistorias, vínculos ativos, notificações e demandas.
+Há scans e árvores temporárias em consultas de toda a rede. Não foi criado
+índice às cegas. inventory_equipment_all é uma VIEW UNION ALL; eventual índice
+deve ser proposto nas tabelas base, após comparar plano e custo.
+
+Como referência de transporte, cinco GETs públicos de /login, via Node no PC,
+retornaram 200: tempo até os cabeçalhos entre 64,54 e 298,78 ms, mediana 65,57 ms.
+Não é teste autenticado; a primeira chamada inclui aquecimento da conexão.
+
+5. FOTOGRAFIAS
+
+Consulta agregada do D1 encontrou 92 fotografias ready e 92 miniaturas utilizáveis
+segundo blob/hash do original/hash da derivada. Nenhuma miniatura ausente.
+Derivadas: 6.195 a 30.289 bytes; soma de 1.029.565 bytes. Essa consulta agregada,
+separada da série acima, levou 29,5048 ms e escreveu zero linhas. Não é uma rota
+normal de abertura de foto e não entra na tabela das seis consultas.
+
+Na galeria observada, quatro imagens pediram size=thumb e carregaram dimensões
+241×320 ou 320×241. A ampliação de um computador da EMI ALANA LUDMILA carregou
+o original de 1600×1205 pixels.
+
+Abertura do mesmo original:
+  1ª observada: 2,470 s
+  Repetições: 0,906 s; 0,729 s; 0,747 s; 0,755 s.
+  Cache não controlado; tempo até image.complete/naturalWidth, incluindo CUA.
+
+Foram observadas respostas 200 e 304 nas rotas de fotografias. Portanto, não é
+correto afirmar que toda reabertura sempre transfere novamente o arquivo inteiro.
+O código revalida autorização e pode devolver 304 antes de acessar o Drive.
+As miniaturas prontas são entregues pelo D1; não baixam o original do Drive.
+
+Falta medir separadamente autorização, consulta da foto, obtenção de token,
+tempo do Drive e transferência/decodificação. Uma única foto não representa
+todos os tamanhos, provedores, períodos ou redes. A galeria foi conferida, mas
+não foi produzido um benchmark controlado de todas as miniaturas visíveis.
+
+6. CONSTATAÇÕES DO CÓDIGO E AJUSTES AO RELATÓRIO RECEBIDO
+
+CONFIRMADO:
+- desktop.js alcança 40 módulos estáticos, 317.712 bytes sem compressão.
+- A cadeia mais longa tem sete níveis: desktop → desktop-equipment →
+  equipment-deletion → desktop-inventory → collector-v3-schema →
+  collector-v2-schema → collector-schema.
+- operations.js alcança 22 módulos, 162.633 bytes sem compressão.
+- O build copia arquivos, sem empacotamento/hash no nome.
+- Muitos assets passam pela autenticação do Worker/D1; run_worker_first=true.
+- Arquivos estáticos elegíveis usam public,no-cache: podem ser armazenados,
+  mas exigem revalidação. Foram observados 304 reais durante a navegação.
+- No Panorama: auth/me → inventory/summary → units são aguardados em sequência
+  antes da montagem principal. Há oportunidade de paralelismo controlado.
+- Há atualizações independentes e re-renderizações dos mesmos blocos.
+
+CORREÇÕES DE INTERPRETAÇÃO:
+- Não são “todos” os assets autenticados: há whitelist pública para login,
+  fontes e identidade. JSON do mapa usa no-store, não a regra estática genérica.
+- Estimativa gzip por arquivo: 120.330 bytes para os 40 módulos do Panorama.
+  Não equivale à estimativa de ~75 KB ao comprimir tudo junto, nem mede os bytes
+  realmente transferidos pelo navegador (protocolo/compressão/cache variam).
+- As consultas SQL medidas não sustentam a criação urgente de muitos índices.
+- Sem cache não significa “rebaixar sempre o original”: revalidação e 304 já
+  funcionam. Reduzir consultas e reduzir transferência são objetivos distintos.
+- As promessas de ganho de 2× a 4× permanecem estimativas, sem antes/depois.
+
+7. ORDEM RECOMENDADA PARA AS CORREÇÕES
+
+A. Carregamento inicial e entrega do código
+   Empacotar/minificar entradas independentes, gerar nomes versionados/hash,
+   paralelizar leituras independentes após autenticação e evitar o bloqueio da
+   estrutura inteira por dados secundários. Medir mesmos caminhos antes/depois.
+   Não misturar dados privados/API/fotos numa regra pública de cache.
+   A liberação de assets públicos deve usar manifesto explícito e testes 401/
+   403; as verificações atuais de release exigem proteção de vários assets.
+
+B. Consultas e atualização
+   Compartilhar respostas simultâneas da mesma rota, impedir requisições
+   concorrentes equivalentes, reduzir repintura sem mudança e renovar apenas
+   blocos necessários. Preservar 15 s operacional e 60 s do pulso, pausando em
+   aba oculta como já previsto. Unificar tudo em 30 s mudaria requisitos.
+
+C. Fotografias
+   Medir etapas da leitura autenticada; evitar SELECT de colunas binárias quando
+   só se precisa de metadados e avaliar entrega privada mais eficiente.
+   Preservar revogação de acesso, fallback, miniaturas de até 320 px/64 KB e
+   originais no Drive. Foto privada com cache fresco de 24 h ou derivada 1024 px
+   no D1 conflita com regras atuais e não foi aprovada nesta análise.
+
+D. Instrumentação para comprovação
+   Acrescentar medição de duração por etapa (sem conteúdo sensível), primeiro em
+   teste e depois na versão autorizada. Obter Navigation/Resource Timing ou HAR
+   com redaction para cache frio/quente, TTFB, recursos e Long Tasks. Comparar
+   mesma versão/dados/rede e não misturar SQL puro com tempos de navegação.
+   Medir fila de espera, erros/timeouts e número de bytes. Mantém-se pendente a
+   atribuição precisa do tempo ao Worker, D1, Drive e renderização.
+
+8. ARQUIVOS E RASTREABILIDADE
+
+Utilitários novos, somente leitura e locais:
+scripts/capture-panel-performance.mjs
+scripts/measure-panel-sql.mjs
+Ambos passaram em node --check. O primeiro encerra o tail ao final; nesta coleta
+as sessões foram encerradas após os cenários. O segundo usa somente SELECT e
+EXPLAIN, preservando apenas resultados agregados/metadados/planos.
+check:docs passou (19 arquivos/117 links); check:repository passou para o índice
+Git existente (657 arquivos). Nenhum build da aplicação foi necessário porque
+nenhum arquivo de frontend, servidor ou configuração de produção foi alterado.
+
+Evidências privadas, fora do Git público:
+docs/05-qualidade/evidencias/desempenho-2026-11-12/
+  navigation-observed.json — quinze tempos de recarga observados
+  photos-observed.json — cinco aberturas do original
+  thumbnails-observed.json — dimensões/estado das quatro miniaturas
+  worker-sanitized.ndjson — rotas/horários/status; sem cookies ou conteúdo
+  worker-all-sanitized.ndjson — sessão complementar, não somar à primeira
+  idle-window.json e worker-sanitized-idle-summary.json — janela de cinco minutos
+  d1-read-only.json — trinta SELECTs, seis planos e metadados
+  read-only-measurements.sql — consultas usadas
+  photo-coverage.json — agregação de cobertura de miniaturas
+  public-http.json — cinco GETs públicos, separados da navegação autenticada
+  import-graph.json e summary.json — grafo e sínteses
+  browser-errors.json — nenhum erro de console disponível no final da observação
+  01-panorama-observado.jpg; 02-fotografia-real.jpg — screenshots reais
+
+Tentativas instrumentais descartadas: performance indisponível no escopo CUA;
+um seletor inicial com capitalização incompatível; tail com sampling-rate=1
+recusado pelo CLI; tentativa D1 --file de consultas de leitura cuja saída não
+era JSON adequado à análise. Refeitas com instrumentos/seletores compatíveis.
+Não foram aproveitadas como amostras válidas. Nenhuma envolveu escrita de
+cadastros, redefinição de senhas, publicação ou alteração do banco de negócio.
+
+Situação final: linha de base inicial registrada, com limites explícitos.
+Nenhuma alteração funcional, migração, mudança de intervalo ou deploy foi feito.
+Nenhum novo requisito da Base de Coleta foi implementado; perguntas, fotos,
+vínculos, notificações e dados oficiais permanecem com o comportamento atual.

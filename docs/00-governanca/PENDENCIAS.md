@@ -321,3 +321,8 @@ Sem novas decisões pendentes. [Aceite](../05-qualidade/DEMANDAS_BUSCA_UNIDADE_2
 - [ ] Aceite operacional do responsável.
 
 Sem decisões adicionais. [Aceite](../05-qualidade/DEMANDA_SALVAR_SEM_REABRIR_2026-11-11.md).
+
+
+### Desempenho do painel — D-103 (12/11/2026)
+
+Correção de carregamento/consultas autorizada e testada; publicação e comparação real registradas em `docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md`. Mantidos para avaliação futura, sem aprovação implícita: mudança de região/arquitetura do banco, aumento dos intervalos de atualização, cache de dados privados e alterações funcionais fora do pedido. Conferência na rede/dispositivo do responsável pelo roteiro TXT; tempos locais não são garantia de latência de produção.

@@ -1,3 +1,4 @@
+import {sharedPanelJson} from './desktop-request.js';
 // Comunicação: leitura por minuto. Providências: consulta compartilhada de 15 s (D-085).
 import {getPendingState} from './desktop-demand-count.js';
 let stop=null;
@@ -14,18 +15,19 @@ export function startPulse(user){
   const focused=node.contains(document.activeElement)?document.activeElement:null,focusHref=focused?.getAttribute('href'),focusHardware=focused?.hasAttribute('data-pending-hardware');
   const value=k=>ready?num(pending.data[k].total):'—',tone=k=>ready&&pending.data[k].total?'bad':'idle';
   node.dataset.state=fleetError?'erro':sum?'ok':'loading';
-  node.innerHTML=item('Comunicando',sum?num(sum.online):'—',sum?.online?'ok':'idle','/computadores?estado=comunicando',sum?num(sum.computers)+' computador(es) cadastrado(s)':'Consultando comunicação')
+  const html=item('Comunicando',sum?num(sum.online):'—',sum?.online?'ok':'idle','/computadores?estado=comunicando',sum?num(sum.computers)+' computador(es) cadastrado(s)':'Consultando comunicação')
    +item('Sem comunicação',sum?num(sum.lost):'—',sum?.lost?'bad':'idle','/computadores?estado=sem-comunicacao','Sem contato com o agente no prazo de monitoramento')
    +item('Sem agente',sum?num(sum.unlinked):'—','idle','/computadores?estado=sem-agente','Computadores sem agente vinculado')
    +item('Coletas pendentes',value('collections'),tone('collections'),'/coletas-pendentes',pending.error||'Toda a rede · unidades sem conclusão ou com revisita aberta')
    +item('Demandas abertas',value('demands'),tone('demands'),'/demandas',pending.error||'Toda a rede · atendimentos não concluídos')
    +item('Hardware aguardando parecer',value('hardware'),tone('hardware'),'',pending.error||'Toda a rede · alterações sem decisão de root ou admin',true)
    +item('Comunicação',fleetError?'falha ao consultar':at,'idle','',fleetError?'Nova tentativa em até 1 minuto':'Última consulta de comunicação');
+  if(node.innerHTML===html)return;node.innerHTML=html;
   if(focusHardware)node.querySelector('[data-pending-hardware]')?.focus({preventScroll:true});else if(focusHref)node.querySelector('a[href="'+CSS.escape(focusHref)+'"]')?.focus({preventScroll:true});
  }
  async function update(){
   if(busy||document.hidden||signal.aborted)return;busy=true;
-  try{const r=await fetch('/api/operations/units',{signal:AbortSignal.any([signal,AbortSignal.timeout(12000)])});if(!r.ok)throw Error();const fleet=await r.json();if(!Array.isArray(fleet.units))throw Error();const totals=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});if(signal.aborted||!node.isConnected)return;sum=totals;fleetError=false;at=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{fleet}}));}
+  try{const fleet=await sharedPanelJson('/api/operations/units');if(!Array.isArray(fleet.units))throw Error();const totals=fleet.units.reduce((c,u)=>{for(const k of Object.keys(c))c[k]+=count(u[k]);return c;},{computers:0,online:0,lost:0,unlinked:0});if(signal.aborted||!node.isConnected)return;sum=totals;fleetError=false;at=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{fleet}}));}
   catch{if(signal.aborted||!node.isConnected)return;sum=null;fleetError=true;window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{error:true}}));}
   finally{busy=false;paint();}
  }

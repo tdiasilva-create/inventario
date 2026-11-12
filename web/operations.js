@@ -1,3 +1,4 @@
+import {sharedPanelJson} from './desktop-request.js';
 import {showProviderReport} from './provider-report.js';
 import {mountUnitNamePicker} from './unit-name-picker.js';
 import {mountAgentConnection} from './agent-connection.js';
@@ -26,7 +27,7 @@ const btn=(label,action,attrs='',primary=false)=>`<button type="button" class="o
 const select=(name,label,options,value)=>`<label class="ops-control">${label}<select name="${name}">${options.map(v=>Array.isArray(v)?option(v[0],v[1],value):option(v,v,value)).join('')}</select></label>`;
 const field=(name,label,value='',attrs='')=>`<label class="ops-control">${label}<input name="${name}" value="${esc(value)}" ${attrs}></label>`;
 const area=(name,label,value='',required=false)=>`<label class="ops-control">${label}<textarea name="${name}" maxlength="2000" ${required?'required':''}>${esc(value)}</textarea></label>`;
-async function api(path,data){const r=await fetch('/api/operations/'+path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':user.csrf}:{},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(15000)});const v=await r.json().catch(()=>({}));if(!r.ok){const e=Error(v.error||'Consulta indisponível. Tente novamente.');e.status=r.status;throw e;}return v;}
+async function api(path,data){if(!data&&path==='units')return sharedPanelJson('/api/operations/units');const r=await fetch('/api/operations/'+path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':user.csrf}:{},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(15000)});const v=await r.json().catch(()=>({}));if(!r.ok){const e=Error(v.error||'Consulta indisponível. Tente novamente.');e.status=r.status;throw e;}return v;}
 function statusName(item){return labels[item.presence_state]||item.presence_state||'Sem informação';}
 function zeroLabel(u){if(u.computers)return `${u.computers} computador(es) · ${u.online} comunicando`;if(u.computer_declaration==='none')return 'Sem computadores · confirmado';return u.collected?'Nenhum computador registrado · ausência não confirmada':'Inventário de computadores ainda não informado';}
 function currentUnit(){return units.find(u=>u.id===selected);}

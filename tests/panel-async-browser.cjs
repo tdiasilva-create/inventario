@@ -22,19 +22,19 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.waitForFunction(()=>document.querySelector('[data-monitor-equipment]')?.textContent.includes('Online'));
   await page.evaluate(()=>{window.testMonitoringErrors=0;window.addEventListener('semed:monitoring-error',()=>window.testMonitoringErrors++);});
   const status=await page.locator('[data-monitor-equipment]').first().textContent();
-  await page.route('**/api/inventory/monitoring?**',gate);
+  await page.route('**/api/inventory/panel-status?**',gate);
   await hide(true);await refresh();assert.equal(calls,0);assert.equal(await badge().textContent(),'1');
   mode='hold';await hide(false);await until(()=>held.length===1);
   assert.equal(held.length,1);await hide(true);
   await page.waitForFunction(()=>document.querySelector('[data-action=notifications]')?.title.includes('pausada'));
   assert.equal(await badge().textContent(),'1');assert.equal(await page.locator('[data-monitor-equipment]').first().textContent(),status);
   assert.equal(await page.evaluate(()=>window.testMonitoringErrors),0);
-  release();mode='pass';const visibleResponse=page.waitForResponse('**/api/inventory/monitoring?**');await hide(false);
+  release();mode='pass';const visibleResponse=page.waitForResponse('**/api/inventory/panel-status?**');await hide(false);
   await visibleResponse;
   assert.equal(await badge().textContent(),'1');
   // Retorno à aba antes do finally do cancelamento: a consulta deve ser retomada.
   mode='hold';await refresh();await until(()=>held.length===1);
-  mode='pass';const resumed=page.waitForResponse('**/api/inventory/monitoring?**');
+  mode='pass';const resumed=page.waitForResponse('**/api/inventory/panel-status?**');
   await page.evaluate(()=>{for(const hidden of [true,false]){Object.defineProperty(document,'hidden',{configurable:true,get:()=>hidden});document.dispatchEvent(new Event('visibilitychange'));}});
   release();await resumed;assert.equal(await page.evaluate(()=>window.testMonitoringErrors),0);
   // Falhas reais continuam visíveis; ocultar a aba não apaga um erro anterior.
@@ -46,7 +46,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   release();mode='pass';await refresh();await page.waitForFunction(()=>document.querySelector('.monitor-count')?.textContent==='1');
   mode='401';await refresh();await page.waitForFunction(()=>document.querySelector('[data-action=notifications]')?.title.includes('Sessão expirada'));
   mode='pass';await refresh();await page.waitForFunction(()=>document.querySelector('.monitor-count')?.textContent==='1');
-  await page.unroute('**/api/inventory/monitoring?**',gate);
+  await page.unroute('**/api/inventory/panel-status?**',gate);
   // Todos os sete indicadores ficam visíveis, sem rolagem horizontal escondida.
   for(const width of [1366,1200,809,390]){
    await page.setViewportSize({width,height:900});

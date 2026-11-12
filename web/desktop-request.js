@@ -1,4 +1,16 @@
 // Bounded, read-only queries. No automatic retries or changes to saved data.
+const sharedReads=new Map();
+let initialIdentity;
+// Bootstrap identity only; permissions and every API request remain validated on the server.
+export const initialPanelIdentity=()=>initialIdentity??=(readPanelJson('/api/auth/me').catch(e=>{initialIdentity=null;throw e;}));
+// Only coalesce concurrent reads. Completed responses are not cached; never share writes.
+export function sharedPanelJson(url){
+ if(!sharedReads.has(url)){
+  const promise=readPanelJson(url).finally(()=>{if(sharedReads.get(url)===promise)sharedReads.delete(url);});
+  sharedReads.set(url,promise);
+ }
+ return sharedReads.get(url);
+}
 export async function readPanelJson(url,{timeoutMs=15000,signal}={}){
  try{
   const timeout=AbortSignal.timeout(timeoutMs);

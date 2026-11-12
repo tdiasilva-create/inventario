@@ -1,6 +1,7 @@
 import {copyFile,mkdir,readFile,writeFile,rm,stat} from 'node:fs/promises';
 import {resolve,join,sep} from 'node:path';
 import {createHash} from 'node:crypto';
+import {bundleDesktop} from './bundle-desktop.mjs';
 const root=resolve('.'),destination=resolve(root,'dist','painel');
 if(!destination.startsWith(root+sep)||destination===root||destination!==join(root,'dist','painel'))throw new Error('Destino de build fora do diretório permitido.');
 // Only this verified build directory is replaced; never web/, docs/, or repository files.
@@ -16,6 +17,7 @@ files.push('hardware-attention.js','desktop-notifications.js','desktop-equipment
 files.push('desktop-demand-count.js','operations.html','operations.js','agent-connection.js','unit-name-picker.js');
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
+files.push('panel-status.js','account-entry.js');
 files.push('environment-editor.js','panel-confirm.js','school-presence.js');
 files.push('unit-map-palette.js','communication-log.html','communication-log.js');
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');
@@ -31,7 +33,11 @@ await writeFile(join(destination,'404.html'),'<!doctype html><html lang="pt-BR">
 await writeFile(join(destination,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Robots-Tag: noindex, nofollow\n');
 await writeFile(join(destination,'robots.txt'),'User-agent: *\nDisallow: /\n');
 // Build evidence stays outside the published assets.
+const bundled=await bundleDesktop(destination);
+// Hash final HTML, not the unbundled input. Keep legacy modules for existing tabs.
+manifest.length=0;
+for(const file of [...files,...bundled]){const bytes=await readFile(join(destination,file));manifest.push({file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}
 await writeFile(join(root,'dist','painel-manifest.json'),JSON.stringify({application:'painel-semed-paco',kind:'desktop-awaiting-official-data',collector:'inventario-semed-lumiar (future, not published)',files:manifest},null,2)+'\n');
 if(files.some(f=>['app.js','domain.js','coleta.html','styles.css'].includes(f)))throw new Error('Coletor incluído no pacote do painel.');
-console.log(JSON.stringify({destination,files:files.length+3,bytes:manifest.reduce((s,f)=>s+f.bytes,0),collectorIncluded:false}));
+console.log(JSON.stringify({destination,files:manifest.length+3,bytes:manifest.reduce((s,f)=>s+f.bytes,0),collectorIncluded:false,bundles:bundled.length}));
 

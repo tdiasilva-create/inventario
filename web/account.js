@@ -1,8 +1,9 @@
+import {initialPanelIdentity} from './desktop-request.js';
 import {confirmAction} from './panel-confirm.js';
 import {roleNames} from './panel-shell.js';
 let me,userNames={};const $=id=>document.getElementById(id),roleHelp={operador:'Coleta e atualiza dados somente das unidades autorizadas.',visualizador:'Consulta informações autorizadas, sem alterar cadastros.',admin:'Administra usuários operacionais nos limites autorizados.',root:'Gerencia cadastros, perfis, autorizações e configurações de segurança.'};
 function note(message){$('status').textContent=message;}
-async function api(path,data){const r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':me?.csrf||''}:{},body:data?JSON.stringify(data):undefined});const result=await r.json();if(r.status===401){location.replace('/login');throw Error('Sessão encerrada.');}if(!r.ok)throw Error(result.error||'Falha no servidor.');return result;}
+async function api(path,data){if(!data&&path==='/api/auth/me')return initialPanelIdentity();const r=await fetch(path,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json','X-CSRF-Token':me?.csrf||''}:{},body:data?JSON.stringify(data):undefined});const result=await r.json();if(r.status===401){location.replace('/login');throw Error('Sessão encerrada.');}if(!r.ok)throw Error(result.error||'Falha no servidor.');return result;}
 function el(tag,text,cls=''){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;}
 function button(text,action){const node=el('button',text,'reset');node.type='button';node.onclick=async()=>{node.disabled=true;try{await action();}catch(e){note(e.message);}finally{node.disabled=false;}};return node;}
 let temporaryTimer;

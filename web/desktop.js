@@ -33,8 +33,10 @@ let catalogue=[],catalogueLoaded=false,inventory={equipment:[],visits:[],environ
 const details=new Map(),loadingDetails=new Set(),detailTimes=new Map(),detailErrors=new Map();
 let renderedPage=null,summaryLoading=false,searchTimer=null,exporting=false;
 const detailPages=new Set(['Panorama','Detalhe da Unidade','Ambientes']);
-if(authUser&&authUser.role!=='operador'){try{inventory=await inventorySummary();}catch(e){inventoryError=e.message;}}
-if(authUser){try{const r=await fetch('/api/units');if(r.ok){catalogue=(await r.json()).units;catalogueLoaded=true;}}catch{}}
+await Promise.all([
+ (async()=>{if(authUser&&authUser.role!=='operador'){try{inventory=await inventorySummary();}catch(e){inventoryError=e.message;}}})(),
+ (async()=>{if(authUser){try{catalogue=(await readPanelJson('/api/units')).units;catalogueLoaded=true;}catch{}}})()
+]);
 const root=document.querySelector('#dashboard');
 const state={page:Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',q:new URLSearchParams(location.search).get('q')||'',region:'Todas',type:'Todas',status:'Todas',year:'Todos',selected:null,photo:0,zoom:1,demo:false,sort:'default',layers:true};
 const equipmentConsultation=createEquipmentConsultation({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',refresh:()=>render(),onClose:id=>{requestAnimationFrame(()=>document.querySelector('.matrix [data-action="select-unit"][data-unit="'+CSS.escape(id)+'"]')?.focus());}});
@@ -187,7 +189,7 @@ async function loadSelected(force=false){
  const id=state.selected;if(!id||!detailPages.has(state.page)||loadingDetails.has(id)||authUser?.role==='operador')return;
  if(!force&&Date.now()-(detailTimes.get(id)||0)<60000)return;
  loadingDetails.add(id);detailErrors.delete(id);
- try{const data=await unitInventory(id);if(authUser?.role==='root')data.catalogueEnvironments=(await readPanelJson('/api/root/environments?unitId='+id)).environments;details.set(id,data);}
+ try{const [data,rooms]=await Promise.all([unitInventory(id),authUser?.role==='root'?readPanelJson('/api/root/environments?unitId='+id):null]);if(rooms)data.catalogueEnvironments=rooms.environments;details.set(id,data);}
  catch(e){detailErrors.set(id,e.message);}
  finally{detailTimes.set(id,Date.now());loadingDetails.delete(id);if(state.selected===id&&detailPages.has(state.page))render();}
 }

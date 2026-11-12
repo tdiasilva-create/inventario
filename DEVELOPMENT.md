@@ -31,3 +31,6 @@ D-093, 11/11/2026: após build desktop, executar pnpm test:panel-async:browser (
 
 
 D-094: pnpm build:desktop e pnpm test:map-demands:browser cobrem anel de demandas (incluído na CI). tests/pending-indicators.test.mjs cobre demands.units e consistência do total. Estado/câmera/cores e separação hardware/demandas preservados. Nenhuma demanda de exemplo na produção. Ver docs/05-qualidade/DEMANDAS_MAPA_2026-11-11.md.
+
+
+D-103, 12/11/2026: build desktop usa esbuild fixado no lockfile, seis entradas com hash e CSS versionado. Executar `pnpm build:desktop` antes de `pnpm test:panel-performance`; para comparação local `pnpm measure:panel:local` requer build anterior isolado. [Contrato e limites](docs/03-painel-desktop/DESEMPENHO_D103.md), [medição/publicação](docs/05-qualidade/DESEMPENHO_PAINEL_2026-11-12.md) e [roteiro TXT](docs/06-entregas/ROTEIRO_TESTES_DESEMPENHO_PAINEL_2026-11-12.txt). APIs/HTML/fotos não usam a política de cache de bundles. Sem migração e sem publicação do coletor.

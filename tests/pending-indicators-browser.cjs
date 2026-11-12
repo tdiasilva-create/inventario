@@ -6,7 +6,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  f.sqlite.prepare("UPDATE units SET unit_type='Unidade administrativa' WHERE id=?").run(f.ids.blocked);
  const out='docs/05-qualidade/evidencias/indicadores-pendencias-2026-11-10';fs.mkdirSync(out,{recursive:true});
  const counts=async expected=>page.waitForFunction(a=>['collections','demands','hardware'].every((k,i)=>document.querySelector('[data-pending-value='+k+']')?.textContent===String(a[i])),expected);
- const refresh=()=>page.evaluate(async()=>{await (await import('/desktop-demand-count.js')).refreshPendingIndicators();});
+ const refresh=()=>page.evaluate(()=>{const button=document.querySelector('[data-pending-refresh]');if(button)button.click();else window.dispatchEvent(new Event('semed:pending-refresh'));});
  const shot=async name=>{await page.mouse.move(Math.round(page.viewportSize().width*.8),100);await page.clock.runFor(400);await page.evaluate(()=>document.fonts.ready);await page.evaluate(()=>{if(!document.getElementById('test-label')){const b=document.createElement('div');b.id='test-label';b.textContent='TESTE LOCAL · Dados sintéticos · Sem gravação em produção';b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#16191d;color:white;text-align:center;padding:5px;font:12px sans-serif;pointer-events:none';document.body.append(b);}});await page.screenshot({path:out+'/'+name+'.png',fullPage:true});};
  try{
   await page.emulateMedia({reducedMotion:'reduce'});await page.clock.install({time:Date.now()});await page.goto(origin+'/panorama');await counts([3,0,1]);
@@ -24,8 +24,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   const visit=crypto.randomUUID();f.sqlite.prepare('INSERT INTO inspections(id,unit_id,created_by,created_at,updated_at) VALUES(?,?,?,?,?)').run(visit,s.unit,f.root.id,Date.now(),Date.now());await page.clock.fastForward(15000);await counts([4,0,0]);
   await s.change(68719476736,3000);await refresh();await counts([4,0,1]);await page.locator('.pending-metric[data-pending-hardware]').click();await page.locator('[data-decision=accepted]').click();await counts([4,0,0]);await page.locator('.hardware-dialog [data-close]').click();
   // Falha do resumo não apaga presença do agente e não vira contagem zero.
-  await page.route('**/api/inventory/pending-summary',r=>r.fulfill({status:503,body:'{}'}));await refresh();await counts(['—','—','—']);await page.locator('[data-pending-error]:visible').waitFor();await shot('falha-explicita');
-  assert.equal(await page.locator('#panel-pulse').getAttribute('data-state'),'ok');await page.unroute('**/api/inventory/pending-summary');await page.locator('[data-pending-refresh]').click();await counts([4,0,0]);
+  await page.route('**/api/inventory/panel-status?*',r=>r.fulfill({status:503,body:'{}'}));await refresh();await counts(['—','—','—']);await page.locator('[data-pending-error]:visible').waitFor();await shot('falha-explicita');
+  assert.equal(await page.locator('#panel-pulse').getAttribute('data-state'),'ok');await page.unroute('**/api/inventory/panel-status?*');await page.locator('[data-pending-refresh]').click();await counts([4,0,0]);
   // Atalho mostra a mesma lista inclusive unidades sem visita; filtro, rota e retorno.
   await page.locator('.pending-metric[href="/coletas-pendentes"]').click();await page.locator('#pending-results tbody tr').first().waitFor();assert.equal(await page.locator('#pending-results tbody tr').count(),4);
   await page.locator('#pending-filter [name=state]').selectOption('in_progress');await page.locator('#pending-filter button').click();await page.waitForFunction(()=>document.querySelectorAll('#pending-results tbody tr').length===2);
