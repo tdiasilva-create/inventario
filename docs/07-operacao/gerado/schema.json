@@ -104,6 +104,18 @@
     {
       "file": "0026_provider_reports.sql",
       "sha256": "2de8bf2fc6b7347193db22f649c5054e12d0ab55e9990d3a4a42f8ce14427e11"
+    },
+    {
+      "file": "0027_technical_dispatch.sql",
+      "sha256": "05338e16de4227d7b563f45528e9b836bbb325e33b79710a503d9538fb5bf4d8"
+    },
+    {
+      "file": "0028_dispatch_road_routes.sql",
+      "sha256": "7028d7884757df5b478978063e00076246bf76e7332d0131664649b763cfe092"
+    },
+    {
+      "file": "0029_technician_avatars.sql",
+      "sha256": "c08e989e39b702b837b15159664c040c2568bde11357e79540dca27ccde6c201"
     }
   ],
   "tables": [
@@ -2254,6 +2266,627 @@
         }
       ],
       "foreignKeys": []
+    },
+    {
+      "name": "dispatch_assignments",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "assigned_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "assigned_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "ended_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "service_requests",
+          "from": "request_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_attendances",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "assignment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "session_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "started_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "ended_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "end_reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "service_requests",
+          "from": "request_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "dispatch_assignments",
+          "from": "assignment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_events",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "action",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "detail_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "dispatch_meta",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "attempt",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "''",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "dispatch_notifications",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "message",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "read_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_order",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "position",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "service_requests",
+          "from": "request_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_positions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "attendance_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "latitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "longitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "accuracy",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "observed_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "received_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "dispatch_attendances",
+          "from": "attendance_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_receipts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "payload_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "dispatch_road_routes",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "attendance_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "route_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "origin_latitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "origin_longitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "response_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "dispatch_attendances",
+          "from": "attendance_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_routing_gate",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "next_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "lease_until",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "token",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "dispatch_technicians",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "enabled",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
     },
     {
       "name": "environment_name_events",
@@ -4679,6 +5312,293 @@
       "foreignKeys": []
     },
     {
+      "name": "technician_avatar_events",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "action",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "previous_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "image_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "technician_avatar_uploads",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "expected_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "sha256",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "byte_size",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "object_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "storage_provider",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "storage_ref",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "upload_token",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "upload_until",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "actor_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "technician_profiles",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "image_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "last_operation",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "technician_avatar_uploads",
+          "from": "image_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
       "name": "unit_assignments",
       "columns": [
         {
@@ -5542,6 +6462,42 @@
     },
     {
       "type": "index",
+      "name": "dispatch_active_user",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE UNIQUE INDEX dispatch_active_user ON dispatch_attendances(user_id) WHERE ended_at IS NULL"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_current_assignment",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE UNIQUE INDEX dispatch_current_assignment ON dispatch_assignments(request_id,user_id) WHERE ended_at IS NULL"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_event_request",
+      "tbl_name": "dispatch_events",
+      "sql": "CREATE INDEX dispatch_event_request ON dispatch_events(request_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_notice_user",
+      "tbl_name": "dispatch_notifications",
+      "sql": "CREATE INDEX dispatch_notice_user ON dispatch_notifications(user_id,id)"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_request_attendance",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE INDEX dispatch_request_attendance ON dispatch_attendances(request_id,ended_at)"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_user_queue",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE INDEX dispatch_user_queue ON dispatch_assignments(user_id,ended_at,request_id)"
+    },
+    {
+      "type": "index",
       "name": "environment_name_history",
       "tbl_name": "environment_name_events",
       "sql": "CREATE INDEX environment_name_history ON environment_name_events(environment_id,created_at)"
@@ -5986,6 +6942,72 @@
     },
     {
       "type": "table",
+      "name": "dispatch_assignments",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TABLE dispatch_assignments(id TEXT PRIMARY KEY,request_id TEXT NOT NULL REFERENCES service_requests(id),user_id TEXT NOT NULL REFERENCES users(id),assigned_at INTEGER NOT NULL,assigned_by TEXT NOT NULL,ended_at INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_attendances",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TABLE dispatch_attendances(id TEXT PRIMARY KEY,assignment_id TEXT NOT NULL REFERENCES dispatch_assignments(id),request_id TEXT NOT NULL REFERENCES service_requests(id),user_id TEXT NOT NULL REFERENCES users(id),session_hash TEXT NOT NULL,started_at INTEGER NOT NULL,ended_at INTEGER,end_reason TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_events",
+      "tbl_name": "dispatch_events",
+      "sql": "CREATE TABLE dispatch_events(id TEXT PRIMARY KEY,request_id TEXT,actor_id TEXT NOT NULL,actor_name TEXT NOT NULL,action TEXT NOT NULL,detail_json TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_meta",
+      "tbl_name": "dispatch_meta",
+      "sql": "CREATE TABLE dispatch_meta(id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL DEFAULT 0, attempt TEXT NOT NULL DEFAULT '')"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_notifications",
+      "tbl_name": "dispatch_notifications",
+      "sql": "CREATE TABLE dispatch_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,user_id TEXT NOT NULL REFERENCES users(id),request_id TEXT,message TEXT NOT NULL,created_at INTEGER NOT NULL,read_at INTEGER)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_order",
+      "tbl_name": "dispatch_order",
+      "sql": "CREATE TABLE dispatch_order(request_id TEXT PRIMARY KEY REFERENCES service_requests(id),position INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_positions",
+      "tbl_name": "dispatch_positions",
+      "sql": "CREATE TABLE dispatch_positions(attendance_id TEXT PRIMARY KEY REFERENCES dispatch_attendances(id),latitude REAL NOT NULL CHECK(latitude BETWEEN -90 AND 90),longitude REAL NOT NULL CHECK(longitude BETWEEN -180 AND 180),accuracy REAL NOT NULL CHECK(accuracy>0),observed_at INTEGER NOT NULL,received_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_receipts",
+      "tbl_name": "dispatch_receipts",
+      "sql": "CREATE TABLE dispatch_receipts(operation_id TEXT PRIMARY KEY,actor_id TEXT NOT NULL,payload_hash TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_road_routes",
+      "tbl_name": "dispatch_road_routes",
+      "sql": "CREATE TABLE dispatch_road_routes (\n attendance_id TEXT PRIMARY KEY REFERENCES dispatch_attendances(id) ON DELETE CASCADE,\n route_key TEXT NOT NULL,\n origin_latitude REAL NOT NULL,\n origin_longitude REAL NOT NULL,\n expires_at INTEGER NOT NULL,\n response_json TEXT NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_routing_gate",
+      "tbl_name": "dispatch_routing_gate",
+      "sql": "CREATE TABLE dispatch_routing_gate (\n id INTEGER PRIMARY KEY CHECK(id=1),\n next_at INTEGER NOT NULL DEFAULT 0,\n lease_until INTEGER NOT NULL DEFAULT 0,\n token TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_technicians",
+      "tbl_name": "dispatch_technicians",
+      "sql": "CREATE TABLE dispatch_technicians(user_id TEXT PRIMARY KEY REFERENCES users(id),enabled INTEGER NOT NULL CHECK(enabled IN (0,1)),updated_at INTEGER NOT NULL,updated_by TEXT NOT NULL)"
+    },
+    {
+      "type": "table",
       "name": "environment_name_events",
       "tbl_name": "environment_name_events",
       "sql": "CREATE TABLE environment_name_events (\n operation_id TEXT PRIMARY KEY,\n environment_id TEXT NOT NULL,\n unit_id TEXT NOT NULL,\n inspection_id TEXT,\n actor_id TEXT NOT NULL,\n before_name TEXT NOT NULL,\n after_name TEXT NOT NULL,\n from_version INTEGER NOT NULL,\n to_version INTEGER NOT NULL,\n payload_json TEXT NOT NULL,\n created_at INTEGER NOT NULL\n)"
@@ -6172,6 +7194,24 @@
     },
     {
       "type": "table",
+      "name": "technician_avatar_events",
+      "tbl_name": "technician_avatar_events",
+      "sql": "CREATE TABLE technician_avatar_events (\n operation_id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), actor_id TEXT NOT NULL,\n action TEXT NOT NULL, previous_id TEXT, image_id TEXT, version INTEGER NOT NULL, created_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "technician_avatar_uploads",
+      "tbl_name": "technician_avatar_uploads",
+      "sql": "CREATE TABLE technician_avatar_uploads (\n id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), actor_id TEXT NOT NULL REFERENCES users(id),\n expected_version INTEGER NOT NULL, sha256 TEXT NOT NULL, byte_size INTEGER NOT NULL,\n object_key TEXT NOT NULL UNIQUE, storage_provider TEXT NOT NULL, storage_ref TEXT,\n state TEXT NOT NULL CHECK(state IN ('pending','ready','applied','conflict')), created_at INTEGER NOT NULL,\n upload_token TEXT, upload_until INTEGER\n)"
+    },
+    {
+      "type": "table",
+      "name": "technician_profiles",
+      "tbl_name": "technician_profiles",
+      "sql": "CREATE TABLE technician_profiles (\n user_id TEXT PRIMARY KEY REFERENCES users(id), image_id TEXT REFERENCES technician_avatar_uploads(id),\n version INTEGER NOT NULL DEFAULT 0, last_operation TEXT, updated_at INTEGER, updated_by TEXT\n)"
+    },
+    {
+      "type": "table",
       "name": "unit_assignments",
       "tbl_name": "unit_assignments",
       "sql": "CREATE TABLE unit_assignments (user_id TEXT NOT NULL REFERENCES users(id),unit_id TEXT NOT NULL REFERENCES units(id),assigned_by TEXT NOT NULL REFERENCES users(id),assigned_at INTEGER NOT NULL,PRIMARY KEY(user_id,unit_id))"
@@ -6205,6 +7245,78 @@
       "name": "visit_answers",
       "tbl_name": "visit_answers",
       "sql": "CREATE TABLE visit_answers(inspection_id TEXT PRIMARY KEY REFERENCES inspections(id),data_json TEXT NOT NULL DEFAULT '{}',version INTEGER NOT NULL DEFAULT 1,updated_by TEXT NOT NULL,updated_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_assignment_ended",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_assignment_ended AFTER UPDATE OF ended_at ON dispatch_assignments WHEN NEW.ended_at IS NOT NULL BEGIN\n UPDATE dispatch_attendances SET ended_at=NEW.ended_at,end_reason='reassigned' WHERE assignment_id=NEW.id AND ended_at IS NULL;\n DELETE FROM dispatch_positions WHERE attendance_id IN (SELECT id FROM dispatch_attendances WHERE assignment_id=NEW.id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_assignment_max",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_assignment_max BEFORE INSERT ON dispatch_assignments WHEN NEW.ended_at IS NULL BEGIN\n SELECT CASE WHEN (SELECT COUNT(*) FROM dispatch_assignments WHERE request_id=NEW.request_id AND ended_at IS NULL)>=2 THEN RAISE(ABORT,'DISPATCH_MAX_TWO') END;\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM dispatch_technicians t JOIN users u ON u.id=t.user_id WHERE t.user_id=NEW.user_id AND t.enabled=1 AND u.active=1) THEN RAISE(ABORT,'DISPATCH_TECH_DISABLED') END;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_attendance_ended",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TRIGGER dispatch_attendance_ended AFTER UPDATE OF ended_at ON dispatch_attendances WHEN NEW.ended_at IS NOT NULL BEGIN\n DELETE FROM dispatch_positions WHERE attendance_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_request_changed",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_request_changed AFTER UPDATE ON service_requests BEGIN\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\n INSERT INTO dispatch_notifications(user_id,request_id,message,created_at) SELECT user_id,NEW.id,'Demanda #'||NEW.number||' atualizada: '||NEW.status,NEW.updated_at FROM dispatch_assignments WHERE request_id=NEW.id AND ended_at IS NULL;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_request_completed",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_request_completed AFTER UPDATE OF status ON service_requests WHEN NEW.status='Concluída' BEGIN\n UPDATE dispatch_attendances SET ended_at=NEW.updated_at,end_reason='completed' WHERE request_id=NEW.id AND ended_at IS NULL;\n DELETE FROM dispatch_positions WHERE attendance_id IN (SELECT id FROM dispatch_attendances WHERE request_id=NEW.id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_request_insert",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_request_insert AFTER INSERT ON service_requests BEGIN\n INSERT INTO dispatch_order VALUES(NEW.id,COALESCE((SELECT MAX(position) FROM dispatch_order),0)+1024);\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_road_route_attendance_ended",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TRIGGER dispatch_road_route_attendance_ended AFTER UPDATE OF ended_at ON dispatch_attendances\nWHEN NEW.ended_at IS NOT NULL\nBEGIN DELETE FROM dispatch_road_routes WHERE attendance_id=NEW.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_road_route_position_deleted",
+      "tbl_name": "dispatch_positions",
+      "sql": "CREATE TRIGGER dispatch_road_route_position_deleted AFTER DELETE ON dispatch_positions\nBEGIN DELETE FROM dispatch_road_routes WHERE attendance_id=OLD.attendance_id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_road_route_queue_changed",
+      "tbl_name": "dispatch_meta",
+      "sql": "CREATE TRIGGER dispatch_road_route_queue_changed AFTER UPDATE OF revision ON dispatch_meta\nBEGIN DELETE FROM dispatch_road_routes; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_session_removed",
+      "tbl_name": "sessions",
+      "sql": "CREATE TRIGGER dispatch_session_removed AFTER DELETE ON sessions BEGIN\n UPDATE dispatch_attendances SET ended_at=CAST(strftime('%s','now') AS INTEGER)*1000,end_reason='session_ended' WHERE session_hash=OLD.token_hash AND ended_at IS NULL;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_technician_disabled",
+      "tbl_name": "dispatch_technicians",
+      "sql": "CREATE TRIGGER dispatch_technician_disabled AFTER UPDATE OF enabled ON dispatch_technicians WHEN NEW.enabled=0 BEGIN\n UPDATE dispatch_assignments SET ended_at=NEW.updated_at WHERE user_id=NEW.user_id AND ended_at IS NULL;\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_user_disabled",
+      "tbl_name": "users",
+      "sql": "CREATE TRIGGER dispatch_user_disabled AFTER UPDATE OF active ON users WHEN NEW.active=0 BEGIN\n UPDATE dispatch_assignments SET ended_at=CAST(strftime('%s','now') AS INTEGER)*1000 WHERE user_id=NEW.id AND ended_at IS NULL;\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\nEND"
     },
     {
       "type": "trigger",

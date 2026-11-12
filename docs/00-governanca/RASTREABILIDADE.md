@@ -552,3 +552,7 @@ D106 — correção de compatibilidade após erro real: `redirect: error` incomp
 
 
 D106, ajuste visual: captura e pedido direto do responsável → remoção do quadro/seletor em web/dispatch-map.js e web/painel.css; todos os trajetos mantidos. Regressões dispatch-road-routing-browser.cjs e technical-dispatch-browser.cjs. Registro: docs/05-qualidade/MAPA_SEM_QUADRO_TECNICOS_2026-11-12.md.
+
+D-107: pedido de imagem por técnico + confirmação root exclusivo → server/technician-avatars.mjs, web/technician-avatar.js, gestão/mapa de atendimentos e armazenamento privado; 0029 metadados/eventos. testes technician-avatars.test.mjs e technician-avatars-browser.cjs, regressões D105/D106. Sem perguntas novas do TXT ou alteração do coletor. Registro: docs/05-qualidade/AVATARES_TECNICOS_2026-11-12.md.
+
+D107 publicado: 0029 aplicada; painel 18002f7f-e6b8-4954-8bb3-ef53371feb28 (100%) em 12/11/2026 13:03:45 Fortaleza. 242 testes de servidor, runtime workerd, três roteiros de navegador e 51 verificações públicas aprovados. UI root real conferida, sem atribuir imagens/testes a contas reais. Coletor/APK preservados. Evidências no registro de qualidade D107.

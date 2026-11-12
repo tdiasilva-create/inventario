@@ -87,6 +87,12 @@ function driveStore(env,db,fetchImpl,integration){
  let cached=integration;const row=async()=>cached===undefined?(cached=await integrationRow(db)):cached;
  const ready=async()=>{if(!driveConfigured(env))return false;const r=await row();return !!(r&&r.refresh_token_enc&&!r.revoked_at&&r.folder_id);};
  const tok=async()=>accessToken(env,db,{fetchImpl,row:await row()});
+ async function avatarFolder(token,rootFolder){
+  const scope='technician-avatars',hit=await db.prepare('SELECT folder_id FROM integration_folders WHERE provider=? AND scope_key=?').bind(DRIVE_PROVIDER,scope).first();if(hit)return hit.folder_id;
+  const found=await findByProperty(token,fetchImpl,'semedAvatarFolder','1',` and mimeType='application/vnd.google-apps.folder'`);
+  const id=found[0]?.id||(await driveJson(token,fetchImpl,'/files?fields=id&supportsAllDrives=true',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Avatares dos técnicos',mimeType:'application/vnd.google-apps.folder',parents:[rootFolder],appProperties:{semedAvatarFolder:'1'}})})).id;
+  await db.prepare('INSERT OR IGNORE INTO integration_folders(provider,scope_key,folder_id,created_at) VALUES(?,?,?,?)').bind(DRIVE_PROVIDER,scope,id,Date.now()).run();return id;
+ }
  async function unitFolder(token,unitId,unitName,rootFolder){
   const hit=await db.prepare('SELECT folder_id FROM integration_folders WHERE provider=? AND scope_key=?').bind(DRIVE_PROVIDER,'unit:'+unitId).first();if(hit)return hit.folder_id;
   const found=await findByProperty(token,fetchImpl,'semedUnitId',unitId,` and mimeType='application/vnd.google-apps.folder'`);
@@ -102,8 +108,8 @@ function driveStore(env,db,fetchImpl,integration){
    // Idempotência: uma tentativa anterior pode ter gravado o arquivo sem confirmar no D1.
    // Only the route that just inserted the unique pending row may skip the lookup.
    if(retry){const existing=await findByProperty(token,fetchImpl,'semedPhotoId',photoId);if(existing[0])return {ref:existing[0].id,provider:DRIVE_PROVIDER,reused:true};}
-   const parent=await unitFolder(token,unitId,unitName,r.folder_id);
-   const file=await multipartUpload(token,fetchImpl,{name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,semedUnitId:unitId,semedInspectionId:inspectionId,semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});
+   const avatar=targetKind==='technician-avatar',parent=avatar?await avatarFolder(token,r.folder_id):await unitFolder(token,unitId,unitName,r.folder_id);
+   const file=await multipartUpload(token,fetchImpl,{name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,...(avatar?{}:{semedUnitId:unitId,semedInspectionId:inspectionId}),semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:avatar?'Inventário Tecnológico SEMED · avatar do técnico':'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});
    return {ref:file.id,provider:DRIVE_PROVIDER,reused:false};
   },
   async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await timed(env,'drive_headers',()=>driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true'));if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body,contentLength:r.headers.get('Content-Length')};},

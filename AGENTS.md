@@ -109,3 +109,5 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 
 
 - D-106 (12/11/2026): implementação local do trajeto por ruas a partir do GPS, respeitando exatamente a ordem do root, sem otimização. API root, cache efêmero e limite global OSRM, migração aditiva 0028. Nenhum fallback reto. Uso do OSRM/FOSSGIS autorizado expressamente; migração e painel publicados em 12/11/2026. Confira o registro de qualidade para versão e limites de verificação. Ver docs/03-painel-desktop/ROTAS_PELAS_RUAS_D106.md e docs/05-qualidade/ROTAS_RUAS_2026-11-12.md.
+
+- D-107 (12/11/2026): somente root anexa/troca/remove imagem de técnico em Central → Organizar atendimentos → Técnicos. PNG derivado de até 128px/64KB no Drive privado; D1 só metadados, versão e eventos (0029), sem ampliar D-072. Mapa usa avatar ou iniciais, mantém nome/posição, GPS e ruas; não atribuir imagem de exemplo a conta sem indicação. Coletor/APK/sessões preservados. Ver docs/03-painel-desktop/AVATARES_TECNICOS_D107.md.

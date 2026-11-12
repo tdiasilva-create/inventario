@@ -689,3 +689,7 @@ D-106 — publicação confirmada em 12/11 às 10:21:12 Fortaleza, versão 2240f
 
 
 D-106 — adendo visual de 12/11/2026: responsável pediu retirar o quadro Atendimentos técnicos da região superior esquerda do mapa. Remover título, seletor e contagens, mostrando todos os técnicos recentes/rotas sem esse controle. Manter mapa, percurso por ruas, ordem, permissões e atualização; detalhes de falhas por técnico no tooltip, estado acessível sem caixa visível. Ver docs/05-qualidade/MAPA_SEM_QUADRO_TECNICOS_2026-11-12.md.
+
+## D-107 — imagens dos técnicos anexadas pelo root, 12/11/2026
+
+Responsável pediu imagem por técnico no mapa e confirmou que somente o administrador root a anexa. Implementar gestão em Central → Organizar atendimentos → Técnicos, com prévia, envio, troca e remoção; marcador com imagem e fallback de iniciais. Arquivos no Drive privado atual, D1 somente metadados/auditoria e controle de versão (0029 aditiva), sem ampliar a exceção D-072. Preservar GPS, sessões, demandas, ruas, anéis, coletor e APK. Exemplo recebido não deve ser associado automaticamente a uma conta. Publicação sob autorização contínua da sessão. [Contrato](../03-painel-desktop/AVATARES_TECNICOS_D107.md), [testes e publicação](../05-qualidade/AVATARES_TECNICOS_2026-11-12.md).

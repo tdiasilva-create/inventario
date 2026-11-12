@@ -1,5 +1,6 @@
 import {digest} from './security.mjs';
 import {readDispatchMap,roadRoute} from './dispatch-road-routing.mjs';
+import {technicianAvatarRoutes} from './technician-avatars.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const freshMs=180000;
 export async function cleanDispatchPositions(db,now=Date.now()){
@@ -57,11 +58,12 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  const db=env.DB,admin=path.startsWith('/api/dispatch/'),root=user.role==='root';
  if(admin&&!root)return fail('Somente root organiza e acompanha os atendimentos.',403);
  if(!admin&&!await isTechnician(db,user.id))return fail('Sua conta ainda não foi habilitada como técnico pelo root.',403);
+ const avatar=await technicianAvatarRoutes(request,url,user,env,helpers);if(avatar)return avatar;
  const endpoint=path.split('/').at(-1),get=request.method==='GET',now=Date.now();
  if(get&&endpoint==='queue'){
   const offset=Number(url.searchParams.get('offset')||0);if(!Number.isSafeInteger(offset)||offset<0)return fail('Página inválida.');
   const data=await queue(db,user,{root:admin,offset,history:!admin&&url.searchParams.get('history')==='1'});
-  if(admin)data.technicians=(await db.prepare('SELECT u.id,u.username,u.display_name,u.active,COALESCE(t.enabled,0) AS enabled FROM users u LEFT JOIN dispatch_technicians t ON t.user_id=u.id ORDER BY u.display_name,u.username').all()).results;
+  if(admin)data.technicians=(await db.prepare('SELECT u.id,u.username,u.display_name,u.active,COALESCE(t.enabled,0) AS enabled,p.image_id AS avatar_id FROM users u LEFT JOIN dispatch_technicians t ON t.user_id=u.id LEFT JOIN technician_profiles p ON p.user_id=u.id ORDER BY u.display_name,u.username').all()).results;
   else Object.assign(data,await noticeData(db,user));
   return json(data);
  }

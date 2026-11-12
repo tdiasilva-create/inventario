@@ -18,7 +18,7 @@ files.push('desktop-demand-count.js','operations.html','operations.js','agent-co
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
 files.push('panel-status.js','account-entry.js');
-files.push('dispatch.html','dispatch.js','dispatch-map.js','technician.html','technician.js','technician.css');
+files.push('dispatch.html','dispatch.js','dispatch-map.js','technician-avatar.js','technician.html','technician.js','technician.css');
 files.push('environment-editor.js','panel-confirm.js','school-presence.js');
 files.push('unit-map-palette.js','communication-log.html','communication-log.js');
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');

@@ -28,6 +28,9 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0024_hardware_reviews.sql`
 - `0025_school_registration.sql`
 - `0026_provider_reports.sql`
+- `0027_technical_dispatch.sql`
+- `0028_dispatch_road_routes.sql`
+- `0029_technician_avatars.sql`
 
 ## agent_audit_log
 
@@ -441,6 +444,131 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | before_json | TEXT | não |  | — |
 | after_json | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
+
+## dispatch_assignments
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| request_id | TEXT | sim |  | — |
+| user_id | TEXT | sim |  | — |
+| assigned_at | INTEGER | sim |  | — |
+| assigned_by | TEXT | sim |  | — |
+| ended_at | INTEGER | não |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION); `request_id` → `service_requests.id` (delete: NO ACTION).
+
+## dispatch_attendances
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| assignment_id | TEXT | sim |  | — |
+| request_id | TEXT | sim |  | — |
+| user_id | TEXT | sim |  | — |
+| session_hash | TEXT | sim |  | — |
+| started_at | INTEGER | sim |  | — |
+| ended_at | INTEGER | não |  | — |
+| end_reason | TEXT | não |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION); `request_id` → `service_requests.id` (delete: NO ACTION); `assignment_id` → `dispatch_assignments.id` (delete: NO ACTION).
+
+## dispatch_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| request_id | TEXT | não |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| action | TEXT | sim |  | — |
+| detail_json | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+## dispatch_meta
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| revision | INTEGER | sim |  | 0 |
+| attempt | TEXT | sim |  | '' |
+
+## dispatch_notifications
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| user_id | TEXT | sim |  | — |
+| request_id | TEXT | não |  | — |
+| message | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+| read_at | INTEGER | não |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION).
+
+## dispatch_order
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| request_id | TEXT | não | 1 | — |
+| position | INTEGER | sim |  | — |
+
+Referências: `request_id` → `service_requests.id` (delete: NO ACTION).
+
+## dispatch_positions
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| attendance_id | TEXT | não | 1 | — |
+| latitude | REAL | sim |  | — |
+| longitude | REAL | sim |  | — |
+| accuracy | REAL | sim |  | — |
+| observed_at | INTEGER | sim |  | — |
+| received_at | INTEGER | sim |  | — |
+
+Referências: `attendance_id` → `dispatch_attendances.id` (delete: NO ACTION).
+
+## dispatch_receipts
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| actor_id | TEXT | sim |  | — |
+| payload_hash | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+## dispatch_road_routes
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| attendance_id | TEXT | não | 1 | — |
+| route_key | TEXT | sim |  | — |
+| origin_latitude | REAL | sim |  | — |
+| origin_longitude | REAL | sim |  | — |
+| expires_at | INTEGER | sim |  | — |
+| response_json | TEXT | sim |  | — |
+
+Referências: `attendance_id` → `dispatch_attendances.id` (delete: CASCADE).
+
+## dispatch_routing_gate
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| next_at | INTEGER | sim |  | 0 |
+| lease_until | INTEGER | sim |  | 0 |
+| token | TEXT | não |  | — |
+
+## dispatch_technicians
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| user_id | TEXT | não | 1 | — |
+| enabled | INTEGER | sim |  | — |
+| updated_at | INTEGER | sim |  | — |
+| updated_by | TEXT | sim |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION).
 
 ## environment_name_events
 
@@ -876,6 +1004,54 @@ Referências: `user_id` → `users.id` (delete: NO ACTION).
 | key | TEXT | não | 1 | — |
 | value | INTEGER | sim |  | — |
 
+## technician_avatar_events
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| user_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| action | TEXT | sim |  | — |
+| previous_id | TEXT | não |  | — |
+| image_id | TEXT | não |  | — |
+| version | INTEGER | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION).
+
+## technician_avatar_uploads
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| user_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| expected_version | INTEGER | sim |  | — |
+| sha256 | TEXT | sim |  | — |
+| byte_size | INTEGER | sim |  | — |
+| object_key | TEXT | sim |  | — |
+| storage_provider | TEXT | sim |  | — |
+| storage_ref | TEXT | não |  | — |
+| state | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+| upload_token | TEXT | não |  | — |
+| upload_until | INTEGER | não |  | — |
+
+Referências: `actor_id` → `users.id` (delete: NO ACTION); `user_id` → `users.id` (delete: NO ACTION).
+
+## technician_profiles
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| user_id | TEXT | não | 1 | — |
+| image_id | TEXT | não |  | — |
+| version | INTEGER | sim |  | 0 |
+| last_operation | TEXT | não |  | — |
+| updated_at | INTEGER | não |  | — |
+| updated_by | TEXT | não |  | — |
+
+Referências: `image_id` → `technician_avatar_uploads.id` (delete: NO ACTION); `user_id` → `users.id` (delete: NO ACTION).
+
 ## unit_assignments
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1003,6 +1179,18 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 
 ## Views e triggers
 
+- `dispatch_assignment_ended` (trigger, dispatch_assignments)
+- `dispatch_assignment_max` (trigger, dispatch_assignments)
+- `dispatch_attendance_ended` (trigger, dispatch_attendances)
+- `dispatch_request_changed` (trigger, service_requests)
+- `dispatch_request_completed` (trigger, service_requests)
+- `dispatch_request_insert` (trigger, service_requests)
+- `dispatch_road_route_attendance_ended` (trigger, dispatch_attendances)
+- `dispatch_road_route_position_deleted` (trigger, dispatch_positions)
+- `dispatch_road_route_queue_changed` (trigger, dispatch_meta)
+- `dispatch_session_removed` (trigger, sessions)
+- `dispatch_technician_disabled` (trigger, dispatch_technicians)
+- `dispatch_user_disabled` (trigger, users)
 - `equipment_deleted_identity` (trigger, equipments)
 - `equipment_totals_delete` (trigger, equipments)
 - `equipment_totals_insert` (trigger, equipments)
