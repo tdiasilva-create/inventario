@@ -40,3 +40,15 @@ Preparação remota: backup D1 privado verificado por reimportação SQLite em m
 - A conferência real confirmou carregamento, autenticação, estado sem GPS e versão publicada. O trajeto com GPS real ficará visível quando um técnico aceitar/retomar atendimento e enviar posição. O cálculo pelas ruas foi verificado nos ensaios locais e com a consulta pública real já descrita; não declarar uma rota de técnico real observada nesta conferência.
 
 Fonte da implementação: commit 01e68e8. Documentação de ativação registrada em commit posterior. Retorno disponível para versão 2013b4f8-9440-4279-946e-6e80fb3068a1 sem apagar tabelas ou restaurar dados por cima da operação atual.
+
+## Correção após uso real com dois técnicos — 12/11/2026
+
+O responsável relatou erro com técnicos em rota. A navegação autenticada confirmou dois técnicos com posição recente e a mensagem de cálculo indisponível. Filtrar somente um técnico manteve o erro. O cache retornava PROVIDER_UNAVAILABLE; uma consulta controlada ao provedor autorizado, somente com coordenadas, retornou HTTP 200/Ok e geometria com 424 pontos em 701 ms. Dados privados dessa investigação permanecem em private-data, fora do Git.
+
+Causa reproduzida no workerd: `redirect: error` não é implementado em Workers e lança TypeError antes da requisição. O Fetch do Node aceita a opção; por isso os testes anteriores não cobriram o defeito de produção. A conferência inicial após o deploy estava sem GPS ativo, conforme limite já registrado acima.
+
+Correção: `redirect: manual`, conservando a recusa de todo retorno não 2xx. Assim, um redirecionamento também falha sem enviar coordenadas a outro host. Acrescentado teste no runtime workerd com o módulo real, Request/Response reais, banco e provedor isolados: geometria válida com 24 pontos e recusa de 302 sem segunda requisição. Oito testes D106 aprovados novamente; build desktop e 51 verificações HTTP de acesso aprovados.
+
+Publicação: **12951596-99bb-4764-9385-f9aff7c81b37**, 100%, **12/11/2026 10:42:39 Fortaleza / 13:42:39 UTC**. Somente Worker do painel; sem migração ou alterações de demandas, fila, usuários, coletor ou APK.
+
+Conferência real depois da correção: mapa ampliado mostrou o roteiro de José de Ribamar pelas ruas. Seleção individual confirmou uma rota válida; seleção de Pedro Antony mostrou posição desatualizada, sem erro de cálculo e sem fabricar trajeto. Restaurado Todos os técnicos; uma posição recente, uma sem posição atual e uma rota pelas ruas. Console sem erros. Captura privada: private-data/routing-d106/rota-corrigida-producao.png. A rota de Pedro depende de novo GPS; não afirmar que os dois trajetos foram visualizados após o ajuste.

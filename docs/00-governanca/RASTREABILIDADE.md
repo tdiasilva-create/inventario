@@ -547,3 +547,5 @@ Pedido expresso: GPS atual → demandas na sequência root, teste e produção. 
 
 
 D-106 — ativado: 0028 aplicada; painel 2240f2ce-9eaa-4852-8f01-9902909a1997 às 10:21:12 Fortaleza, 12/11. OSRM autorizado expressamente; 62 verificações públicas/proteção aprovadas e UI root conferida sem GPS ativo. Coletor e APK preservados.
+
+D106 — correção de compatibilidade após erro real: `redirect: error` incompatível com Workers substituído por `manual` com recusa de não 2xx em server/dispatch-road-routing.mjs. Teste workerd dedicado em tests/dispatch-road-routing-runtime.cjs; oito testes de rotas e 51 verificações públicas aprovados. Painel 12951596-99bb-4764-9385-f9aff7c81b37, 12/11 10:42:39 Fortaleza; rota real pelas ruas observada para um técnico, outro sem GPS recente. Sem alteração de regras, banco, APK ou coletor. Detalhes e limite em ROTAS_RUAS_2026-11-12.md.

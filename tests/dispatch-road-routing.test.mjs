@@ -18,6 +18,7 @@ async function prepared(){
 test('D106: ruas partem do GPS e respeitam estritamente o root, mesmo com aceite fora de ordem; cache compartilhado',async()=>{const f=await prepared();try{
  const r=await f.route();assert.equal(r.status,200);assert.equal(r.data.status,'ready');assert.deepEqual(r.data.requestIds,f.tasks);assert.deepEqual(r.data.origin,[-2.54,-44.17]);assert.ok(r.data.geometry.coordinates.length>4);
  const request=f.calls[0];assert.match(request.url,/routed-car\/route\/v1\/driving\/-44.170000,-2.540000;/);assert.doesNotMatch(request.url,/trip|TESTE|root|operador/);assert.match(request.options.headers['User-Agent'],/SEMED/);
+ assert.equal(request.options.redirect,'manual');
  assert.equal((await f.route()).data.cached,true);assert.equal(f.calls.length,1);
  assert.equal(f.sqlite.prepare('SELECT COUNT(*) n FROM dispatch_road_routes').get().n,1);
  assert.equal((await f.call('/api/dispatch/map')).data.positions[0].routeKey,r.data.routeKey);

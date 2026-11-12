@@ -33,3 +33,7 @@ Código: `server/dispatch-road-routing.mjs`, integração em `server/technical-d
 Rollback de código para a versão D-105 conserva tabelas aditivas, sem restauração destrutiva do banco. A versão antiga volta ao conector reto identificado como sequência; não continua consultando o novo provedor. Não executar DROP nem restaurar dump sobre novos atendimentos. Cache é derivado e não altera demandas, ordem, usuários ou histórico.
 
 Testes e publicação: [registro de qualidade](../05-qualidade/ROTAS_RUAS_2026-11-12.md).
+
+## Compatibilidade com Workers — correção de 12/11
+
+O Fetch de Workers aceita `redirect: manual` ou `follow`, mas rejeita `error` antes de consultar o provedor. A integração usa `manual` e recusa respostas fora de 2xx, inclusive redirecionamentos; não transmite coordenadas ao destino de um redirecionamento. `tests/dispatch-road-routing-runtime.cjs` executa o módulo em workerd com Request/Response reais do runtime, banco/provedor isolados e uma geometria pública. Testes somente em Node não verificam essa compatibilidade. Ver [documentação Cloudflare](https://developers.cloudflare.com/workers/runtime-apis/request/).

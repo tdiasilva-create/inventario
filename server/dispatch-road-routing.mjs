@@ -67,7 +67,9 @@ export async function roadRoute(env,userId,{json}){
  try{
   const points=[origin,...stops.map(r=>[r.latitude,r.longitude])];
   const url=PROVIDER+points.map(([lat,lon])=>lon.toFixed(6)+','+lat.toFixed(6)).join(';')+'?overview=full&geometries=geojson&steps=false&alternatives=false&generate_hints=false&radiuses='+points.map(()=>SNAP_M).join(';');
-  const response=await (env.ROUTING_FETCH||fetch)(url,{redirect:'error',signal:AbortSignal.timeout(9000),headers:{'User-Agent':'SEMED-Paco-Inventario/1.0 (+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev)','Accept':'application/json'}});
+  // Workers supports manual/follow only. Manual plus the non-2xx check below
+  // rejects redirects without sending coordinates to another host.
+  const response=await (env.ROUTING_FETCH||fetch)(url,{redirect:'manual',signal:AbortSignal.timeout(9000),headers:{'User-Agent':'SEMED-Paco-Inventario/1.0 (+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev)','Accept':'application/json'}});
   if(!response.ok){await response.body?.cancel();throw Error('provider');}
   const value=await limitedJson(response),route=validateRoute(value,points);
   result=route?{status:'ready',...route,provider:'OSRM / OpenStreetMap',requestIds:stops.map(r=>r.id)}:unavailable('NO_ROUTE','Não foi possível encontrar um trajeto por ruas para esta sequência. Confira as coordenadas das unidades.');
