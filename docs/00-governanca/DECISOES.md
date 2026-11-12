@@ -680,3 +680,9 @@ Adendo final D105: responsável confirmou uma demanda ativa por técnico e habil
 ## D-106 — 12/11/2026 — tracejado pelas ruas no painel
 
 Responsável solicitou implementação, testes e publicação da rota começando na localização do técnico e seguindo a ordem das demandas definida pelo root. Supera a ligação reta de D-105; não otimizar nem reorganizar destinos. Código e testes preparados com OSRM/FOSSGIS, cache temporário e controle global de consultas, sem histórico de deslocamentos, sem alteração do APK/coletor/agentes. Confirmação específica do envio de coordenadas ao serviço externo solicitada na conversa antes da ativação. Ver [contrato](../03-painel-desktop/ROTAS_PELAS_RUAS_D106.md) e [aceite](../05-qualidade/ROTAS_RUAS_2026-11-12.md).
+
+
+D-106 — autorização recebida em 12/11/2026: responsável respondeu “Sim, usar OSRM/FOSSGIS” à pergunta que especificava envio apenas de posição do técnico/coordenadas das unidades e retenção das consultas nos logs do provedor. Impedimento de autorização resolvido; publicação real autorizada.
+
+
+D-106 — publicação confirmada em 12/11 às 10:21:12 Fortaleza, versão 2240f2ce-9eaa-4852-8f01-9902909a1997 (100%). Migração 0028 aplicada; coletor/APK preservados. Responsável autorizou OSRM/FOSSGIS. Conferência root sem técnicos com GPS recente; nenhum trajeto fictício foi criado. Ver registro de qualidade D106.

@@ -544,3 +544,6 @@ D105 publicada em produção: painel 2013b4f8-9440-4279-946e-6e80fb3068a1 (100%,
 ## D-106 — trajeto por ruas — 12/11/2026
 
 Pedido expresso: GPS atual → demandas na sequência root, teste e produção. Implementação: server/dispatch-road-routing.mjs, server/technical-dispatch.mjs, web/dispatch-map.js, migrations/0028_dispatch_road_routes.sql. Testes: dispatch-road-routing.test.mjs, dispatch-road-routing-browser.cjs e regressões D105/mapa. [Contrato](../03-painel-desktop/ROTAS_PELAS_RUAS_D106.md), [resultados](../05-qualidade/ROTAS_RUAS_2026-11-12.md). Estado da publicação e autorização específica do provedor no registro de qualidade.
+
+
+D-106 — ativado: 0028 aplicada; painel 2240f2ce-9eaa-4852-8f01-9902909a1997 às 10:21:12 Fortaleza, 12/11. OSRM autorizado expressamente; 62 verificações públicas/proteção aprovadas e UI root conferida sem GPS ativo. Coletor e APK preservados.

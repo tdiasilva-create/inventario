@@ -13,7 +13,7 @@ Pedido de 12/11/2026: substituir o tracejado reto do painel por percurso viário
 
 ## Provedor e privacidade
 
-OSRM operado pela FOSSGIS: `https://routing.openstreetmap.de/routed-car/route/v1/driving/`. Usar o serviço `route`, que preserva a ordem; nunca `trip`. Enviam-se somente coordenadas, sem nomes, IDs internos, sessão, conteúdo das demandas ou credenciais. O provedor informa que registra consultas nos seus logs. Consulta de autorização específica do responsável registrada na conversa antes da ativação.
+OSRM operado pela FOSSGIS: `https://routing.openstreetmap.de/routed-car/route/v1/driving/`. Usar o serviço `route`, que preserva a ordem; nunca `trip`. Enviam-se somente coordenadas, sem nomes, IDs internos, sessão, conteúdo das demandas ou credenciais. O provedor informa que registra consultas nos seus logs. Autorização específica confirmada pelo responsável na conversa em 12/11/2026: “Sim, usar OSRM/FOSSGIS”, ciente do envio de coordenadas e dos logs do provedor.
 
 - [Política de utilização e privacidade do servidor](https://routing.openstreetmap.de/about.html)
 - [Contrato Route do OSRM](https://project-osrm.org/docs/v5.24.0/api/#route-service)

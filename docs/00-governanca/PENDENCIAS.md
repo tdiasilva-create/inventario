@@ -344,3 +344,9 @@ Atualização após autorização: capacidade nas contas existentes e uma ativa 
 ## D-106 — ativação do roteamento por ruas
 
 Implementação local pronta, 238 testes de servidor e regressões de navegador aprovados. Backup verificado e migração 0028 ensaiada. Publicação solicitada pelo responsável, mas aguarda confirmação específica de envio de coordenadas do técnico/unidades ao OSRM/FOSSGIS, que registra consultas em logs. Nenhuma migração ou deploy D106 executados enquanto essa resposta não chega. Ver docs/05-qualidade/ROTAS_RUAS_2026-11-12.md.
+
+
+D-106 — autorização recebida em 12/11/2026: responsável respondeu “Sim, usar OSRM/FOSSGIS” à pergunta que especificava envio apenas de posição do técnico/coordenadas das unidades e retenção das consultas nos logs do provedor. Impedimento de autorização resolvido; publicação real autorizada.
+
+
+D-106 — resolvido: autorização do OSRM/FOSSGIS, migração 0028 e publicação real concluídas em 12/11/2026. Sem bloqueio de implantação. Conferência em campo com técnico ativo permanece como aceite de uso: no momento da checagem root havia zero posições recentes. Demais pendências Android/FCM e fases anteriores preservadas.
