@@ -37,3 +37,8 @@ Testes e publicação: [registro de qualidade](../05-qualidade/ROTAS_RUAS_2026-1
 ## Compatibilidade com Workers — correção de 12/11
 
 O Fetch de Workers aceita `redirect: manual` ou `follow`, mas rejeita `error` antes de consultar o provedor. A integração usa `manual` e recusa respostas fora de 2xx, inclusive redirecionamentos; não transmite coordenadas ao destino de um redirecionamento. `tests/dispatch-road-routing-runtime.cjs` executa o módulo em workerd com Request/Response reais do runtime, banco/provedor isolados e uma geometria pública. Testes somente em Node não verificam essa compatibilidade. Ver [documentação Cloudflare](https://developers.cloudflare.com/workers/runtime-apis/request/).
+
+
+## Ajuste visual posterior — 12/11
+
+Por solicitação do responsável, retirado o quadro Atendimentos técnicos do mapa (título, seletor e contagens). Todos os técnicos com posição recente continuam exibidos com suas rotas. Falhas por técnico ficam no tooltip do marcador; estado continua acessível ao leitor de tela sem caixa visível. O restante da cartografia e do acompanhamento é preservado. [Aceite](../05-qualidade/MAPA_SEM_QUADRO_TECNICOS_2026-11-12.md).

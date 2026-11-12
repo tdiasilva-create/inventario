@@ -686,3 +686,6 @@ D-106 — autorização recebida em 12/11/2026: responsável respondeu “Sim, u
 
 
 D-106 — publicação confirmada em 12/11 às 10:21:12 Fortaleza, versão 2240f2ce-9eaa-4852-8f01-9902909a1997 (100%). Migração 0028 aplicada; coletor/APK preservados. Responsável autorizou OSRM/FOSSGIS. Conferência root sem técnicos com GPS recente; nenhum trajeto fictício foi criado. Ver registro de qualidade D106.
+
+
+D-106 — adendo visual de 12/11/2026: responsável pediu retirar o quadro Atendimentos técnicos da região superior esquerda do mapa. Remover título, seletor e contagens, mostrando todos os técnicos recentes/rotas sem esse controle. Manter mapa, percurso por ruas, ordem, permissões e atualização; detalhes de falhas por técnico no tooltip, estado acessível sem caixa visível. Ver docs/05-qualidade/MAPA_SEM_QUADRO_TECNICOS_2026-11-12.md.
