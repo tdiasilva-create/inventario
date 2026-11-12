@@ -332,4 +332,4 @@ Correção de carregamento/consultas autorizada e testada; publicação e compar
 
 Correções de marcador/coletas/fotos e instrumentação aprovadas em 12/11/2026. [Resultados e publicação](../05-qualidade/DESEMPENHO_D104_2026-11-12.md). Smart Placement permanece para experimento separado; cache de autorização da integração não foi adotado. Aceite na rede do responsável pelo roteiro D104. Demais decisões pendentes preservadas.
 
-D-104: publicação concluída na versão b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2. Falta renovar sessão root para repetir medições autenticadas de navegação/fotos; solicitação aberta ao responsável. Testes locais e controle de acesso externo concluídos.
+D-104: publicação concluída na versão b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2. Sessão root renovada e conferência autenticada concluída em 12/11 às 07:32–07:36: navegação, coletas e fotos verificadas; medições registradas. Nenhum bloqueio de login permanece. Aceite na rede/dispositivo do responsável e experimento separado de Smart Placement continuam futuros.

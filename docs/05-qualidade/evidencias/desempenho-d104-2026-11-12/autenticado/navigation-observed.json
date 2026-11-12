@@ -1,0 +1,61 @@
+{
+  "method": "CUA reload + DOM readiness; includes tool overhead; five warm reloads per page. Current real data may differ from D103.",
+  "startedAt": "2026-11-12T10:32:54.788Z",
+  "pages": {
+    "panorama": [
+      2387,
+      2084,
+      2045,
+      2084,
+      2028
+    ],
+    "computadores": [
+      1797,
+      2025,
+      1930,
+      1828,
+      1788
+    ],
+    "demandas": [
+      1642,
+      1607,
+      1746,
+      1601,
+      1682
+    ]
+  },
+  "computersUrl": "https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores?unidade=aa9fe208-47e0-43e7-b464-8b9821c19ef0",
+  "demandsCount": 8,
+  "measuredAt": "2026-11-12T10:34:19.799Z",
+  "progressWindows": [
+    {
+      "label": "first-open",
+      "start": "2026-11-12T10:34:32.916Z",
+      "end": "2026-11-12T10:34:35.365Z"
+    },
+    {
+      "label": "reload-1",
+      "start": "2026-11-12T10:34:46.315Z",
+      "end": "2026-11-12T10:34:48.125Z"
+    },
+    {
+      "label": "reload-2",
+      "start": "2026-11-12T10:34:48.125Z",
+      "end": "2026-11-12T10:34:50.049Z"
+    }
+  ],
+  "progressDetailMs": 3423,
+  "partialPhoto": {
+    "reopenMs": 1168,
+    "height": 1200,
+    "loaded": true,
+    "width": 1600
+  },
+  "completedPhoto": {
+    "reopenMs": 998,
+    "height": 1205,
+    "loaded": true,
+    "width": 1600
+  },
+  "finishedAt": "2026-11-12T10:36:58.206Z"
+}

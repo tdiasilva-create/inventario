@@ -1,0 +1,48 @@
+{
+  "startedAt": "2026-11-12T10:32:54.788Z",
+  "finishedAt": "2026-11-12T10:36:58.206Z",
+  "method": "Read-only tail GET IP self during active navigation; may include other clients on same public IP. Not an idle poll comparison and not a browser HAR.",
+  "requests": 132,
+  "apiRequests": 64,
+  "statuses": {
+    "200": 60,
+    "304": 4
+  },
+  "failures": [],
+  "photos": {
+    "/api/inventory/in-progress-photo 200": 2,
+    "/api/inventory/in-progress-photo 304": 1,
+    "/api/collector/photo 304": 2,
+    "/api/inventory/photo 304": 1
+  },
+  "progressWindows": [
+    {
+      "label": "first-open",
+      "start": "2026-11-12T10:34:32.916Z",
+      "end": "2026-11-12T10:34:35.365Z",
+      "events": []
+    },
+    {
+      "label": "reload-1",
+      "start": "2026-11-12T10:34:46.315Z",
+      "end": "2026-11-12T10:34:48.125Z",
+      "events": [
+        {
+          "status": 200,
+          "timestamp": 1794479687759
+        }
+      ]
+    },
+    {
+      "label": "reload-2",
+      "start": "2026-11-12T10:34:48.125Z",
+      "end": "2026-11-12T10:34:50.049Z",
+      "events": []
+    }
+  ],
+  "medians": {
+    "panorama": 2084,
+    "computadores": 1828,
+    "demandas": 1642
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "startedAt": "2026-11-12T10:32:39.357Z",
+  "filter": "GET, IP self, default sampling; other clients sharing the IP may appear",
+  "events": 140,
+  "parsed": 140,
+  "parseErrors": 0,
+  "finishedAt": "2026-11-12T10:37:28.904Z",
+  "exitCode": 4294967295,
+  "signal": null
+}
