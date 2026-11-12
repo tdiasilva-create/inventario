@@ -1,4 +1,5 @@
 import {geolocatedUnits} from './map-geography.js';
+import {mountDispatchMap} from './dispatch-map.js';
 import {icon} from './desktop-icons.js';
 import {unitMapColor} from './unit-map-palette.js';
 import {getPendingState} from './desktop-demand-count.js';
@@ -88,7 +89,7 @@ export function unmountMap(){
  if(!current)return;
  collapseMap({restoreFocus:false});
  preference.camera={center:current.map.getCenter(),zoom:current.map.getZoom()};
- current.observer?.disconnect();current.map.remove();current=null;
+ current.stopDispatch?.();current.observer?.disconnect();current.map.remove();current=null;
 }
 function status(text,error=false){
  if(!current)return;
@@ -117,7 +118,7 @@ function switchBase(){
  context.container.dataset.mapBase=preference.base;
  context.container.closest('.map-panel').querySelectorAll('[data-map-base]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapBase===preference.base)));
 }
-export async function mountMap(container,{units=[],selected=null,onSelect=()=>{},focus=null}={}){
+export async function mountMap(container,{units=[],selected=null,onSelect=()=>{},focus=null,technical=false}={}){
  if(current?.container===container){current.onSelect=onSelect;updateMarkers(units,selected);if(focus)focusUnit(focus);return;}
  const token=++generation;
  try{
@@ -126,6 +127,7 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   const L=window.L;if(!L)throw new Error('Biblioteca cartográfica indisponível');
   const map=L.map(container,{zoomControl:false,attributionControl:true,scrollWheelZoom:false,minZoom:8,maxZoom:19,preferCanvas:false});
   const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup(),markers:new Map(),unitGroup:L.featureGroup().addTo(map),onSelect};current=context;
+  if(technical)context.stopDispatch=mountDispatchMap(map,container);
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   context.boundary=L.polygon(data.ring,{color:'#ff4b1e',weight:2,opacity:.95,fillColor:'#ff4b1e',fillOpacity:.06,dashArray:'5 4'});
   context.boundary.bindTooltip('Área de referência do município',{className:'v33-tooltip',sticky:true});

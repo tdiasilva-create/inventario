@@ -18,6 +18,7 @@ files.push('desktop-demand-count.js','operations.html','operations.js','agent-co
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
 files.push('panel-status.js','account-entry.js');
+files.push('dispatch.html','dispatch.js','dispatch-map.js','technician.html','technician.js','technician.css');
 files.push('environment-editor.js','panel-confirm.js','school-presence.js');
 files.push('unit-map-palette.js','communication-log.html','communication-log.js');
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');
@@ -30,6 +31,8 @@ for(const file of files){
  const bytes=await readFile(target);manifest.push({file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
 }
 await writeFile(join(destination,'404.html'),'<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Painel SEMED — endereço não encontrado</title><link rel="stylesheet" href="/tokens.css"><link rel="stylesheet" href="/painel.css"><body style="background:#f3f4f5;color:#16191d;font:16px Barlow,sans-serif;margin:0;padding:clamp(24px,6vw,60px);line-height:1.7;border-top:4px solid #ff4b1e"><main style="max-width:640px;background:white;border:1px solid #d9dde1;border-radius:16px;padding:24px"><h1 style="font-family:Chakra Petch,sans-serif">Endereço não encontrado</h1><p>Este endereço atende ao Painel Desktop SEMED de Paço do Lumiar.</p><p>O coletor atende no endereço próprio inventario-semed-lumiar.</p><a style="color:#d70825" href="/">Voltar ao painel</a></main></body></html>');
+const technicianApk=join(root,'private-data','releases','SEMED-Tecnico-1.0.0.apk');
+try{await stat(technicianApk);await mkdir(join(destination,'tecnico'),{recursive:true});await copyFile(technicianApk,join(destination,'tecnico','SEMED-Tecnico.apk'));files.push('tecnico/SEMED-Tecnico.apk');}catch(e){if(e.code!=='ENOENT')throw e;console.warn('APK Android não incluído: execute scripts/build-technician-android.mjs antes de publicar.');}
 await writeFile(join(destination,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Robots-Tag: noindex, nofollow\n');
 await writeFile(join(destination,'robots.txt'),'User-agent: *\nDisallow: /\n');
 // Build evidence stays outside the published assets.

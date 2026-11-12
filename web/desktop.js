@@ -211,7 +211,7 @@ function render(){
  receivedResults.attach(filteredCatalogue());
  schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.page==='Planejamento'?'':state.q);
- const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;navigate('Detalhe da Unidade');}});state.focus=null;}
+ const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{technical:authUser?.role==='root',units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;navigate('Detalhe da Unidade');}});state.focus=null;}
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
  document.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page||(state.page==='Detalhe da Unidade'&&b.dataset.page==='Unidades');b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
  loadSelected();

@@ -1,4 +1,5 @@
 import {measuredEnvironment,timed,timingHeader} from './request-timing.mjs';
+import {technicalDispatchRoutes,isTechnician,cleanDispatchPositions} from './technical-dispatch.mjs';
 import {hardwareReviewRoutes} from './hardware-review.mjs';
 import {panelSearch} from './panel-search.mjs';
 import {pendingIndicatorsRoutes} from './pending-indicators.mjs';
@@ -29,7 +30,7 @@ const collectorOrigin='https://inventario-semed-lumiar.secretaria-municipal-de-e
 const operatorOnPanel=(user,env)=>user.role==='operador'&&env.APP_KIND!=='collector';
 const collectorLogin=()=>collectorOrigin+'/login?origem=painel';
 async function current(request,db){const token=(request.headers.get('Cookie')||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('__Host-semed='))?.slice(13);if(!token||!/^[a-f0-9]{64}$/.test(token))return null;return db.prepare('SELECT u.*,s.token_hash,s.csrf,s.expires_at FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>? AND u.active=1 AND s.credential_version=u.credential_version').bind(await digest(token),Date.now()).first();}
-async function body(request){const path=new URL(request.url).pathname,limit=path.startsWith('/api/operations/')?16384:path==='/api/root/unit-save'?16384:path==='/api/root/import-preview'?262144:path.startsWith('/api/collector/')?65536:path==='/api/root/assignments'?16384:4096;if(Number(request.headers.get('content-length')||0)>limit)throw Error('body');const text=await request.text();if(new TextEncoder().encode(text).length>limit)throw Error('body');return JSON.parse(text);}
+async function body(request){const path=new URL(request.url).pathname,limit=['/api/operations/','/api/dispatch/','/api/technician/'].some(prefix=>path.startsWith(prefix))?16384:path==='/api/root/unit-save'?16384:path==='/api/root/import-preview'?262144:path.startsWith('/api/collector/')?65536:path==='/api/root/assignments'?16384:4096;if(Number(request.headers.get('content-length')||0)>limit)throw Error('body');const text=await request.text();if(new TextEncoder().encode(text).length>limit)throw Error('body');return JSON.parse(text);}
 async function config(db){const rows=await db.prepare('SELECT key,value FROM settings').all();const s=Object.fromEntries(rows.results.map(x=>[x.key,x.value]));return s;}
 async function handle(request,env){const url=new URL(request.url),path=url.pathname,db=env.DB;
  if(!['GET','HEAD','POST'].includes(request.method))return fail('Método não permitido.',405);
@@ -40,6 +41,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  const identityAssets=['/desktop-theme.css','/tokens.css','/assets/paisagem-coleta.jpg','/painel-favicon.svg',...['400','500','600','700'].flatMap(w=>['/vendor/chakra-petch/ChakraPetch-'+w+'.woff2','/vendor/barlow/Barlow-'+w+'.woff2']),'/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'];
  if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return assetResponse(request,env);
  const publicPaths=new Set(['/login','/login.html','/login.css','/login.js','/assets/prefeitura-paco.png','/robots.txt']);
+ if(env.APP_KIND!=='collector'&&['/tecnico','/tecnico/login','/tecnico/conta','/technician.js','/technician.css','/tecnico/SEMED-Tecnico.apk'].includes(path)){const target=new URL(request.url);if(path.startsWith('/tecnico')&&!path.endsWith('.apk'))target.pathname='/technician.html';const asset=await assetResponse(new Request(target,request),env);const result=new Response(asset.body,asset);if(target.pathname==='/technician.html'){result.headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'");result.headers.set('Permissions-Policy','geolocation=(self), camera=(), microphone=()');}if(path.endsWith('.apk')){result.headers.set('Content-Type','application/vnd.android.package-archive');result.headers.set('Content-Disposition','attachment; filename=SEMED-Tecnico-1.0.0.apk');}return result;}
  if(publicPaths.has(path)){const target=new URL(request.url);if(path==='/login'||path==='/login.html')target.pathname=env.APP_KIND==='collector'?'/collector-login.html':'/login.html';if(env.APP_KIND==='collector'&&path==='/login.js')target.pathname='/collector-login.js';return assetResponse(new Request(target,request),env);}
  if(env.APP_KIND==='collector'&&['/collector.css','/vendor/figtree/Figtree.ttf','/collector-favicon.svg','/tokens.css','/assets/paisagem-coleta.jpg','/vendor/chakra-petch/ChakraPetch-400.woff2','/vendor/chakra-petch/ChakraPetch-500.woff2','/vendor/chakra-petch/ChakraPetch-600.woff2','/vendor/chakra-petch/ChakraPetch-700.woff2','/vendor/barlow/Barlow-400.woff2','/vendor/barlow/Barlow-500.woff2','/vendor/barlow/Barlow-600.woff2','/vendor/barlow/Barlow-700.woff2','/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'].includes(path))return assetResponse(request,env);
  if(!env.AUTH_PEPPER||!db)return fail('Acesso temporariamente indisponível.',503);
@@ -51,16 +53,18 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   if(!user||!user.active||!equal(calculated,user.password_hash)||(user.must_change&&user.temporary_expires<now)){
    const statements=[key,ipKey].map(k=>db.prepare('INSERT INTO attempts(key,count,blocked_until,updated_at) VALUES(?,1,0,?) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN updated_at<? THEN 1 ELSE MIN(count+1,20) END,blocked_until=CASE WHEN updated_at<? THEN 0 ELSE ?+MIN(900000,1000*(1 << MIN(count,9))) END,updated_at=?').bind(k,now,now-900000,now-900000,now,now));await db.batch([...statements,audit(db,user?.id||null,'login_failed')]);return fail('Usuário ou senha inválidos.',401);
   }
+  const technical=data.application==='technician'&&env.APP_KIND!=='collector';
+  if(technical&&!await isTechnician(db,user.id))return fail('Sua conta ainda não foi habilitada como técnico pelo root.',403);
   const settings=await config(db);if(!settings.session_seconds)return fail('Prazo de sessão ainda não configurado.',503);
   const token=random(),csrf=random();await db.batch([db.prepare('INSERT INTO sessions(token_hash,user_id,csrf,expires_at,created_at,credential_version,user_agent) VALUES(?,?,?,?,?,?,?)').bind(await digest(token),user.id,csrf,now+settings.session_seconds*1000,now,user.credential_version,(request.headers.get('User-Agent')||'').slice(0,300)),db.prepare('DELETE FROM attempts WHERE key=?').bind(key),db.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),db.prepare('UPDATE users SET last_login_at=? WHERE id=?').bind(now,user.id),audit(db,user.id,'login_success')]);
-  return json({redirect:user.must_change?'/conta':operatorOnPanel(user,env)?collectorLogin():'/'},200,{'Set-Cookie':cookie(token,settings.session_seconds)});
+  return json({redirect:technical?'/tecnico':user.must_change?'/conta':operatorOnPanel(user,env)?collectorLogin():'/'},200,{'Set-Cookie':cookie(token,settings.session_seconds)});
  }
  // Retorno do Google: navegação de outro site, sem cookie de sessão; validado por estado + cookie Lax (ver google-auth.mjs).
  if(env.APP_KIND!=='collector'){const callback=await googleCallback(request,url,env,{audit});if(callback)return callback;}
  const user=await timed(env,'auth',()=>current(request,db));
  if(!user){if(path.startsWith('/api/'))return fail('Autenticação necessária.',401);return new Response(null,{status:302,headers:{Location:'/login','Cache-Control':'no-store'}});}
  if(request.method==='POST'&&!equal(request.headers.get('X-CSRF-Token')||'',user.csrf))return fail('Solicitação inválida.',403);
- if(path==='/api/auth/me')return json({username:user.username,role:user.role,mustChange:!!user.must_change,csrf:user.csrf,canView:canView(user.role),displayName:user.display_name,homeUrl:operatorOnPanel(user,env)?collectorOrigin+'/':'/'});
+ if(path==='/api/auth/me')return json({id:user.id,username:user.username,role:user.role,mustChange:!!user.must_change,csrf:user.csrf,canView:canView(user.role),displayName:user.display_name,homeUrl:operatorOnPanel(user,env)?collectorOrigin+'/':'/'});
  if(path==='/api/auth/logout'&&request.method==='POST'){await db.batch([db.prepare('DELETE FROM sessions WHERE token_hash=?').bind(user.token_hash),audit(db,user.id,'logout')]);return json({ok:true},200,{'Set-Cookie':cookie('',0)});}
  if(path==='/api/auth/password'&&request.method==='POST'){
   const data=await body(request);if(typeof data.currentPassword!=='string'||data.currentPassword.length>256||!equal(await hashPassword(data.currentPassword,user.salt,env.AUTH_PEPPER),user.password_hash))return fail('Senha atual inválida.',403);
@@ -79,6 +83,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  if(path==='/api/auth/sessions'&&request.method==='GET'){const rows=await db.prepare('SELECT token_hash,created_at,expires_at,user_agent FROM sessions WHERE user_id=? AND expires_at>?').bind(user.id,Date.now()).all();return json({sessions:rows.results.map(s=>({id:s.token_hash,createdAt:s.created_at,expiresAt:s.expires_at,device:s.user_agent||'Dispositivo não informado',current:s.token_hash===user.token_hash}))});}
  if(path==='/api/auth/revoke'&&request.method==='POST'){const data=await body(request);await db.batch([db.prepare('DELETE FROM sessions WHERE token_hash=? AND user_id=?').bind(String(data.id),user.id),audit(db,user.id,'session_revoked')]);return json({ok:true});}
  // Rotas humanas do módulo de agentes (sessão + CSRF já verificados): antes de collectorRoutes/unitRoutes, que respondem 404 a caminhos desconhecidos.
+ const technical=await technicalDispatchRoutes(request,url,user,env,{json,fail,body});if(technical)return technical;
  const operations=await serviceDeskRoutes(request,url,user,env,{json,fail,body});if(operations)return operations;
  const hardware=await hardwareReviewRoutes(request,url,user,env,{json,fail,body});if(hardware)return hardware;
  const monitoring=await monitoringRoutes(request,url,user,env,{json,fail,body});if(monitoring)return monitoring;
@@ -145,6 +150,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
   return fail('Endereço do coletor não encontrado.',404);
  }
  if(!canView(user.role))return new Response(null,{status:302,headers:{Location:collectorLogin(),'Cache-Control':'no-store'}});
+ if(path==='/roteiro-demandas'){if(user.role!=='root')return fail('Somente root organiza os atendimentos.',403);return assetResponse(new Request(new URL('/dispatch.html',url),request),env);}
  if(['/computadores','/demandas'].includes(path))return assetResponse(new Request(new URL('/operations.html',url),request),env);
  if(path==='/log-comunicacao')return assetResponse(new Request(new URL('/communication-log.html',url),request),env);
  if(path==='/busca')return assetResponse(new Request(new URL('/panel-search.html',url),request),env);
@@ -158,7 +164,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
 // Manutenção agendada do módulo de agentes (retenção de snapshots/heartbeats, nonces, recibos, limites, desafios vencidos).
 // Disparada pelo cron do Worker do painel (wrangler.jsonc → triggers.crons); também disponível ao root em POST /api/root/agent-maintenance.
 // Preserva sempre o snapshot atual, a linha de base e o histórico de vínculos/localização/auditoria (ver D1Store.purgeExpired).
-export async function scheduled(event,env,ctx){if(!env.DB)return;const now=Date.now();const run=event.cron==='23 3 * * *'?manutencaoAgentes(env,now):Promise.all([runAgentMonitoring(env,now),runProviderReports(env,now)]);if(ctx?.waitUntil)ctx.waitUntil(run);return run;}
+export async function scheduled(event,env,ctx){if(!env.DB)return;const now=Date.now();const run=event.cron==='23 3 * * *'?manutencaoAgentes(env,now):Promise.all([runAgentMonitoring(env,now),runProviderReports(env,now),cleanDispatchPositions(env.DB,now)]);if(ctx?.waitUntil)ctx.waitUntil(run);return run;}
 export default {scheduled,async fetch(request,env){env=measuredEnvironment(request,env);let response;try{response=await handle(request,env);}catch(error){response=String(error.message).includes('EQUIPMENT_DELETED')?fail('Este cadastro foi apagado pelo root. Atualize a lista de equipamentos.',410):error instanceof UnitScopeError?json({error:error.message,code:error.code},422):error.message==='body'?fail('A requisição excedeu o tamanho permitido.',413):error instanceof SyntaxError?fail('Conteúdo JSON inválido.',400):fail(env.DEBUG_COLLECTION==='1'?String(error.message):'Não foi possível concluir. Tente novamente.',503);}response=new Response(response.body,response);if(!response.headers.has('Cache-Control'))response.headers.set('Cache-Control','no-store');const timing=timingHeader(env);if(timing)response.headers.set('Server-Timing',timing);response.headers.set('X-Content-Type-Options','nosniff');response.headers.set('Referrer-Policy','same-origin');response.headers.set('X-Frame-Options','DENY');return response;}};
 
 

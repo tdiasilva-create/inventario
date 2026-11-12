@@ -531,3 +531,11 @@ A1 (repaint sem mudança) → desktop-map.js, coalescência e comparação de es
 D-104 publicada em 12/11/2026 às 07:25:43 Fortaleza: b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2 (100%); coletor preservado. 51 verificações públicas de acesso aprovadas. Conferência root/novos tempos reais aguardam renovação de sessão, sem alegação de medição concluída.
 
 Adendo D-104: após renovação da sessão, conferência root real concluída às 07:36 Fortaleza. Cinco recargas/tela (medianas 2084/1828/1642 ms), coletas e fotos parciais/concluídas verificadas; tail sanitizado sem falhas nos eventos amostrados. Documentados limites e ausência de queda expressiva consistente na latência total. Sem novo deploy ou escrita em produção.
+
+## D-105 — decisões do futuro aplicativo técnico
+
+Pedido e respostas diretas do responsável em 12/11/2026 → [ROTEIRO_TECNICO_D105.md](../03-painel-desktop/ROTEIRO_TECNICO_D105.md), DECISOES e PENDENCIAS. Confirmados lista única/arraste, até dois técnicos, conclusão por um da equipe com autoria e localização condicionada ao aceite, com disponibilidade obrigatória para iniciar e retirada após conclusão. Inspeção de `server/service-desk.mjs`/`0018_service_desk.sql` confirmou responsável textual e relato obrigatório no fluxo atual. Registro documental somente; nenhum código, migração, APK, teste funcional ou ambiente oficial alterado. Base de Coleta preservada.
+
+Adendo de execução D105: autorização posterior e três respostas finais → `0027_technical_dispatch.sql`, `server/technical-dispatch.mjs`, rotas/cron Worker, `web/dispatch*`, `web/technician*`, integração desktop/Central/mapa, `android/technician`, build Android/desktop. Testes `technical-dispatch.test.mjs` e `technical-dispatch-browser.cjs`, regressões de demandas/mapa/desempenho; evidências e limites em [qualidade](../05-qualidade/ROTEIRO_TECNICO_2026-11-12.md). Base original/coletor/QR/EXE/Drive preservados. Regras de atribuição, GPS e conclusão pertencem ao app técnico, não ao coletor.
+
+D105 publicada em produção: painel 2013b4f8-9440-4279-946e-6e80fb3068a1 (100%, 12/11 08:52:44 Fortaleza), migração 0027, APK 1.0.0 assinado e hash remoto conferido. 51+10 verificações de acesso, navegação root real sem modificar demandas, 230 testes de servidor no conjunto e navegação isolada. Homologação Android física permanece pendente, explicitamente distinguida da publicação.

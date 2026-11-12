@@ -4,7 +4,7 @@ import {resolve,relative} from 'node:path';
 import {createHash} from 'node:crypto';
 
 export async function bundleDesktop(destination){
- const pages={'index.html':'desktop','operations.html':'operations','account.html':'account-entry','panel-search.html':'panel-search','pending-collections.html':'pending-collections','communication-log.html':'communication-log'};
+ const pages={'index.html':'desktop','operations.html':'operations','account.html':'account-entry','panel-search.html':'panel-search','pending-collections.html':'pending-collections','communication-log.html':'communication-log','dispatch.html':'dispatch'};
  const result=await build({absWorkingDir:destination,entryPoints:Object.values(pages).map(n=>n+'.js'),bundle:true,format:'esm',target:'es2022',platform:'browser',outdir:resolve(destination,'bundles'),entryNames:'[name]-[hash]',minify:true,metafile:true,legalComments:'eof',plugins:[{name:'lazy-vendor',setup(b){b.onResolve({filter:/vendor\/heic-to\/heic-to.min.js$/},()=>({path:'/vendor/heic-to/heic-to.min.js',external:true}));}}]});
  const entries=Object.fromEntries(Object.entries(result.metafile.outputs).filter(([,v])=>v.entryPoint).map(([p,v])=>[v.entryPoint.replace(/\.js$/,''),'/'+p.replaceAll('\\','/')]));
  // Version only code/styles, never HTML/API/photographs. URL changes when bytes change.

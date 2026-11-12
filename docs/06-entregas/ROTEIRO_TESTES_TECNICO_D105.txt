@@ -1,0 +1,53 @@
+SEMED — ORGANIZAÇÃO E APLICATIVO TÉCNICO
+Roteiro D105 — 12/11/2026
+
+ENDEREÇOS
+Root: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/roteiro-demandas
+Técnico: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico
+APK: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+
+PREPARAR
+1. Root: Central de demandas > Organizar atendimentos > Técnicos. Habilitar as contas escolhidas.
+2. Usar demandas explicitamente destinadas ao ensaio ou atendimento real que será executado. Não concluir ocorrências reais apenas para testar.
+3. Escolher até dois técnicos por linha e Salvar atribuição.
+4. Android 8+: baixar APK institucional e instalar. Se Android pedir autorização para instalar dessa origem, conferir a origem antes de permitir. Não está na Play Store.
+5. Abrir SEMED Técnico e entrar com a conta habilitada. Trocar senha provisória se solicitado. Não enviar senhas em relatos.
+
+A — ORGANIZAÇÃO
+[ ] Root arrasta para cima/baixo; recarrega e encontra a mesma ordem.
+[ ] Setas também mudam a ordem.
+[ ] Técnico vê somente suas demandas na sequência.
+[ ] Dois técnicos distintos permitidos; terceiro recusado.
+[ ] Trocar responsável retira acesso do anterior.
+[ ] Alterações de atribuição/ordem aparecem em Avisos.
+
+B — ACEITE E MAPA
+[ ] Negar localização e aceitar: não deve iniciar.
+[ ] Conceder permissão, ativar localização e aceitar: deve iniciar.
+[ ] Com atendimento ativo, aceitar outro é recusado.
+[ ] Android mostra notificação durante compartilhamento.
+[ ] Root vê técnico, horário e precisão no mapa. Tracejado liga posição, destino e restante da sequência.
+[ ] Traçar rota abre Google Maps/navegador de rotas, sem painel gerencial no app.
+[ ] Unidade sem coordenadas explica por que não há rota.
+
+C — RESPOSTA
+[ ] Observação/impedimento registra texto e autor no histórico da Central.
+[ ] Interromper/pausar retira posição e mantém demanda; novo aceite pede GPS.
+[ ] Concluir pede confirmação, sem exigir relato longo.
+[ ] Qualquer um dos dois pode concluir atendimento iniciado: sai da fila, aparece em Concluídos e retira posições da equipe.
+[ ] Posição atrasada não recoloca demanda concluída no mapa.
+[ ] Retirar atribuição, desabilitar técnico ou sair da conta encerra acompanhamento.
+
+D — APARELHO FÍSICO (AINDA NECESSÁRIO)
+[ ] Com atendimento ativo, bloquear tela por 5 minutos e conferir novas posições no root. Anotar modelo/Android/economia de bateria.
+[ ] Desligar GPS: posição antiga deixa de ser atual após 3 minutos; demanda não conclui sozinha.
+[ ] Desligar internet: sem posição inventada. Serviço para após 3 minutos sem confirmar autorização. Restaurar rede e reabrir deve retomar se autorizado.
+[ ] Colega concluir enquanto primeiro tem tela bloqueada: encerra acompanhamento na próxima consulta.
+[ ] Permitir notificações Android 13+: verificar nova atribuição/mudança. App aberto consulta a cada 15s; segundo plano a partir de 15min, sujeito a adiamentos do Android. Não é push instantâneo.
+[ ] Forçar parada/reiniciar: não inicia localização sozinho. Reabrir para retomar atendimento autorizado.
+
+RELATAR
+PASSOU/FALHOU/NÃO TESTADO; data/hora; usuário sem senha; demanda; marca/modelo/Android; passos e resultado; screenshot quando útil. Não publicar coordenadas pessoais em relatório público.
+
+LIMITES
+Conexão necessária para confirmar ações. Sem fila offline durável. Apenas última posição durante atendimento, sem trilha permanente. Tracejado é sequência visual, não cálculo de ruas. GPS simulado e compilação não substituem homologação física.

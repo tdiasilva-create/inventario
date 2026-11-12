@@ -333,3 +333,9 @@ Correção de carregamento/consultas autorizada e testada; publicação e compar
 Correções de marcador/coletas/fotos e instrumentação aprovadas em 12/11/2026. [Resultados e publicação](../05-qualidade/DESEMPENHO_D104_2026-11-12.md). Smart Placement permanece para experimento separado; cache de autorização da integração não foi adotado. Aceite na rede do responsável pelo roteiro D104. Demais decisões pendentes preservadas.
 
 D-104: publicação concluída na versão b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2. Sessão root renovada e conferência autenticada concluída em 12/11 às 07:32–07:36: navegação, coletas e fotos verificadas; medições registradas. Nenhum bloqueio de login permanece. Aceite na rede/dispositivo do responsável e experimento separado de Smart Placement continuam futuros.
+
+## D-105 — organização de atendimentos e aplicativo técnico
+
+Definição funcional iniciada em 12/11/2026 e posteriormente implementada/publicada na mesma data. Resolvidos: lista única por arraste, até dois técnicos, conclusão por qualquer um com autoria, localização no aceite e retirada ao concluir; **bloquear aceite/início sem localização disponível**, confirmado pelo responsável.
+
+Atualização após autorização: capacidade nas contas existentes e uma ativa por técnico confirmadas pelo responsável. Implementados pausa/retirada, conclusão simples, root exclusivo nas posições, expiração e última posição sem trilha, APK assinado e avisos periódicos. Tracejado liga sequência; Maps externo calcula ruas. Ver [contrato](../03-painel-desktop/ROTEIRO_TECNICO_D105.md) e [entrega](../05-qualidade/ROTEIRO_TECNICO_2026-11-12.md). Restam homologação Android físico (GPS, tela bloqueada, bateria e avisos), seleção/habilitação das contas pelo root e cópia institucional externa da chave de assinatura. Push instantâneo/FCM e desenho por ruas no painel não foram implantados; são evoluções separadas, não declaradas prontas. Demais pendências preservadas.

@@ -1,0 +1,47 @@
+{
+  "at": "2026-11-12T11:54:31.761Z",
+  "status": "PASS",
+  "checks": [
+    {
+      "path": "/tecnico",
+      "status": 200
+    },
+    {
+      "path": "/technician.js",
+      "status": 200
+    },
+    {
+      "path": "/technician.css",
+      "status": 200
+    },
+    {
+      "path": "/tecnico/SEMED-Tecnico.apk",
+      "status": 200
+    },
+    {
+      "path": "/roteiro-demandas",
+      "status": 302
+    },
+    {
+      "path": "/api/dispatch/queue",
+      "status": 401
+    },
+    {
+      "path": "/api/dispatch/map",
+      "status": 401
+    },
+    {
+      "path": "/api/technician/queue",
+      "status": 401
+    },
+    {
+      "path": "/api/technician/active",
+      "status": 401
+    },
+    {
+      "path": "/api/technician/notifications",
+      "status": 401
+    }
+  ],
+  "apkSha256": "6fdabb65acba9f530d407a8da1d03df35f4432a4a5df84e168d1b99bac59fd11"
+}
