@@ -1,8 +1,10 @@
 import {digest} from './security.mjs';
+import {readDispatchMap,roadRoute} from './dispatch-road-routing.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const freshMs=180000;
 export async function cleanDispatchPositions(db,now=Date.now()){
  await db.batch([db.prepare("UPDATE dispatch_attendances SET ended_at=?,end_reason='session_expired' WHERE ended_at IS NULL AND NOT EXISTS(SELECT 1 FROM sessions s JOIN users u ON u.id=s.user_id AND u.active=1 AND u.credential_version=s.credential_version WHERE s.token_hash=dispatch_attendances.session_hash AND s.expires_at>?)").bind(now,now),db.prepare('DELETE FROM dispatch_positions WHERE received_at<? OR observed_at<?').bind(now-freshMs,now-freshMs)]);
+ await db.prepare('DELETE FROM dispatch_road_routes WHERE expires_at<=?').bind(now).run();
 }
 export async function isTechnician(db,id){return !!await db.prepare('SELECT 1 FROM dispatch_technicians WHERE user_id=? AND enabled=1').bind(id).first();}
 export function validPosition(p,now=Date.now()){
@@ -68,12 +70,10 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
   const attendance=await db.prepare(`SELECT t.id,t.request_id FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' WHERE t.user_id=? AND t.ended_at IS NULL AND t.session_hash=?`).bind(user.id,user.token_hash).first();
   return json({attendance});
  }
- if(get&&admin&&endpoint==='map'){
-  const [positions,routes]=await db.batch([
-   db.prepare(`SELECT t.id,t.request_id,t.user_id,COALESCE(NULLIF(u.display_name,''),u.username) AS name,p.latitude,p.longitude,p.accuracy,p.observed_at,p.received_at,r.number,r.unit_id,un.name AS unit_name,un.latitude AS destination_latitude,un.longitude AS destination_longitude FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN dispatch_technicians cap ON cap.user_id=t.user_id AND cap.enabled=1 JOIN users u ON u.id=t.user_id AND u.active=1 JOIN sessions s ON s.token_hash=t.session_hash AND s.expires_at>? AND s.credential_version=u.credential_version JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' LEFT JOIN units un ON un.id=r.unit_id LEFT JOIN dispatch_positions p ON p.attendance_id=t.id WHERE t.ended_at IS NULL`).bind(now),
-   db.prepare(`SELECT a.user_id,COALESCE(NULLIF(tech.display_name,''),tech.username) AS technician_name,r.id,r.number,r.unit_id,u.name,u.latitude,u.longitude,o.position FROM dispatch_assignments a JOIN dispatch_technicians cap ON cap.user_id=a.user_id AND cap.enabled=1 JOIN users tech ON tech.id=a.user_id AND tech.active=1 JOIN service_requests r ON r.id=a.request_id AND r.status!='Concluída' JOIN dispatch_order o ON o.request_id=r.id LEFT JOIN units u ON u.id=r.unit_id WHERE a.ended_at IS NULL ORDER BY o.position,r.number`)
-  ]);
-  return json({positions:positions.results.map(p=>({...p,fresh:!!p.observed_at&&p.observed_at>=now-freshMs&&p.received_at>=now-freshMs})),routes:routes.results,serverTime:now});
+ if(get&&admin&&endpoint==='map')return json(await readDispatchMap(db,now));
+ if(get&&admin&&endpoint==='road-route'){
+  const id=url.searchParams.get('technician');if(!uuid(id))return fail('Técnico inválido.');
+  return roadRoute(env,id,helpers);
  }
  if(get)return fail('Operação não encontrada.',404);
  const a=await body(request);

@@ -1,5 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
-(async()=>{const h=await require('./helpers/panel-browser.cjs')(),{page,origin,f}=h;const dir='docs/05-qualidade/evidencias/roteiro-tecnico-2026-11-12';fs.mkdirSync(dir,{recursive:true});
+(async()=>{const h=await require('./helpers/panel-browser.cjs')(),{page,origin,f}=h;const dir='docs/05-qualidade/evidencias/rotas-ruas-2026-11-12/regressao-tecnico';fs.mkdirSync(dir,{recursive:true});
+ h.env.ROUTING_FETCH=(await import('./helpers/routing-provider.mjs')).routeResponse;
  const shot=async name=>{await page.mouse.move(1000,100);await page.waitForTimeout(1000);await page.evaluate(()=>{let b=document.querySelector('#test-label');if(!b){b=document.createElement('div');b.id='test-label';b.textContent='TESTE LOCAL · Dados sintéticos';b.style.cssText='position:fixed;bottom:0;right:0;z-index:99999;background:#16191d;color:white;padding:5px;font:12px sans-serif;pointer-events:none';document.body.append(b);}});await page.screenshot({path:dir+'/'+name+'.png',fullPage:true,animations:'disabled'});};
  try{
   const me=await(await page.request.get(origin+'/api/auth/me')).json();const post=async(path,data)=>{const r=await page.request.post(origin+path,{headers:{Origin:origin,'X-CSRF-Token':me.csrf},data});assert.ok(r.ok(),await r.text());return r.json();};

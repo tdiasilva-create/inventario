@@ -134,3 +134,8 @@ O pedido diz emitir semanalmente ao clicar e abranger computadores que já envia
 ## D-099 — alteração posterior do relatório D-098
 
 Novo pedido explícito substitui linhas por computador por uma amostra por unidade e remove Hostname da apresentação/exportações, mantendo quatro colunas. Também autoriza o arquivo semanal automático que D-098 não contemplava. Horário confirmado: segunda-feira 08h Fortaleza. Não reinterpretar os documentos antigos como impedimento nem inventar dados de semanas anteriores; preservar D-098 como histórico e começar as emissões datadas na implantação D-099. IP, provedor e contato provêm do mesmo computador selecionado, sem inferir que todos os links da unidade sejam iguais. [Contrato vigente](../03-painel-desktop/RELATORIO_PROVEDORES_HISTORICO_D099.md).
+
+
+## D-106 — sequência reta substituída por percurso viário
+
+A limitação documental D105 “tracejado indica sequência, não vias” deixa de ser o comportamento desejado. Pedido de 12/11 exige ruas e ordem exata do root. Preservar regras de localização/atribuição; não interpretar a nova rota como histórico de deslocamento nem otimização de agenda. Contrato/publicação: ../03-painel-desktop/ROTAS_PELAS_RUAS_D106.md.

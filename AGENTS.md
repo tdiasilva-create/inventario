@@ -106,3 +106,6 @@ Não resolver pontos pendentes como se estivessem aprovados (ver §14 do TXT e `
 
 
 - D-105 (12/11/2026): root organiza fila única de demandas por arraste/setas e atribui até dois técnicos habilitados individualmente nas contas atuais. Uma demanda ativa por técnico; aceite exige localização atual; qualquer um dos dois conclui pela equipe com autoria. APK próprio /tecnico, sem coletor/painel gerencial; Maps externo. Mapa root acompanha última posição e sequência tracejada, sem trilha permanente. Migração aditiva 0027, revisão/recibos/auditoria, posições removidas ao encerrar/revogar. Avisos Android periódicos; GPS/tela bloqueada em aparelho físico ainda requerem homologação. Ver docs/03-painel-desktop/ROTEIRO_TECNICO_D105.md e android/technician/README.md.
+
+
+- D-106 (12/11/2026): implementação local do trajeto por ruas a partir do GPS, respeitando exatamente a ordem do root, sem otimização. API root, cache efêmero e limite global OSRM, migração aditiva 0028. Nenhum fallback reto. Publicação aguarda confirmação específica do provedor externo na conversa; não presumir ativa. Ver docs/03-painel-desktop/ROTAS_PELAS_RUAS_D106.md e docs/05-qualidade/ROTAS_RUAS_2026-11-12.md.

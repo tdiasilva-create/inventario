@@ -539,3 +539,8 @@ Pedido e respostas diretas do responsável em 12/11/2026 → [ROTEIRO_TECNICO_D1
 Adendo de execução D105: autorização posterior e três respostas finais → `0027_technical_dispatch.sql`, `server/technical-dispatch.mjs`, rotas/cron Worker, `web/dispatch*`, `web/technician*`, integração desktop/Central/mapa, `android/technician`, build Android/desktop. Testes `technical-dispatch.test.mjs` e `technical-dispatch-browser.cjs`, regressões de demandas/mapa/desempenho; evidências e limites em [qualidade](../05-qualidade/ROTEIRO_TECNICO_2026-11-12.md). Base original/coletor/QR/EXE/Drive preservados. Regras de atribuição, GPS e conclusão pertencem ao app técnico, não ao coletor.
 
 D105 publicada em produção: painel 2013b4f8-9440-4279-946e-6e80fb3068a1 (100%, 12/11 08:52:44 Fortaleza), migração 0027, APK 1.0.0 assinado e hash remoto conferido. 51+10 verificações de acesso, navegação root real sem modificar demandas, 230 testes de servidor no conjunto e navegação isolada. Homologação Android física permanece pendente, explicitamente distinguida da publicação.
+
+
+## D-106 — trajeto por ruas — 12/11/2026
+
+Pedido expresso: GPS atual → demandas na sequência root, teste e produção. Implementação: server/dispatch-road-routing.mjs, server/technical-dispatch.mjs, web/dispatch-map.js, migrations/0028_dispatch_road_routes.sql. Testes: dispatch-road-routing.test.mjs, dispatch-road-routing-browser.cjs e regressões D105/mapa. [Contrato](../03-painel-desktop/ROTAS_PELAS_RUAS_D106.md), [resultados](../05-qualidade/ROTAS_RUAS_2026-11-12.md). Estado da publicação e autorização específica do provedor no registro de qualidade.

@@ -339,3 +339,8 @@ D-104: publicação concluída na versão b2f9ae76-0ddc-4080-bbf1-8f74a1191cb2. 
 Definição funcional iniciada em 12/11/2026 e posteriormente implementada/publicada na mesma data. Resolvidos: lista única por arraste, até dois técnicos, conclusão por qualquer um com autoria, localização no aceite e retirada ao concluir; **bloquear aceite/início sem localização disponível**, confirmado pelo responsável.
 
 Atualização após autorização: capacidade nas contas existentes e uma ativa por técnico confirmadas pelo responsável. Implementados pausa/retirada, conclusão simples, root exclusivo nas posições, expiração e última posição sem trilha, APK assinado e avisos periódicos. Tracejado liga sequência; Maps externo calcula ruas. Ver [contrato](../03-painel-desktop/ROTEIRO_TECNICO_D105.md) e [entrega](../05-qualidade/ROTEIRO_TECNICO_2026-11-12.md). Restam homologação Android físico (GPS, tela bloqueada, bateria e avisos), seleção/habilitação das contas pelo root e cópia institucional externa da chave de assinatura. Push instantâneo/FCM e desenho por ruas no painel não foram implantados; são evoluções separadas, não declaradas prontas. Demais pendências preservadas.
+
+
+## D-106 — ativação do roteamento por ruas
+
+Implementação local pronta, 238 testes de servidor e regressões de navegador aprovados. Backup verificado e migração 0028 ensaiada. Publicação solicitada pelo responsável, mas aguarda confirmação específica de envio de coordenadas do técnico/unidades ao OSRM/FOSSGIS, que registra consultas em logs. Nenhuma migração ou deploy D106 executados enquanto essa resposta não chega. Ver docs/05-qualidade/ROTAS_RUAS_2026-11-12.md.
