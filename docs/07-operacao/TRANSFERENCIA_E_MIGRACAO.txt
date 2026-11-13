@@ -1,5 +1,5 @@
 SEMED · TRANSFERÊNCIA, OPERAÇÃO E MIGRAÇÃO
-Referência: 08/11/2026. Gerado dos guias mantidos em docs/07-operacao/.
+Referência: 12/11/2026, estado D-110. Gerado dos guias mantidos em docs/07-operacao/.
 Repositório: https://github.com/tdiasilva-create/inventario
 Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
 Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
@@ -34,11 +34,14 @@ flowchart LR
   C[Operador · celular] --> CW[Worker coletor + assets]
   P[Root / admin / visualizador · desktop] --> PW[Worker painel + assets]
   A[Agente Windows · chave própria] --> CW
+  T[Técnico · APK / web exclusiva] --> PW
   CW --> D[(D1 compartilhado)]
   PW --> D
   CW --> G[Google Drive · fotos privadas]
   PW --> G
   PW --> O[Google OAuth · autorização institucional]
+  PW --> R[OSRM · ruas sem reordenar demandas]
+  PW --> K[KV / Analytics · medidor D1]
   C -. leitura QR e vínculo autenticado .-> A
 
 Ambas as publicações usam server/worker.mjs. APP_KIND=collector seleciona a coleta e restringe rotas administrativas. Não separar os bancos: o desktop precisa consultar a mesma visita gravada pelo coletor.
@@ -58,7 +61,7 @@ Ambas as publicações usam server/worker.mjs. APP_KIND=collector seleciona a co
 | Mapa | web/desktop-map.js, map-geography.js, web/data/, Leaflet |
 | Build | scripts/build-desktop.mjs, build-collector.mjs |
 
-HTML/CSS/JS nativos; sem framework de componentes. Os builds copiam listas explícitas de assets. Arquivo novo em web/ não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual.
+HTML/CSS/JS; sem framework de componentes. O painel usa bundles esbuild/CSS versionados desde D-103; o coletor mantém módulos próprios. Os builds selecionam explicitamente entradas e assets. Arquivo novo em web/ não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual. Mapa detalhado de módulos e fluxos (12_MAPA_CODIGO_E_FLUXOS.md).
 
 panel-shell.js compartilha o menu, mas desktopPageRoutes contém somente páginas renderizadas por desktop.js. /computadores e /demandas carregam operations.html pelo Worker. Interceptar essas duas rotas no roteador antigo produzia Configurações com Consultando permanente; a correção de 08/11 é coberta por tests/panel-navigation-browser.cjs.
 
@@ -84,7 +87,7 @@ Agente Windows cria identidade assinada e cadastro técnico pendente, recebe QR 
 
 Dependências externas
 
-Cloudflare Workers/D1; Google OAuth/Drive; tiles de ruas/satélite em desktop-map.js; API Pwned Passwords para verificar novas senhas por prefixo de hash; navegadores HTTPS/câmera e conectividade dos agentes. Preservar atribuição/licenças dos mapas e bibliotecas.
+Cloudflare Workers/D1; Google OAuth/Drive; tiles de ruas/satélite em desktop-map.js; OSRM/FOSSGIS para trajetos; Analytics/KV para o medidor D1; navegadores HTTPS/câmera, GPS Android e conectividade dos agentes. Não há consulta Pwned Passwords desde D-096. Preservar atribuição/licenças dos mapas e bibliotecas. A identificação de IP/provedor depende de metadados confiáveis de borda Cloudflare, não somente do inventário do Windows.
 
 Falha de tiles não significa perda do banco; login SEMED funcional não prova que OAuth/Drive estejam saudáveis. Monitorar integrações separadamente.
 
@@ -115,7 +118,7 @@ Inventário da produção
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas em 06/11/2026: painel 97d33dfb-8147-4591-9724-f44d8d7bb9ba, com contagens por categoria D-066 e layout de Panorama/Planejamento D-067 (../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md); coletor 5cf137cd-9c34-4e41-806b-d19cf0887bb6, preservado. Ambos conferidos com 100% do tráfego. A versão anterior do painel era fb776adf-4b7b-4cac-8aa9-6923bd636144 (identidade geral D-065 (../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md)). O registro de UX (../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões conferidas no registro D-110, 12/11/2026 às 22:43 Fortaleza (../05-qualidade/REVALIDACAO_D1_2026-11-12.md): painel abcfcb97-c87a-4988-b9a1-c051534c31bf; coletor preservado c678978a-9e71-4cab-a2dc-9744ec6d6e1c, ambos com 100% do tráfego. São identificadores Cloudflare, distintos do commit de código 5cb844b. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no README da raiz (../../README.md). workers.dev pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 
@@ -168,9 +171,9 @@ Banco, contratos e compatibilidade
 
 Esquema físico verificável
 
-Catálogo completo de tabelas/colunas (gerado/DICIONARIO_DADOS.md) e JSON com SQL, índices, triggers e hashes (gerado/schema.json), gerados aplicando as 19 migrações locais num SQLite vazio em memória. Resultado: 64 tabelas, 42 índices explícitos, uma view e 10 triggers. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+Catálogo completo de tabelas/colunas (gerado/DICIONARIO_DADOS.md) e JSON com SQL, índices, triggers e hashes (gerado/schema.json), regenerados aplicando as 31 migrações locais num SQLite vazio em memória em 12/11/2026. Resultado: 88 tabelas, 58 índices explícitos, duas views e 68 triggers. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1. Registros datados abaixo preservam o histórico das entregas, não a contagem atual.
 
-Regenerar com pnpm docs:schema. As migrações 0001–0019 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+Regenerar com pnpm docs:schema. As migrações 0001–0031 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade. Preservar também miniaturas (0020), nomes/exclusões (0021–0023), parecer de hardware (0024), cadastro escolar (0025), histórico semanal (0026), atendimentos/GPS (0027), controle OSRM (0028), avatares (0029), projeções/índices de consumo (0030) e revisões transacionais (0031).
 
 | Família | O que preservar |
 |---|---|
@@ -283,7 +286,7 @@ Verificações mantidas
 
 Os testes padrão usam SQLite em memória/fixtures sintéticas. Fotos/Drive usados nesses testes são simulados; resultados não comprovam acesso real ao Google nem câmera física. A CI não recebe credenciais.
 
-Os nove roteiros mantidos na CI usam tests/helpers/playwright.cjs. Por padrão mantêm Edge local. Para Chromium instalado pelo Playwright:
+Os roteiros mantidos na CI estão enumerados em .github/workflows/ci.yml; a quantidade aumentou desde a organização inicial. O auxiliar tests/helpers/playwright.cjs mantém Edge como padrão local. Para Chromium instalado pelo Playwright:
 
 pnpm exec playwright install chromium
 $env:SEMED_TEST_BROWSER='chromium'
@@ -309,7 +312,7 @@ Segundo terminal, a partir da mesma raiz:
 
 pnpm exec wrangler dev --local --config config/wrangler.coletor.example.jsonc --persist-to .wrangler/local-shared --port 8788
 
-Abrir http://localhost:8787/login e http://localhost:8788/login . As senhas de teste ficam somente em private-data/local-credentials.json; não publicá-las. O usuário pode precisar trocar senha temporária, cuja verificação externa exige internet.
+Abrir http://localhost:8787/login e http://localhost:8788/login . As senhas de teste ficam somente em private-data/local-credentials.json; não publicá-las. O usuário pode precisar trocar senha temporária. Desde D-096 essa validação não consulta serviços externos; a regra é 6–256 caracteres.
 
 O bootstrap local contém DELETE de contas/sessões/configurações. Usar somente em base nova local. Nunca executar seed em banco remoto, restaurado ou compartilhado com dados que devam sobreviver. O exemplo não tem Drive e não envia fotos reais; para testar fluxo de fotos sem infraestrutura usar os testes isolados.
 
@@ -600,7 +603,9 @@ O encaminhamento de operadores do painel ao coletor usa a origem institucional e
 FONTE: 09_ESTADO_E_PENDENCIAS.md
 ==============================================================================
 
-Estado e pendências — atualizado em 09/11/2026
+Estado e pendências — referência atual D-110, 12/11/2026
+
+Leitura atual: estado técnico D-110 (11_ESTADO_ATUAL_D110.md). Existem 31 migrações, miniaturas D-072, histórico semanal de provedores D-099, APK/atendimentos D-105, ruas D-106, avatares D-107, redução de consumo D-108/D-110 e medidor D-109. As seções datadas abaixo são histórico, incluindo anotações de antes de uma publicação. Para migração física continuam faltando adaptador de runtime/persistência, estratégia de endpoints, recuperação ensaiada e homologação no destino. Nenhuma proposta de servidor físico está implantada por esta atualização documental.
 
 Estado mais recente e auditoria
 
@@ -692,5 +697,234 @@ Seleção por ID dos ambientes da unidade, com consulta atual ao abrir/atualizar
 Correção de senha e reentrada — D-075, 09/11/2026
 
 Publicada nos dois Workers: painel 5d92c1e6-99dd-4e74-a11b-164233cc6a76, coletor 8d5d03f2-6bcd-4df2-bd6e-3fb8b3a078e6, ambos em 100%. Operador que entra pelo painel é encaminhado ao login do coletor, com a mesma credencial e cookie separado. Minha conta distingue troca obrigatória de alteração voluntária. Troca concorrente vencida não revoga sessão nova nem audita sucesso. 150 testes, roteiro navegador e 56 sondas HTTP; sem migração, reset ou alteração de senhas oficiais. Diagnóstico e limites (../05-qualidade/CORRECAO_SENHAS_2026-11-09.md). Retorno dos usuários em aparelhos físicos pendente; Fases 4/5 permanecem pausadas.
+
+
+==============================================================================
+FONTE: 10_REGISTRO_DA_ORGANIZACAO.md
+==============================================================================
+
+Registro da organização documental — 05/11/2026
+
+Escopo
+
+D-063: organizar documentação e alimentar o repositório existente para manutenção e possível migração. Nenhuma alteração em web/, server/ ou no SQL das migrações. Nenhum deploy, escrita no D1 remoto, criação/remoção de usuários ou upload/exclusão de fotos nesta entrega.
+
+Material organizado
+
+- Entradas README/COMECE_AQUI/DEVELOPMENT atualizadas; cinco guias anteriores preservados em docs/99-historico.
+- Nove guias operacionais: arquitetura, ambientes, dados/contratos, desenvolvimento, release, backup, migração, segurança e pendências.
+- Checklist e manual consolidado em TRANSFERENCIA_E_MIGRACAO.txt (gerado dos guias).
+- Dicionário físico em Markdown e JSON, com SQL, FKs, índices/triggers e hashes de todas as migrações.
+- Exemplos de configuração local isolada, arquivo de nomes de segredos sem valores reais e guia de transferência privada.
+- Playwright declarado no projeto; importação portátil somente nos três testes atuais. Node/pnpm fixados; CI sem deploy ou segredos.
+- Scanner do índice Git e verificação de links nos guias mantidos.
+
+Evidências locais
+
+- Instalação com pnpm --frozen-lockfile: aprovada.
+- Suíte padrão: 98 testes, 98 aprovados, zero falhas.
+- Build desktop: 46 arquivos; coletor: 47 arquivos.
+- Migrações em SQLite vazio: 15 aplicadas; 56 tabelas, 34 índices explícitos, uma view e 10 triggers; integrity_check ok, zero violações de FK.
+- Teste UX no Edge: aprovado, incluindo busca sem escrita, foco/cursor durante upload, validação visível e retorno à lista.
+
+Verificações complementares do checkout limpo, navegador, links, scanner e publicação Git são registradas no complemento desta entrega. Logs/capturas de execução ficam em private-data/ ou evidências ignoradas, sem conteúdo operacional no Git.
+
+Repositório e limites
+
+Remoto: https://github.com/tdiasilva-create/inventario . No início estava público e sem commits. A primeira revisão consolida o estado atual; não reconstrói commits históricos que nunca existiram. Versões anteriores dos Workers permanecem identificadas em seus relatórios, sem equivalência inventada com commits Git.
+
+Arquivos privados, backups, exportações, EXEs, pacotes recebidos e capturas reais permanecem fora da publicação. O scanner detecta padrões conhecidos e não substitui revisão. Direitos/licenças gerais do projeto não foram alterados.
+
+Não houve nova homologação de Drive/câmera/instalador físico. Migração/restore e política de backup seguem pendentes. A aprovação dos testes isolados não declara o sistema completo ou a mudança de servidor pronta.
+
+Complemento de verificação
+
+- Testes V3 e identidade no Edge: aprovados; fluxo com QR/fotografias sintéticas e larguras 360/390/640/812/1280 conforme cada teste. Sem câmera física.
+- Revisão do índice: 418 arquivos, aproximadamente 26,9 MB; scanner sem assinaturas de segredos detectadas. Revisão adicional encontrou apenas a própria expressão do scanner.
+- Bytes da Base de Coleta original e das 15 migrações iguais entre arquivos de trabalho e índice Git.
+- Links mantidos: 50 destinos locais conferidos, sem referência ausente.
+- Reprodução por git archive do índice, em diretório vazio privado: pnpm install --frozen-lockfile, 98 testes, dois builds, geração do esquema e dois dry-runs Wrangler aprovados. Nenhum arquivo privado foi copiado para esse ensaio.
+- CI preparada para executar os mesmos checks locais e testes de navegador com Chromium no GitHub; resultado do runner remoto deve ser observado após o push.
+
+A revisão inicial é consolidada em main; a identificação exata fica no histórico Git e na entrega ao responsável. Datas das publicações anteriores não foram convertidas em commits fictícios.
+
+Publicação Git e ensaio de instalação local
+
+Primeiro commit publicado: 68a500e059203aeb2cf6d7340a5eb591ea9f115c em main, remoto conferido. O exemplo Wrangler local foi executado em base vazia isolada: 15 migrações, seed somente local, dois processos compartilhando persistência, login root no painel e operador no coletor retornando 200 e troca de senha inicial. Processos de ensaio encerrados.
+
+A primeira CI Linux aprovou dependências, scanner, 98 testes, builds, links e reprodução dos documentos. O teste de galeria QR enviou imagem antes de concluir a inicialização assíncrona do leitor. Ajustado somente o teste: negar câmera física explicitamente e aguardar mensagem de disponibilidade da galeria antes do upload. Sem alteração no leitor da aplicação. A validação remota corrigida deve ser conferida no histórico de Actions.
+
+Na segunda CI, QR aprovado; o teste UX revelou outra antecipação da automação: consultar o botão Fechar teclado antes do requestAnimationFrame disparado pelo foco. O auxiliar dos testes aguarda a atualização visual antes de agir. As verificações de foco, cursor e visibilidade continuam ativas, sem mudança do formulário ou afrouxamento de aceite.
+
+A CI foi fixada em Ubuntu 24.04 para reprodução, com limite de 15 minutos por execução e cinco minutos para instalar o navegador. Uma nova execução substitui a anterior da mesma branch. Isso evita depender da mudança de versão de ubuntu-latest ou deixar instalação de dependência aguardando indefinidamente. Não envolve deploy.
+
+Validação remota concluída
+
+Código/ferramentas do commit bcf2ebabdc5e15dd3933a605bf5ee0a29ec6ff1e aprovados no GitHub Actions: dependências com lockfile, scanner do repositório, 98 testes, dois builds, links, reprodução do TXT/esquema e os três testes de navegador em Chromium/Linux. Execução: https://github.com/tdiasilva-create/inventario/actions/runs/42146235419 .
+
+Uma repetição adicional local teve falha de fetch ao carregar a lista inicial; a repetição seguinte passou sem alteração do código da aplicação. As falhas iniciais da CI e os ajustes de sincronização da automação permanecem registrados acima. Não houve homologação física.
+
+Este complemento altera apenas documentação e o TXT gerado. A verificação final local de links/regeneração é executada antes do envio; não exige repetir os testes da aplicação já aprovados.
+
+Atualização para auditoria — 08/11/2026
+
+Nova solicitação do responsável: atualizar o repositório para auditoria de funcionamento e lógicas. Manual revisado para 18 migrações e módulos D-069–D-071; preparado guia independente de revisão (../08-auditoria/README.md) com matriz e roteiro TXT. Suíte local atual: 129 testes e nove roteiros de navegador aprovados; CI expandida para os nove. A única correção de automação troca o seletor da janela antiga pela consulta embutida já existente, mantendo o aceite dos dados. Nenhuma mudança no runtime nem nova implantação. Resultados e limites no registro atual (../08-auditoria/VERIFICACAO_2026-11-08.md).
+
+
+==============================================================================
+FONTE: 11_ESTADO_ATUAL_D110.md
+==============================================================================
+
+Estado técnico para transferência — D-110
+
+Referência: 12/11/2026. Código funcional-base 5cb844b; alterações posteriores desta entrega são documentação/ferramentas de documentação. Fonte: código, Wrangler, migrações, decisões até D-110 e registros de qualidade. Não é inspeção contínua da produção.
+
+Publicações e interfaces
+
+| Componente | Estado registrado / função |
+|---|---|
+| Painel | Worker painel-semed-paco, versão abcfcb97-c87a-4988-b9a1-c051534c31bf, 100%, 12/11 22:43 Fortaleza |
+| Coletor | Worker inventario-semed-lumiar, versão preservada c678978a-9e71-4cab-a2dc-9744ec6d6e1c, 100% |
+| Técnico | /tecnico e APIs no Worker do painel; APK Android Java/WebView com localização nativa |
+| Windows | Agentes chamam o host do coletor; identidade assinada independente da sessão humana |
+| Banco | D1 compartilhado; 31 migrações, 88 tabelas de aplicação, 58 índices explícitos, duas views, 68 triggers |
+| Fotografias | Drive privado; referência/estado no D1, miniaturas derivadas limitadas no D1 |
+| Avatares | Drive privado; D1 conserva metadados/eventos, não o PNG |
+| Medidor | Analytics oficial, cache KV; somente root, atualização de cinco minutos |
+
+Registro da última publicação (../05-qualidade/REVALIDACAO_D1_2026-11-12.md). d1_migrations e outros objetos internos não entram na contagem das tabelas de aplicação. Uma restauração precisa considerar os metadados de migração separadamente.
+
+O que o clone permite e o que não permite
+
+Permite reconstruir frontend, executar regras e testes isolados, reproduzir esquema e inspecionar o backend completo versionado. Não existe servidor Node autônomo pronto: server/worker.mjs depende de bindings Cloudflare e não abre uma porta HTTP. pnpm start é apenas prévia estática. Adaptadores de testes não são servidor de produção.
+
+O clone não traz banco real, arquivos privados do Drive, segredos, sessões, EXEs privados nem chave de assinatura Android. O build desktop pode concluir sem incluir APK quando o binário privado não existe; isso não comprova que o download Android esteja entregue. Receber esses materiais por canal privado e registrar hashes de recuperação fora do Git.
+
+Regras que a migração precisa manter
+
+- Root/admin/operador/visualizador continuam com permissões verificadas no servidor. Habilitação de técnico é uma capacidade individual, não substitui os quatro perfis.
+- Sessões dos dois hosts são independentes; usuários e hashes compartilhados. Preservar AUTH_PEPPER e chave de tokens Google; não gerar novos valores sobre um banco importado.
+- IDs de unidades, ambientes, equipamentos, instalações e fotos não mudam. Fotos e vínculos permanecem quando o nome é corrigido; exclusão administrativa de equipamento é arquivamento com histórico.
+- Rascunho recebido, assunto concluído e visita publicada são estados diferentes. Painel apresenta PARCIAL explicitamente, sem promover rascunhos durante importação.
+- Atualização de máquina por agente não substitui localização humana. Vínculo ao cadastro exige usuário autenticado, mesmo no cadastro automático sem autorização de lote.
+- Coleta pode ser continuada por outro operador. Concorrência, versões, trava por ficha e recibos idempotentes permanecem.
+- Demandas têm até dois técnicos, ordem do root e uma ativa por técnico. Qualquer integrante conclui para a equipe, com autoria. Localização só durante atendimento autorizado e é removida ao encerramento/revogação.
+
+Relógios, frequências e agendamentos
+
+| Fluxo | Comportamento atual a preservar |
+|---|---|
+| Painel operacional | Atualizações de 15 s quando visível; leituras compartilhadas e pausa em aba oculta |
+| Pulso de rede / escolas | 60 s; falha não vira zero/offline artificial |
+| Heartbeat | Padrão 300 s, configurável no servidor; presença recente padrão 17 min |
+| Perda de comunicação | Incidente após mais de 48 h; log separado, fora do sino |
+| Hardware | Alteração confiável, deduplicada; sino/parecer/demanda e sinais do mapa |
+| Cron de minuto | Monitor de agentes, emissão semanal quando devida, limpeza de posições; medidor respeita janela de 5 min |
+| Cron diário | 23 3 * * * UTC, 00:23 Fortaleza; retenção de agentes |
+| Relatório de provedores | Segunda 08:00 Fortaleza (11:00 UTC), snapshot semanal imutável, uma linha por unidade |
+| APK | Solicita GPS por intervalo/distância; avisos periódicos Android não equivalem a push imediato |
+
+Horários técnicos persistidos seguem os contratos de cada campo (época/unidade/formato no código). Não converter indiscriminadamente milissegundos em segundos. Sincronizar relógio do host, pois afeta assinaturas, expiração, GPS, sessões e cron.
+
+Consumo e limites documentados
+
+D-108 usa projeções e índices para reduzir varreduras, mantendo monitoramento incremental. D-110 revalida resultados por revisão/ETag e reutiliza catálogo estável; autorização, presença e demandas são lidas novamente. A migração 0031 contém 33 triggers e duas revisões; não apagar essas estruturas como limpeza.
+
+Na comparação D-110 com o mesmo conjunto de dados, atualizações sem alteração passaram de 445 para 1 linha de negócio em resultados e de 463 para 217 em unidades. Primeiro carregamento é mais caro. Não transformar essa medição em garantia de capacidade, quota diária ou dimensionamento de servidor. Medição, limites e testes (../05-qualidade/REVALIDACAO_D1_2026-11-12.md).
+
+Entrega privada necessária
+
+| Material | Finalidade / cuidados |
+|---|---|
+| Exportação consistente D1 + hashes + versão de esquema | Restauração isolada; inclui dados sensíveis e tokens cifrados |
+| Inventário Drive + cópia recuperável + manifestos ID/arquivo | Fotos completas e avatares; não basta exportar SQL |
+| Segredos correspondentes | AUTH_PEPPER, cliente/segredo OAuth, GOOGLE_TOKEN_KEY; cofre separado do backup |
+| Credenciais de operação | Cloudflare/Google e novo servidor, acesso delegado; não no README |
+| APK publicado + keystore/configuração de assinatura | Atualizar o aplicativo existente sem outra identidade de assinatura |
+| EXE distribuído + fonte/build/configuração exatos | Confirmar atualização do endpoint e compatibilidade das máquinas instaladas |
+| Evidências privadas e inventário de endpoints instalados | Homologar versões reais; não presumir versão única de EXE |
+
+Instalador escolhido e candidatos posteriores: registro oficial (../04-dados-apis/INSTALADOR_OFICIAL.md). Não usar a escolha histórica como prova de homologação. Preparar restauração sem executar /PURGE, revogar agentes ou recriar chaves nas máquinas.
+
+Decisões futuras
+
+Servidor/SO, banco no destino, domínio/DNS, manutenção ou retirada da borda Cloudflare, continuidade dos endpoints do EXE/APK, RPO/RTO, cópia externa e janela de corte ainda precisam ser definidos. A análise na branch de migração é proposta técnica; a produção permanece Cloudflare/Drive até uma implantação específica aprovada e validada.
+
+
+==============================================================================
+FONTE: 12_MAPA_CODIGO_E_FLUXOS.md
+==============================================================================
+
+Mapa do código e dos fluxos que precisam sobreviver
+
+Referência D-110. Este guia descreve responsabilidades; detalhes executáveis estão nas fontes e testes. Complementos: índice de arquivos/API (gerado/CODIGO_E_ROTAS.md), imports/exports/configuração e hashes (gerado/codigo.json), esquema completo (gerado/schema.json). O índice de rotas é uma extração literal, não uma especificação OpenAPI completa.
+
+Backend por responsabilidade
+
+| Arquivo / família em server/ | Responsabilidade e risco de migração |
+|---|---|
+| worker.mjs, security.mjs | Entrada fetch/scheduled, ordem das rotas, autenticação, papéis, CSRF, mudanças de senha, assets e erros. Manter a ordem entre endpoints assinados, OAuth e humanos |
+| asset-response.mjs | Cache de código/HTML e entrega dos builds corretos. Não colocar todos os assets diante da autorização |
+| request-timing.mjs | Instrumenta bindings e expõe métricas agregadas; adaptador novo precisa preservar identidade do DB para cache, sem SQL/segredos em cabeçalhos |
+| units.mjs, unit-validation.mjs, unit-scope.mjs, import-units.mjs | Cadastro mestre, tipos/elegibilidade, importação, INEP condicional, números escolares opcionais; NULL não é zero |
+| unit-deletion.mjs | Exclusão privilegiada com prévia/confirmacão/auditoria; não executar como teste real |
+| collector.mjs, collector-v2.mjs, collector-v3.mjs, visit-routes.mjs, collector-access.mjs | Compatibilidade dos questionários, visitas, estados, conflitos, dados recebidos e publicação. Não converter todas as visitas antigas ao último formulário |
+| environments.mjs | Ambientes por ID e unidade, renomeação com histórico e recibos |
+| equipment-names.mjs, equipment-deletions.mjs, equipment-link-state.mjs | Nome administrativo separado de hostname; arquivo de excluídos e distinção manual/vinculado/encerrado |
+| in-progress.mjs, in-progress-photos.mjs | Leituras confirmadas de visitas abertas, rótulo PARCIAL, acesso desktop |
+| inventory-results.mjs, inventory-equipment.mjs | Resultados oficiais/publicados e consulta paginada por ficha; fotografias do mesmo ID/unidade |
+| panel-read-cache.mjs | Revisões D-110, ETag e catálogo estável por binding; jamais cache de autorização/GPS/presença |
+| panel-search.mjs, management-views.mjs | Busca global, filtros, exportação e planejamento; não carregar a rede inteira por tecla |
+| photo-storage.mjs, google-auth.mjs | Adaptadores de provedor, OAuth, renovação, criptografia e operações privadas Drive/R2 |
+| photo-read.mjs, photo-response.mjs, photo-gallery.mjs, photo-labels.mjs | Leitura autenticada, ligação com alvo, status e galeria contextual |
+| photo-thumbnails.mjs | Derivado até 320 × 320 / 64 KB no D1, somente após foto pronta; original no provedor privado |
+| agentes/index.mjs, agentes/nucleo/*, agent-crypto.mjs | Enrollment, assinatura, chave pública, QR, claim, heartbeat, inventário, recibos e transações. Adaptador SQL faz parte da segurança |
+| agentes/connection.mjs, agentes/presence.mjs | Origem confiável do IP público/provedor e presença; IP interno é dado separado do inventário |
+| agent-monitoring.mjs, monitoring-queries.mjs, communication-log.mjs | Baseline de peças, cursor incremental, incidentes/reconexão/48 h, consulta compartilhada |
+| hardware-review.mjs, pending-indicators.mjs | Decisão administrativa distinta de leitura do sino; indicadores separados e demandas no mapa |
+| provider-report.mjs, provider-report-history.mjs | Escolha de uma observação completa por unidade; histórico semanal imutável |
+| service-desk.mjs | Computadores por unidade/laboratório, demandas com contexto/histórico/versão e idempotência |
+| technical-dispatch.mjs | Fila, atribuição até dois técnicos, capacidade individual, aceite com GPS, posição efêmera e conclusão |
+| dispatch-road-routing.mjs | OSRM com ordem fixa do root, cache/limite global e validação geométrica; sem reta como fallback |
+| technician-avatars.mjs | Upload/troca/exclusão apenas root; PNG derivado no Drive, versionamento e proteção de leitura |
+| d1-budget.mjs, d1-usage.mjs | Erros de quota, uso oficial de Analytics, cache KV, avisos 70/85/95%; não são monitor genérico de servidor físico |
+
+Frontend e pontos de entrada
+
+| Área | Arquivos principais e comportamento |
+|---|---|
+| Login/conta | web/login.*, account.*, versões collector; nomes reais no índice. Campos reais, senha provisória/troca no servidor |
+| Shell desktop | web/panel-shell.js, panel-status.js, painel.css, entradas de bundle do build. Menu, pulso e indicadores compartilhados |
+| Panorama/mapa | web/desktop.js, desktop-map.js, map-geography.js, unit-map-palette.js; filtros, unidade selecionada, sinais, hover, modais |
+| Resultados/consulta | desktop-results.js, desktop-inventory.js, desktop-progress.js e auxiliares; não misturar published e parcial |
+| Operações | operations.html, operations.js, auxiliares de atendimentos/rotas; /computadores e /demandas não são páginas do roteador antigo |
+| Cadastro | admin-units.js, unit-schema.js e importação; root gerencia unidades/usuários, validação também no servidor |
+| Coletor | collector-v3.*, collector-drafts.js, collector-ui.js, collector-qr.js, schemas; navegação por URL sem respostas/credenciais na URL |
+| Técnico | technician.html, technician.js, technician.css; somente demandas atribuídas, aceite/andamento/impedimento/conclusão e Maps externo |
+
+Assets locais incluem fontes, Leaflet e ícones; suas licenças precisam acompanhar o build. Imagens de referência visual não são conteúdo operacional. O build inclui listas explícitas e bundles versionados; usar scripts/build-desktop.mjs e build-collector.mjs, não copiar web/ cru para produção.
+
+Fluxos e limites transacionais
+
+1. Login humano: origem HTTPS → senha/PBKDF2 + pepper → sessão aleatória hash no DB → cookie __Host-semed → current() revalida sessão/usuário/credential_version em cada requisição. Escrita exige origem e CSRF; a exceção de OAuth/assinatura não pode ampliar todas as APIs.
+2. Coleta: unidade existente → visita/assunto → trava/versão → gravação e autoria → ACK. Só após ACK o painel recebe PARCIAL. Conclusão manual valida fichas/fotos e gera o estado publicado; data_json e published_json não são sinônimos.
+3. Foto: câmera/galeria → upload no provedor → metadados/estado ready → leitura protegida. Google e SQL não formam uma transação única: preservar reconciliação/filas de exclusão. Miniatura não substitui original.
+4. Agente: desafio/cadastro → chave pública → QR temporário → claim humano autenticado com recibo → vínculo → mensagens assinadas. Atualização repetida/perda de ACK não pode duplicar inventário ou gerar novo vínculo.
+5. Hardware: snapshot aceito → baseline/cursor → mudança confiável → evento → sino/mapa → parecer ou demanda. Leitura não significa aceite; demanda manual só termina por ação autorizada.
+6. Atendimento: root ordena/atribui → técnico aceita com localização válida → posição ligada à sessão/atendimento → root vê rota pelas ruas → conclusão pela equipe remove posição. Endpoints de localização não viram rastreamento fora da demanda.
+7. Relatório: heartbeat vivo validado registra conexão externa → seleção da observação completa mais recente por unidade → relatório atual ou snapshot da segunda-feira. Não reconstruir histórico anterior com dados atuais.
+8. Revalidação: edição relevante + trigger incrementam revisão na mesma transação → próxima leitura invalida catálogo/ETag. Heartbeat/GPS não incrementam revisões de catálogo; são lidos frescos.
+
+Android e contrato de instalação
+
+Código Java em android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/: Api.java fixa a origem HTTPS; MainActivity.java restringe navegação/WebView; LocationService.java mantém serviço de localização durante atendimento; NoticeJob.java usa notificações periódicas. Guia Android (../../android/technician/README.md).
+
+Alterar domínio exige rever origem permitida, cookies, API e distribuição. Atualização APK precisa da mesma assinatura privada; não executar build criando keystore novo por falta da cópia original. API 26+ e target 35 são configuração atual, não promessa de compatibilidade física universal.
+
+Ferramentas e testes de transferência
+
+scripts/document-schema.mjs aplica SQL em SQLite vazio. document-code-map.mjs gera o inventário estático. export-operation-manual.mjs consolida guias em TXT. check-doc-links.mjs valida referências locais. check-repository.mjs confere índice Git; check-outgoing-history.mjs origin/main também procura assinaturas de segredos nas versões ainda não enviadas. Nenhum desses scripts autentica no D1 real.
+
+Os testes usam fixtures e SQLite/workerd: segurança, domínio, publicação, Drive simulado, agentes, concorrência, presença, hardware, demandas, GPS/rotas, avatares, quotas e cache. Relação executada em package.json/CI. tests/helpers são infraestrutura de teste, não adaptador homologado de produção. Cada futura adaptação deve passar tanto os testes atuais quanto ensaios no destino com EXE/celular reais.
 
 

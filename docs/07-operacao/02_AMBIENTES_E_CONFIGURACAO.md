@@ -20,7 +20,7 @@
 
 IDs de recursos não são senhas. Os valores secretos não estão neste guia.
 
-Últimas versões registradas em 06/11/2026: painel `97d33dfb-8147-4591-9724-f44d8d7bb9ba`, com contagens por categoria D-066 e [layout de Panorama/Planejamento D-067](../05-qualidade/LAYOUT_PANORAMA_2026-11-06.md); coletor `5cf137cd-9c34-4e41-806b-d19cf0887bb6`, preservado. Ambos conferidos com 100% do tráfego. A versão anterior do painel era `fb776adf-4b7b-4cac-8aa9-6923bd636144` ([identidade geral D-065](../05-qualidade/IDENTIDADE_PAINEL_2026-11-06.md)). O [registro de UX](../05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md) documenta a publicação do coletor. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
+Últimas versões conferidas no [registro D-110, 12/11/2026 às 22:43 Fortaleza](../05-qualidade/REVALIDACAO_D1_2026-11-12.md): painel `abcfcb97-c87a-4988-b9a1-c051534c31bf`; coletor preservado `c678978a-9e71-4cab-a2dc-9744ec6d6e1c`, ambos com 100% do tráfego. São identificadores Cloudflare, distintos do commit de código `5cb844b`. Conferir novamente os deployments antes de uma futura intervenção; este documento não consulta o serviço em tempo real.
 
 Os endereços completos estão no [README da raiz](../../README.md). `workers.dev` pertence à conta Cloudflare: não presumir que o mesmo endereço possa ser transferido para outro provedor.
 

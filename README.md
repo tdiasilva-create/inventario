@@ -1,6 +1,6 @@
 # Inventário Tecnológico SEMED · Paço do Lumiar
 
-Código, documentação, migrações e testes do sistema municipal de inventário. Duas interfaces compartilham a mesma persistência: o **coletor** registra visitas, equipamentos e fotografias; o **painel** recebe, consulta e analisa os dados. O agente Windows identifica computadores e envia inventário técnico, vinculado por QR à unidade e à posição do equipamento.
+Código, documentação, migrações e testes do sistema municipal de inventário. O **coletor** registra visitas, equipamentos e fotografias; o **painel** recebe, consulta e analisa os dados. O **aplicativo do técnico** atende demandas e compartilha localização durante o atendimento. São dois Workers e uma persistência compartilhada; o aplicativo técnico usa as APIs do painel. O agente Windows identifica computadores e envia inventário técnico, vinculado por QR à unidade e à posição do equipamento.
 
 ## Endereços em uso
 
@@ -18,10 +18,11 @@ As sessões são separadas. Dados, senhas e tokens de produção não fazem part
 4. [Checklist de transferência em TXT](docs/07-operacao/TRANSFERENCIA_E_MIGRACAO.txt).
 5. [Estado comprovado e pendências](docs/07-operacao/09_ESTADO_E_PENDENCIAS.md).
 6. [Auditoria de funcionamento e lógica](docs/08-auditoria/README.md): mapa de regras, roteiro TXT, testes e versões publicadas.
+7. [Estado D-110 e dependências de migração](docs/07-operacao/11_ESTADO_ATUAL_D110.md), [mapa funcional do código](docs/07-operacao/12_MAPA_CODIGO_E_FLUXOS.md) e [índice gerado de código/API](docs/07-operacao/gerado/CODIGO_E_ROTAS.md).
 
 ## Tecnologia atual
 
-Frontend em HTML, CSS e JavaScript com módulos nativos. Backend JavaScript em Cloudflare Workers; banco Cloudflare D1/SQLite compartilhado. Fotografias privadas no **Google Drive** via OAuth; o adaptador R2 permanece no código, mas não é o provedor configurado em produção. A API centraliza autenticação, permissões, histórico, QR e acesso às imagens.
+Frontend em HTML, CSS e JavaScript; painel empacotado com esbuild e arquivos versionados. Backend JavaScript em Cloudflare Workers; banco Cloudflare D1/SQLite compartilhado. Fotografias privadas no **Google Drive** via OAuth; miniaturas derivadas limitadas no D1 (D-072). O adaptador R2 permanece no código, mas não é o provedor configurado em produção. A API centraliza autenticação, permissões, histórico, QR e acesso às imagens. Android nativo Java/WebView; OSRM calcula trajetos pelas ruas. KV guarda somente o cache do medidor Analytics D1.
 
 Node 24, pnpm 11.25.0 e dependências fixadas em `pnpm-lock.yaml`. Os builds saem de `web/`; publicar somente essa pasta não fornece autenticação e APIs.
 
@@ -31,6 +32,9 @@ pnpm test
 pnpm build:desktop
 pnpm build:collector
 pnpm docs:schema
+pnpm docs:code
+pnpm docs:txt
+pnpm check:docs
 ```
 
 Esses comandos são locais. Publicação e banco remoto têm procedimentos próprios no manual. Não executar scripts históricos em produção apenas porque o nome começa com `verify`.
@@ -41,7 +45,8 @@ Esses comandos são locais. Publicação e banco remoto têm procedimentos próp
 |---|---|
 | `web/` | Interfaces, esquemas, imagens de interface e bibliotecas locais |
 | `server/` | Worker, regras, persistência, fotos e agentes |
-| `migrations/` | SQL incremental 0001–0018 |
+| `migrations/` | 31 migrações SQL incrementais, 0001–0031 |
+| `android/technician/` | Código do APK exclusivo de atendimento; assinatura privada fora do Git |
 | `tests/` | Testes e auxiliares isolados |
 | `scripts/` | Build, ferramentas e rotinas históricas que exigem revisão |
 | `config/` | Exemplos locais sem recursos reais |
@@ -59,4 +64,4 @@ Esses comandos são locais. Publicação e banco remoto têm procedimentos próp
 
 O questionário atual segue decisões posteriores à Base de Coleta original. Rascunho no servidor e consulta parcial são distintos da conclusão oficial. Não há offline durável homologado. Testes automatizados não substituem o ciclo físico de instalador Windows/celular. O clone **não contém bancos, fotos operacionais, segredos ou instaladores privados**. Migração só estará homologada após restauração e testes no destino.
 
-Atualização documental: **08/11/2026**, incluindo cadastro ampliado, consulta de equipamentos, notificações, computadores por unidade/laboratório, Central de demandas e correção de navegação. O pacote de auditoria distingue código local, publicação real e homologação física. Atualizar o GitHub não publica os Workers. Não foi definida licença geral para redistribuição do projeto; licenças das dependências permanecem junto aos arquivos.
+Atualização documental: **12/11/2026, D-110**, incluindo roteiros/GPS, avatares, relatórios semanais, medidor D1 e redução de leituras. O catálogo reproduzível contém 88 tabelas de aplicação, 58 índices explícitos, duas views e 68 triggers. O pacote distingue código local, publicação real e homologação física. Atualizar o GitHub não publica os Workers nem instala um servidor físico. Não foi definida licença geral para redistribuição do projeto; licenças das dependências permanecem junto aos arquivos.

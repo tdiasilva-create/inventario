@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process';
 const paths=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 if(!paths.length)throw Error('Não há arquivos no índice Git para conferir.');
 const errors=[];
-const forbidden=/(^|\/)(private-data|backups|exports-reais|node_modules|\.wrangler|revisoes|entregas|pedidos)(\/|$)|(^|\/)\.dev\.vars(?!\.example$)|(^|\/)\.env(?!\.example$)|\.(exe|msi|zip|sqlite3?|db|pem|pfx|p12|key|har|trace)$/i;
+const forbidden=/(^|\/)(private-data|backups|exports-reais|node_modules|\.wrangler|revisoes|entregas|pedidos)(\/|$)|(^|\/)\.dev\.vars(?!\.example$)|(^|\/)\.env(?!\.example$)|\.(exe|msi|apk|keystore|jks|zip|sqlite3?|db|pem|pfx|p12|key|har|trace)$/i;
 const rules=[
  ['chave privada',/-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----/],
  ['Google OAuth secret',/GOCSPX-[A-Za-z0-9_-]{20,}/],

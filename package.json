@@ -14,6 +14,7 @@
     "build:collector": "node scripts/build-collector.mjs",
     "test:v3:browser": "node tests/collector-v3-browser.cjs",
     "docs:schema": "node scripts/document-schema.mjs",
+    "docs:code": "node scripts/document-code-map.mjs",
     "check:repository": "node scripts/check-repository.mjs",
     "test:ux:browser": "node tests/collector-ux-browser.cjs",
     "test:identity:browser": "node tests/collector-identity-browser.cjs",

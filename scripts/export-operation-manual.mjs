@@ -1,7 +1,7 @@
 import {readFile,readdir,writeFile} from 'node:fs/promises';
 const dir='docs/07-operacao';
 let text=`SEMED · TRANSFERÊNCIA, OPERAÇÃO E MIGRAÇÃO
-Referência: 08/11/2026. Gerado dos guias mantidos em docs/07-operacao/.
+Referência: 12/11/2026, estado D-110. Gerado dos guias mantidos em docs/07-operacao/.
 Repositório: https://github.com/tdiasilva-create/inventario
 Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
 Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
@@ -27,7 +27,7 @@ tokens, dados operacionais ou instaladores. Não executar seeds em produção.
 O diretório gerado/ contém o dicionário físico completo, separado deste TXT.
 
 `;
-for(const name of (await readdir(dir)).filter(x=>/^0[1-9]_.*\.md$/.test(x)).sort()){
+for(const name of (await readdir(dir)).filter(x=>/^\d{2}_.*\.md$/.test(x)).sort()){
  const md=await readFile(dir+'/'+name,'utf8');
  text+='='.repeat(78)+'\nFONTE: '+name+'\n'+'='.repeat(78)+'\n\n'+md.replace(/^#{1,6} /gm,'').replace(/^```[^\n]*\n?/gm,'').replace(/`/g,'').replace(/\[([^\]]+)\]\(([^)]+)\)/g,'$1 ($2)').replace(/\*\*/g,'')+'\n\n';
 }

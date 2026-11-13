@@ -1,4 +1,6 @@
-# Estado e pendências — atualizado em 09/11/2026
+# Estado e pendências — referência atual D-110, 12/11/2026
+
+**Leitura atual:** [estado técnico D-110](11_ESTADO_ATUAL_D110.md). Existem 31 migrações, miniaturas D-072, histórico semanal de provedores D-099, APK/atendimentos D-105, ruas D-106, avatares D-107, redução de consumo D-108/D-110 e medidor D-109. As seções datadas abaixo são histórico, incluindo anotações de antes de uma publicação. Para migração física continuam faltando adaptador de runtime/persistência, estratégia de endpoints, recuperação ensaiada e homologação no destino. Nenhuma proposta de servidor físico está implantada por esta atualização documental.
 
 ## Estado mais recente e auditoria
 

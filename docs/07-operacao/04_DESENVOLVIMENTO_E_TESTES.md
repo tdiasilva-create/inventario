@@ -37,7 +37,7 @@ O lockfile deve permanecer coerente com package.json. Não atualizar dependênci
 
 Os testes padrão usam SQLite em memória/fixtures sintéticas. Fotos/Drive usados nesses testes são simulados; resultados não comprovam acesso real ao Google nem câmera física. A CI não recebe credenciais.
 
-Os nove roteiros mantidos na CI usam `tests/helpers/playwright.cjs`. Por padrão mantêm Edge local. Para Chromium instalado pelo Playwright:
+Os roteiros mantidos na CI estão enumerados em `.github/workflows/ci.yml`; a quantidade aumentou desde a organização inicial. O auxiliar `tests/helpers/playwright.cjs` mantém Edge como padrão local. Para Chromium instalado pelo Playwright:
 
 ```powershell
 pnpm exec playwright install chromium
@@ -69,7 +69,7 @@ Segundo terminal, a partir da mesma raiz:
 pnpm exec wrangler dev --local --config config/wrangler.coletor.example.jsonc --persist-to .wrangler/local-shared --port 8788
 ```
 
-Abrir http://localhost:8787/login e http://localhost:8788/login . As senhas de teste ficam somente em `private-data/local-credentials.json`; não publicá-las. O usuário pode precisar trocar senha temporária, cuja verificação externa exige internet.
+Abrir http://localhost:8787/login e http://localhost:8788/login . As senhas de teste ficam somente em `private-data/local-credentials.json`; não publicá-las. O usuário pode precisar trocar senha temporária. Desde D-096 essa validação não consulta serviços externos; a regra é 6–256 caracteres.
 
 **O bootstrap local contém DELETE de contas/sessões/configurações.** Usar somente em base nova local. Nunca executar seed em banco remoto, restaurado ou compartilhado com dados que devam sobreviver. O exemplo não tem Drive e não envia fotos reais; para testar fluxo de fotos sem infraestrutura usar os testes isolados.
 

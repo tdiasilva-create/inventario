@@ -31,6 +31,8 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0027_technical_dispatch.sql`
 - `0028_dispatch_road_routes.sql`
 - `0029_technician_avatars.sql`
+- `0030_d1_read_budget.sql`
+- `0031_panel_read_revisions.sql`
 
 ## agent_audit_log
 
@@ -877,6 +879,30 @@ Referências: `equipment_id` → `miscellaneous_equipments.id` (delete: NO ACTIO
 
 Referências: `equipment_id` → `equipments.id` (delete: NO ACTION).
 
+## panel_collection_counts
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| state | TEXT | não | 1 | — |
+| total | INTEGER | sim |  | — |
+
+## panel_collection_states
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| unit_id | TEXT | não | 1 | — |
+| state | TEXT | não |  | — |
+
+Referências: `unit_id` → `units.id` (delete: CASCADE).
+
+## panel_read_versions
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| name | TEXT | sim | 1 | — |
+| epoch | TEXT | sim |  | — |
+| revision | INTEGER | sim |  | 0 |
+
 ## photo_deletion_queue
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1202,8 +1228,50 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `misc_progress_equipment_insert` (trigger, miscellaneous_equipments)
 - `misc_progress_equipment_update` (trigger, miscellaneous_equipments)
 - `misc_published_equipment_update` (trigger, miscellaneous_equipments)
+- `panel_collection_count_delete` (trigger, panel_collection_states)
+- `panel_collection_count_insert` (trigger, panel_collection_states)
+- `panel_collection_count_update` (trigger, panel_collection_states)
+- `panel_collection_unit_insert` (trigger, units)
+- `panel_collection_unit_update` (trigger, units)
+- `panel_collection_visit_delete` (trigger, inspections)
+- `panel_collection_visit_insert` (trigger, inspections)
+- `panel_collection_visit_update` (trigger, inspections)
+- `panel_revision_agent_devices_delete` (trigger, agent_devices)
+- `panel_revision_agent_devices_insert` (trigger, agent_devices)
+- `panel_revision_agent_devices_update` (trigger, agent_devices)
+- `panel_revision_agent_equipment_links_delete` (trigger, agent_equipment_links)
+- `panel_revision_agent_equipment_links_insert` (trigger, agent_equipment_links)
+- `panel_revision_agent_equipment_links_update` (trigger, agent_equipment_links)
+- `panel_revision_computer_context_delete` (trigger, computer_context)
+- `panel_revision_computer_context_insert` (trigger, computer_context)
+- `panel_revision_computer_context_update` (trigger, computer_context)
+- `panel_revision_equipments_delete` (trigger, equipments)
+- `panel_revision_equipments_fleet_delete` (trigger, equipments)
+- `panel_revision_equipments_fleet_insert` (trigger, equipments)
+- `panel_revision_equipments_fleet_update` (trigger, equipments)
+- `panel_revision_equipments_insert` (trigger, equipments)
+- `panel_revision_equipments_update` (trigger, equipments)
+- `panel_revision_inspection_sections_delete` (trigger, inspection_sections)
+- `panel_revision_inspection_sections_insert` (trigger, inspection_sections)
+- `panel_revision_inspection_sections_update` (trigger, inspection_sections)
+- `panel_revision_inspections_delete` (trigger, inspections)
+- `panel_revision_inspections_insert` (trigger, inspections)
+- `panel_revision_inspections_update` (trigger, inspections)
+- `panel_revision_miscellaneous_equipments_delete` (trigger, miscellaneous_equipments)
+- `panel_revision_miscellaneous_equipments_fleet_delete` (trigger, miscellaneous_equipments)
+- `panel_revision_miscellaneous_equipments_fleet_insert` (trigger, miscellaneous_equipments)
+- `panel_revision_miscellaneous_equipments_fleet_update` (trigger, miscellaneous_equipments)
+- `panel_revision_miscellaneous_equipments_insert` (trigger, miscellaneous_equipments)
+- `panel_revision_miscellaneous_equipments_update` (trigger, miscellaneous_equipments)
+- `panel_revision_units_delete` (trigger, units)
+- `panel_revision_units_insert` (trigger, units)
+- `panel_revision_units_update` (trigger, units)
+- `panel_revision_visit_answers_delete` (trigger, visit_answers)
+- `panel_revision_visit_answers_insert` (trigger, visit_answers)
+- `panel_revision_visit_answers_update` (trigger, visit_answers)
 - `progress_equipment_insert` (trigger, equipments)
 - `progress_equipment_update` (trigger, equipments)
 - `provider_reports_immutable` (trigger, provider_reports)
 - `published_equipment_update` (trigger, equipments)
 - `inventory_equipment_all` (view, inventory_equipment_all)
+- `panel_collection_state_source` (view, panel_collection_state_source)

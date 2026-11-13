@@ -5,11 +5,14 @@ flowchart LR
   C[Operador · celular] --> CW[Worker coletor + assets]
   P[Root / admin / visualizador · desktop] --> PW[Worker painel + assets]
   A[Agente Windows · chave própria] --> CW
+  T[Técnico · APK / web exclusiva] --> PW
   CW --> D[(D1 compartilhado)]
   PW --> D
   CW --> G[Google Drive · fotos privadas]
   PW --> G
   PW --> O[Google OAuth · autorização institucional]
+  PW --> R[OSRM · ruas sem reordenar demandas]
+  PW --> K[KV / Analytics · medidor D1]
   C -. leitura QR e vínculo autenticado .-> A
 ```
 
@@ -30,7 +33,7 @@ Ambas as publicações usam `server/worker.mjs`. `APP_KIND=collector` seleciona 
 | Mapa | `web/desktop-map.js`, `map-geography.js`, `web/data/`, Leaflet |
 | Build | `scripts/build-desktop.mjs`, `build-collector.mjs` |
 
-HTML/CSS/JS nativos; sem framework de componentes. Os builds copiam listas explícitas de assets. Arquivo novo em `web/` não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual.
+HTML/CSS/JS; sem framework de componentes. O painel usa bundles esbuild/CSS versionados desde D-103; o coletor mantém módulos próprios. Os builds selecionam explicitamente entradas e assets. Arquivo novo em `web/` não entra automaticamente no pacote. Fluxos anteriores permanecem para retomada de visitas existentes; não removê-los só porque a entrada usa o questionário atual. [Mapa detalhado de módulos e fluxos](12_MAPA_CODIGO_E_FLUXOS.md).
 
 `panel-shell.js` compartilha o menu, mas `desktopPageRoutes` contém somente páginas renderizadas por `desktop.js`. `/computadores` e `/demandas` carregam `operations.html` pelo Worker. Interceptar essas duas rotas no roteador antigo produzia Configurações com Consultando permanente; a correção de 08/11 é coberta por `tests/panel-navigation-browser.cjs`.
 
@@ -56,6 +59,6 @@ Agente Windows cria identidade assinada e cadastro técnico pendente, recebe QR 
 
 ## Dependências externas
 
-Cloudflare Workers/D1; Google OAuth/Drive; tiles de ruas/satélite em `desktop-map.js`; API Pwned Passwords para verificar novas senhas por prefixo de hash; navegadores HTTPS/câmera e conectividade dos agentes. Preservar atribuição/licenças dos mapas e bibliotecas.
+Cloudflare Workers/D1; Google OAuth/Drive; tiles de ruas/satélite em `desktop-map.js`; OSRM/FOSSGIS para trajetos; Analytics/KV para o medidor D1; navegadores HTTPS/câmera, GPS Android e conectividade dos agentes. **Não há consulta Pwned Passwords desde D-096.** Preservar atribuição/licenças dos mapas e bibliotecas. A identificação de IP/provedor depende de metadados confiáveis de borda Cloudflare, não somente do inventário do Windows.
 
 Falha de tiles não significa perda do banco; login SEMED funcional não prova que OAuth/Drive estejam saudáveis. Monitorar integrações separadamente.

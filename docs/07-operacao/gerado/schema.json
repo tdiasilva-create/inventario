@@ -116,6 +116,14 @@
     {
       "file": "0029_technician_avatars.sql",
       "sha256": "c08e989e39b702b837b15159664c040c2568bde11357e79540dca27ccde6c201"
+    },
+    {
+      "file": "0030_d1_read_budget.sql",
+      "sha256": "58dc80249cb87c9e19a08b2086aa1060780d1415592ebc819f4d966335bf30d1"
+    },
+    {
+      "file": "0031_panel_read_revisions.sql",
+      "sha256": "0681aae76dfee8853353ed22090f35c578f42745bc3f060b05c29ec00b58c150"
     }
   ],
   "tables": [
@@ -4680,6 +4688,91 @@
       ]
     },
     {
+      "name": "panel_collection_counts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "total",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "panel_collection_states",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "units",
+          "from": "unit_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "panel_read_versions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "epoch",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "photo_deletion_queue",
       "columns": [
         {
@@ -6426,6 +6519,12 @@
     },
     {
       "type": "index",
+      "name": "agent_snap_monitor_range",
+      "tbl_name": "agent_inventory_snapshots",
+      "sql": "CREATE INDEX agent_snap_monitor_range ON agent_inventory_snapshots(\n device_id,equipment_id,\n CAST((julianday(collected_at)-2440587.5)*86400000+0.5 AS INTEGER),inventory_id\n)"
+    },
+    {
+      "type": "index",
       "name": "assignments_unit",
       "tbl_name": "unit_assignments",
       "sql": "CREATE INDEX assignments_unit ON unit_assignments(unit_id)"
@@ -6648,6 +6747,12 @@
     },
     {
       "type": "index",
+      "name": "inspection_unit_state",
+      "tbl_name": "inspections",
+      "sql": "CREATE INDEX inspection_unit_state ON inspections(unit_id,state)"
+    },
+    {
+      "type": "index",
       "name": "inspection_unit_time",
       "tbl_name": "inspections",
       "sql": "CREATE INDEX inspection_unit_time ON inspections(unit_id,created_at)"
@@ -6705,6 +6810,12 @@
       "name": "service_events_history",
       "tbl_name": "service_request_events",
       "sql": "CREATE INDEX service_events_history ON service_request_events(request_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "service_requests_pending_unit",
+      "tbl_name": "service_requests",
+      "sql": "CREATE INDEX service_requests_pending_unit ON service_requests(unit_id) WHERE status!='Concluída'"
     },
     {
       "type": "index",
@@ -7128,6 +7239,24 @@
     },
     {
       "type": "table",
+      "name": "panel_collection_counts",
+      "tbl_name": "panel_collection_counts",
+      "sql": "CREATE TABLE panel_collection_counts (\n state TEXT PRIMARY KEY CHECK(state IN ('not_started','in_progress','preserved')),\n total INTEGER NOT NULL CHECK(total>=0)\n)"
+    },
+    {
+      "type": "table",
+      "name": "panel_collection_states",
+      "tbl_name": "panel_collection_states",
+      "sql": "CREATE TABLE panel_collection_states (\n unit_id TEXT PRIMARY KEY REFERENCES units(id) ON DELETE CASCADE,\n state TEXT CHECK(state IN ('not_started','in_progress','preserved'))\n)"
+    },
+    {
+      "type": "table",
+      "name": "panel_read_versions",
+      "tbl_name": "panel_read_versions",
+      "sql": "CREATE TABLE panel_read_versions (\n name TEXT PRIMARY KEY CHECK(name IN ('results','fleet')),\n epoch TEXT NOT NULL,\n revision INTEGER NOT NULL DEFAULT 0\n) WITHOUT ROWID"
+    },
+    {
+      "type": "table",
       "name": "photo_deletion_queue",
       "tbl_name": "photo_deletion_queue",
       "sql": "CREATE TABLE photo_deletion_queue(object_key TEXT PRIMARY KEY,deletion_id TEXT NOT NULL,created_at INTEGER NOT NULL, storage_provider TEXT NOT NULL DEFAULT 'r2', storage_ref TEXT)"
@@ -7386,6 +7515,252 @@
     },
     {
       "type": "trigger",
+      "name": "panel_collection_count_delete",
+      "tbl_name": "panel_collection_states",
+      "sql": "CREATE TRIGGER panel_collection_count_delete AFTER DELETE ON panel_collection_states WHEN OLD.state IS NOT NULL BEGIN\n UPDATE panel_collection_counts SET total=total-1 WHERE state=OLD.state;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_count_insert",
+      "tbl_name": "panel_collection_states",
+      "sql": "CREATE TRIGGER panel_collection_count_insert AFTER INSERT ON panel_collection_states WHEN NEW.state IS NOT NULL BEGIN\n UPDATE panel_collection_counts SET total=total+1 WHERE state=NEW.state;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_count_update",
+      "tbl_name": "panel_collection_states",
+      "sql": "CREATE TRIGGER panel_collection_count_update AFTER UPDATE OF state ON panel_collection_states WHEN NEW.state IS NOT OLD.state BEGIN\n UPDATE panel_collection_counts SET total=total-1 WHERE state=OLD.state;\n UPDATE panel_collection_counts SET total=total+1 WHERE state=NEW.state;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_unit_insert",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_collection_unit_insert AFTER INSERT ON units BEGIN\n INSERT INTO panel_collection_states SELECT * FROM panel_collection_state_source WHERE unit_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_unit_update",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_collection_unit_update AFTER UPDATE OF active,unit_type ON units BEGIN\n UPDATE panel_collection_states SET state=(SELECT state FROM panel_collection_state_source WHERE unit_id=NEW.id) WHERE unit_id=NEW.id AND state IS NOT (SELECT state FROM panel_collection_state_source WHERE unit_id=NEW.id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_visit_delete",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_collection_visit_delete AFTER DELETE ON inspections BEGIN\n UPDATE panel_collection_states SET state=(SELECT state FROM panel_collection_state_source WHERE unit_id=OLD.unit_id) WHERE unit_id=OLD.unit_id AND state IS NOT (SELECT state FROM panel_collection_state_source WHERE unit_id=OLD.unit_id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_visit_insert",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_collection_visit_insert AFTER INSERT ON inspections BEGIN\n UPDATE panel_collection_states SET state=(SELECT state FROM panel_collection_state_source WHERE unit_id=NEW.unit_id) WHERE unit_id=NEW.unit_id AND state IS NOT (SELECT state FROM panel_collection_state_source WHERE unit_id=NEW.unit_id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_collection_visit_update",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_collection_visit_update AFTER UPDATE OF state,unit_id ON inspections WHEN OLD.state IS NOT NEW.state OR OLD.unit_id IS NOT NEW.unit_id BEGIN\n UPDATE panel_collection_states SET state=(SELECT state FROM panel_collection_state_source WHERE unit_id=panel_collection_states.unit_id) WHERE unit_id IN (OLD.unit_id,NEW.unit_id) AND state IS NOT (SELECT state FROM panel_collection_state_source WHERE unit_id=panel_collection_states.unit_id);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_devices_delete",
+      "tbl_name": "agent_devices",
+      "sql": "CREATE TRIGGER panel_revision_agent_devices_delete AFTER DELETE ON agent_devices BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_devices_insert",
+      "tbl_name": "agent_devices",
+      "sql": "CREATE TRIGGER panel_revision_agent_devices_insert AFTER INSERT ON agent_devices BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_devices_update",
+      "tbl_name": "agent_devices",
+      "sql": "CREATE TRIGGER panel_revision_agent_devices_update AFTER UPDATE OF device_id,state ON agent_devices WHEN (OLD.device_id IS NOT NEW.device_id OR OLD.state IS NOT NEW.state) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_equipment_links_delete",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE TRIGGER panel_revision_agent_equipment_links_delete AFTER DELETE ON agent_equipment_links BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_equipment_links_insert",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE TRIGGER panel_revision_agent_equipment_links_insert AFTER INSERT ON agent_equipment_links BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_agent_equipment_links_update",
+      "tbl_name": "agent_equipment_links",
+      "sql": "CREATE TRIGGER panel_revision_agent_equipment_links_update AFTER UPDATE OF device_id,equipment_id,ended_at ON agent_equipment_links WHEN (OLD.device_id IS NOT NEW.device_id OR OLD.equipment_id IS NOT NEW.equipment_id OR OLD.ended_at IS NOT NEW.ended_at) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_computer_context_delete",
+      "tbl_name": "computer_context",
+      "sql": "CREATE TRIGGER panel_revision_computer_context_delete AFTER DELETE ON computer_context WHEN OLD.kind='unit' BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_computer_context_insert",
+      "tbl_name": "computer_context",
+      "sql": "CREATE TRIGGER panel_revision_computer_context_insert AFTER INSERT ON computer_context WHEN NEW.kind='unit' BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_computer_context_update",
+      "tbl_name": "computer_context",
+      "sql": "CREATE TRIGGER panel_revision_computer_context_update AFTER UPDATE OF target_id,kind,value,version ON computer_context WHEN (OLD.target_id IS NOT NEW.target_id OR OLD.kind IS NOT NEW.kind OR OLD.value IS NOT NEW.value OR OLD.version IS NOT NEW.version) AND (OLD.kind='unit' OR NEW.kind='unit') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_delete AFTER DELETE ON equipments WHEN OLD.published_json IS NOT NULL BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_fleet_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_fleet_delete AFTER DELETE ON equipments BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_fleet_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_fleet_insert AFTER INSERT ON equipments BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_fleet_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_fleet_update AFTER UPDATE OF id,unit_id,category,data_json ON equipments WHEN OLD.id IS NOT NEW.id OR OLD.unit_id IS NOT NEW.unit_id OR COALESCE(NULLIF(OLD.category,''),json_extract(OLD.data_json,'$.category'),'') IS NOT COALESCE(NULLIF(NEW.category,''),json_extract(NEW.data_json,'$.category'),'') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_insert AFTER INSERT ON equipments WHEN NEW.published_json IS NOT NULL BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_equipments_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_revision_equipments_update AFTER UPDATE OF unit_id,published_json ON equipments WHEN (OLD.unit_id IS NOT NEW.unit_id OR OLD.published_json IS NOT NEW.published_json) AND (OLD.published_json IS NOT NULL OR NEW.published_json IS NOT NULL) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspection_sections_delete",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER panel_revision_inspection_sections_delete AFTER DELETE ON inspection_sections WHEN EXISTS(SELECT 1 FROM inspections WHERE id=OLD.inspection_id AND state='completed') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspection_sections_insert",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER panel_revision_inspection_sections_insert AFTER INSERT ON inspection_sections WHEN EXISTS(SELECT 1 FROM inspections WHERE id=NEW.inspection_id AND state='completed') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspection_sections_update",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER panel_revision_inspection_sections_update AFTER UPDATE OF inspection_id,data_json,section ON inspection_sections WHEN (OLD.inspection_id IS NOT NEW.inspection_id OR OLD.data_json IS NOT NEW.data_json OR OLD.section IS NOT NEW.section) AND (EXISTS(SELECT 1 FROM inspections WHERE id=OLD.inspection_id AND state='completed') OR EXISTS(SELECT 1 FROM inspections WHERE id=NEW.inspection_id AND state='completed')) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspections_delete",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_revision_inspections_delete AFTER DELETE ON inspections WHEN OLD.state='completed' BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspections_insert",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_revision_inspections_insert AFTER INSERT ON inspections WHEN NEW.state='completed' BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_inspections_update",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER panel_revision_inspections_update AFTER UPDATE OF id,state,unit_id,completed_at,questionnaire_version ON inspections WHEN (OLD.id IS NOT NEW.id OR OLD.state IS NOT NEW.state OR OLD.unit_id IS NOT NEW.unit_id OR OLD.completed_at IS NOT NEW.completed_at OR OLD.questionnaire_version IS NOT NEW.questionnaire_version) AND (OLD.state='completed' OR NEW.state='completed') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_delete",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_delete AFTER DELETE ON miscellaneous_equipments WHEN OLD.published_json IS NOT NULL BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_fleet_delete",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_fleet_delete AFTER DELETE ON miscellaneous_equipments BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_fleet_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_fleet_insert AFTER INSERT ON miscellaneous_equipments BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_fleet_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_fleet_update AFTER UPDATE OF id,unit_id,category,data_json ON miscellaneous_equipments WHEN OLD.id IS NOT NEW.id OR OLD.unit_id IS NOT NEW.unit_id OR COALESCE(NULLIF(OLD.category,''),json_extract(OLD.data_json,'$.category'),'') IS NOT COALESCE(NULLIF(NEW.category,''),json_extract(NEW.data_json,'$.category'),'') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_insert AFTER INSERT ON miscellaneous_equipments WHEN NEW.published_json IS NOT NULL BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_miscellaneous_equipments_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER panel_revision_miscellaneous_equipments_update AFTER UPDATE OF unit_id,published_json ON miscellaneous_equipments WHEN (OLD.unit_id IS NOT NEW.unit_id OR OLD.published_json IS NOT NEW.published_json) AND (OLD.published_json IS NOT NULL OR NEW.published_json IS NOT NULL) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_units_delete",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_revision_units_delete AFTER DELETE ON units BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_units_insert",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_revision_units_insert AFTER INSERT ON units BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_units_update",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_revision_units_update AFTER UPDATE OF id,name,active,unit_type ON units WHEN (OLD.id IS NOT NEW.id OR OLD.name IS NOT NEW.name OR OLD.active IS NOT NEW.active OR OLD.unit_type IS NOT NEW.unit_type) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results','fleet');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_visit_answers_delete",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER panel_revision_visit_answers_delete AFTER DELETE ON visit_answers WHEN EXISTS(SELECT 1 FROM inspections WHERE id=OLD.inspection_id AND state='completed') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_visit_answers_insert",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER panel_revision_visit_answers_insert AFTER INSERT ON visit_answers WHEN EXISTS(SELECT 1 FROM inspections WHERE id=NEW.inspection_id AND state='completed') BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_revision_visit_answers_update",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER panel_revision_visit_answers_update AFTER UPDATE OF inspection_id,data_json ON visit_answers WHEN (OLD.inspection_id IS NOT NEW.inspection_id OR OLD.data_json IS NOT NEW.data_json) AND (EXISTS(SELECT 1 FROM inspections WHERE id=OLD.inspection_id AND state='completed') OR EXISTS(SELECT 1 FROM inspections WHERE id=NEW.inspection_id AND state='completed')) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
       "name": "progress_equipment_insert",
       "tbl_name": "equipments",
       "sql": "CREATE TRIGGER progress_equipment_insert AFTER INSERT ON equipments BEGIN\n INSERT INTO inspection_collection_totals(inspection_id,records,items,new_records,changed_records) VALUES(NEW.inspection_id,1,CAST(COALESCE(json_extract(NEW.data_json,'$.quantity'),1) AS INTEGER),NEW.published_json IS NULL,NEW.published_json IS NOT NULL)\n ON CONFLICT(inspection_id) DO UPDATE SET records=records+1,items=items+excluded.items,new_records=new_records+excluded.new_records,changed_records=changed_records+excluded.changed_records;\nEND"
@@ -7413,6 +7788,12 @@
       "name": "inventory_equipment_all",
       "tbl_name": "inventory_equipment_all",
       "sql": "CREATE VIEW inventory_equipment_all AS SELECT *, 'legacy' AS storage_kind FROM equipments UNION ALL SELECT *, 'misc' AS storage_kind FROM miscellaneous_equipments"
+    },
+    {
+      "type": "view",
+      "name": "panel_collection_state_source",
+      "tbl_name": "panel_collection_state_source",
+      "sql": "CREATE VIEW panel_collection_state_source AS\n SELECT u.id AS unit_id,\n CASE WHEN u.active!=1 OR COALESCE(u.unit_type,'') IN ('Escola conveniada','Obra em andamento') THEN NULL\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='open') THEN 'in_progress'\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='completed') THEN NULL\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='paused') THEN 'preserved'\n ELSE 'not_started' END AS state\n FROM units u"
     }
   ]
 }

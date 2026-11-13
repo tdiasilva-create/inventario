@@ -2,9 +2,9 @@
 
 ## Esquema físico verificável
 
-[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), gerados aplicando as 19 migrações locais num SQLite vazio em memória. Resultado: **64 tabelas, 42 índices explícitos, uma view e 10 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1.
+[Catálogo completo de tabelas/colunas](gerado/DICIONARIO_DADOS.md) e [JSON com SQL, índices, triggers e hashes](gerado/schema.json), regenerados aplicando as **31 migrações** locais num SQLite vazio em memória em 12/11/2026. Resultado: **88 tabelas, 58 índices explícitos, duas views e 68 triggers**. Não inclui dados de produção nem tabelas internas criadas pelo serviço D1. Registros datados abaixo preservam o histórico das entregas, não a contagem atual.
 
-Regenerar com `pnpm docs:schema`. As migrações 0001–0019 são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade.
+Regenerar com `pnpm docs:schema`. As migrações **0001–0031** são a fonte física, não os antigos modelos conceituais propostos. Não modificar migração já aplicada; criar a próxima incremental e testar upgrade. Preservar também miniaturas (0020), nomes/exclusões (0021–0023), parecer de hardware (0024), cadastro escolar (0025), histórico semanal (0026), atendimentos/GPS (0027), controle OSRM (0028), avatares (0029), projeções/índices de consumo (0030) e revisões transacionais (0031).
 
 | Família | O que preservar |
 |---|---|

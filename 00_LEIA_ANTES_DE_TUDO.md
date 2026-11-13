@@ -1,4 +1,4 @@
-**Estado operacional atual (08/11/2026):** consultar [manual de operação e migração](docs/07-operacao/README.md) e [guia de auditoria](docs/08-auditoria/README.md). O texto de consolidação abaixo é histórico; decisões até D-071 registram Drive, questionário atual, agentes, identidade, monitoramento e demandas posteriores. Não confundir os requisitos originais preservados com a versão publicada.
+**Estado operacional atual (12/11/2026, D-110):** consultar [manual de operação e migração](docs/07-operacao/README.md), [estado técnico atualizado](docs/07-operacao/11_ESTADO_ATUAL_D110.md) e [guia de auditoria](docs/08-auditoria/README.md). São 31 migrações; painel, coleta, agentes e atendimento técnico compartilham a persistência. O texto de consolidação abaixo é histórico. Decisões posteriores até D-110 prevalecem sobre requisitos superados. Não confundir a documentação original com a versão publicada nem análise de migração com implantação realizada.
 
 # INVENTÁRIO TECNOLÓGICO — SEMED | PACOTE ÚNICO PARA O CODEX
 

@@ -6,6 +6,9 @@
 *.key
 *.p12
 *.pfx
+*.keystore
+*.jks
+*.apk
 node_modules/
 .wrangler/
 dist/

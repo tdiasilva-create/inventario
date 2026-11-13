@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência: **09/11/2026**. Derivado do código, configurações, 19 migrações (0019 aplicada no D1 real), decisões e registros de publicação. [Publicação da Fase 1](../05-qualidade/PUBLICACAO_FASE_1_2026-11-09.md). Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md).
+Referência atual: **12/11/2026, D-110**, código-base `5cb844b`. São **31 migrações**, 88 tabelas de aplicação, 58 índices explícitos, duas views e 68 triggers. [Publicação D-110](../05-qualidade/REVALIDACAO_D1_2026-11-12.md). Não altera requisitos nem afirma que um novo destino já está homologado. [Entrada para auditoria independente](../08-auditoria/README.md). Os adendos datados ao fim deste índice registram a evolução; suas contagens não substituem este estado atual.
 
 | Guia | Uso |
 |---|---|
@@ -14,6 +14,9 @@ Referência: **09/11/2026**. Derivado do código, configurações, 19 migraçõe
 | [08 · Segurança](08_SEGURANCA_E_INTEGRACOES.md) | Autenticação, Drive, QR e agentes |
 | [09 · Pendências](09_ESTADO_E_PENDENCIAS.md) | Implementado versus homologado |
 | [10 · Organização](10_REGISTRO_DA_ORGANIZACAO.md) | Verificações desta entrega |
+| [11 · Estado D-110](11_ESTADO_ATUAL_D110.md) | Versões, serviços, rotinas e materiais de transferência |
+| [12 · Mapa do código](12_MAPA_CODIGO_E_FLUXOS.md) | Módulos, contratos, fluxos e dependências de plataforma |
+| [Índice estático do código](gerado/CODIGO_E_ROTAS.md) / [JSON](gerado/codigo.json) | Arquivos, hashes, imports, variáveis e referências de API |
 | [Checklist TXT](TRANSFERENCIA_E_MIGRACAO.txt) | Transferência para outra equipe |
 | [Dicionário físico](gerado/DICIONARIO_DADOS.md) / [JSON](gerado/schema.json) | Esquema completo sem dados reais |
 
