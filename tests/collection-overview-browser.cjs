@@ -1,0 +1,27 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+(async()=>{const b=await require('./helpers/panel-browser.cjs')(),{page,f,origin}=b,dir='docs/05-qualidade/evidencias/panorama-coletas-2026-11-13';fs.mkdirSync(dir,{recursive:true});try{
+ const i=f.sqlite.prepare('SELECT id FROM inspections WHERE unit_id=?').get(f.ids.progress).id;
+ f.sqlite.prepare("INSERT INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,'C','{\"exists\":\"Não\"}',?,?)").run(i,f.root.id,Date.now());
+ const counts=async values=>page.waitForFunction(expected=>['none','partial','complete'].every((s,i)=>document.querySelector('[data-coverage-value='+s+']')?.textContent===String(expected[i])),values);
+ const totalRequests=()=>b.requests.filter(r=>r.path==='/api/collection-control/summary').length;
+ await page.clock.install({time:Date.now()});await page.goto(origin+'/panorama');await counts([3,1,0]);
+ assert.equal(totalRequests(),1);assert.equal(await page.getByText('Coletas Concluídas',{exact:true}).count(),0);assert.equal(await page.locator('[data-pending-value=collections]').count(),0);
+ assert.equal(await page.locator('#panel-pulse a[href="/coletas-pendentes"]').count(),0);
+ for(const s of ['none','partial','complete'])assert.equal(await page.locator('#panel-pulse a[href="/controle-coletas?status='+s+'"]').count(),1);
+ assert.equal(await page.locator('[data-pending-value=demands]').count(),1);assert.equal(await page.locator('[data-pending-value=hardware]').count(),1);
+ await page.locator('[data-filter=type]').selectOption('Todas');await counts([3,1,0]);await page.clock.fastForward(61000);await counts([3,1,0]);assert.equal(totalRequests(),1,'no new coverage polling');
+ await page.locator('.collection-overview-link[data-state=partial]').click();await page.locator('.coverage-table tbody tr').waitFor();assert.equal(await page.locator('.coverage-table tbody tr').count(),1);
+ await page.getByRole('button',{name:'Classificar',exact:true}).click();await page.locator('#coverage-decision select').selectOption('complete');await page.getByRole('button',{name:'Salvar classificação',exact:true}).click();await page.locator('#coverage-saved').filter({hasText:'Classificação salva'}).waitFor();
+ await page.goto(origin+'/panorama');await counts([3,0,1]);
+ f.sqlite.exec("UPDATE inspection_sections SET data_json='{\"exists\":\"Sim\"}'");await page.locator('[data-coverage-refresh]').click();await page.locator('[data-coverage-refresh]:enabled').waitFor();await counts([3,0,1]);
+ await page.locator('#panel-pulse a[href="/controle-coletas?status=complete"]').click();await page.locator('.coverage-table tbody tr').waitFor();assert.equal(await page.locator('.coverage-table tbody tr').count(),1);assert.match(await page.locator('.coverage-table').innerText(),/Coleta completa/);
+ await page.goto(origin+'/panorama');await counts([3,0,1]);await page.locator('#municipal-map[data-map-ready=true]').waitFor();
+ await page.locator('[data-coverage-refresh]').focus();await page.mouse.move(1200,200);await page.clock.runFor(500);
+ await page.locator('[data-collection-overview]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/01-panorama-desktop.png'});
+ await page.route('**/api/collection-control/summary',r=>r.fulfill({status:503,contentType:'application/json',body:'{"error":"TESTE ISOLADO: indisponível"}'}));await page.locator('[data-coverage-refresh]').click();await page.locator('[data-coverage-error]:visible').waitFor();await counts([3,0,1]);assert.match(await page.locator('[data-coverage-time]').innerText(),/Última leitura preservada/);
+ await page.reload();await page.locator('[data-coverage-error]:visible').waitFor();await counts(['—','—','—']);
+ await page.unroute('**/api/collection-control/summary');await page.locator('[data-coverage-refresh]').click();await counts([3,0,1]);
+ await page.setViewportSize({width:390,height:844});await page.locator('[data-collection-overview]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/02-panorama-mobile.png'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ f.sqlite.prepare("UPDATE users SET role='visualizador' WHERE id=?").run(f.root.id);await page.reload();await counts([3,0,1]);await page.locator('.collection-overview-link[data-state=complete]').click();await page.locator('.coverage-table tbody tr').waitFor();assert.equal(await page.locator('[data-classify]').count(),0);
+ assert.deepEqual(b.errors,[]);fs.writeFileSync(dir+'/browser.json',JSON.stringify({status:'PASS',checks:['same classifications','old metrics removed','no extra polling','filtered link','root decision reflected','sticky complete','header link','failure retains last read','initial failure no fake zero','recovery','mobile','viewer read-only']},null,2));console.log('PASS Panorama collection overview');
+ }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -24,7 +24,7 @@ files.push('unit-map-palette.js','communication-log.html','communication-log.js'
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');
 files.push('desktop-blocks.js','desktop-exports.js','panel-search.html','panel-search.js');
 files.push('pending-collections.html','pending-collections.js','desktop-management.js','provider-report.js');
-files.push('collection-control.html','collection-control.js');
+files.push('collection-control.html','collection-control.js','collection-overview.js');
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});
  if(file==='runtime-config.js')await writeFile(target,'// The collector will have its own address: inventario-semed-lumiar.\nexport const collectorUrl="https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev";\nexport const authEnabled=true;\n');

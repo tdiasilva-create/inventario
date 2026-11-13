@@ -966,6 +966,22 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .pending-summary h3{margin:0;font:var(--rotulo);letter-spacing:var(--rotulo-tracking);text-transform:uppercase}
 .pending-summary header small{color:var(--texto-secundario);margin-left:auto}
 .pending-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.pending-metrics.without-collections{grid-template-columns:repeat(2,minmax(0,1fr))}
+.inventory-stats:has(+.collection-overview){grid-template-columns:repeat(2,minmax(0,1fr))}
+.collection-overview{border-top:1px solid var(--linha);padding:12px 8px;background:var(--branco,#fff);min-width:0}
+.collection-overview header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.collection-overview h3{margin:0;font-size:12px;letter-spacing:.06em}
+.collection-overview-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.collection-overview-link{display:flex;align-items:center;gap:10px;border:1px solid var(--linha);border-left:3px solid #737a80;border-radius:4px;padding:12px;text-decoration:none;color:#171a1c;min-width:0}
+.collection-overview-link strong{font-size:23px;line-height:1.2}
+.collection-overview-link span{font-size:14px}
+.collection-overview-link[data-state=partial]{border-left-color:#ff4b1e}
+.collection-overview-link[data-state=complete]{border-left-color:#176b42}
+.collection-overview-link:hover{background:#fff0eb}
+.collection-overview-link:focus-visible{outline:2px solid #d70825;outline-offset:2px}
+.collection-overview p,.collection-overview small{font-size:12px;color:#636b73;margin:9px 0 0}
+.collection-overview [data-coverage-error]{color:#b40024}
+@media(max-width:640px){.collection-overview-link{flex-direction:column;align-items:flex-start;padding:9px;gap:4px}.collection-overview-link span{font-size:12px}.pending-metrics.without-collections{grid-template-columns:1fr}}
 .pending-metric{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;border:0;border-right:1px solid var(--linha);border-top:1px solid var(--linha);background:var(--branco,#fff);color:var(--preto);padding:12px;text-decoration:none;font:inherit;cursor:pointer;min-width:0}
 .pending-metric:last-child{border-right:0}
 .pending-metric:hover{background:var(--pessego-suave)}

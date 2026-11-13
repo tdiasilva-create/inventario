@@ -595,3 +595,6 @@ Pedido do responsável: atualizar repositório e criar branch com análise detal
 
 ## D-111 — classificação administrativa de cobertura, 13/11/2026
 Pedido aprovado nesta conversa → `docs/03-painel-desktop/CONTROLE_COLETAS_D111.md` → `server/collection-control.mjs`, `migrations/0032_collection_control.sql`, `web/collection-control.html`/`.js`, menu/build/Worker e CSS. Testes servidor/navegador: `tests/collection-control.test.mjs`, `tests/collection-control-browser.cjs`; ensaio de migração: `scripts/rehearse-collection-control.mjs`. [Qualidade e publicação](../05-qualidade/CONTROLE_COLETAS_2026-11-13.md). Sem dados/parcial automáticos por informação recebida; completa somente por root e persistente. Não altera Base original, conclusão de visitas, fotos, protocolo, coletor ou APK.
+
+## D-112 — indicadores do Panorama, 13/11/2026
+Pedido explícito do responsável → [contrato](../03-painel-desktop/PANORAMA_COLETAS_D112.md) → função compartilhada de totais em server/collection-control.mjs e web/collection-overview.js, desktop.js/panel-pulse.js → testes collection-control.test.mjs e collection-overview-browser.cjs → [aceite/publicação](../05-qualidade/PANORAMA_COLETAS_2026-11-13.md). D-111 preservada, sem mudança no TXT/perguntas/coletor e sem migração.

@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const {seedLinkStates}=await import('./helpers/equipment-link-state.mjs'),s=seedLinkStates(f);
  const out='docs/05-qualidade/evidencias/mesa-dados-2026-11-10';fs.mkdirSync(out,{recursive:true});
  const shot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png',animations:'disabled'});};
- const pulseReady=async()=>{await page.locator('#panel-pulse[data-state=ok]').waitFor();await page.waitForFunction(()=>document.querySelector('#panel-pulse a[href="/coletas-pendentes"] b')?.textContent!=='—');};
+ const pulseReady=async()=>{await page.locator('#panel-pulse[data-state=ok]').waitFor();await page.waitForFunction(()=>[...document.querySelectorAll('#panel-pulse a[href="/coletas-pendentes"] b,#panel-pulse a[href="/controle-coletas?status=none"] b')].some(n=>n.textContent!=='—'));};
  const restartPulse=()=>page.evaluate(async()=>{document.dispatchEvent(new Event('visibilitychange'));});
  try{
   await page.setViewportSize({width:1440,height:900});await page.goto(origin+'/computadores?unidade='+s.unit);await pulseReady();

@@ -3,6 +3,7 @@ import {createManagementView} from './desktop-management.js';
 const computerReport=createManagementView('report'),workPlan=createManagementView('plan');
 import {editEnvironmentName} from './environment-editor.js';
 import {pendingIndicators,paintPendingIndicators} from './desktop-demand-count.js';
+import {collectionOverview,attachCollectionOverview} from './collection-overview.js';
 import {updateBlocks} from './desktop-blocks.js';
 import {exportInventory} from './desktop-exports.js';
 import {createThumbnailMaintenance} from './desktop-thumbnails.js';
@@ -80,10 +81,9 @@ function stats(){
  const units=filteredCatalogue(),ids=new Set(units.map(u=>u.id)),visits=inventory.visits.filter(v=>ids.has(v.unit_id));
  const metrics=[
   ['Equipamentos','monitor','green',activeUnits().reduce((n,u)=>n+u.values.reduce((a,b)=>a+b,0),0),'Inventário confirmado'],
-  ['Ambientes Mapeados','box','purple',visits.reduce((n,v)=>n+v.environment_count,0),'Ambientes individualizados'],
-  ['Coletas Concluídas','clipboard','orange',visits.reduce((n,v)=>n+v.visits,0),'Vistorias confirmadas']
+  ['Ambientes Mapeados','box','purple',visits.reduce((n,v)=>n+v.environment_count,0),'Ambientes individualizados']
  ];
- return unitCategoryStats(units)+'<section class="stats inventory-stats" aria-label="Indicadores do inventário">'+metrics.map(([label,glyph,color,value,description])=>'<article class="metric '+color+'">'+metricIcon(glyph)+'<div><strong>'+(value===null?'—':num(value))+'</strong><span>'+label+'</span><small>'+(inventoryError?'Consulta indisponível':description)+'</small></div></article>').join('')+'</section>'+pendingIndicators();
+ return unitCategoryStats(units)+'<section class="stats inventory-stats" aria-label="Indicadores do inventário">'+metrics.map(([label,glyph,color,value,description])=>'<article class="metric '+color+'">'+metricIcon(glyph)+'<div><strong>'+(value===null?'—':num(value))+'</strong><span>'+label+'</span><small>'+(inventoryError?'Consulta indisponível':description)+'</small></div></article>').join('')+'</section>'+collectionOverview()+pendingIndicators({collections:false});
 }
 function mapTitle(){if(state.page==='Mapa da Rede')return '';return '<div class="panel-title"><div><h3>'+icon('pin')+'Mapa da Rede Municipal de Educação</h3><small>Paço do Lumiar</small></div></div>';}
 function mapPanel(){
@@ -206,6 +206,7 @@ function render(){
  const content=document.querySelector('#content'),html=pageContent();
  if(renderedPage!==state.page)renderShell(content,html);else updateBlocks(content,html);
  paintPendingIndicators();
+ attachCollectionOverview(state.page==='Panorama');
  computerReport.attach();workPlan.attach();
  equipmentConsultation.attach();
  receivedResults.attach(filteredCatalogue());

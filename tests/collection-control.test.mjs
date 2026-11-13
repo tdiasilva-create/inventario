@@ -8,6 +8,25 @@ const origin='https://painel.test';
 async function setup(t,options){const f=collectorFixture(options);t.after(()=>f.sqlite.close());const sess=await session(f,f.root),env={DB:f.db,AUTH_PEPPER:'TEST',DEBUG_COLLECTION:'1'};return {...f,env,sess,call:(p='',data,opts)=>humanFetch(worker,env,origin,sess,'/api/collection-control'+p,data,opts)};}
 const proposal=(f,status='complete',version=0)=>({unitId:f.ids.progress,status,version,operationId:crypto.randomUUID()});
 const item=(r,id)=>r.data.items.find(u=>u.id===id);
+test('Panorama summary uses the same totals and scope, with no list/inspection query',async t=>{
+ const f=await setup(t);section(f);
+ const compare=async()=>{const listing=await f.call(),summary=await f.call('/summary');assert.equal(summary.status,200);assert.deepEqual(summary.data.totals,listing.data.totals);assert.equal(summary.data.scope,'network');assert.equal(summary.data.items,undefined);assert.ok(summary.data.server_time>0);return summary.data.totals;};
+ assert.deepEqual(await compare(),{none:3,partial:1,complete:0});
+ await f.call('/classify',proposal(f));f.sqlite.exec("UPDATE inspection_sections SET data_json='{\"exists\":\"Sim\"}'");
+ assert.deepEqual(await compare(),{none:3,partial:0,complete:1});
+ await f.call('/classify',proposal(f,'partial',1));assert.deepEqual(await compare(),{none:3,partial:1,complete:0});
+ f.sqlite.prepare("UPDATE units SET active=0 WHERE id=?").run(f.ids.progress);assert.deepEqual(await compare(),{none:3,partial:0,complete:0});
+ const sql=[],prepare=f.db.prepare.bind(f.db);f.db.prepare=q=>{sql.push(q);return prepare(q);};await f.call('/summary');
+ const counts=sql.filter(q=>q.includes('collection_data_presence'));assert.equal(counts.length,1);assert.ok(!counts[0].includes('inspection_sections'));assert.ok(!counts[0].includes('LIMIT 50'));
+});
+test('Panorama summary respects roles, collector isolation and session; failures are not zero',async t=>{
+ const f=await setup(t);
+ for(const role of ['admin','visualizador','operador']){f.sqlite.prepare('UPDATE users SET role=? WHERE id=?').run(role,f.root.id);assert.equal((await f.call('/summary')).status,role==='operador'?403:200);}
+ f.sqlite.prepare("UPDATE users SET role='root' WHERE id=?").run(f.root.id);f.env.APP_KIND='collector';assert.equal((await f.call('/summary')).status,403);delete f.env.APP_KIND;
+ const prepare=f.db.prepare.bind(f.db);f.db.prepare=q=>{if(q.includes('collection_data_presence'))throw Error('TEST database unavailable');return prepare(q);};
+ const result=await f.call('/summary');assert.ok(result.status>=500);assert.equal(result.data.totals,undefined);f.db.prepare=prepare;
+ f.sqlite.exec('DELETE FROM sessions');assert.equal((await f.call('/summary')).status,401);
+});
 function section(f,data={exists:'Não'}){const i=f.sqlite.prepare('SELECT id FROM inspections WHERE unit_id=?').get(f.ids.progress);f.sqlite.prepare("INSERT INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,'C',?,?,?)").run(i.id,JSON.stringify(data),f.root.id,Date.now());return i.id;}
 test('empty registration/visit/states are no data; false, zero and real answers count',async t=>{
  const f=await setup(t);assert.equal(item(await f.call(),f.ids.progress).status,'none');

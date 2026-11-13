@@ -3,20 +3,25 @@ const statuses=['none','partial','complete'];
 const scope=`u.active=1 AND ${collectionScopeSql('u')}`;
 const state=`COALESCE(r.status,CASE WHEN EXISTS(SELECT 1 FROM collection_data_presence p WHERE p.unit_id=u.id) THEN 'partial' ELSE 'none' END)`;
 const base=`FROM units u LEFT JOIN unit_collection_reviews r ON r.unit_id=u.id WHERE ${scope}`;
+const search=" AND (?='' OR instr(lower(u.name_key),?)>0 OR instr(lower(u.name),lower(?))>0)";
+const searchArgs=q=>[q,q.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),q];
+async function collectionTotals(db,q=''){
+ const rows=(await db.prepare(`SELECT ${state} status,COUNT(*) total ${base+search} GROUP BY 1`).bind(...searchArgs(q)).all()).results;
+ return Object.fromEntries(statuses.map(s=>[s,Number(rows.find(r=>r.status===s)?.total||0)]));
+}
 export async function collectionControlRoutes(request,url,user,env,{json,fail,body}){
  if(!url.pathname.startsWith('/api/collection-control'))return null;
  if(env.APP_KIND==='collector'||!['root','admin','visualizador'].includes(user.role))return fail('Acesso restrito ao painel.',403);
  const db=env.DB,path=url.pathname;
+ if(path==='/api/collection-control/summary'&&request.method==='GET')return json({totals:await collectionTotals(db),scope:'network',server_time:Date.now()});
  if(path==='/api/collection-control'&&request.method==='GET'){
   const q=(url.searchParams.get('q')||'').trim(),filter=url.searchParams.get('status')||'',offset=Number(url.searchParams.get('offset')||0);
   if(q.length>120||filter&&!statuses.includes(filter)||!Number.isSafeInteger(offset)||offset<0)return fail('Filtro inválido.');
-  const search=" AND (?='' OR instr(lower(u.name_key),?)>0 OR instr(lower(u.name),lower(?))>0)",needle=q.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(),where=base+search;
-  const counts=(await db.prepare(`SELECT ${state} status,COUNT(*) total ${where} GROUP BY 1`).bind(q,needle,q).all()).results;
-  const totals=Object.fromEntries(statuses.map(s=>[s,Number(counts.find(r=>r.status===s)?.total||0)]));
+  const where=base+search,totals=await collectionTotals(db,q);
   const rows=(await db.prepare(`SELECT u.id,u.name,u.unit_type,${state} status,COALESCE(r.version,0) version,r.actor_name,r.updated_at,
    EXISTS(SELECT 1 FROM collection_data_presence p WHERE p.unit_id=u.id) has_data,
    (SELECT id FROM inspections WHERE unit_id=u.id AND state='open' LIMIT 1) inspection_id
-   ${where} AND (?='' OR ${state}=?) ORDER BY u.name COLLATE NOCASE,u.id LIMIT 50 OFFSET ?`).bind(q,needle,q,filter,filter,offset).all()).results;
+   ${where} AND (?='' OR ${state}=?) ORDER BY u.name COLLATE NOCASE,u.id LIMIT 50 OFFSET ?`).bind(...searchArgs(q),filter,filter,offset).all()).results;
   const total=filter?totals[filter]:Object.values(totals).reduce((a,b)=>a+b,0);
   return json({items:rows,totals,total,offset,pageSize:50,nextOffset:offset+50<total?offset+50:null,server_time:Date.now(),canEdit:user.role==='root'});
  }

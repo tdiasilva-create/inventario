@@ -2,6 +2,7 @@ import {startUsageMeter,usageMeterHtml} from './panel-usage.js';
 import {sharedPanelJson} from './desktop-request.js';
 // Comunicação: leitura por minuto. Providências: consulta compartilhada de 15 s (D-085).
 import {getPendingState} from './desktop-demand-count.js';
+import {getCollectionOverview,collectionLabels,collectionHref} from './collection-overview.js';
 let stop=null;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=n=>new Intl.NumberFormat('pt-BR').format(n);
@@ -15,11 +16,13 @@ export function startPulse(user){
   if(signal.aborted||!node.isConnected)return;const pending=getPendingState(),ready=pending.data&&!pending.error;
   const focused=node.contains(document.activeElement)?document.activeElement:null,focusHref=focused?.getAttribute('href'),focusHardware=focused?.hasAttribute('data-pending-hardware'),focusUsage=focused?.hasAttribute('data-d1-usage');
   const value=k=>ready?num(pending.data[k].total):'—',tone=k=>ready&&pending.data[k].total?'bad':'idle';
+  const coverage=getCollectionOverview();
+  const collectionItems=coverage.active?Object.entries(collectionLabels).map(([key,label])=>item(label,coverage.totals?num(coverage.totals[key]):'—',coverage.error?'bad':key==='complete'&&coverage.totals?.complete?'ok':'idle',collectionHref(key),coverage.error?'Classificações desatualizadas: '+coverage.error:'Toda a rede · Controle das coletas · atualização ao abrir ou pelo botão Atualizar classificações')).join(''):item('Coletas pendentes',value('collections'),tone('collections'),'/coletas-pendentes',pending.error||'Toda a rede · unidades sem conclusão ou com revisita aberta');
   node.dataset.state=fleetError?'erro':sum?'ok':'loading';
   const html=item('Comunicando',sum?num(sum.online):'—',sum?.online?'ok':'idle','/computadores?estado=comunicando',sum?num(sum.computers)+' computador(es) cadastrado(s)':'Consultando comunicação')
    +item('Sem comunicação',sum?num(sum.lost):'—',sum?.lost?'bad':'idle','/computadores?estado=sem-comunicacao','Sem contato com o agente no prazo de monitoramento')
    +item('Sem agente',sum?num(sum.unlinked):'—','idle','/computadores?estado=sem-agente','Computadores sem agente vinculado')
-   +item('Coletas pendentes',value('collections'),tone('collections'),'/coletas-pendentes',pending.error||'Toda a rede · unidades sem conclusão ou com revisita aberta')
+   +collectionItems
    +item('Demandas abertas',value('demands'),tone('demands'),'/demandas',pending.error||'Toda a rede · atendimentos não concluídos')
    +item('Hardware aguardando parecer',value('hardware'),tone('hardware'),'',pending.error||'Toda a rede · alterações sem decisão de root ou admin',true)
    +usageMeterHtml(user)
@@ -33,7 +36,7 @@ export function startPulse(user){
   catch{if(signal.aborted||!node.isConnected)return;sum=null;fleetError=true;window.dispatchEvent(new CustomEvent('semed:fleet-presence',{detail:{error:true}}));}
   finally{busy=false;paint();}
  }
- const timer=setInterval(update,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();},{signal});window.addEventListener('semed:pending-summary',paint,{signal});
+ const timer=setInterval(update,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();},{signal});window.addEventListener('semed:pending-summary',paint,{signal});window.addEventListener('semed:collection-overview',paint,{signal});
  const stopUsage=startUsageMeter(user,paint);
  stop=()=>{clearInterval(timer);controller.abort();stopUsage();};paint();update();
 }

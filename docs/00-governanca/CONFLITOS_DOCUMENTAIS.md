@@ -139,3 +139,6 @@ Novo pedido explícito substitui linhas por computador por uma amostra por unida
 ## D-106 — sequência reta substituída por percurso viário
 
 A limitação documental D105 “tracejado indica sequência, não vias” deixa de ser o comportamento desejado. Pedido de 12/11 exige ruas e ordem exata do root. Preservar regras de localização/atribuição; não interpretar a nova rota como histórico de deslocamento nem otimização de agenda. Contrato/publicação: ../03-painel-desktop/ROTAS_PELAS_RUAS_D106.md.
+
+## D-112 — indicadores de coletas no Panorama
+Pedido posterior substitui Coletas concluídas (visitas) e Coletas pendentes D-085 no Panorama pelos estados administrativos D-111. Não reclassificar visitas nem herdar conclusão técnica como completa. Scope global explícito, como Controle das coletas sem filtro. APIs e páginas técnicas antigas continuam preservadas fora desta apresentação.

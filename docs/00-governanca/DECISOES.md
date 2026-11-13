@@ -735,3 +735,8 @@ D-111 — publicação em 13/11/2026 às 08:16 Fortaleza: migração 0032 e pain
 D-111 — versão final da entrega às 08:19 Fortaleza: `d3441775-76df-4436-b72a-5e4117ce8eef` (100%). Inclui proteção de diálogo contra respostas atrasadas; navegador novamente aprovado.
 
 D-111 — conferência root em produção concluída em 13/11/2026 às 08:39 Fortaleza: listagem 65 sem dados/11 parciais/zero completas, filtros, busca, diálogo e histórico verificados. Nenhuma unidade real classificada para teste; pendência de login resolvida. Mantida a versão publicada às 08:19.
+
+## D-112 — Panorama segue Controle das coletas, 13/11/2026
+Responsável autorizou implementação e publicação real de Sem dados, Coleta parcial e Coleta completa no Panorama, substituindo indicadores antigos de coletas. Mesmos estados/escopo D-111; completa permanece até decisão root. Cabeçalho desta página e cartões usam mesma leitura, links filtrados, atualização ao entrar/manual e nenhuma consulta periódica nova. Demais indicadores, consultas técnicas fora do Panorama e coletor preservados. [Contrato](../03-painel-desktop/PANORAMA_COLETAS_D112.md) e [qualidade](../05-qualidade/PANORAMA_COLETAS_2026-11-13.md).
+
+D-112 — publicado em 13/11/2026, versão `d7ced7c4-ee65-4b65-9bf8-41f93fe967cb`; 285 testes e conferência root às 09:14 Fortaleza aprovados. Panorama/lista: 65 sem dados, 11 parciais, zero completas no momento da leitura; nenhuma classificação real alterada para testes. Sem migração ou consulta periódica adicional.
