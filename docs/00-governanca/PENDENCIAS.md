@@ -378,3 +378,5 @@ D-110 — resolvidos nesta entrega: correção, migração 0031, publicação do
 
 ## D-111 — Controle das coletas, 13/11/2026
 Implementação, testes, migração e publicação concluídos; [registro de qualidade](../05-qualidade/CONTROLE_COLETAS_2026-11-13.md). Classificações de completa serão feitas pelo root após sua conferência real; não foram herdadas das visitas concluídas. Pendência operacional: login root para conferir a nova tela em produção (sessão expirou). Demais pendências, inclusive homologação GPS Android e evolução visual do APK, permanecem fora desta entrega.
+
+D-111 — pendência operacional resolvida em 13/11/2026 às 08:39 Fortaleza: responsável renovou o login root; menu, listagem, filtros, busca por Alana Ludmila, diálogo de classificação e histórico conferidos em produção. Nenhuma classificação real foi modificada durante os testes. Capturas e limites no registro de qualidade.

@@ -733,3 +733,5 @@ Responsável aprovou nova aba, testes e publicação real: Sem dados, Coleta par
 D-111 — publicação em 13/11/2026 às 08:16 Fortaleza: migração 0032 e painel `8de55b71-dd1e-4fad-b3b7-12267b0d7fad`, 100%. 283 testes locais, navegador isolado e rotas privadas conferidos. Coletor/EXE/APK preservados; classificação real fica para root. Conferência visual autenticada depende de renovar a sessão root.
 
 D-111 — versão final da entrega às 08:19 Fortaleza: `d3441775-76df-4436-b72a-5e4117ce8eef` (100%). Inclui proteção de diálogo contra respostas atrasadas; navegador novamente aprovado.
+
+D-111 — conferência root em produção concluída em 13/11/2026 às 08:39 Fortaleza: listagem 65 sem dados/11 parciais/zero completas, filtros, busca, diálogo e histórico verificados. Nenhuma unidade real classificada para teste; pendência de login resolvida. Mantida a versão publicada às 08:19.

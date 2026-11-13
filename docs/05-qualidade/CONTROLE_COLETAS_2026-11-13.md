@@ -34,3 +34,16 @@ Não foram feitas classificações ou exclusões de unidades reais para simular 
 Endereço: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/controle-coletas
 
 Revisão final às 08:19 Fortaleza: `d3441775-76df-4436-b72a-5e4117ce8eef` (100%), com proteção contra resposta atrasada do histórico sobrescrever um diálogo novo. Teste de navegador repetido e aprovado. Versão anterior desta entrega: `8de55b71-dd1e-4fad-b3b7-12267b0d7fad`.
+
+## Conferência autenticada em produção — 13/11/2026, 08:38–08:39 Fortaleza
+
+Após o responsável informar login concluído como root, a navegação pelo menu abriu Controle das coletas no endereço publicado. Foram observados 76 registros elegíveis: 65 Sem dados, 11 Coleta parcial e zero Coleta completa. São números deste instante, não constantes do sistema.
+
+- Filtro Coleta parcial retornou 11 unidades; busca por `alana` reduziu a lista a EMI ALANA LUDMILA, com indicação Coleta parcial e sem decisão registrada.
+- Classificar abriu o diálogo correto para essa unidade, oferecendo parcial/completa e explicando a permanência de completa até alteração pelo root. O diálogo foi cancelado, sem salvar.
+- Histórico consultou o servidor e mostrou ausência de classificação manual, sem erro ou espera permanente.
+- Filtro Coleta completa mostrou zero resultados e mensagem explícita. Limpar restaurou 76 unidades e os três totais.
+- Nenhuma classificação, exclusão ou dado fictício foi gravado nesta verificação. Escrita, histórico e permanência após contribuição já foram exercitados nos testes locais; não foi simulada uma decisão administrativa em unidade real.
+- Capturas reais: `evidencias/controle-coletas-2026-11-13/05-producao-lista.jpg` e `06-producao-dialogo.jpg`. A janela disponível estava estreita; a tabela conserva rolagem horizontal. Conferência visual autenticada encerrada; aba entregue aberta ao responsável.
+
+A pendência de login citada na publicação foi resolvida nesta conferência. Não houve nova publicação ou alteração do código nesta etapa.
