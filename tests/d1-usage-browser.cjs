@@ -12,6 +12,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  const out='docs/05-qualidade/evidencias/medidor-d1-2026-11-12';fs.mkdirSync(out,{recursive:true});
  const shot=async name=>{await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png'});};
  const ready=()=>page.waitForFunction(()=>document.querySelector('[data-d1-usage] b')?.textContent.includes('%'));
+ // Marcar a primeira consulta no relógio do navegador: screenshots/CI também gastam tempo.
+ await page.addInitScript(()=>{const original=window.fetch;window.fetch=function(input,...args){if(input==='/api/root/d1-usage'&&!window.testUsageFirstReadAt)window.testUsageFirstReadAt=Date.now();return original.call(this,input,...args);};});
  try{
   seed(3500000,2000);await page.setViewportSize({width:1440,height:900});await page.clock.install();await page.goto(origin+'/panorama');await ready();
   assert.equal(await page.locator('[data-d1-usage] b').innerText(),'70%');assert.equal(await page.locator('.d1-usage-pill').getAttribute('data-level'),'warning');
@@ -19,7 +21,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await shot('faixa-root-70');await page.locator('[data-d1-usage]').click();await page.getByRole('heading',{name:'Uso diário do D1',exact:true}).waitFor();
   assert.match(await page.locator('.d1-usage-dialog').innerText(),/3\.500\.000/);assert.match(await page.locator('.d1-usage-dialog').innerText(),/21:00/);
   await page.locator('.d1-usage-dialog summary').click();await shot('detalhes-root-70');
-  const firstReads=reads;await page.clock.fastForward(299000);assert.equal(reads,firstReads,'no metrics poll alongside 15s/60s reads');
+  const firstReads=reads,remaining=await page.evaluate(()=>window.testUsageFirstReadAt+299000-Date.now());assert.ok(remaining>0,'test reaches the interval before its deadline');await page.clock.fastForward(remaining);assert.equal(reads,firstReads,'no metrics poll alongside 15s/60s reads');
   seed(1000,85000);await page.clock.fastForward(1100);await page.waitForFunction(()=>document.querySelector('.d1-usage-pill').dataset.level==='high');assert.equal(reads,firstReads+1);assert.equal(await page.locator('.d1-usage-dialog details').getAttribute('open'),'');
   assert.equal(await page.locator('.d1-usage-dialog summary').evaluate(e=>e===document.activeElement),true,'preserve focus during update');
   seed(4750000,0);await page.clock.fastForward(300000);await page.waitForFunction(()=>document.querySelector('.d1-usage-pill').dataset.level==='critical');await shot('aviso-95');

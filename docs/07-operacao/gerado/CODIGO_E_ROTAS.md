@@ -342,7 +342,7 @@ Gerado por `pnpm docs:code`. 421 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/collector-v3.test.mjs](../../../tests/collector-v3.test.mjs) | 75 | 16124 |
 | [tests/d1-budget-soak.cjs](../../../tests/d1-budget-soak.cjs) | 34 | 2969 |
 | [tests/d1-budget.test.mjs](../../../tests/d1-budget.test.mjs) | 142 | 13504 |
-| [tests/d1-usage-browser.cjs](../../../tests/d1-usage-browser.cjs) | 42 | 5915 |
+| [tests/d1-usage-browser.cjs](../../../tests/d1-usage-browser.cjs) | 44 | 6408 |
 | [tests/d1-usage.test.mjs](../../../tests/d1-usage.test.mjs) | 70 | 7761 |
 | [tests/demand-save-browser.cjs](../../../tests/demand-save-browser.cjs) | 33 | 5799 |
 | [tests/demand-unit-search-browser.cjs](../../../tests/demand-unit-search-browser.cjs) | 38 | 7425 |
@@ -401,7 +401,7 @@ Gerado por `pnpm docs:code`. 421 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/map-geography.test.mjs](../../../tests/map-geography.test.mjs) | 17 | 1353 |
 | [tests/operations-browser.cjs](../../../tests/operations-browser.cjs) | 27 | 5618 |
 | [tests/operations-network-browser.cjs](../../../tests/operations-network-browser.cjs) | 37 | 6124 |
-| [tests/panel-async-browser.cjs](../../../tests/panel-async-browser.cjs) | 91 | 10160 |
+| [tests/panel-async-browser.cjs](../../../tests/panel-async-browser.cjs) | 91 | 10270 |
 | [tests/panel-blocks-browser.cjs](../../../tests/panel-blocks-browser.cjs) | 54 | 10811 |
 | [tests/panel-blocks.test.mjs](../../../tests/panel-blocks.test.mjs) | 27 | 2051 |
 | [tests/panel-mesa-browser.cjs](../../../tests/panel-mesa-browser.cjs) | 55 | 6175 |

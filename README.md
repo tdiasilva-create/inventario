@@ -21,6 +21,7 @@ As sessões são separadas. Dados, senhas e tokens de produção não fazem part
 5. [Estado comprovado e pendências](docs/07-operacao/09_ESTADO_E_PENDENCIAS.md).
 6. [Auditoria de funcionamento e lógica](docs/08-auditoria/README.md): mapa de regras, roteiro TXT, testes e versões publicadas.
 7. [Estado D-110 e dependências de migração](docs/07-operacao/11_ESTADO_ATUAL_D110.md), [mapa funcional do código](docs/07-operacao/12_MAPA_CODIGO_E_FLUXOS.md) e [índice gerado de código/API](docs/07-operacao/gerado/CODIGO_E_ROTAS.md).
+8. [Branch de análise de migração para servidor físico](https://github.com/tdiasilva-create/inventario/tree/codex/analise-migracao-servidor-fisico/docs/09-migracao-servidor-fisico): proposta detalhada, decisões, testes de aceite, corte e recuperação; nenhuma migração de produção executada.
 
 ## Tecnologia atual
 
