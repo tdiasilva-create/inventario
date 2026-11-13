@@ -44,15 +44,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   mode='hold';await refresh();await page.waitForFunction(()=>document.querySelector('.monitor-count')?.textContent==='!',{},{timeout:18000});
   assert.match(await page.locator('[data-action=notifications]').first().getAttribute('title'),/demorou/);
   release();mode='pass';await refresh();await page.waitForFunction(()=>document.querySelector('.monitor-count')?.textContent==='1');
-  mode='401';await refresh();await page.waitForFunction(()=>document.querySelector('[data-action=notifications]')?.title.includes('Sessão expirada'));
+  mode='401';await refresh();await page.waitForFunction(()=>document.querySelector('[data-action=notifications]')?.title.includes('Sua sessão expirou. Entre novamente no painel.'));
   mode='pass';await refresh();await page.waitForFunction(()=>document.querySelector('.monitor-count')?.textContent==='1');
   await page.unroute('**/api/inventory/panel-status?**',gate);
-  // Todos os sete indicadores ficam visíveis, sem rolagem horizontal escondida.
+  // Root: sete indicadores operacionais e o medidor D1 (D-109), sem rolagem escondida.
   for(const width of [1366,1200,809,390]){
    await page.setViewportSize({width,height:900});
    await page.evaluate(()=>window.scrollTo(0,0));
    const layout=await page.locator('.pulse').evaluate(el=>{const b=el.getBoundingClientRect();return {width:innerWidth,box:{left:b.left,right:b.right,top:b.top,bottom:b.bottom},items:[...el.querySelectorAll('.pulse-item')].map(n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,text:n.textContent};}),scroll:el.scrollWidth,client:el.clientWidth};});
-   assert.equal(layout.items.length,7);assert.ok(layout.scroll<=layout.client+1);assert.ok(layout.box.top>=0&&layout.box.bottom<=900);
+   assert.equal(layout.items.length,8);assert.equal(await page.locator('.pulse [data-d1-usage]').count(),1);assert.ok(layout.scroll<=layout.client+1);assert.ok(layout.box.top>=0&&layout.box.bottom<=900);
    for(const r of layout.items){assert.ok(r.left>=layout.box.left-1&&r.right<=layout.box.right+1&&r.right<=width+1,r.text);assert.ok(r.top>=layout.box.top&&r.bottom<=layout.box.bottom,r.text);}
    await shot('indicadores-'+width);
   }
@@ -84,7 +84,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.locator('dialog [role=status]').waitFor();release();await page.locator('dialog dd').filter({hasText:'TESTE-PC-001'}).waitFor();
   assert.match(await page.locator('dialog').innerText(),/PARCIAL/);await page.keyboard.press('Escape');await page.unroute(agentRoute,gate);
   assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
-  const result={passed:true,hiddenAbortPreservesRead:true,quickReturn:true,trueErrorsAndTimeouts:true,allSevenIndicatorsVisible:[1366,1200,809,390],immediateAgentFeedback:true,closeCancels:true,retryAndSession:true,writeRequests:writes.length,errors};
+  const result={passed:true,hiddenAbortPreservesRead:true,quickReturn:true,trueErrorsAndTimeouts:true,allEightRootIndicatorsVisible:[1366,1200,809,390],immediateAgentFeedback:true,closeCancels:true,retryAndSession:true,writeRequests:writes.length,errors};
   fs.writeFileSync(out+'/resultado.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
  }catch(e){await shot('falha');throw e;}finally{release();await h.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -25,3 +25,11 @@ Aceite: instruções reproduzíveis com caminhos reais; esquema reproduzível; d
 O banco real, imagens, tokens, keystore Android, executáveis e backups continuam privados. Cinco documentos avulsos já existentes e não rastreados no checkout foram preservados, sem inclusão automática como novas decisões. O código funcional-base é `5cb844b` (D-110), já publicado anteriormente; esta atualização documental não republica os Workers.
 
 A branch de análise propõe arquitetura e tarefas, mas a escolha final de servidor, domínio, banco, continuidade dos agentes, RPO/RTO e janela de corte exige definição do responsável. Não há instalador/Docker de servidor físico pronto nesta entrega.
+
+## Atualização dos testes de transferência
+
+A primeira CI remota (`43349503990`) aprovou regras, builds, documentos e os roteiros anteriores, mas encontrou uma expectativa antiga em `panel-async-browser.cjs`: texto de sessão anterior a D-103. O teste também esperava sete indicadores, antes do medidor root D-109. Ajustadas somente as expectativas para o texto atual e oito indicadores, mantendo as verificações de visibilidade, foco, cancelamento, erros e permissões.
+
+Na conferência dos passos restantes, o teste do medidor somava 299 s após screenshots e podia ultrapassar cinco minutos já decorridos desde a primeira consulta. Passou a marcar o instante da consulta no relógio do navegador e avançar até seu prazo; mantém a exigência de nenhuma leitura extra antes de cinco minutos. Não houve alteração do timer da aplicação.
+
+Reexecutados com sucesso: `test:panel-async:browser`, `test:d1-usage:browser`, `test:map-demands:browser` e `test:panel-performance-round2:browser`. Alterações restritas à automação e documentação; runtime e produção preservados. O resultado da nova CI deve ser consultado no commit correspondente, sem apagar o registro da falha inicial.

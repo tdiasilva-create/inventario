@@ -3589,9 +3589,9 @@
     },
     {
       "path": "tests/d1-usage-browser.cjs",
-      "bytes": 5915,
-      "lines": 42,
-      "sha256": "5c771dc0bcd2993c6f2d875087801cf79cfaef4bfa0e7853c0ab74e08f86574f",
+      "bytes": 6408,
+      "lines": 44,
+      "sha256": "66c4fc741c0ab3222d37e935c336b545c004e3dfff71e06789c5a7adb1341414",
       "imports": [
         "../server/d1-usage.mjs",
         "./helpers/panel-browser.cjs",
@@ -3604,7 +3604,9 @@
         "USAGE_ACCOUNT_ID",
         "USAGE_CACHE"
       ],
-      "apiLiterals": []
+      "apiLiterals": [
+        "/api/root/d1-usage"
+      ]
     },
     {
       "path": "tests/d1-usage.test.mjs",
@@ -4700,9 +4702,9 @@
     },
     {
       "path": "tests/panel-async-browser.cjs",
-      "bytes": 10160,
+      "bytes": 10270,
       "lines": 91,
-      "sha256": "daf18872b1eb10c445779d729bfa87eb236a1f5ca31ff9451cc7665a1be42ce6",
+      "sha256": "d8bf09ed32b1aba6cb8242ca3b3bbb9543053c1b6bdbd4ae295a5a5f48d3b59a",
       "imports": [
         "./helpers/hardware-change.mjs",
         "./helpers/panel-browser.cjs",
