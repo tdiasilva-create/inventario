@@ -18,9 +18,17 @@ Botão Voltar do Android fecha a folha ou volta para Fila antes de sair do app.
 
 ESTADO DESTA ENTREGA
 APK compilado e assinatura verificada. Interface e API testadas localmente.
-Publicação do novo frontend/API aguarda confirmação final do responsável.
-O APK carrega as telas pelo servidor: instalar somente o arquivo NÃO publica
-o novo visual. Antes da publicação, ele continua exibindo o visual já online.
+Novo visual, API e APK publicados em 13/11/2026 às 17:07 Fortaleza, após a
+autorização do responsável. Versão: f9329df4-d5d7-4d24-953c-f9ce056a5914.
+286 testes locais, dois roteiros de navegador e 62 verificações públicas passaram.
+O APK carrega as telas pelo servidor, onde o novo visual já está disponível.
+Use uma conta habilitada como técnico. Ser root, por si só, não habilita esse acesso.
+
+DOWNLOAD EXTERNO DO APK
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+
+APLICATIVO NO NAVEGADOR
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico
 
 COMO ATUALIZAR
 1. Envie este APK ao celular do técnico.
@@ -32,7 +40,7 @@ COMO ATUALIZAR
    anote a mensagem e envie o relato. A assinatura deste arquivo foi comparada
    com a versão oficial 1.0.0 e é a mesma.
 
-ROTEIRO APÓS A PUBLICAÇÃO DA INTERFACE
+ROTEIRO NO AMBIENTE PUBLICADO
 Use demanda autorizada para teste; identifique claramente os registros de teste.
 
 1. ENTRADA E FILA
