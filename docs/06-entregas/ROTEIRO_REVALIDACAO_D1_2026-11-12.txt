@@ -1,0 +1,40 @@
+SEMED — CONFERÊNCIA APÓS REDUÇÃO DAS LEITURAS DO PAINEL
+Publicado em 12/11/2026, 22:43, horário de Fortaleza.
+
+ACESSO
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+1. Atualize a página uma vez para carregar a versão publicada.
+   Confira mapa, resultados, demandas e medidor D1. A aparência permanece igual.
+
+2. Deixe o Panorama aberto por dois minutos.
+   Os dados devem permanecer visíveis, sem piscar, zerar ou ficar presos em carregamento.
+   O número acumulado do medidor não diminui: o objetivo é reduzir o ritmo de crescimento.
+   A atualização do medidor ocorre a cada cinco minutos e pode ter atraso da Cloudflare.
+
+3. Abra Computadores e selecione uma unidade; alterne entre comunicando e sem comunicação.
+   A quantidade e a listagem devem corresponder aos registros existentes.
+   Uma máquina que retomar contato deve atualizar seu estado pelo intervalo normal.
+   O prazo de presença recente continua sendo 17 minutos; perda acima de 48 horas permanece no log.
+
+4. Durante uma atividade real autorizada, conclua uma coleta ou edite um registro publicado.
+   Confira se o painel recebe a alteração na próxima atualização. Não é necessário criar dados fictícios.
+   Rascunhos continuam identificados como parciais e não viram inventário concluído.
+
+5. Quando houver técnico atendendo, confira localização e rota; confira também o sino quando
+   existir alteração real de hardware. Essas funções continuam habilitadas.
+
+6. Compare o consumo em períodos de uso semelhantes.
+   Registre horário de Fortaleza, leitura inicial/final do D1, número de abas abertas,
+   computadores comunicando e usuários em coleta/atendimento. Não confunda soma do dia com ritmo.
+   A projeção de redução não inclui toda a atividade da conta. O gratuito não ficou ilimitado.
+
+RELATO
+Tela / ação:
+Horário inicial e final:
+Número de abas/usuários:
+O que esperava:
+O que aconteceu:
+Mensagem de erro, se houver:
+Consumo inicial e final:
+Não enviar senhas, cookies ou tokens.

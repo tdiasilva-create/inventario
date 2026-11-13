@@ -1,5 +1,6 @@
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {equipmentLinkStateSql,linkFilterValues} from './equipment-link-state.mjs';
+import {readFleetStatic} from './panel-read-cache.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const states=['Aberta','Em atendimento','Aguardando material','Visita agendada','Concluída'];
 const kinds=['Manutenção','Reposição de insumo','Visita técnica','Outro'];
@@ -31,6 +32,11 @@ export const fleetPresenceSql=`SELECT e.unit_id,l.device_id,d.state,p.data_json 
  LEFT JOIN agent_presence p ON p.device_id=l.device_id
  WHERE ${computerWhere}`;
 export const fleetCatalogueSql="SELECT u.id,u.name,u.unit_type,u.active,c.value AS computer_declaration,c.version AS context_version,EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='completed') AS collected FROM units u LEFT JOIN computer_context c ON c.target_id=u.id AND c.kind='unit' WHERE u.unit_type!='Escola conveniada' ORDER BY u.name COLLATE NOCASE,u.id";
+export const fleetMembersSql=`SELECT e.unit_id,l.device_id,d.state
+ FROM inventory_equipment_all e
+ LEFT JOIN agent_equipment_links l ON l.equipment_id=e.id AND l.ended_at IS NULL
+ LEFT JOIN agent_devices d ON d.device_id=l.device_id WHERE ${computerWhere}`;
+export const fleetContactsSql='SELECT device_id,data_json AS presence_json FROM agent_presence WHERE device_id IN (SELECT value FROM json_each(?))';
 export const networkPresenceSql=`SELECT e.id,e.unit_id,l.device_id,d.state AS device_state,p.data_json AS presence_json,
  COALESCE(room.name,json_extract(e.data_json,'$.environmentName'),'Ambiente não informado') AS environment_name,
  e.position_label,u.name AS unit_name
@@ -58,9 +64,12 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   return json({pending:summary.filter(r=>r.status!=='Concluída').reduce((n,r)=>n+r.total,0),summary});
  }
  if(path==='/api/operations/units'&&request.method==='GET'){
-  const units=(await db.prepare(fleetCatalogueSql).all()).results;
-  // Compact presence records only: no technical snapshots, account lists or passwords in this response.
-  const rows=(await db.prepare(fleetPresenceSql).all()).results;
+  const {units,members}=await readFleetStatic(db,fleetCatalogueSql,fleetMembersSql);
+  const ids=[...new Set(members.map(r=>r.device_id).filter(Boolean))];
+  // Always fresh, including heartbeat recovery and timeout without any database write.
+  const contacts=ids.length?(await db.prepare(fleetContactsSql).bind(JSON.stringify(ids)).all()).results:[];
+  const presence=new Map(contacts.map(p=>[p.device_id,p.presence_json]));
+  const rows=members.map(r=>({...r,presence_json:presence.get(r.device_id)||null}));
   const counts=new Map();for(const r of rows){const c=counts.get(r.unit_id)||{computers:0,online:0,lost:0,unlinked:0,other:0};c.computers++;const st=r.device_id?presenceState({state:r.state},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):'unlinked';if(['communicating','communicating_with_failure'].includes(st))c.online++;else if(st==='no_recent_communication')c.lost++;else if(st==='unlinked')c.unlinked++;else c.other++;counts.set(r.unit_id,c);}
   const pending=(await db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id").all()).results;
   return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});

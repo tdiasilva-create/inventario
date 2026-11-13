@@ -720,3 +720,9 @@ pendente medir dia UTC completo; redução por consulta não garante capacidade 
 Responsável autorizou implementação, testes e publicação: medidor ao lado de Hardware aguardando parecer, avisos em 70%, 85% e 95%, atualização a cada cinco minutos, mantendo plano gratuito, localização e alertas. Token Account Analytics Read da conta institucional criado com confirmação específica. Métricas oficiais da conta inteira; KV gratuito compartilhado, nenhuma varredura/gravação no D1 para calcular consumo. Falha preserva última leitura identificada; renovação 21h Fortaleza; previsão estimada. Sem migração ou alterações no coletor/EXE/APK. [Contrato](../04-dados-apis/MEDIDOR_D1_D109.md), [testes e publicação](../05-qualidade/MEDIDOR_D1_2026-11-12.md).
 
 D109 publicado em 12/11 às 22:09 Fortaleza, versão `d1854de6-5289-46e6-8a95-13a658e0fee7`, 100%; coletor/EXE/APK preservados. Conferência root real e 63 verificações públicas aprovadas. Métricas oficiais e histórico visíveis, sem mudanças de plano ou dados de inventário.
+
+## D-110 — consultas de resultados e unidades, 12/11/2026
+
+Responsável autorizou corrigir, testar, comparar consumo e publicar no ambiente real, mantendo gratuito, localização dos técnicos e alertas. Revalidação condicional de resultados por revisão transacional; catálogo estável por isolate, sem conservar presença/GPS/autorização. Migração aditiva 0031, mesmas regras e intervalos. [Contrato](../04-dados-apis/REVALIDACAO_LEITURAS_D110.md) e [aceite/publicação](../05-qualidade/REVALIDACAO_D1_2026-11-12.md). Não equivale a garantia de capacidade ilimitada no gratuito.
+
+D-110 publicado em 12/11, 22:43 Fortaleza: migração 0031 e painel abcfcb97-c87a-4988-b9a1-c051534c31bf (100%). Coletor preservado. 268 testes, navegador e conferência root real aprovados. SQL de negócio remoto: resultados 445→1 e unidades 463→217 nas leituras repetidas; custos iniciais maiores documentados. Consumo diário completo permanece acompanhamento necessário.

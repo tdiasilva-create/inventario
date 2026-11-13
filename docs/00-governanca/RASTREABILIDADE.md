@@ -582,3 +582,9 @@ dump e respostas contendo registros restritos a private-data (fora do Git).
 Pedido do responsável + confirmação de token restrito → server/d1-usage.mjs, worker.mjs (rota root e cron compartilhado), wrangler.jsonc (KV/conta), web/panel-usage.js + panel-pulse.js + painel.css. Testes d1-usage.test.mjs/d1-usage-browser.cjs, regressões de rotas/hardware e documentação [MEDIDOR_D1](../04-dados-apis/MEDIDOR_D1_D109.md). Nenhuma mudança na Base de Coleta, dados oficiais ou protocolos. [Evidências](../05-qualidade/MEDIDOR_D1_2026-11-12.md).
 
 D109 produção → painel `d1854de6-5289-46e6-8a95-13a658e0fee7` 100%, KV agregado gratuito e token restrito; root real conferiu faixa/modal/histórico. 259 testes servidor + runtime + três roteiros browser + 63 verificações públicas. Evidências em medidor-d1-2026-11-12; screenshots reais permanecem locais.
+
+## D-110 — resultados e unidades com menos leituras
+
+Pedido explícito após CONFERENCIA_REDUCAO_D1_2026-11-12.txt → migrations/0031_panel_read_revisions.sql, server/panel-read-cache.mjs, inventory-results.mjs, service-desk.mjs e web/desktop-request.js. Testes panel-read-cache.test.mjs e panel-read-cache-browser.cjs; ensaio scripts/measure-panel-read-cache.mjs com exportação privada. [Contrato](../04-dados-apis/REVALIDACAO_LEITURAS_D110.md), [evidências/publicação](../05-qualidade/REVALIDACAO_D1_2026-11-12.md). TXT original, campos, identidade visual, coleta/EXE/APK e regras de comunicação/alertas preservados.
+
+D-110 produção: migração 0031 + painel abcfcb97-c87a-4988-b9a1-c051534c31bf (100%); coletor c678978a-9e71-4cab-a2dc-9744ec6d6e1c preservado. 268 testes + runtime + browser + 51 checks públicos. Conferência root e custos SQL remotos em REVALIDACAO_D1_2026-11-12.md; roteiro de usuário em docs/06-entregas/ROTEIRO_REVALIDACAO_D1_2026-11-12.txt.

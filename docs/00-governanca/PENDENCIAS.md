@@ -369,3 +369,9 @@ publicação dos dois Workers, conferência root, cron e primeira medição remo
 públicos aprovados. Permanecem: consumo de dias UTC completos com uso efetivo,
 margem de crescimento e GPS Android em campo/tela bloqueada. Não havia técnico
 com posição recente na conferência noturna; função não foi desligada.
+
+## D-110 — redução das leituras repetidas
+
+Correção autorizada de resultados/unidades, com comparação na mesma cópia do banco e regressões de publicação, revogação, comunicação e demandas. Acompanhar estado de publicação no [registro D110](../05-qualidade/REVALIDACAO_D1_2026-11-12.md). Permanecem pendentes os dias UTC completos com tráfego real e a margem para crescimento; ensaio de consultas não é consumo diário. Homologação GPS Android físico/tela bloqueada permanece distinta, sem desativar localização ou alertas.
+
+D-110 — resolvidos nesta entrega: correção, migração 0031, publicação do painel, regressões e conferência root real. Pendência de volume diário/crescimento permanece; localização/alertas continuam habilitados e não se declarou teste físico noturno sem técnicos ativos.

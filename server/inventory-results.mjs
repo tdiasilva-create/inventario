@@ -1,5 +1,6 @@
 import {describePhotos} from './photo-labels.mjs';
 import {questionnaireVersion,problemSummary} from '../web/collector-v2-schema.js';
+import {conditionalResults,finishResults} from './panel-read-cache.mjs';
 const parse=v=>JSON.parse(v||'{}');
 export const latestPublished=`SELECT i.id FROM inspections i WHERE i.state='completed' AND i.id=(SELECT j.id FROM inspections j WHERE j.unit_id=i.unit_id AND j.state='completed' ORDER BY j.completed_at DESC,j.id DESC LIMIT 1)`;
 const blocks=[['C','occurrences','Internet'],['D','occurrences','Rede/Wi-Fi'],['E','occurrences','Energia'],['H','needs','Necessidade de equipamento'],['H','improvements','Demanda geral']];
@@ -18,6 +19,8 @@ export async function inventoryResults(request,url,user,env,{json,fail}){
  if(user.role==='operador')return fail('Consulta gerencial não permitida.',403);
  if(request.method!=='GET')return fail('Consulta disponível somente para leitura.',405);
  const db=env.DB,unitId=url.searchParams.get('unitId')||'';
+ const validation=url.pathname==='/api/inventory/results'?await conditionalResults(request,url,user,db):null;
+ if(validation?.response)return validation.response;
  const sections=(await db.prepare(`SELECT s.*,i.unit_id,i.questionnaire_version,u.name AS unit_name FROM inspection_sections s JOIN inspections i ON i.id=s.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
  const derived=sectionFindings(sections);
  const visits=(await db.prepare(`SELECT v.*,i.unit_id,u.name AS unit_name FROM visit_answers v JOIN inspections i ON i.id=v.inspection_id JOIN units u ON u.id=i.unit_id WHERE u.active=1 AND u.unit_type NOT IN (\'Escola conveniada\') AND i.id IN (${latestPublished}) ${unitId?'AND u.id=?':''}`).bind(...(unitId?[unitId]:[])).all()).results;
@@ -30,7 +33,7 @@ export async function inventoryResults(request,url,user,env,{json,fail}){
   const problemCounts=(await db.prepare(`SELECT e.unit_id,json_extract(e.published_json,'$.priority') AS priority,COUNT(*) AS records ${equipmentBase} ${problemCondition} GROUP BY e.unit_id,priority`).bind(...args).all()).results;
   const summary={infrastructure:derived.filter(x=>!['Necessidade de equipamento','Demanda geral'].includes(x.kind)).length,needs:derived.filter(x=>x.kind==='Necessidade de equipamento').length,general:derived.filter(x=>x.kind==='Demanda geral').length,equipment:problemCounts.reduce((s,x)=>s+x.records,0)};
   const priorities={};for(const x of [...derived,...problemCounts])if(x.priority)priorities[x.priority]=(priorities[x.priority]||0)+(x.records||1);
-  return json({equipment,summary,priorities,units:visits.map(r=>({unit_id:r.unit_id,administrative:parse(r.data_json).administrative,laboratory:parse(r.data_json).laboratory,printers:parse(r.data_json).printers})),notice:'Ocorrências, necessidades e bens com problema são naturezas distintas; não representam automaticamente pendências abertas.'});
+  return finishResults(json({equipment,summary,priorities,units:visits.map(r=>({unit_id:r.unit_id,administrative:parse(r.data_json).administrative,laboratory:parse(r.data_json).laboratory,printers:parse(r.data_json).printers})),notice:'Ocorrências, necessidades e bens com problema são naturezas distintas; não representam automaticamente pendências abertas.'}),validation,db);
  }
  const offset=Number(url.searchParams.get('offset')||0);if(!Number.isSafeInteger(offset)||offset<0)return fail('Página inválida.');
  const kind=url.searchParams.get('kind')||'';const sectionItems=derived.filter(x=>!kind||x.kind===kind);
