@@ -10,7 +10,7 @@ const files=['index.html','desktop.js','painel.css','desktop-icons.js','desktop-
 files.push('login.html','login.css','login.js','assets/prefeitura-paco.png','painel-favicon.svg');
 files.push('desktop-progress.js','desktop-progress-photos.js','desktop-results.js');
 files.push('collector-v3-schema.js','desktop-inventory.js','desktop-agents.js','collector-schema.js','collector-v2-schema.js','visit-schema.js');
-files.push('account.html','account.js','admin-units.js','panel-shell.js','panel-pulse.js','account-shell.js','unit-schema.js','spreadsheet-io.js','vendor/exceljs/exceljs.min.js','vendor/exceljs/LICENSE.txt');
+files.push('account.html','account.js','admin-units.js','panel-shell.js','panel-pulse.js','panel-usage.js','account-shell.js','unit-schema.js','spreadsheet-io.js','vendor/exceljs/exceljs.min.js','vendor/exceljs/LICENSE.txt');
 files.push('photo-viewer.js','vendor/chakra-petch/ChakraPetch-600.woff2','vendor/chakra-petch/LICENSE','vendor/barlow/Barlow-400.woff2','vendor/barlow/Barlow-600.woff2','vendor/barlow/LICENSE');
 files.push('tokens.css','assets/paisagem-coleta.jpg','vendor/chakra-petch/ChakraPetch-400.woff2','vendor/chakra-petch/ChakraPetch-500.woff2','vendor/chakra-petch/ChakraPetch-700.woff2','vendor/barlow/Barlow-500.woff2','vendor/barlow/Barlow-700.woff2','vendor/jetbrains-mono/JetBrainsMono-Variable.woff2','vendor/jetbrains-mono/LICENSE');
 files.push('hardware-attention.js','desktop-notifications.js','desktop-equipment.js','unit-names.js','unit-figures.js');

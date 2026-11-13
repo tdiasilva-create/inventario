@@ -576,3 +576,9 @@ D108 publicado — backup fresco verificado → 0030 aplicada → dois Workers 1
 Medição D1 remota: duas consultas, 1.521→162 linhas; não é total diário.
 Screenshots reais e resumo agregado em evidencias/d1-budget-2026-11-12;
 dump e respostas contendo registros restritos a private-data (fora do Git).
+
+## D-109 — consumo diário real no painel root
+
+Pedido do responsável + confirmação de token restrito → server/d1-usage.mjs, worker.mjs (rota root e cron compartilhado), wrangler.jsonc (KV/conta), web/panel-usage.js + panel-pulse.js + painel.css. Testes d1-usage.test.mjs/d1-usage-browser.cjs, regressões de rotas/hardware e documentação [MEDIDOR_D1](../04-dados-apis/MEDIDOR_D1_D109.md). Nenhuma mudança na Base de Coleta, dados oficiais ou protocolos. [Evidências](../05-qualidade/MEDIDOR_D1_2026-11-12.md).
+
+D109 produção → painel `d1854de6-5289-46e6-8a95-13a658e0fee7` 100%, KV agregado gratuito e token restrito; root real conferiu faixa/modal/histórico. 259 testes servidor + runtime + três roteiros browser + 63 verificações públicas. Evidências em medidor-d1-2026-11-12; screenshots reais permanecem locais.

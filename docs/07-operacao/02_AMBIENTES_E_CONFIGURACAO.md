@@ -38,6 +38,9 @@ Os endereços completos estão no [README da raiz](../../README.md). `workers.de
 | `AGENTES_EXIGIR_AUTORIZACAO` | Variável | `nao` em produção, conforme D-058 |
 | `DB`, `ASSETS` | Bindings | Banco e assets corretos para cada publicação |
 | `PHOTOS` | Binding opcional | Usado pelo adaptador R2; ausente na configuração atual de produção |
+| `USAGE_CACHE` | Binding KV | Painel somente: cache agregado do medidor D1, namespace gratuito `semed-system-usage` |
+| `USAGE_ACCOUNT_ID` | Variável | Conta institucional consultada por Analytics; painel somente |
+| `CLOUDFLARE_ANALYTICS_TOKEN` | Segredo | Token exclusivo Account Analytics Read, restrito à conta; nunca OAuth amplo do Wrangler |
 
 A ausência da variável de autorização de agentes volta ao padrão restritivo do código. Não perdê-la na migração e depois distribuir autorizações por máquina como contorno.
 
@@ -58,3 +61,5 @@ Ter acesso à conta Google no navegador não substitui cliente OAuth, chave de t
 Revisar `scripts/build-desktop.mjs` (gera `runtime-config.js` com URL do coletor), configurações Wrangler, redirecionamentos OAuth, contratos do instalador e scripts de operação. Textos históricos também contêm URLs; mudar um link no README não muda o endpoint nas máquinas instaladas.
 
 Preservar `assets.run_worker_first=true`, `html_handling=none` e o comportamento de rotas/404 de cada interface. Servir arquivos protegidos diretamente pelo servidor estático pode contornar a autorização.
+
+D-109 (12/11/2026): medidor da franquia D1 exclusivo do root, cache KV e Analytics a cada cinco minutos pelo cron de minuto existente. Plano gratuito; sem migração. Procedimento de credencial/binding/rollback e limites em [MEDIDOR_D1_D109](../04-dados-apis/MEDIDOR_D1_D109.md).

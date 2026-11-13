@@ -714,3 +714,9 @@ projeções e cron conferidos; 250 testes locais e 65 verificações públicas
 aprovados. Duas consultas frequentes: 1.521→162 linhas lidas em produção.
 Gratuito, localização/ruas, alertas, intervalos e dados preservados. Continua
 pendente medir dia UTC completo; redução por consulta não garante capacidade ilimitada.
+
+## D-109 — medidor D1 exclusivo do root, 12/11/2026
+
+Responsável autorizou implementação, testes e publicação: medidor ao lado de Hardware aguardando parecer, avisos em 70%, 85% e 95%, atualização a cada cinco minutos, mantendo plano gratuito, localização e alertas. Token Account Analytics Read da conta institucional criado com confirmação específica. Métricas oficiais da conta inteira; KV gratuito compartilhado, nenhuma varredura/gravação no D1 para calcular consumo. Falha preserva última leitura identificada; renovação 21h Fortaleza; previsão estimada. Sem migração ou alterações no coletor/EXE/APK. [Contrato](../04-dados-apis/MEDIDOR_D1_D109.md), [testes e publicação](../05-qualidade/MEDIDOR_D1_2026-11-12.md).
+
+D109 publicado em 12/11 às 22:09 Fortaleza, versão `d1854de6-5289-46e6-8a95-13a658e0fee7`, 100%; coletor/EXE/APK preservados. Conferência root real e 63 verificações públicas aprovadas. Métricas oficiais e histórico visíveis, sem mudanças de plano ou dados de inventário.

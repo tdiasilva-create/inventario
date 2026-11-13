@@ -1059,3 +1059,25 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .technician-avatar{position:relative;display:inline-flex;width:48px;height:48px;flex:0 0 48px;align-items:center;justify-content:center;border:2px solid #fff;border-radius:50%;background:#006d77;color:white;font:600 16px Barlow,sans-serif;box-shadow:0 1px 5px #0005;overflow:hidden;box-sizing:border-box}.technician-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#f7f8f8}.dispatch-technician-marker{background:transparent;border:0}.dispatch-technician-marker:focus-visible{outline:3px solid #ff4b1e;border-radius:50%}.dispatch-member{align-items:center;flex-wrap:wrap}.dispatch-member label{display:flex;align-items:center;gap:10px;flex:1;min-width:160px}.avatar-dialog [data-preview]{margin:16px 0}.avatar-dialog [data-preview] .technician-avatar{width:128px;height:128px;font-size:32px}.avatar-dialog input[type=file]{display:block;max-width:100%;margin-top:8px}.avatar-dialog .ops-actions{margin-top:16px}
 .dispatch-technician-marker::after{content:"";position:absolute;top:48px;left:23px;width:2px;height:28px;background:#006d77;box-shadow:0 0 0 1px #fff;pointer-events:none}
 dialog.ops-dialog.avatar-dialog{padding:24px;width:min(480px,calc(100vw - 32px))}dialog.ops-dialog.dispatch-members-dialog{padding:24px} .dispatch-members-dialog [data-members]{max-height:60vh;overflow:auto} .avatar-dialog [data-preview]{margin:20px 0} .avatar-dialog label{display:block;font-weight:600} .avatar-dialog input[type=file]{display:block;margin-top:8px;padding:10px;border:1px solid var(--border,#ddd);border-radius:6px;width:100%}
+/* D-109 · compact account allowance meter, root only. */
+.d1-usage-pill{--usage-color:#18764c;color:var(--usage-color)}
+.d1-usage-pill[data-level="warning"],.usage-metrics [data-level="warning"]{--usage-color:#8a5a00}
+.d1-usage-pill[data-level="high"],.usage-metrics [data-level="high"]{--usage-color:#b54300}
+.d1-usage-pill[data-level="critical"],.d1-usage-pill[data-level="limit"],.usage-metrics [data-level="critical"],.usage-metrics [data-level="limit"]{--usage-color:#c50029}
+.d1-usage-pill[data-level="unknown"]{--usage-color:#656d77}
+.d1-usage-pill button{color:var(--usage-color)!important;border-bottom:2px solid currentColor!important;cursor:pointer}
+.d1-usage-pill button b,.d1-usage-pill button small{color:inherit!important}
+.d1-usage-pill button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.d1-usage-dialog{width:min(700px,calc(100vw - 32px));max-height:85dvh;margin:auto;padding:24px;border:1px solid #d9dce0;border-top:4px solid #ff4b1a;border-radius:8px;color:#171b1e;background:#fff;overflow:auto;font:15px Barlow,sans-serif}
+.d1-usage-dialog::backdrop{background:#17202a80}
+.d1-usage-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.d1-usage-dialog h2{font-size:22px;margin:0}.d1-usage-dialog p{margin:12px 0;line-height:1.45}
+.d1-usage-dialog button{padding:8px 12px;background:#fff;color:#171b1e;border:1px solid #d9dce0;border-radius:5px;cursor:pointer}
+.usage-metrics{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.usage-metrics section{--usage-color:#18764c;border:1px solid #d9dce0;border-top:3px solid var(--usage-color);border-radius:5px;padding:16px}
+.usage-metrics h3{display:flex;justify-content:space-between;gap:12px;margin:0 0 12px;font-size:16px}
+.usage-metrics progress{width:100%;height:10px;accent-color:var(--usage-color)}
+.usage-secondary{font-size:13px;color:#606970}.usage-warning{background:#fff3dc;padding:12px;border-left:3px solid #a16700}
+.d1-usage-dialog summary{cursor:pointer;font-weight:600;padding:10px 0}.usage-table{overflow:auto}
+.usage-table table{width:100%;border-collapse:collapse;font-size:13px}.usage-table th,.usage-table td{padding:9px;text-align:left;border-bottom:1px solid #e1e4e8}
+@media(max-width:540px){.usage-metrics{grid-template-columns:1fr}.d1-usage-dialog{padding:16px}}

@@ -1,0 +1,38 @@
+{
+  "at": "2026-11-13T01:12:18.253Z",
+  "checks": [
+    {
+      "path": "/api/root/d1-usage",
+      "status": 401,
+      "cache": "no-store"
+    },
+    {
+      "path": "/panel-usage.js",
+      "status": 302,
+      "cache": "no-store"
+    }
+  ],
+  "panelVersion": [
+    {
+      "version_id": "d1854de6-5289-46e6-8a95-13a658e0fee7",
+      "percentage": 100
+    }
+  ],
+  "createdAt": "2026-11-13T01:09:01.344422Z",
+  "collectorUnchanged": "c678978a-9e71-4cab-a2dc-9744ec6d6e1c",
+  "localTests": 259,
+  "additionalBrowserTests": [
+    "d1-usage",
+    "dispatch-road-routing",
+    "hardware-review"
+  ],
+  "publicChecks": 63,
+  "automaticCronVerified": {
+    "attempt": "2026-11-13T01:15:42.160Z",
+    "updated": "2026-11-13T01:15:42.160Z",
+    "read": 344762,
+    "written": 1073,
+    "error": null,
+    "automaticRefresh": true
+  }
+}

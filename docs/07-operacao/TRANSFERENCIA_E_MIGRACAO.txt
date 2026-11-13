@@ -133,6 +133,9 @@ Configuração que precisa permanecer coerente
 | AGENTES_EXIGIR_AUTORIZACAO | Variável | nao em produção, conforme D-058 |
 | DB, ASSETS | Bindings | Banco e assets corretos para cada publicação |
 | PHOTOS | Binding opcional | Usado pelo adaptador R2; ausente na configuração atual de produção |
+| USAGE_CACHE | Binding KV | Painel somente: cache agregado do medidor D1, namespace gratuito semed-system-usage |
+| USAGE_ACCOUNT_ID | Variável | Conta institucional consultada por Analytics; painel somente |
+| CLOUDFLARE_ANALYTICS_TOKEN | Segredo | Token exclusivo Account Analytics Read, restrito à conta; nunca OAuth amplo do Wrangler |
 
 A ausência da variável de autorização de agentes volta ao padrão restritivo do código. Não perdê-la na migração e depois distribuir autorizações por máquina como contorno.
 
@@ -153,6 +156,8 @@ URLs embutidas
 Revisar scripts/build-desktop.mjs (gera runtime-config.js com URL do coletor), configurações Wrangler, redirecionamentos OAuth, contratos do instalador e scripts de operação. Textos históricos também contêm URLs; mudar um link no README não muda o endpoint nas máquinas instaladas.
 
 Preservar assets.run_worker_first=true, html_handling=none e o comportamento de rotas/404 de cada interface. Servir arquivos protegidos diretamente pelo servidor estático pode contornar a autorização.
+
+D-109 (12/11/2026): medidor da franquia D1 exclusivo do root, cache KV e Analytics a cada cinco minutos pelo cron de minuto existente. Plano gratuito; sem migração. Procedimento de credencial/binding/rollback e limites em MEDIDOR_D1_D109 (../04-dados-apis/MEDIDOR_D1_D109.md).
 
 
 ==============================================================================
@@ -362,6 +367,8 @@ pnpm exec wrangler deploy --config wrangler.collector.jsonc
 
 Não executar ambos automaticamente quando só o frontend de um foi alterado. Mudanças de servidor devem considerar os dois, pois compartilham banco e recebem operações distintas. Confirmar que o tráfego está na versão desejada. Há dois agendamentos no painel: manutenção diária 23 3 * * * e monitoramento * * * * *, ambos UTC; não duplicar no coletor. Conferir saúde da última rodada, não apenas a presença da configuração de cron.
 
+D-099 reutiliza o cron de minuto para conferir a agenda durável de provedores: segunda-feira 08h Fortaleza (11h UTC). Migração 0026 precisa existir antes desse código. Conferir provider_report_schedule e a emissão inicial/última em provider_reports; não confundir ativação de cron com sucesso de gravação. Rollback conserva as duas tabelas e os relatórios, sem reverter dados. Contrato e recuperação (../03-painel-desktop/RELATORIO_PROVEDORES_HISTORICO_D099.md).
+
 Conferência após publicação
 
 - Login público e assets essenciais carregam; APIs privadas sem sessão retornam recusa apropriada.
@@ -548,7 +555,7 @@ A autorização está no Worker, não no botão. Mudanças de host/proxy precisa
 
 Hash de senha atual: PBKDF2/SHA-512, 100.000 iterações, salt individual e AUTH_PEPPER adicional. Alterar o pepper sem migração apropriada impede validar senhas existentes. Não restaurar senhas em texto nem resetar todos os usuários silenciosamente durante transferência.
 
-Verificação de novas senhas consulta Pwned Passwords por prefixo de hash. Se o destino bloquear essa saída HTTPS, cadastro/reset/troca podem falhar; registrar essa dependência.
+D-096 (11/11/2026): root informa a senha provisória ao criar um usuário. Senhas provisórias de criação e definitivas aceitam de 6 a 256 caracteres, sem requisito de composição e sem remover espaços. A consulta Pwned Passwords foi retirada; não existe dependência externa para validar uma nova senha. Primeiro acesso e reset administrativo continuam exigindo troca. O reset administrativo conserva a geração aleatória existente; a escolha pelo root foi solicitada para a criação. Os prazos configurados de sessão/provisória e as demais proteções permanecem. Ver aceite e publicação (../05-qualidade/SENHAS_SIMPLIFICADAS_2026-11-11.md).
 
 Google Drive
 
