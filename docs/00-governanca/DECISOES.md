@@ -706,3 +706,11 @@ incremental mantendo todos os snapshots posteriores ao cursor; medição de linh
 e tratamento explícito de cota. Sem mudança de intervalos, protocolo ou permissões.
 [Contrato](../04-dados-apis/ORCAMENTO_D1_D108.md) e
 [testes/publicação](../05-qualidade/REDUCAO_D1_2026-11-12.md).
+
+D-108 — publicada após renovação da cota em 12/11, às 21:02 Fortaleza:
+migração 0030, painel `10317c2a-c246-4ad3-96a1-7081eedd9a79` e coletor
+`c678978a-9e71-4cab-a2dc-9744ec6d6e1c`, ambos 100%. Backup fresco íntegro;
+projeções e cron conferidos; 250 testes locais e 65 verificações públicas
+aprovados. Duas consultas frequentes: 1.521→162 linhas lidas em produção.
+Gratuito, localização/ruas, alertas, intervalos e dados preservados. Continua
+pendente medir dia UTC completo; redução por consulta não garante capacidade ilimitada.

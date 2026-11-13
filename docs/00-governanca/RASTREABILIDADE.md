@@ -569,3 +569,10 @@ GPS/sino/mapa e 250 testes aprovados. Ganhos locais medidos em runtime D1 e
 documentados em [REDUCAO_D1](../05-qualidade/REDUCAO_D1_2026-11-12.md).
 Publicação só após liberação das 21h, conforme solicitação; nenhum teste fictício
 gravado em produção. Custos locais não equivalem a garantia de franquia diária.
+
+D108 publicado — backup fresco verificado → 0030 aplicada → dois Workers 100%
+(versões/horários no registro de qualidade) → zero divergências de projeção/FK →
+65 verificações públicas e navegação root real → cron atualizado às 21:04:42.
+Medição D1 remota: duas consultas, 1.521→162 linhas; não é total diário.
+Screenshots reais e resumo agregado em evidencias/d1-budget-2026-11-12;
+dump e respostas contendo registros restritos a private-data (fora do Git).

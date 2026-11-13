@@ -1,5 +1,6 @@
 SEMED — CONFERÊNCIA APÓS REDUÇÃO DO CONSUMO D1
-Data: 12/11/2026. Usar após confirmação da publicação.
+Data: 12/11/2026. Publicado no ambiente real às 21:02 (Fortaleza).
+Backup e migração conferidos; plano gratuito, localização e alertas preservados.
 
 Painel:
 https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama

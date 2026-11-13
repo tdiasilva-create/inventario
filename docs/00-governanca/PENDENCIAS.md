@@ -362,3 +362,10 @@ e dia UTC completo continuam pendentes. Ensaio de crescimento não garante
 franquia para 200 agentes: cinco painéis por oito horas mais cron já projetam
 5,33 milhões de leituras, sem demais tráfegos. Não reduzir frequências nem
 contratar plano sem decisão posterior. Ver registro de qualidade D108.
+
+D108 — resolvidos em 12/11 após 21h Fortaleza: recuperação, backup, migração 0030,
+publicação dos dois Workers, conferência root, cron e primeira medição remota.
+1.521→162 leituras no conjunto de duas consultas; 250 testes locais e 65 checks
+públicos aprovados. Permanecem: consumo de dias UTC completos com uso efetivo,
+margem de crescimento e GPS Android em campo/tela bloqueada. Não havia técnico
+com posição recente na conferência noturna; função não foi desligada.

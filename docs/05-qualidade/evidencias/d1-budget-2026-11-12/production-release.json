@@ -1,0 +1,93 @@
+{
+  "at": "2026-11-13T00:06:30.616Z",
+  "status": "PASS",
+  "commit": "6d277d8",
+  "migration": "0030_d1_read_budget.sql",
+  "backup": {
+    "passed": true,
+    "exportBytes": 11671070,
+    "exportSha256": "021b1392536dbf4ab48098a4598c923ff56af10a82ce58f256341ac2b645b72e",
+    "originalTablesUnchanged": 86,
+    "preExistingForeignKeyIssues": 0,
+    "projectionMatches": true,
+    "integrity": "ok",
+    "localOnly": true
+  },
+  "versions": {
+    "panel": {
+      "createdAt": "2026-11-13T00:02:17.382606Z",
+      "versions": [
+        {
+          "version_id": "10317c2a-c246-4ad3-96a1-7081eedd9a79",
+          "percentage": 100
+        }
+      ]
+    },
+    "collector": {
+      "createdAt": "2026-11-13T00:02:44.289943Z",
+      "versions": [
+        {
+          "version_id": "c678978a-9e71-4cab-a2dc-9744ec6d6e1c",
+          "percentage": 100
+        }
+      ]
+    }
+  },
+  "productionReadSample": {
+    "scope": "collection counts + operational unit catalogue",
+    "before": 1521,
+    "after": 162,
+    "afterCounts": 3,
+    "afterCatalogue": 159,
+    "writes": 0
+  },
+  "projectionMismatches": 0,
+  "extraStates": 0,
+  "foreignKeyIssues": 0,
+  "counters": [
+    {
+      "state": "not_started",
+      "total": 61,
+      "canonical_total": 61
+    },
+    {
+      "state": "in_progress",
+      "total": 10,
+      "canonical_total": 10
+    },
+    {
+      "state": "preserved",
+      "total": 0,
+      "canonical_total": 0
+    }
+  ],
+  "monitorLastSuccess": "2026-11-13T00:04:42.932Z",
+  "businessCounts": [
+    {
+      "kind": "units",
+      "total": 76
+    },
+    {
+      "kind": "equipments",
+      "total": 86
+    },
+    {
+      "kind": "photos",
+      "total": 107
+    },
+    {
+      "kind": "agent_links",
+      "total": 70
+    }
+  ],
+  "unchangedBaseCounts": true,
+  "publicChecks": 65,
+  "localTests": 250,
+  "realActiveTechniciansObserved": 0,
+  "realComputersCommunicatingObserved": 3,
+  "limits": [
+    "Full UTC-day consumption remains to be measured",
+    "No technician with recent GPS during production UI check",
+    "Authenticated Server-Timing verified locally; production sample uses D1 metadata"
+  ]
+}

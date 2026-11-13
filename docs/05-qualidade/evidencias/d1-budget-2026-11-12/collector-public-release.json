@@ -1,0 +1,22 @@
+{
+  "at": "2026-11-13T00:04:26.286Z",
+  "status": "PASS",
+  "results": [
+    {
+      "path": "/login",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/me",
+      "status": 401
+    },
+    {
+      "path": "/api/units",
+      "status": 401
+    },
+    {
+      "path": "/api/inspections",
+      "status": 401
+    }
+  ]
+}
