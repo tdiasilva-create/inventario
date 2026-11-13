@@ -1,0 +1,664 @@
+SEMED — ANÁLISE PARA MIGRAÇÃO A SERVIDOR FÍSICO
+Referência: 12/11/2026, código funcional D-110 / 5cb844b.
+Branch: codex/analise-migracao-servidor-fisico
+STATUS: PROPOSTA TÉCNICA. Não executa migração ou corte de produção.
+Sem segredos, dumps, fotos operacionais ou binários privados.
+
+==============================================================================
+01_TOPOLOGIA_E_OPCOES.md
+==============================================================================
+
+01 · Topologia e escolhas de arquitetura
+
+ATUAL: dois hosts, um banco, três experiências humanas
+
+flowchart LR
+  OP[Operador no navegador] --> WC[Worker coletor]
+  WIN[Agente Windows] --> WC
+  DESK[Root / admin / visualizador] --> WP[Worker painel]
+  TEC[APK / interface técnico] --> WP
+  WC --> DB[(D1 compartilhado)]
+  WP --> DB
+  WC --> DRIVE[Drive privado]
+  WP --> DRIVE
+  WP --> OSRM[OSRM / FOSSGIS]
+  WP --> KV[KV / Analytics D1]
+
+Entrada dos dois Workers: server/worker.mjs. APP_KIND=collector restringe o aplicativo da coleta. Não criar uma cópia independente de banco por host. As sessões são separadas, mas hashes de usuário e dados de inventário são os mesmos. Técnico é interface exclusiva de atendimento no painel, não outro coletor.
+
+PROPOSTA inicial: migração conservadora em duas etapas
+
+1. Manter SQL/IDs/Drive e lógica de negócio. Criar servidor HTTP Node 24, adaptador compatível com D1 usando SQLite local, serviço de tarefas e proxy TLS. Os dois domínios humanos continuam apontando para a mesma persistência, com contexto de aplicação separado.
+2. Após operação estável e carga medida, decidir se há motivo para PostgreSQL, armazenamento físico de fotos ou retirada completa da borda Cloudflare. Cada mudança posterior tem backup, homologação e corte próprios.
+
+flowchart LR
+  CLIENTES[Coletor / painel / técnico] --> EDGE[TLS / proxy de entrada confiável]
+  LEGADO[Agentes / APK com host antigo] --> PONTE[Worker de compatibilidade proposto]
+  PONTE --> EDGE
+  EDGE --> HTTP[Aplicação Node 24 a implementar]
+  HTTP --> SQL[(SQLite local em SSD)]
+  HTTP --> DRIVE[Drive privado preservado]
+  JOB[Agendador único] --> HTTP
+  HTTP --> OSRM[OSRM com limite compartilhado]
+  SQL --> BKP[Backup consistente e cópia externa]
+
+Este desenho não é infraestrutura já criada. A ponte é opcional e depende de implementação/aceite; não basta mudar DNS, pois workers.dev pertence à Cloudflare. Ela deve encaminhar ao mesmo único backend escritor que atende os domínios novos. Não manter um banco D1 gravando paralelamente a um SQLite físico independente.
+
+Opções de banco
+
+| Opção | Vantagem | Trabalho/limite | Recomendação nesta análise |
+|---|---|---|---|
+| SQLite local | Mesmo dialeto básico, permite preservar migrações e várias consultas | Adaptador D1 obrigatório; um escritor por vez, latência de disco e filas precisam ser medidas | Primeiro candidato para ensaio |
+| PostgreSQL | Melhor isolamento para múltiplos escritores e operação de banco dedicado | Converter SQL JSON, tipos, triggers, views, índices, guardas e códigos de erro; dupla validação semântica | Avaliar se carga/disponibilidade justificarem |
+| D1 mantido | Menor mudança imediata | Continua sujeito à franquia/plataforma atual | Caminho de continuidade durante preparação |
+
+SQLite em WAL permite leitores enquanto há escrita, mas os processos precisam estar no mesmo host; não colocar o arquivo em compartilhamento SMB/NFS. Isso não transforma SQLite em múltiplos escritores simultâneos. Referência SQLite WAL (https://sqlite.org/wal.html).
+
+Para a primeira prova, propor um processo lógico escritor/serviço de banco e conexões controladas. Não iniciar vários processos Node escrevendo livremente por PM2/cluster sem testar serialização, transações e limites. SQLite e PostgreSQL não são escolhas de interface: não precisam mudar a identidade visual nem o questionário.
+
+Borda, domínio e internet
+
+- Cloudflare como entrada/ponte: conserva compatibilidade de hosts antigos e pode fornecer metadados confiáveis de IP/ASN. Mantém dependência e limites do Worker usado como ponte, mesmo que retire o consumo D1.
+- Entrada direta no servidor: exige domínio administrável, HTTPS, firewall, endereço alcançável e atualização de clientes fixos. Provedor/ASN precisa de mecanismo próprio; não existe request.cf no Node.
+- Tunnel: opção de conexão de saída entre servidor e Cloudflare, útil quando não há porta de entrada acessível. Não substitui domínio, segurança da aplicação, backups ou adaptação do runtime. Documentação Cloudflare Tunnel (https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/).
+
+Não se escolhe uma dessas alternativas apenas pela existência de e-mail institucional. Precisamos comprovar quem administra DNS/domínio e rede. Um e-mail @pacodolumiar.edu.ma.gov.br não implica permissão para criar subdomínios.
+
+O que deve permanecer igual
+
+IDs, conta/pepper, permissões, fotos privadas, callbacks autorizados, assinatura do agente, autoria/histórico, parciais, manual de conclusão, demandas, localização efêmera, ordem do root, cron e prazos aprovados. Os componentes de plataforma podem mudar; as regras de negócio não são redefinidas por esta análise.
+
+==============================================================================
+02_SERVIDOR_REDE_E_ACESSO.md
+==============================================================================
+
+02 · Servidor físico, rede e acesso
+
+PROPOSTA de dimensionamento inicial
+
+Estes números são ponto de partida de engenharia, não benchmark do sistema nem garantia para determinada quantidade de usuários. O dimensionamento final depende de agentes ativos, upload simultâneo, CPU, SSD, internet e retenção. A base atual pequena não representa o volume futuro.
+
+| Recurso | Ensaio isolado | Candidato inicial de produção |
+|---|---|---|
+| CPU | 2 núcleos disponíveis | 4 núcleos físicos modernos ou capacidade equivalente reservada |
+| RAM | 8 GB | 16 GB, expansível |
+| Disco | SSD com 256 GB e espaço livre para restauração | Dois SSDs de 500 GB ou mais em espelhamento, monitorados |
+| Backup | Disco/cópia separado do ensaio | Destino externo ao host, cifrado, com histórico e teste de recuperação |
+| Rede interna | Ethernet estável | Ethernet 1 Gbit/s; acesso administrativo segregado |
+| Energia | Ambiente de laboratório | Nobreak, desligamento controlado e recuperação automática testada |
+| Internet | Saída HTTPS | Link estável, upload medido; contingência se disponibilidade exigir |
+
+Espelhamento protege de falha de um disco; não é backup de exclusão, ransomware ou corrupção. Se fotos passarem do Drive para o servidor no futuro, calcular capacidade por quantidade × tamanho médio × versões × retenção × cópias. Os valores acima pressupõem originais no Drive; os 100 TB mencionados na conta não foram medidos nesta tarefa e não são capacidade do servidor.
+
+Sistema operacional e serviços
+
+Proposta: Ubuntu Server LTS ainda suportado, por exemplo 24.04 LTS com atualizações de segurança, ou versão institucional equivalente após validar Node/SQLite. Conferir ciclo de suporte na instalação: ciclo oficial Ubuntu (https://ubuntu.com/about/release-cycle). Não instalar uma versão sem suporte só para copiar um roteiro.
+
+Se o hardware usa Windows por obrigação institucional, preferir VM Linux com recursos reservados, disco local, inicialização automática e backup consistente. Isso exige autorização do administrador do host. Não há neste projeto serviço Windows do backend pronto; o serviço Windows existente é o agente de inventário.
+
+Serviços A IMPLEMENTAR: proxy HTTPS, aplicação Node, executor único de tarefas, supervisão de processos, logs rotativos, backup consistente e monitor de saúde. Diretórios propostos, não existentes: /opt/semed/releases/ para releases, /var/lib/semed/ para banco, /etc/semed/ para configuração restrita. Manter dados fora da pasta de cada release.
+
+Rede e TLS
+
+1. Identificar IP local reservado, operadora, IP público/CGNAT, firewall e pessoa responsável pelo roteador.
+2. Escolher domínio/subdomínios que a Secretaria realmente possa administrar. Separar host do painel e do coletor para preservar sessões/contexto.
+3. Definir entrada direta HTTPS ou tunnel autenticado. Se direta, publicar somente porta 443; administração por VPN/rede restrita. Não expor arquivo SQLite, PostgreSQL, SMB, RDP ou console de debug à internet.
+4. Provisionar certificado válido e renovação automática testada. HTTPS é necessário para cookie Secure, câmera, GPS e integrações.
+5. Limitar hosts aceitos; não formar URLs de callback/redirect a partir de Host ou X-Forwarded-* arbitrários.
+6. Sincronizar horário com fonte confiável. Conferir UTC no servidor e Fortaleza apenas na apresentação/agendamento de negócio.
+
+Medir latência e envio de fotos do celular pela internet móvel, não só na LAN. A escola precisa alcançar o endereço mesmo fora da rede da Secretaria.
+
+Como preparar acesso para a implantação futura
+
+- Disponibilizar SSH pela rede administrativa/VPN/tunnel aprovado, com conta individual de implantação e autenticação por chave pública.
+- Conceder sudo somente para tarefas necessárias e documentadas; aplicação roda com usuário de serviço sem login interativo. Não executar aplicação como root.
+- Entregar endereço/porta/usuário e a impressão digital da chave do host por canal institucional. A chave privada fica no computador/cofre autorizado; não colar senha, chave ou token no chat/repositório.
+- Conferir acesso no computador que realizará a implantação, comandos remotos, cópia de arquivo e elevação controlada antes de agendar o corte. Não presumir que esta sessão tenha acesso permanente ao novo servidor.
+- Nomear responsável local para energia, console físico e recuperação da rede caso o acesso remoto caia.
+- Criar credenciais de recuperação separadas, registrar quem pode usá-las e como revogar acessos após a transferência.
+
+Informações que a equipe deve devolver
+
+Modelo/CPU/RAM/discos, espaço livre, saúde dos SSDs, SO/versão, virtualização, IP local, CGNAT/IP público, controle de DNS, método de entrada, disponibilidade de VPN/SSH, janela permitida, responsáveis, cópia externa e metas de recuperação. Não incluir senhas nesses registros públicos.
+
+Sem esses dados, podemos desenvolver e testar os adaptadores localmente, mas não afirmar que um servidor específico está pronto para receber produção.
+
+==============================================================================
+03_ADAPTACAO_DO_CODIGO.md
+==============================================================================
+
+03 · Adaptação do código para sair do runtime Workers
+
+A IMPLEMENTAR. O repositório contém o backend funcional Workers. Não contém um serviço HTTP Node de produção nem um adaptador SQLite de produção. Testes em memória servem de especificação auxiliar, não de instalador pronto.
+
+Matriz de trabalho
+
+| Origem atual | Adaptação necessária | Aceite |
+|---|---|---|
+| server/worker.mjs: fetch, scheduled | Servidor Node convertendo HTTP para Request/Response; ponto de entrada de tarefas separado | Mesmo status/cabeçalhos/corpo por rota, sem alterar assinatura |
+| env.DB | Implementar contrato prepare/bind/first/all/run/batch/exec usado no código | Mesmas consultas, shapes de retorno, atomicidade e erros |
+| env.ASSETS.fetch | Servir somente build da aplicação correta, atrás das regras atuais | Login público; APIs/HTML/ativos protegidos continuam sujeitos à política atual |
+| env.PHOTOS | Não usado na produção Drive; adaptação R2 apenas se for escolhida | Não cair silenciosamente em disco público |
+| env.USAGE_CACHE | Manter KV via integração ou substituir somente cache do medidor | Não usar como fonte autoritativa de sessão/dados |
+| ctx.waitUntil / cron | Executor que aguarda conclusão, registra falha e impede concorrência indevida | Sem tarefas perdidas no encerramento do processo |
+| request.cf, CF-Connecting-IP | Canal de borda confiável ou enriquecimento ASN próprio | IP real sem confiar em cabeçalho forjável; provedor nunca inventado |
+| collectorOrigin, runtime-config.js | Configuração por ambiente e allowlist explícita | Atalhos, login, redirects e callbacks para o host correto |
+| request-timing.mjs / D1 meta | Métricas do adaptador coerentes; distinguir SQL de quota D1 | Não reportar contadores estimados como métricas Cloudflare |
+| Cache D-110 por binding | Objeto estável do DB por instância e revisões transacionais | Edits invalidam; sessão/presença/posição sempre atuais |
+
+Entrada HTTP e corpo bruto
+
+Preservar método, pathname, query, bytes do corpo e cabeçalhos usados pela assinatura. A conversão Node → Fetch deve aceitar streaming/buffer dentro dos limites reais e tratar cancelamento, abort/timeout e backpressure. Não fazer JSON.parse + JSON.stringify no proxy antes da validação do agente. Não redirecionar POST de heartbeat/inventário para outro domínio com 301/302 como estratégia de migração.
+
+Aplicar os limites de corpo existentes nas rotas humanas, binárias e de agente. Uma configuração global permissiva para upload não deve liberar corpos enormes em login/QR. Proxy e aplicação devem concordar sobre esses limites. Rejeitar requisição maior com resposta explícita, sem deixar upload como confirmado.
+
+Restituir todos os cabeçalhos de segurança e Set-Cookie, inclusive atributos Secure/HttpOnly/SameSite/Path. Não transformar respostas 401/403/409/410/422/429/503 em HTTP 200. Não registrar corpo, senha, QR, tokens ou localização em logs públicos de acesso.
+
+Persistência: compatibilidade D1 é comportamento, não só nome de método
+
+Antes de escolher biblioteca, levantar todos os métodos usados (índice estático + busca no código). O adaptador deve cobrir:
+
+- prepare(sql).bind(...args) com NULL, texto, número e BLOB; binding posicional sem interpolação.
+- first()/first(coluna) distinguindo ausência de linha; all() com results e metadados esperados; run() com changes real, não sucesso fictício.
+- batch(statements) em transação, resultado ordenado e rollback integral se qualquer instrução falhar. Os CHECKs/guardas de agente, optimistic locking, recibos e projeções dependem disso.
+- SQLite JSON, CTEs, RETURNING, ON CONFLICT, constraints, índices parciais, triggers e views usados pelas 31 migrações.
+- Conversão BLOB consistente para miniaturas; não transformar bytes em texto/base64 implicitamente no banco.
+- Contagem de alterações compatível com as condições do código; erros de constraint devem manter o código de negócio esperado sem vazar SQL.
+- Foreign keys habilitadas em cada conexão, transações e timeout de locks. Política de retry limitada, com idempotência. Repetir operações não idempotentes após erro ambíguo pode duplicar dados.
+
+node:sqlite é candidato porque já é usado nos testes, mas sua API síncrona pode bloquear o event loop. Para produção, comparar executor dedicado/worker thread e filas de escrita; não bloquear GPS e heartbeat durante relatório/exportação longa. Documentação Node 24 DatabaseSync (https://nodejs.org/download/release/v24.22.1/docs/api/sqlite.html). Fixar versão Node/SQLite e testar atualizações de segurança no destino, sem presumir que todo Node 24 tenha o mesmo SQLite.
+
+PostgreSQL, se escolhido
+
+Não aplicar SQL SQLite diretamente. Converter JSON functions/operadores, booleanos, datas/épocas, BLOB→bytea, changes(), last_insert_rowid, rowid quando houver, PRAGMAs e regras de conflito/retorno. Recriar 68 triggers e duas views semanticamente, além dos índices/constraints. Não eliminar as guardas de transação por incompatibilidade sintática.
+
+Preparar testes de equivalência por consulta e migração de dados tipada. Contagem de linhas igual é insuficiente: comparar NULL/zero, decimais, textos Unicode, JSON, ordenação/collation, snapshots e vínculos. Essa opção tem uma trilha própria de implementação e maior superfície de regressão.
+
+Assets, contexto de aplicação e sessões
+
+Hoje assets.run_worker_first=true garante que o Worker avalie a política antes da entrega correspondente. No servidor físico, um location / estático genérico pode contornar isso. Preservar a lista pública efetiva de login/técnico/identidade e manter as APIs de dados autenticadas; não aplicar bloqueio genérico que impeça o login técnico público.
+
+Painel e coletor devem chegar com APP_KIND correto definido por configuração confiável de host/processo. Um parâmetro enviado pelo cliente não pode trocar a aplicação ou abrir APIs root. Cache privado de bundles versionados pode continuar; respostas de dados permanecem revalidadas/autorizadas conforme cada rota. Não cachear cookies, sessão, API de GPS ou metadados de fotos globalmente.
+
+Caminhos de código que merecem revisão dirigida
+
+server/agentes/nucleo/d1-store.mjs (transações/guardas); server/collector*.mjs (publicação/locks); server/photo-storage.mjs (binários/crypto); server/google-auth.mjs (callback e URL); server/technical-dispatch.mjs (session/GPS); server/dispatch-road-routing.mjs (limite global); server/panel-read-cache.mjs e migração 0031 (invalidação); server/d1-usage.mjs (métricas de plataforma).
+
+Criar testes dos adaptadores antes de alterar os módulos de negócio. Idealmente reutilizar o módulo fetch e isolar diferenças de infraestrutura. Nenhum caminho server/node-*.mjs mencionado numa futura tarefa deve ser tratado como existente até ser implementado e revisado.
+
+==============================================================================
+04_BANCO_E_RESTAURACAO.md
+==============================================================================
+
+04 · Banco, cópia consistente e restauração
+
+ATUAL: esquema reproduzido
+
+31 arquivos SQL ordenados, 88 tabelas de aplicação, 58 índices explícitos, duas views e 68 triggers. O dicionário (../07-operacao/gerado/DICIONARIO_DADOS.md) lista colunas, tipos, defaults, PK e FKs. O JSON (../07-operacao/gerado/schema.json) contém SQL de objetos e SHA-256 de cada migração. Inclui miniaturas binárias, referências Drive e tokens cifrados; o dump real é privado.
+
+d1_migrations é controle do serviço e não integra a contagem de 88 tabelas de aplicação. Exportações podem incluir objetos de controle; classificá-los durante o ensaio, sem descartar tabelas desconhecidas automaticamente. D1 é baseado em SQLite, mas exportação precisa ser validada no runtime escolhido. Guia oficial de importação/exportação D1 (https://developers.cloudflare.com/d1/best-practices/import-export-data/).
+
+Grupos que não podem ser separados
+
+| Grupo | Preservação exigida |
+|---|---|
+| Usuários/sessões/perfis/configuração | IDs, hashes/salt, credential_version, must_change, habilitação técnico, auditoria; pepper correspondente fora do dump |
+| Unidades/cadastro | IDs, tipo real, INEP/NULL, nome, gestor, coordenadas e campos escolares opcionais; não reclassificar pelo nome |
+| Visitas/assuntos | ID, versão do formulário, estados, versões, autoria, respostas atuais e publicadas |
+| Equipamentos/ambientes | ID permanente, vínculo de unidade/ambiente, posição, nomes administrativos e origem manual/agente |
+| Publicação | Snapshots e totais correspondentes à mesma conclusão; não recalcular com respostas de rascunho |
+| Históricos/exclusões | Recibos, alterações, arquivos de equipamentos retirados, motivos, autores e datas |
+| Imagens | Foto/target/visita, estado ready, provedor/file ID, fila de exclusões, miniaturas e versões |
+| OAuth | Integração, pasta, tokens cifrados e eventos; chave AES-GCM fora do dump |
+| Agentes | Instalações/dispositivos/chaves públicas, vínculo, nonces, desafios/QR válidos, recibos, snapshots, presença e localização administrativa |
+| Monitoramento | Baselines, último snapshot processado, eventos, decisão, leitura por usuário e vínculo com demanda |
+| Demandas/técnicos | Ordem, atribuições, eventos/recibos, versão, atendimento ativo, posições efêmeras e perfis de avatar |
+| Relatório/otimizações | Histórico semanal imutável, projeções D-108 e revisões/triggers D-110 |
+
+Ao importar histórico com coordenadas efêmeras, não reexibir posição antiga como atual. Validar timestamp, sessão e atendimento ativo; executar a política de limpeza existente somente no ambiente/horário correto. Não criar trilha permanente como efeito colateral de backup ou de uma nova tabela de logs.
+
+Dois caminhos de restauração que não se misturam
+
+Banco vazio de desenvolvimento: aplicar migrações 0001–0031 em ordem, com registro de hashes e testes. Seed sintético só em banco vazio isolado. bootstrap-auth.mjs contém DELETE e não é ferramenta de recuperação de produção.
+
+Banco completo restaurado de produção: importar o dump consistente no destino vazio, conferir esquema/objetos e estabelecer controle de migrações já aplicadas. Não aplicar todas as migrações novamente sobre tabelas restauradas. Só executar migrações novas posteriores ao ponto do backup após revisão/ensaio.
+
+Não renomear 0015_questionario_v3.sql, reordenar SQL ou editar migração já aplicada para facilitar importação. Preservar os bytes dos SQLs; .gitattributes marca migrações como -text por causa dos hashes.
+
+Ensaio de restauração antes de qualquer corte
+
+1. Obter export privado com instante, código, esquema e hash; salvar inventário de objetos e totais por tabela em material privado.
+2. Criar diretório/banco exclusivo de ensaio. Bloquear saída para Drive real, envio de agentes e tarefas destrutivas. Não publicar o clone restaurado na internet com contas reais.
+3. Inspecionar SQL/PRAGMAs/ordem de criação/carga. O export pode conter tabelas, triggers e projeções já materializadas: restaurar sem duplicar incrementos. Ensaiar exatamente o arquivo e estratégia que serão usados no corte.
+4. Importar, capturar falhas e recusar restauração parcial. Se for necessário desabilitar FKs durante carga por dependência cíclica, fazê-lo somente em banco novo de ensaio, reativar e exigir foreign_key_check vazio antes de qualquer uso. Não desabilitar integridade no servidor em operação.
+5. Executar integrity_check, foreign_key_check, comparar objetos/índices/views/triggers e tipos dos campos. Conferir também chaves lógicas sem FK explícita.
+6. Comparar contagem e hash canônico das linhas por tabela, ordenadas por chave estável. BLOB comparado como bytes, JSON/texto sem conversão de significado; identificar diferenças esperadas somente se registradas.
+7. Conferir consultas de negócio: lista/categoria das unidades, ambientes, parcial/publicado, fichas/nomes, fotos por ID, agente ativo versus encerrado, histórico, demandas e relatórios semanais.
+8. Repetir teste com transação interrompida, erro de constraint e resposta perdida; verificar que recibos/versões impedem duplicação.
+9. Medir duração real de exportação, transporte, importação, validação e abertura; esses tempos determinam janela e RTO.
+
+Apenas contagem igual não prova equivalência. Índices e triggers fazem parte do funcionamento, não são dispensáveis para ganhar tempo. A view inventory_equipment_all, por exemplo, não deve virar uma cópia de tabela que duplica equipamentos.
+
+Política de backup PROPOSTA
+
+Definir RPO (perda máxima de dados tolerada) e RTO (tempo máximo para recuperar) antes da instalação. Frequência/retencão precisam ser aprovadas pela instituição; não estabelecer prazos de eliminação de histórico nesta migração.
+
+Para SQLite local ativo, usar mecanismo de backup consistente (API de backup ou alternativa validada), não copiar apenas o arquivo .sqlite enquanto há WAL aberto. Conferir restauração, hash, criptografia e espaço livre. SQLite Backup API e alternativas (https://sqlite.org/backup.html).
+
+Propor cópias em mídia/local distinto, inclusive fora do prédio, com acesso mínimo e teste recorrente de restauração. Backup deve incluir: banco, manifesto dos arquivos Drive, cópia recuperável das fotos/avatares, configurações, hashes do release e acesso às chaves em cofre separado. Sincronizar pastas não basta como versionamento contra exclusão.
+
+Não armazenar dumps/credenciais no Git público, ticket, chat ou imagem de container. O histórico de relatório de provedores e logs de auditoria contém informações operacionais e acompanha a mesma proteção do banco.
+
+Quando optar por PostgreSQL
+
+Criar exportação tipada e versão de esquema-alvo, em vez de importar SQL SQLite diretamente. Validar tradução de cada campo/tabela e executar equivalência funcional. Mantê-la como trilha separada do primeiro port de runtime evita mudar, ao mesmo tempo, domínio, autenticação, protocolo e dialeto do banco sem localizar a causa de erros.
+
+==============================================================================
+05_DRIVE_SEGREDOS_E_SEGURANCA.md
+==============================================================================
+
+05 · Fotos, OAuth, segredos e acesso
+
+PROPOSTA: conservar o Drive no primeiro corte
+
+Hoje originais são privados no Drive. D1 guarda metadados e miniaturas JPEG derivadas limitadas a 320 × 320 px / 64 KB, conforme D-072. Avatares técnicos são PNGs derivados até 128 px / 64 KB no Drive, com metadados/versões/eventos no D1. Não ampliar a exceção das miniaturas para guardar originais em SQL.
+
+Conservar o mesmo provedor, cliente OAuth e IDs reduz a quantidade de mudanças simultâneas. Migrar o banco não exige mover arquivos Google. Entretanto é necessário provar leitura, upload, renovação e exclusão autorizada a partir do servidor novo; acesso no navegador não prova que a integração do backend esteja pronta.
+
+Nomes de segredos que a equipe precisa receber em cofre
+
+| Nome atual | Uso | Efeito de perder/trocar indevidamente |
+|---|---|---|
+| AUTH_PEPPER | Componente do hash de senha | Senhas existentes deixam de validar |
+| GOOGLE_CLIENT_ID | Cliente que autorizou o Drive | Outro cliente não é automaticamente autorizado aos mesmos arquivos |
+| GOOGLE_CLIENT_SECRET | Fluxo OAuth/renovação | Renovação e autorização podem falhar |
+| GOOGLE_TOKEN_KEY | AES-GCM de tokens persistidos, 32 bytes base64 | Tokens do dump não podem ser decifrados |
+| CLOUDFLARE_ANALYTICS_TOKEN | Leitura Account Analytics do medidor D1 | Medidor indisponível; não deve impedir login/negócio |
+| Chave Android + configuração privada | Assinar atualização do APK distribuído | Novo certificado não atualiza a instalação existente |
+| Segredo/certificado da ponte, se escolhida | Autenticar borda → servidor | Origem/metadados podem ser forjados se mal configurados |
+
+O último item é novo/proposto, não variável já implementada. Registrar responsável, finalidade e rotação, nunca o valor. PHOTO_STORAGE_PROVIDER, APP_KIND, AGENTES_EXIGIR_AUTORIZACAO e hosts são configurações, não substituem os segredos. Não copiar o token amplo do Wrangler para o backend.
+
+Google OAuth e novo endereço
+
+Callback atual: /api/root/google/callback no host do painel. Cadastrar exatamente a URL HTTPS nova no cliente OAuth correto antes de iniciar reautorização. Testar state, cookie temporário, retorno ao root e renovação. Não criar automaticamente outro projeto/cliente ou tornar pasta pública para contornar falha.
+
+O escopo atual é https://www.googleapis.com/auth/drive.file. Preservar conta, pasta e referências do app; autorização nova não deve ser considerada acesso irrestrito a todo Drive. Fluxo OAuth web server e redirect URI (https://developers.google.com/identity/protocols/oauth2/web-server).
+
+Os dois contextos da aplicação compartilham a mesma integração/chave. Se só um servidor recebe o segredo, a foto pode aparecer no painel e falhar no coletor. Provar as duas direções e permissões com perfis reais de homologação; nunca enviar foto de teste ao cadastro oficial sem autorização específica.
+
+Envio/consistência de arquivos
+
+Não existe commit distribuído atômico entre Drive e banco. Preservar estados pendentes/ready, recibos, filas de exclusão e tratamento de órfãos. No corte, drenar uploads e confirmar seus metadados ou bloquear novos envios de forma explícita. Arquivo recebido sem ACK não é sucesso para o usuário.
+
+Preparar manifesto privado: photo ID, provedor, file ID, tamanho/hash quando disponível, alvo/unidade/visita e estado; conferir amostra de leitura e cobertura de todos os IDs. Avatares entram em manifesto próprio. Miniaturas precisam manter o vínculo e fallback para original. Original jamais deve ser substituído pelo derivado no backup.
+
+Se futuro armazenamento físico for escolhido, criar adaptador privado com leitura autenticada/streaming, nomes internos por ID, proteção de path traversal, limites de MIME/tamanho, backup e reconciliação. Não devolver caminho de disco ao navegador nem servir fotos via pasta pública. Essa mudança fica fora da primeira migração proposta.
+
+Autenticação SEMED a preservar
+
+PBKDF2 SHA-512 com 100.000 iterações, salt por usuário e pepper. Criação por root com senha provisória escolhida; senha definitiva 6–256 caracteres, composição livre, sem consulta de vazamentos. Primeiro acesso/troca obrigatória seguem dados existentes, não são redefinidos pelo destino.
+
+Cookie __Host-semed, Secure/HttpOnly/Path=/ e política SameSite atual; CSRF e Origin em escritas humanas; sessão/usuário/versão da credencial verificados a cada requisição. Mudança de domínio pode exigir novo login; isso não autoriza reset de senha. Definir se sessões antigas serão explicitamente encerradas no corte ou preservadas no host da ponte, com regra equivalente e autoria.
+
+Root/admin/operador/visualizador têm capacidades diferentes. Técnico é habilitação específica. Não liberar administração porque a chamada veio da LAN nem confiar em role/userId enviado pelo frontend. Rotas de máquina assinadas não usam sessão humana e mantêm verificações próprias.
+
+Logs e configuração
+
+Logar ID da requisição, família de rota, status, duração e erro sanitizado. Não registrar bodies, cookies, Authorization, QR/token, código de instalação, localização exata, senha ou tokens Google. Endereços de rota contendo parâmetros sensíveis precisam de sanitização. Métricas agregadas não devem exibir SQL.
+
+Aplicação com usuário de serviço e acesso somente aos diretórios necessários. Cofre/arquivo de ambiente restrito, fora do checkout/release e do diretório servido. Backups cifrados e chave de recuperação separada. Somente restore isolado de prova demonstra que o conjunto banco + arquivos + chaves está recuperável.
+
+==============================================================================
+06_AGENTES_APK_E_ENDPOINTS.md
+==============================================================================
+
+06 · Continuidade dos agentes, QR, APK e conexão externa
+
+O maior ponto de compatibilidade
+
+Agentes Windows instalados usam o endereço do coletor; o APK técnico contém a origem do painel em Java. Alterar um link do README ou hospedar a interface em novo IP não muda esses clientes. Não há neste trabalho prova de que todas as versões Windows aceitem alteração de endpoint remotamente.
+
+O host *.workers.dev não é um domínio transferível para o DNS do servidor físico. Precisamos escolher uma estratégia antes de retirar os Workers.
+
+| Estratégia | O que exige | Limite |
+|---|---|---|
+| Manter Workers como ponte dos hosts antigos | Proxy autenticado para origem física, um backend escritor, validação de corpo/metadados e testes | Continua usando Cloudflare e seus limites; ponte não existe pronta |
+| Configurar agentes existentes para domínio novo | Verificar suporte no EXE efetivamente distribuído e mecanismo autorizado de atualização | Não presumir capacidade porque o servidor conhece o dispositivo |
+| Distribuir novo EXE/APK | Fonte/build exatos, assinatura, manutenção de identidade e atualização em lotes | Trabalho nas máquinas; requer ensaio com fila pendente e reinstalação não destrutiva |
+
+Proposta preferida para investigar: ponte temporária, mantendo as identidades existentes; depois transição gradual para domínios controlados pela instituição. Não decidir a contratação/domínio nem cortar o host legado nesta etapa.
+
+Instalações e identidade Windows
+
+INSTALADOR_OFICIAL.md (../04-dados-apis/INSTALADOR_OFICIAL.md) e JSON (../04-dados-apis/INSTALADOR_OFICIAL.json) registram o EXE escolhido por D-056 e adendos posteriores. Há referências 0.1.6 e 0.1.8; levantar quais builds realmente estão instalados. Escolha de um arquivo não comprova funcionamento em todas as máquinas.
+
+A chave privada CNG é individual/não exportável; preservar identidade no Windows e correspondência da chave pública no banco. Não exigir /PURGE, revogar instalações ou gerar outra identidade como rotina de migração. Receber fonte/configuração/build do EXE de forma privada; o backend não substitui essa entrega.
+
+Cadastro automático sem autorização de lote usa AGENTES_EXIGIR_AUTORIZACAO=nao; omitir a variável volta ao padrão restritivo. QR continua temporário e o vínculo à unidade exige usuário autenticado. Renovar QR expirado não exige inventar novo equipamento nem apagar histórico.
+
+Protocolo assinado que o proxy deve respeitar
+
+Fontes: server/agentes/nucleo/crypto.mjs, worker.mjs, d1-store.mjs e testes de agentes.
+
+Mensagem canônica: cinco linhas separadas por LF, sem LF final:
+
+METHOD
+PATH
+TIMESTAMP
+NONCE
+SHA256_HEX_DO_CORPO_BRUTO
+
+Assinatura ECDSA P-256/SHA-256 no formato IEEE P1363 (r||s, 64 bytes), base64url sem padding. Chave pública JWK EC/P-256; identificador de chave segue o contrato do código. Cabeçalhos x-semed-*, método/caminho e corpo precisam chegar intactos à validação. A host não é uma linha dessa mensagem, mas segurança TLS e allowlist continuam necessárias.
+
+Não aceitar mensagens só porque o proxy está autenticado: manter assinatura, limites de tempo, nonce, anti-replay e recibos no backend. Não consumir um nonce em dois bancos independentes nem repetir escrita por tentativa de proxy sem respeitar a idempotência do protocolo.
+
+Endpoints indispensáveis
+
+- POST de máquina sob /api/agent/v1/: enrollment-challenge, enrollments, enrollment-status, enrollment-renew, pairings/confirm-device, heartbeat, inventory, config, rotate-key.
+- Pareamento humano: pairings/preview, pairings/claim, pairings/catalog, pairings/claim-status, com métodos/permissões reais do código.
+- Localização humana: /api/inventory/equipment-location e consulta de recibo/status; permissões de visita/trava continuam.
+- Consulta/histórico e revogação administrativa permanecem com seus perfis. Não liberar todo prefixo /api/agent anonimamente.
+
+Teste crítico: interromper a resposta depois do commit e reenviar exatamente o comando. Deve retornar o recibo correspondente, sem duplicar cadastro, foto, evento, vínculo ou demanda.
+
+IP público e provedor: adaptação obrigatória
+
+Hoje server/agentes/connection.mjs observa conexão somente após heartbeat vivo validado, usando request.cf.asOrganization/asn e CF-Connecting-IPv6/CF-Connecting-IP. Também recusa observação quando chega CF-Worker. No Node esses metadados não existem automaticamente. Encaminhar somente os mesmos cabeçalhos pode perder o provedor ou ser recusado pela regra atual.
+
+Possibilidades a implementar:
+
+1. Borda lê metadados originais confiáveis e transmite envelope autenticado contendo IP/ASN/organização/timestamp, ligado ao corpo/caminho da requisição. Origem valida assinatura/expiração, remove cabeçalhos de entrada forjáveis e só grava após a assinatura válida do agente. Definir formato/anti-replay e autenticação de transporte; não existe envelope pronto hoje.
+2. Origem direta identifica IP real de transporte/proxy confiável e consulta base ASN/licenciamento/atualização escolhidos. Campo ausente fica ausente; PTR/localização geográfica não substituem identificação de rede.
+
+Metadados de Request no Workers (https://developers.cloudflare.com/workers/runtime-apis/request/). Não aceitar provider enviado pelo agente ou por cliente público como se fosse observação Cloudflare. IP interno permanece inventário separado. Histórico de provedores e último contato já recebidos são preservados na importação.
+
+APK exclusivo do técnico
+
+android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/Api.java fixa a origem do painel e não segue redirects HTTP automaticamente. MainActivity.java restringe HTTPS/host da WebView; Java e frontend precisam concordar. LocationService.java e NoticeJob.java dependem da mesma origem/sessão.
+
+Atualização nativa: manter pacote br.gov.ma.pacodolumiar.semed.tecnico, restaurar o mesmo keystore, aumentar versionCode/versionName, compilar e validar assinatura. Guia de build e limites (../../android/technician/README.md). A ferramenta atual usa JDK21/Android35/Build Tools35 no Windows; não está pronta como pipeline Linux genérico.
+
+Se private-data/android-signing não existir, o script pode criar outra chave: não executar assim para atualizar usuários já instalados. Não confundir sucesso de build com compatibilidade do APK distribuído. GPS em segundo plano/tela bloqueada e restrições de bateria exigem aparelho físico.
+
+Ensaio mínimo de compatibilidade
+
+Uma máquina com cada versão efetivamente distribuída: identidade/vínculo existentes, heartbeat, inventário, retorno após internet interrompida, fila pendente e QR renovado. Testar nova instalação separada, sem reciclar a identidade existente. No celular, leitura/claim, foto, aplicativo técnico, GPS/aceite/conclusão e permissão negada. Confirmar que o painel recebeu o mesmo equipment/device/unit ID; nenhum dado duplicado por mudança de host.
+
+==============================================================================
+07_ROTINAS_LOCALIZACAO_E_DESEMPENHO.md
+==============================================================================
+
+07 · Rotinas, técnicos, alertas e desempenho
+
+Agendador único A IMPLEMENTAR
+
+O export scheduled() em server/worker.mjs precisa ser executado por serviço de tarefas no destino. Não iniciar uma cópia por processo HTTP nem por host de interface. O sistema atual tem cron somente no Worker painel. Na transição, desligar o executor anterior antes de habilitar o novo escritor/executor.
+
+| Rotina atual | Momento | O que preservar |
+|---|---|---|
+| runAgentMonitoring | Cron de minuto | Cursor incremental, baseline, deduplicação e recuperação de erro; não pular snapshots intermediários |
+| runProviderReports | Chamado pelo minuto; decide vencimento | Segunda 08:00 Fortaleza, uma emissão por período, sem fabricar semanas ausentes |
+| cleanDispatchPositions | Cron de minuto | Remover posições não autorizadas/expiradas; não arquivar trilha |
+| refreshD1Usage | Cron respeitando cinco minutos | Analytics/KV independente de falha/quota do D1 |
+| manutencaoAgentes | 03:23 UTC diariamente | Retenção aprovada, nonces/desafios/recibos vencidos; preservar snapshots/referências que a política mantém |
+
+Agendador proposto: supervisão pelo SO, lease/lock com vencimento e execução idempotente; ao reiniciar não lançar dezenas de execuções atrasadas em paralelo. Registrar último início, sucesso, falha sanitizada e atraso. Distinguir falha de uma rotina das demais, preservando o comportamento relevante de Promise.allSettled/erros no código atual.
+
+Em banco restaurado de ensaio, cron fica desligado e saídas para integrações reais bloqueadas. Caso contrário, tarefas podem purgar dados antigos, apagar arquivos reais ou gerar um relatório como se fosse produção.
+
+Técnicos e localização
+
+Decisões atuais: root ordena fila única, cada demanda até dois técnicos habilitados, cada técnico até um atendimento ativo. Aceite exige posição válida; conclusão por um integrante conclui para a equipe com autoria. Não alterar essas regras ao trocar a tecnologia de localização.
+
+O servidor valida tempo/precisão/coordenadas; a versão analisada exige observação nos últimos 90 s, tolera até 30 s no futuro e precisão positiva até 5.000 m. Esses limites são do código existente, não metas de qualidade de GPS. Posição antiga não deve ser exibida como recém-observada porque foi importada agora.
+
+APK solicita localização a cada 15 s/10 m e está sujeito ao Android. O mapa usa posição recente e sessão/atendimento correspondentes. Encerramento, revogação ou perda da autorização interrompem o fluxo; localização não vira histórico permanente. Recuperação de app/permissão precisa ser testada no aparelho.
+
+Trajeto por ruas
+
+dispatch-road-routing.mjs mantém a ordem do root, usa OSRM/FOSSGIS autorizado e não otimiza a sequência. Valores da versão analisada: posição fresca até 180 s, cache de rota 120 s, deslocamento de referência 75 m, snap máximo 500 m; janela global de chamadas de 1,2 s, lease 15 s, timeout 9 s e cache curto de falha 30 s.
+
+Preservar controle global no banco/serviço compartilhado: cache por processo sozinho pode fazer vários processos excederem o limite combinado. Falha de OSRM não desenha reta fingindo rota calculada. Enviar somente coordenadas necessárias, nunca nomes, contas ou descrição da demanda. Não armazenar histórico de GPS para reaproveitar rotas sem decisão específica.
+
+Hardware, comunicação e mapa
+
+- Hardware confiável alterado gera evento deduplicado; sino conta pendentes de parecer, leitura não resolve. Modal abre por interação e mantém contexto/antes/depois, autor/data e encaminhamento idempotente.
+- Demanda aberta mantém anel no mapa conforme D-094, cor do centro segue tipo da unidade. Clique e tooltip seguem D-095; não reverter por usar outro servidor.
+- Presença recente usa prazo padrão de 17 min; falta de heartbeat não comprova que a máquina esteja desligada.
+- Perda inesperada vira log após mais de 48 h, não sino. Suspensão/desligamento informados e vínculos encerrados/revogados são estados diferentes.
+- Escola online é a métrica aprovada de pelo menos um agente comunicando; offline não é prova de queda de todos os links de internet. Manter filtros e listas do modal.
+
+Testar passagem do tempo sem receber eventos novos: uma implementação que só atualiza status quando grava heartbeat pode manter máquinas online indefinidamente.
+
+Desempenho: não perder as correções D-103–D-110
+
+Conservar bundles/hash, pausa da aba oculta, consultas compartilhadas de 15/60 s, batch de fotos sem carregar BLOB desnecessário, redução de redesenho do mapa, índices/projeções e revisões transacionais. Resultado 304 só após autorização fresca e revisão correspondente; presença/demandas permanecem frescas mesmo com catálogo em cache. Não criar cache global de usuário/role/cookie/GPS.
+
+Medições D-110 já existem, mas não representam benchmark do servidor físico. Definir cenário reproduzível: agentes a cada 300 s (200 máquinas são 40 heartbeats/min em média, sem contar inventário, retry ou rajada de boot), painéis a cada 15/60 s, técnicos ativos, coletas concorrentes e fotos. 40 requisições/min não são 40 leituras SQL; cada requisição envolve autenticação/consultas/escritas e índices.
+
+Executar no destino com dados sintéticos proporcionais ao volume previsto e pelo menos duas vezes a simultaneidade planejada, como proposta de margem a confirmar. Incluir rajada de reinício, relatórios/exportações, upload simultâneo, disco lento e perda de rede. Medir p50/p95/p99, erro, filas, tempo de lock, CPU/RAM, disco/WAL, bytes de tráfego e idade do GPS; não apenas tempo de abrir a página na LAN.
+
+Não prometer suporte a 200 ou mais computadores com base só no tamanho atual do SQL. Registrar capacidade observada, limites e configuração usada. Configurar limites de concorrência/retry sem alterar o protocolo que os agentes já entendem.
+
+Medidor D1 após migração
+
+Se D1 deixar de receber dados de negócio, seu medidor continua refletindo apenas a conta Cloudflare. Não mostrar zero de D1 como prova de saúde do servidor. Implementar, em módulo separado, saúde de HTTP, SQLite/PostgreSQL, disco/espaço, backup, Drive, cron, GPS e fila; definir alarmes e responsáveis.
+
+Se houver ponte Worker/KV, quotas desses componentes continuam relevantes. Retirar D1 não elimina automaticamente limites da borda, internet do prédio, OSRM ou Google. Nenhuma mudança de plano foi feita nesta análise.
+
+==============================================================================
+08_CORTE_RETORNO_E_HOMOLOGACAO.md
+==============================================================================
+
+08 · Corte, retorno e homologação
+
+Runbook de planejamento. Não executar diretamente em produção. Os comandos dependem de hostname, caminho, banco, acesso e runtime ainda não implementados. Não há flag de manutenção completa pronta que se possa simplesmente ligar hoje.
+
+Fase A — preparação, sem alterar a produção
+
+1. Aprovar arquitetura, domínio, responsáveis, RPO/RTO e janela. Inventariar todos os clientes/integrações/escritores: dois Workers, cron, raiz/admin/operadores, APK, agentes Windows, uploads/callbacks e scripts administrativos.
+2. Implementar adaptadores e barreira de corte. Novas alterações devem ter configuração por ambiente e teste de compatibilidade, sem modificar diretamente os dados reais.
+3. Preparar servidor isolado, segredos de homologação e backups privados. Restaurar uma cópia sem egress de mutações para Drive real nem cron de manutenção ativo.
+4. Executar matriz funcional e ensaio de carga. Usar tempo real de restore/validação para agendar janela, não estimativa baseada só em bytes.
+5. Ensaiar todo o procedimento de corte e de volta usando cópias. Registrar tempo, hashes, IDs e resultado de cada etapa.
+
+Fase B — barreira de escrita a implementar
+
+Precisamos impedir escrita tanto na origem antiga quanto em instâncias restauradas, inclusive jobs, agents, callbacks e arquivos. Só bloquear botões no navegador é insuficiente. Propor estado de manutenção/geração de destino validado no servidor e proxy, com mensagens de erro/retry compatíveis.
+
+Definir como comandos já em trânsito terminam ou são recusados sem ACK falso. Drenar uploads, completar callbacks autorizados ou cancelá-los de forma explícita. Garantir que um agente não descarta mensagem só porque recebeu status de erro incompatível: testar versão real e política de fila antes do corte. A fila do coletor vive na aba; não há offline durável que proteja tudo automaticamente.
+
+Não liberar dois escritores independentes durante propagação DNS. Se os hosts antigos permanecerem, passam a encaminhar ao novo backend único. Se o backend novo falhar, o antigo não pode voltar a gravar silenciosamente em uma base desatualizada.
+
+Fase C — janela aprovada
+
+| Passo | Responsável / evidência de saída |
+|---|---|
+| Aviso operacional e pausa de novas coletas/atendimentos | Responsável; tratar atendimentos ativos e fotografias em envio |
+| Suspender cron/mutações e drenar requisições | Operação; nenhum escritor remanescente |
+| Export final de banco e manifesto de arquivos | Operação; data/hora, schema, release, hash e tamanho |
+| Transferência cifrada/verificação de hash | Operação; origem = destino, sem anexar dump no Git |
+| Restore final em destino vazio | Implementação; integridade, FKs e equivalência aprovadas |
+| Configuração segura de runtime/hosts/segredos | Implementação; callback, sessão, origem de IP, permissões e assets conferidos |
+| Testes ainda com escrita de usuários bloqueada | Homologação; login e consultas, leitura de fotos e agent handshake controlado |
+| Apontar entrada/ponte para escritor novo | Operação; registrar instante e geração de corte |
+| Liberar canário e depois usuários | Responsável; critérios de aceite abaixo, sem escritor antigo |
+| Habilitar somente o cron novo | Operação; execução única e monitor de atraso |
+| Observar janela combinada e manter backup de origem | Equipe; reconciliação de filas, uploads, hardware e GPS |
+
+Durante o corte, dados que só existam na memória do navegador podem ser perdidos ao fechar a aba. Planejar conclusão de envios/rascunhos antes da pausa; não pedir para todos recarregarem sem avaliar pendências.
+
+Matriz mínima de homologação no destino
+
+| Cenário | Evidência exigida |
+|---|---|
+| Quatro perfis, técnico habilitado/desabilitado | Mesmos 401/403 e capacidades; operador sem painel gerencial |
+| Login/expiração/troca de senha/CSRF | Senhas existentes válidas, troca não se repete indevidamente; Origin forjada recusada |
+| Unidade/ambiente/equipamento | Mesmo ID, nome corrigível, nulo/zero preservado; dados publicados e parciais distintos |
+| Dois usuários editam a mesma ficha | Conflito/versão/trava explícitos, sem sobrescrita silenciosa |
+| Conclusão/revisita | Pendências por ficha visíveis; publicação só após validação; histórico preservado |
+| Foto/câmera/galeria | Upload, ready, leitura no painel, miniatura/fallback, renovação Google e erro seguro |
+| Upload interrompido/ACK perdido | Sem sucesso fictício, duplicação nem perda de referência |
+| Agente existente e novo | Identidade/chave/vínculo mantidos; enrollment/QR/claim e recibos funcionais |
+| Alteração de peça | Baseline e cursor corretos; um evento, contexto/unidade/equipamento e parecer/demanda |
+| Presença e log | 17 min e mais de 48 h testados com relógio controlado em homologação; suspensão/reconexão distintas |
+| IP público/provedor | Origem confiável, IP interno separado; cabeçalho forjado não se torna informação oficial |
+| Dois técnicos | Ordem/atribuições, um ativo cada, GPS com permissão, conclusão por equipe remove posição |
+| Rota/OSRM | Parte da localização válida, ruas, ordem preservada, indisponível sem fallback reto |
+| Relatório semanal | Um registro por período, uma linha por unidade, Fortaleza, histórico imutável |
+| Cache/concorrência | 304 autorizado, edição invalida, relógio altera presença sem heartbeat, erro não vira zero |
+| Reinício/energia/disco cheio | Sem corrupção ou ACK de escrita perdida; recuperação e alerta de falha |
+| Backup/retorno | Restauração integral demonstrada dentro do RTO proposto |
+
+Referências dos testes já existentes: tests/security.test.mjs, auth-flow.test.mjs, collector-v3.test.mjs, collector-review-pending.test.mjs, agentes.test.mjs, agentes-open-enrollment.test.mjs, photo-storage.test.mjs, google-worker.test.mjs, technical-dispatch.test.mjs, dispatch-road-routing.test.mjs, agent-monitoring.test.mjs, hardware-review.test.mjs, provider-report-history.test.mjs, panel-read-cache.test.mjs. São ponto de partida; adaptador/bridge/corte exigem testes novos e aparelhos reais.
+
+Critérios de parada
+
+Não liberar se houver divergência não explicada de IDs/dados/objetos, FK inválida, login/permissão incompatível, foto inacessível, assinatura de agente quebrada, escrita em dois bancos, cron duplicado, observação IP forjável, perda de recibos ou restauração não demonstrada. Problemas de quota/Drive/OSRM devem ser claramente separados de falha do banco.
+
+Para desempenho, estabelecer metas após baseline no servidor: bloquear liberação se a carga acordada provoca erros recorrentes/locks prolongados, fila crescente ou atraso inaceitável de GPS. Os valores alvo devem ser registrados antes do teste; não aprovar uma configuração só porque passou com um usuário.
+
+Retorno: antes e depois de novas escritas
+
+Antes de aceitar qualquer escrita no destino: manter escritor novo bloqueado, reverter entrada e cron para origem consistente e documentar o aborto. Conferir clientes e artefatos antes de liberar.
+
+Depois de aceitar escritas no destino: não restaurar simplesmente o backup antigo. Ele não contém novos equipamentos, fotos, demandas ou mensagens já confirmadas. Congelar ambos os caminhos, extrair/reconciliar alterações desde o marco de corte ou produzir export consistente de volta, preservar IDs/recibos e testar compatibilidade com o servidor antigo. Essa ferramenta/procedimento também precisa ser implementada e ensaiada antes da liberação.
+
+Snapshots de VM e voltar o DNS, sozinhos, não resolvem perda de escrita. Aceitar perda dentro de RPO é decisão explícita do responsável, não atalho técnico silencioso. Manter origem preservada e acessos de recuperação até encerramento formal da migração.
+
+==============================================================================
+09_BACKLOG_E_DECISOES.md
+==============================================================================
+
+09 · Backlog executável e decisões pendentes
+
+Decisões do responsável antes da implantação
+
+| ID | Decisão | Proposta desta análise | Por que bloqueia o corte |
+|---|---|---|---|
+| M-01 | Servidor/SO e responsável de infraestrutura | Linux LTS, SSD local, 16 GB/4 núcleos como ponto inicial | Sem recursos/rede não há destino para homologar |
+| M-02 | Banco do primeiro corte | SQLite local compatível; PostgreSQL se carga exigir | Define adaptador, restauração e cron |
+| M-03 | DNS/domínio e modo de entrada | Domínios institucionais controlados, HTTPS | Sessão, câmeras, GPS, OAuth e URLs dependem disso |
+| M-04 | Continuidade de hosts legados | Investigar ponte temporária Worker → servidor | Agentes/APK possuem origens já distribuídas |
+| M-05 | Fotos na primeira etapa | Preservar Drive/cliente/pasta/chaves | Trocar provedor simultaneamente amplia risco de órfãos |
+| M-06 | RPO/RTO, retenção e destino de cópia | Definir com a instituição, ensaiar recuperação | Não há prazo de recuperação garantido hoje |
+| M-07 | Janela de corte e tratamento de trabalho em andamento | Pausa combinada, drenar envios e atendimentos | Coletor não tem offline durável e GPS é efêmero |
+| M-08 | Volume e simultaneidade esperados | Inventariar agentes, operadores, técnicos, fotos e painéis | Sizing/limites precisam de cenário realista |
+| M-09 | Gestão de segredos e assinatura Android | Cofre institucional e responsável substituto | Perda de chave pode impedir acesso/fotos/atualização |
+| M-10 | Atualização dos clientes e observação pós-corte | Canários por versão real, depois expansão gradual | Não basta teste de navegador/fixture |
+
+Estas perguntas não exigem resposta para concluir a documentação/Git. Exigem decisão antes de mudar produção. Nenhuma delas revoga permissões, localização ou alertas aprovados; são escolhas de infraestrutura.
+
+Entregas técnicas em ordem
+
+| Etapa | Trabalho e pontos do código | Testes/saída obrigatória |
+|---|---|---|
+| P0 — inventário | Fixar commit, versões, 31 migrações, inventário privado EXE/APK, hosts/configuração e dependências | Hashes, responsáveis, baseline sem segredo; parte documental entregue nesta branch |
+| P1 — adaptador DB | Contrato D1, serialização, atomicidade, JSON/BLOB/erros, revisions/cache | Mesmo resultado da suíte SQLite/Worker; rollback e concorrência |
+| P2 — runtime HTTP | Adaptar fetch/scheduled/assets, host/app, corpo bruto, HTTPS/cookies/CSRF | Paridade por família de endpoint e limites; permissões negativas |
+| P3 — integrações | Drive/OAuth, conexão IP/ASN confiável, OSRM global, métrica de host | Upload/renovação/rota e cabeçalhos forjados; falhas isoladas |
+| P4 — compatibilidade | Ponte ou atualização EXE/APK, assinatura Android e endpoints | Windows/celular reais, QR/ACK perdido, identidade persistente |
+| P5 — operação | systemd/supervisão, scheduler único, logs sanitizados, backups e alertas | Reinício/crash/disk full/recuperação; atraso de jobs |
+| P6 — corte | Barreira de escrita/geração, dreno, restore, reconciliação/retorno | Ensaio completo sem dois escritores ou perda de ACK |
+| P7 — homologação/carga | Cenário acordado e matriz do capítulo 08 | Resultados medidos, comparação e aceite do responsável |
+| P8 — produção | Janela autorizada, canários e expansão, observação | Registro de versão/instante, reconciliação, retorno disponível |
+
+As etapas P1–P8 não foram implementadas nesta entrega. Não há estimativa confiável de horas antes de decidir M-01–M-04 e testar o destino. Produzir um Dockerfile ou serviço vazio não fecha essas lacunas.
+
+Arquivos novos prováveis, ainda PROPOSTOS
+
+Um entrypoint HTTP Node, adaptador de persistência, adaptador de assets, configuração por host, transporte autenticado da ponte, serviço agendador, scripts de backup/restore/validação, migração de controle de escrita se necessária, testes de paridade/carga e manifestos de implantação. Os nomes/caminhos finais serão definidos na implementação e registrados no índice de código.
+
+Não tratar o arquivo de exemplo local Wrangler como configuração física. Não colocar senhas em .env.example. Não versionar banco/Drive/EXE/keystore para tornar um tutorial autocontido.
+
+Riscos prioritários e mitigação
+
+| Risco | Mitigação verificável |
+|---|---|
+| Divisão de dados entre D1 e servidor | Barreira de corte + backend escritor único + teste de requisição em trânsito |
+| Quebra de agentes já instalados | Preservar corpo/rota/chave/recibo; testar versões reais, ponte ou atualização aprovada |
+| Perda de fotos ou tokens | Banco + manifesto/cópia Drive + chave correspondente + leitura/renovação no destino |
+| GPS como histórico indevido | Manter sessão/atendimento/expiração; logs sem coordenadas e limpeza existente |
+| SQLite bloqueando interface | Executor/filas, consultas limitadas, índices, WAL e teste de carga/disco |
+| Informações falsas de provedor | Canal de borda autenticado ou fonte ASN escolhida; rejeitar cabeçalho forjado |
+| Jobs duplicados | Único executor, lease/idempotência, desligamento explícito da origem |
+| Rollback com perda de escrita | Reconciliador/restore de volta ensaiado; não voltar dump antigo após ACK novo |
+| Dependência de uma pessoa/um disco | Cofre, cópias externas, responsável substituto e recuperação comprovada |
+
+O que não faz parte desta migração
+
+Redesenhar coletor/painel, reduzir perguntas, alterar senha/perfis, redefinir status online, excluir dados de teste/produção, trocar endereço escolar, reclassificar categorias, mover fotos para área pública, mudar intervalo/retencão dos agentes sem decisão ou contratar plano pago. Cada um seria outra solicitação funcional, não requisito implícito para hospedar.
+
+==============================================================================
+10_CHECKLIST_TRANSFERENCIA.md
+==============================================================================
+
+10 · Checklist e registro para a equipe receptora
+
+Modelo de acompanhamento. Não marcar como concluído sem evidência. As escolhas propostas não são aprovações do responsável.
+
+A. Base documental e código
+
+- [ ] Registrar commit exato a implantar, branch, data e responsável.
+- [ ] Ler precedência/decisões e distinguir código atual de propostas da branch.
+- [ ] Reproduzir pnpm install --frozen-lockfile, testes e builds com Node24/pnpm11.25.
+- [ ] Reproduzir pnpm docs:schema, pnpm docs:code, pnpm docs:txt, pnpm check:docs.
+- [ ] Conferir catálogo de 31 migrações e guardar hashes; nunca editar SQL já aplicado.
+- [ ] Verificar assinatura/código exatos do EXE e APK realmente distribuídos.
+
+B. Inventário privado, fora do Git
+
+- [ ] Dump consistente, schema/migration ledger, horário/hash e totais privados.
+- [ ] Manifesto e cópia recuperável de originais Drive, avatares e vínculo dos IDs.
+- [ ] Segredos correspondentes em cofre, responsável titular e substituto.
+- [ ] Keystore Android/configuração e certificado da versão distribuída.
+- [ ] Fonte/build/configuração de cada EXE em uso, inclusive possibilidade de trocar endpoint.
+- [ ] Configuração institucional Cloudflare/Google/DNS e acesso de recuperação.
+- [ ] Lista dos atendimentos/coletas/envios em andamento para planejar corte.
+
+C. Ambiente físico
+
+- [ ] CPU/RAM/disco/RAID/saúde/UPS/rede inventariados.
+- [ ] SO e runtime suportados, usuário de serviço, diretórios e permissões.
+- [ ] HTTPS/domínios/renovação e origem confiável para IP externo.
+- [ ] SSH/VPN e console de recuperação testados, sem senha no chat/repo.
+- [ ] Monitoramento e cópia externa, teste de restauração e espaço de reserva.
+- [ ] RPO/RTO, retenção, simultaneidade e janela aprovados.
+
+D. Implementação e homologação
+
+- [ ] Runtime HTTP e adaptadores reais implementados/revisados.
+- [ ] DB batch atômico, FKs/JSON/BLOB/triggers/guardas e códigos de erro equivalentes.
+- [ ] Proteção de host/origem/cookies/CSRF/roles e rotas de agente assinadas.
+- [ ] Fotos/upload/ready/miniatura/fallback/renovação funcionais no destino.
+- [ ] QR/heartbeat/inventário/recibos, filas e versão antiga Windows testados.
+- [ ] Técnico/atribuição/GPS/ruas/encerramento/Android físico testados.
+- [ ] Hardware/48h/presença/relatório semanal e cron único testados.
+- [ ] ETag/cache/projeções sem dados desatualizados ou autorização em cache.
+- [ ] Carga, falhas, reinício, disco cheio e backup/restore testados.
+- [ ] Corte e retorno completo ensaiados sem duplicar escritores.
+
+E. Registro do corte futuro
+
+Autorização e responsável:
+Data/janela (Fortaleza e UTC):
+Commit/backend/builds/EXE/APK:
+Origem e destino (sem credenciais):
+Versão de esquema/hash do conjunto SQL:
+Hash/tamanho/instante do export final:
+Manifesto/cópia Drive (referência privada):
+Suspensão de escritores e cron confirmada às:
+Importação/integridade/equivalência concluídas às:
+Mudança de entrada/geração realizada às:
+Primeira escrita confirmada no destino:
+Canários e resultados por perfil/dispositivo:
+Pendências e limitações aceitas:
+Backup pós-corte e responsável pela observação:
+Condição/horário de retorno, se necessário:
+Encerramento formal da migração:
+
+Estado desta entrega documental
+
+Código atual e catálogo foram organizados; plano proposto está versionado em branch própria. Banco real não foi migrado, servidor físico não foi instalado e produção não foi republicada nesta tarefa. O TXT é gerado destes capítulos por node docs/09-migracao-servidor-fisico/gerar-txt.mjs; editar os capítulos e regenerar para manter consistência.

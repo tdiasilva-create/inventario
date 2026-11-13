@@ -12,6 +12,8 @@ As sessões são separadas. Dados, senhas e tokens de produção não fazem part
 
 ## Começar por aqui
 
+**Nesta branch:** [análise detalhada para migração física](docs/09-migracao-servidor-fisico/README.md) e [plano completo em TXT](docs/09-migracao-servidor-fisico/PLANO_COMPLETO_MIGRACAO.txt). É uma proposta técnica; o runtime físico e o corte ainda não foram implementados. A main contém a documentação factual do sistema atual.
+
 1. [Regras e fontes](00_LEIA_ANTES_DE_TUDO.md), [AGENTS.md](AGENTS.md) e [precedência](docs/00-governanca/REGRAS_DE_PRECEDENCIA.md).
 2. [Manual atual de operação e migração](docs/07-operacao/README.md).
 3. [Nova estação e testes](docs/07-operacao/04_DESENVOLVIMENTO_E_TESTES.md).
