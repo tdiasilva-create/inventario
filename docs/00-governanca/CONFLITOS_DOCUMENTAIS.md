@@ -145,3 +145,7 @@ Pedido posterior substitui Coletas concluídas (visitas) e Coletas pendentes D-0
 
 ## D-114 — localização deixa de depender da demanda individual
 O novo pedido e a confirmação sobre expiração do login superam a limitação de acompanhamento por atendimento D105 e o adiamento registrado em D113. Só a capacidade de enviar a própria posição continua sem login vigente; consulta/escrita de demandas não recebe essa exceção. Concluir/pausar uma demanda mantém a localização enquanto houver outra atribuição aberta; sair/revogar/zerar a fila encerra. Não promover instalações/aceites antigos automaticamente. APK 1.0.2 necessário; limites do Android e teste físico explícitos em ../03-painel-desktop/LOCALIZACAO_CONTINUA_D114.md.
+
+
+## D-115 — duas áreas no APK
+A decisão explícita de 13/11/2026 supera a exclusividade técnica do APK em D105 e a restrição histórica a navegador da Base §3.5 somente para oferecer Coleta no mesmo APK. Não une papéis nem libera desktop ao operador; não altera perguntas, conclusão manual ou elegibilidade das unidades. D114 continua determinando duração/autorização do acompanhamento da fila, mesmo com Coleta aberta. O navegador coletor separado continua disponível. [Contrato](../02-coleta-mobile/APP_UNIFICADO_D115.md).

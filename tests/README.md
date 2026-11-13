@@ -17,3 +17,6 @@ Todos usam dados isolados. Capturas podem ser geradas em docs/05-qualidade/evide
 collector-evidence-browser.cjs, collector-v2-qr-lost-response-browser.cjs e desktop-v2-agent-browser.cjs pressupõem telas e rótulos anteriores. Foram preservados como referência histórica; não são chamados pelo CI nem apresentados como testes aprovados do produto atual. O carregamento do Playwright passa pelo helper local, sem dependência do USERPROFILE/Codex. Não executar esses três esperando uma homologação V3.
 
 As garantias de recibo/idempotência e conflito de QR continuam nos testes de servidor agentes, v2-fase2 e revisao-independente; o fluxo QR atual está em collector-v3-browser.cjs. O ensaio histórico de resposta perdida no navegador V2 não equivale a uma homologação física atual. panel-blocks-browser.cjs já usa seletores atuais (sem .agent-flag) e continua no CI; não foi aposentado.
+
+
+D115: `node --test tests/mobile-app.test.mjs`; `node tests/mobile-app-browser.cjs` (requer build desktop). Worker real/SQLite, cookies reais, ponte Android/GPS simulados. `node scripts/test-technician-android.mjs` cobre políticas JVM, não aparelho físico. Evidências sintéticas em `docs/05-qualidade/evidencias/app-unificado-d115/`. Suíte completa: `node --test --test-concurrency=1 tests/*.test.mjs`.

@@ -1,3 +1,4 @@
+import {collectorAssets,mobileAssets} from '../shared/mobile-assets.mjs';
 import {copyFile,mkdir,readFile,writeFile,rm,stat} from 'node:fs/promises';
 import {resolve,join,sep} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -25,6 +26,7 @@ files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-st
 files.push('desktop-blocks.js','desktop-exports.js','panel-search.html','panel-search.js');
 files.push('pending-collections.html','pending-collections.js','desktop-management.js','provider-report.js');
 files.push('collection-control.html','collection-control.js','collection-overview.js');
+files.push(...[...collectorAssets,...mobileAssets].filter(f=>!files.includes(f)));
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});
  if(file==='runtime-config.js')await writeFile(target,'// The collector will have its own address: inventario-semed-lumiar.\nexport const collectorUrl="https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev";\nexport const authEnabled=true;\n');
@@ -44,7 +46,7 @@ const bundled=await bundleDesktop(destination);
 // Hash final HTML, not the unbundled input. Keep legacy modules for existing tabs.
 manifest.length=0;
 for(const file of [...files,...bundled]){const bytes=await readFile(join(destination,file));manifest.push({file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}
-await writeFile(join(root,'dist','painel-manifest.json'),JSON.stringify({application:'painel-semed-paco',kind:'desktop-awaiting-official-data',collector:'inventario-semed-lumiar (future, not published)',files:manifest},null,2)+'\n');
+await writeFile(join(root,'dist','painel-manifest.json'),JSON.stringify({application:'painel-semed-paco',kind:'desktop-awaiting-official-data',collector:'endereço independente preservado; módulo autenticado em /app/coleta',files:manifest},null,2)+'\n');
 if(files.some(f=>['app.js','domain.js','coleta.html','styles.css'].includes(f)))throw new Error('Coletor incluído no pacote do painel.');
-console.log(JSON.stringify({destination,files:manifest.length+3,bytes:manifest.reduce((s,f)=>s+f.bytes,0),collectorIncluded:false,bundles:bundled.length}));
+console.log(JSON.stringify({destination,files:manifest.length+3,bytes:manifest.reduce((s,f)=>s+f.bytes,0),collectorIncluded:true,collectorMount:'/app/coleta',bundles:bundled.length}));
 

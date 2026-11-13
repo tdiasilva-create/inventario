@@ -1,0 +1,5 @@
+// D-115: closed lists shared by the Worker and both asset builds.
+export const collectorPages = {'/app/coleta':'collector.html','/app/coleta/v3':'collector-v3.html','/app/coleta/v2':'collector-v2.html','/app/coleta/visita':'visit.html'};
+export const collectorAssets = ['collector.js','collector.html','collector-v3.js','collector-v3.html','collector-v3.css','collector-v3-schema.js','collector-v2.js','collector-v2.html','collector-v2-schema.js','visit.js','visit.html','visit-schema.js','collector-schema.js','collector.css','collector-favicon.svg','collector-dialog.js','collector-environments.js','collector-drafts.js','collector-ui.js','collector-qr.js','collector-unit-list.js','collector-navigation.js','collector-errors.js','collector-photo-viewer.js','collector-app.js','environment-editor.js','photo-prepare.js','desktop-icons.js','vendor/jsqr/jsQR.js','vendor/jsqr/LICENSE','vendor/jsqr/ORIGEM.txt','vendor/heic-to/heic-to.min.js'];
+export const mobileAssets = ['mobile-app.html','mobile-app.js','mobile-app.css'];
+export const canCollect = role => ['root','admin','operador'].includes(role);

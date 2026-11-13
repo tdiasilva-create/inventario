@@ -1,0 +1,84 @@
+SEMED — APLICATIVO ÚNICO: ATENDIMENTO TÉCNICO E COLETA
+Versão Android 1.0.3 (código 4) — 13/11/2026
+
+ESTADO DESTA ENTREGA
+Implementação local e APK gerados/testados. A nova entrada do servidor ainda
+precisa ser publicada com autorização. Não instalar para iniciar uma coleta
+real antes da confirmação dessa publicação.
+
+1. ATUALIZAÇÃO
+Salve primeiro as fichas e confira as fotos já recebidas. Instale o APK como
+atualização do SEMED Técnico, sem desinstalar a versão anterior. O nome passa
+a ser SEMED. Mesma assinatura e mesmo pacote; Android 8 ou superior.
+O arquivo entregue é SEMED-Atendimento-e-Coleta-1.0.3.apk.
+SHA-256: 6aebf056b489200456eb7f0a596d28c0f89fc6b0b68e13b29c98f9f585120a81
+
+2. ÁREAS E ACESSO
+Entre com sua conta SEMED. Senha provisória continua exigindo troca inicial.
+Atendimento técnico aparece apenas para quem foi habilitado pelo root.
+Coleta aparece para root, admin e operador. Um visualizador habilitado como
+técnico continua sem permissão para coletar. Não há painel gerencial no app.
+Se a sessão anterior ainda for válida, não é necessário outro login.
+
+3. TESTE DE TROCA SEM PERDER O PREENCHIMENTO
+Abra Coleta, selecione uma unidade autorizada e abra uma ficha de computador.
+Digite um campo e toque em Atendimento técnico. Retorne à Coleta: a mesma
+ficha deve manter o conteúdo. Trocar de área não salva/conclui automaticamente
+o equipamento, o assunto ou a visita. Use Salvar e confira a confirmação.
+Depois de expirar a sessão, entre com o mesmo usuário para retomar.
+Sair da conta descarta o que não foi recebido e encerra a localização.
+
+4. CÂMERA, GALERIA E QR
+Na fachada ou foto de equipamento, toque Câmera. Conceda permissão quando
+solicitada, tire uma foto e confirme. Aguarde o recebimento no servidor.
+Repita usando Galeria. Fotos são vinculadas ao mesmo registro; não existe
+uma aba genérica para depositar fotos sem identificação. Limites e regras
+do questionário atual permanecem. Computador: foto opcional; demais regras
+são as mesmas já aprovadas no coletor.
+Em Ler QR Code, permita a câmera e enquadre o QR do Agente SEMED. Também
+é possível escolher a imagem do QR. Se negar a câmera, deve aparecer uma
+mensagem útil e a alternativa da galeria. Não há pedido de microfone.
+Com o leitor aberto, troque para Atendimento: a câmera deve ser encerrada.
+Leia apenas um QR real de teste autorizado e confira unidade/ambiente antes
+de confirmar vínculo; não crie duplicados só para verificar a interface.
+
+5. LOCALIZAÇÃO DURANTE A FILA
+Com uma conta técnica habilitada e demandas atribuídas, aceite a primeira
+demanda e permita localização. Confira no painel a posição e o horário.
+Troque para Coleta: a localização deve continuar atualizando no painel.
+Bloqueie a tela e repita a conferência depois de alguns minutos.
+Concluir uma demanda enquanto restam outras atribuídas mantém o acompanhamento.
+Concluir toda a fila, sair ou revogar o acesso encerra o acompanhamento.
+O vencimento do login mantém apenas o envio nativo de localização, conforme
+regra anterior; consultar/alterar demandas e coleta exige renovar o login.
+Abrir Coleta sem ter iniciado acompanhamento não ativa GPS contínuo.
+
+6. TECLADO E NAVEGAÇÃO
+Teste em pé e deitado, em um campo perto do rodapé. Confira foco, rolagem e
+Salvar. A rotação não deve reconstruir a página. Use Voltar: primeiro fecha
+diálogo/leitor ou retorna às categorias, depois à escolha da área.
+O app preserva a tela ao trocar de área, mas não é um coletor offline durável.
+Forçar parada, limpar dados, recarregar ou o Android encerrar o processo pode
+perder respostas e fotos ainda não enviadas. Confirme o salvamento antes de
+atualizar o APK ou encerrar o aplicativo.
+
+7. O QUE FOI CONFERIDO LOCALMENTE
+301 testes automatizados, 41 verificações JVM e cinco roteiros de navegador
+aprovados. Upload para armazenamento isolado, sessão, papéis, QR em navegador,
+troca com edição, recuperação do mesmo usuário e fluxo técnico conferidos.
+Ponte Android e GPS foram simulados no teste de navegador. Câmera, QR físico,
+teclado do aparelho, segundo plano e bateria precisam deste ensaio no celular.
+Nenhum registro de produção foi alterado para os testes desta entrega.
+
+8. COMO RELATAR
+Informe modelo do aparelho, Android, versão do app, papel/habilitação da conta
+(sem senha), área, unidade/ID quando necessário, ação, resultado esperado,
+resultado obtido e captura. Para localização, informe horários do aceite,
+troca de área, bloqueio, última posição e fim da fila. Não envie senhas,
+tokens, autorização do agente nem foto de credenciais.
+
+Endereço da nova entrada, somente após publicação confirmada:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/app
+
+Endereço independente do coletor, preservado:
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/

@@ -1,3 +1,4 @@
+import {mobileHost} from './collector-app.js';
 // SEMED Técnico — frontend do app do técnico (WebView Android e navegador).
 // Mesmas APIs (/api/auth/*, /api/technician/*) e mesma ponte SemedNative do APK 1.0.0.
 // Regras do servidor não mudam aqui: este arquivo só apresenta, confirma e repete comandos.
@@ -517,6 +518,7 @@ function passwordField(name, label, auto, extra = '') {
  return `<label class="field"><span>${label}</span><div class="field-password"><input name="${name}" type="password" autocomplete="${auto}" required${extra}><button type="button" class="icon-button" data-toggle-password aria-label="Mostrar senha" aria-pressed="false">${icon('eye')}</button></div></label>`;
 }
 function login(message) {
+ if(mobileHost()){invalidateReads();clearInterval(timer);mobileHost().sessionExpired();return;}
  invalidateReads(); clearInterval(timer); stop(); user = null;
  $('#logout').hidden = !native()?.hasQueueTracking?.(); $('#refresh').hidden = true; $('#tabs').hidden = true;
  banner(''); $('#updated').textContent = '';
@@ -563,12 +565,13 @@ function accessError(message) {
 
 /* ---------------------------------------------------------------- eventos */
 $('#logout').onclick = async () => {
+ if(mobileHost()){mobileHost().logout();return;}
  if (busy) return;
  invalidateReads(); clearInterval(timer); busy = true; stop();
  native()?.stopQueueTracking?.();
  try { try{await api('/api/auth/logout', {});}catch(e){if(e.status!==401)throw e;} user = null; accountId = null; items = []; data = null; pending = null; ops.clear(); drafts.clear(); pages.clear(); expanded.clear(); native()?.signedOut(); login(); banner('Você saiu.', 'ok', { hold: 6000 }); }
  catch (e) { banner(e.message + ' A sessão pode continuar ativa no servidor.', 'error', { hold: 10000 }); }
- finally { busy = false; if(user) timer = setInterval(() => {if(!document.hidden)refresh();},15000); }
+ finally { busy = false; if(user) timer = setInterval(() => {if(!document.hidden && !window.frameElement?.hidden)refresh();},15000); }
 };
 $('#refresh').onclick = () => refresh();
 $('#tabs').addEventListener('click', e => {
@@ -596,7 +599,7 @@ $('#app').addEventListener('click', e => {
  if (a === 'retry') { const op = ops.get(id); if (op) action(op.action, id); return; }
  if (a) action(a, id);
 });
-document.addEventListener('visibilitychange', () => { if (!document.hidden && user && !user.mustChange) refresh(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !window.frameElement?.hidden && user && !user.mustChange) refresh(); });
 // APK 1.0.1 uses this before leaving the WebView. No extra Android permission.
 window.semedHandleBack = () => {
  const dialog = $('dialog[open]');
@@ -623,7 +626,7 @@ async function init() {
   await tracking(epoch);
   if (!currentRead(epoch)) return;
   native()?.signedIn(user.username);
-  timer = setInterval(() => { if (!document.hidden) refresh(); }, 15000);
+  timer = setInterval(() => { if (!document.hidden && !window.frameElement?.hidden) refresh(); }, 15000);
  } catch (e) {
   if (epoch !== readEpoch) return;
   if (e.status === 401) login();
@@ -631,3 +634,10 @@ async function init() {
  }
 }
 init();
+
+if(mobileHost()){
+ window.semedAppPending=()=>busy||!!pending||[...drafts.values()].some(Boolean)||!!document.querySelector('dialog[open] textarea')?.value;
+ window.semedAppResume=async()=>{const fresh=await api('/api/auth/me');if(accountId&&fresh.id!==accountId)throw Error('Entre com o mesmo usuário.');user=fresh;await refresh();clearInterval(timer);timer=setInterval(()=>{if(!document.hidden&&!window.frameElement?.hidden)refresh();},15000);};
+ addEventListener('semed-area-hide',()=>{invalidateReads();});
+ addEventListener('semed-area-show',()=>{if(user&&!user.mustChange)refresh();});
+}
