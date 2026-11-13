@@ -50,3 +50,5 @@ Comandos locais: `node --test --test-concurrency=1 tests/*.test.mjs`; `node scri
 Após autorização específica, publicar painel com Wrangler e verificar `/app`, `/api/mobile/me` sem sessão, assets públicos, proteção das montagens privadas, hash remoto do APK e login real. Não alterar habilitação ou criar demanda real para testar. Rollback: versão anterior do Worker e APK 1.0.2 preservados; não há schema a reverter. Android não instala um versionCode menor como atualização comum: não recomendar desinstalar com dados pendentes; correção deve usar novo versionCode.
 
 Estado e evidências: [qualidade D115](../05-qualidade/APP_UNIFICADO_D115_2026-11-13.md). Orientações para o celular: [roteiro TXT](../06-entregas/SEMED_APP_1_0_3_INSTALACAO_E_TESTES.txt).
+
+Publicação autorizada concluída em 13/11/2026 às 19:13 Fortaleza: painel `77c27c3b-b823-4a0e-a362-0854516403d0` (100%), APK 1.0.3 disponível e hash verificado. Não houve migração nem publicação do Worker coletor; limites físicos no registro de qualidade acima.

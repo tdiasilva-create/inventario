@@ -2,9 +2,9 @@ SEMED — APLICATIVO ÚNICO: ATENDIMENTO TÉCNICO E COLETA
 Versão Android 1.0.3 (código 4) — 13/11/2026
 
 ESTADO DESTA ENTREGA
-Implementação local e APK gerados/testados. A nova entrada do servidor ainda
-precisa ser publicada com autorização. Não instalar para iniciar uma coleta
-real antes da confirmação dessa publicação.
+Publicado em 13/11/2026 às 19:13 Fortaleza. APK 1.0.3 disponível, mesma assinatura
+da versão anterior. Testes locais e 83 verificações HTTP de produção aprovados.
+Câmera, QR e GPS físicos devem ser conferidos no celular conforme roteiro abaixo.
 
 1. ATUALIZAÇÃO
 Salve primeiro as fichas e confira as fotos já recebidas. Instale o APK como
@@ -77,8 +77,13 @@ resultado obtido e captura. Para localização, informe horários do aceite,
 troca de área, bloqueio, última posição e fim da fila. Não envie senhas,
 tokens, autorização do agente nem foto de credenciais.
 
-Endereço da nova entrada, somente após publicação confirmada:
+Endereço da nova entrada publicada:
 https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/app
 
 Endereço independente do coletor, preservado:
 https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+DOWNLOAD DO APK PUBLICADO
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+O download pode aparecer como SEMED-Tecnico.apk; a versão interna é 1.0.3.
+Instale como atualização, sem desinstalar o anterior.

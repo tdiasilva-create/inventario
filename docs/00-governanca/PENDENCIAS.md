@@ -396,3 +396,6 @@ D-114 — publicação autorizada e concluída em 13/11/2026 às 18:22 Fortaleza
 
 ## D-115 — app único, 13/11/2026
 Implementação local, testes e APK 1.0.3 concluídos. Falta autorização/publicação específica do Worker do painel e conferência HTTP da versão/arquivo, seguida de teste Android físico de câmera, galeria, QR, teclado/rotação e GPS com Coleta/tela bloqueada. Nenhuma migração ou alteração do questionário. Offline durável continua pendente; memória preservada ao alternar não é armazenamento após fechamento. [Qualidade](../05-qualidade/APP_UNIFICADO_D115_2026-11-13.md).
+
+
+D-115 — responsável autorizou expressamente “Sim, publicar e disponibilizar o APK 1.0.3”. Publicado em 13/11/2026 às 19:13:57 Fortaleza (22:13:57 UTC): painel `77c27c3b-b823-4a0e-a362-0854516403d0`, 100% do tráfego, código `3c602eb`. APK 1.0.3/código 4, hash remoto igual ao binário assinado. 83 verificações HTTP aprovadas e entrada /app conferida visualmente em 390×844, sem login real submetido. Sem migração, seed ou alteração de contas/demandas/fotos; coletor `c678978a-9e71-4cab-a2dc-9744ec6d6e1c` preservado. Regras de localização e plano gratuito mantidos. Publicação resolvida; teste de câmera/QR/GPS no Android físico permanece pendente. Ver [qualidade D115](../05-qualidade/APP_UNIFICADO_D115_2026-11-13.md).
