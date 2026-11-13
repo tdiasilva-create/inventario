@@ -1,6 +1,6 @@
 # D114 — localização contínua da fila / APK 1.0.2
 
-Estado: implementação e testes locais concluídos; publicação solicitada ao responsável e ainda não executada. Não declarar homologação física do Android.
+Estado: publicado com autorização explícita em 13/11/2026, às 18:22:51 Fortaleza. Migração 0033 aplicada e APK 1.0.2 disponível. Não declarar homologação física do Android.
 
 ## Fontes, escopo e decisões
 Pedido explícito após aprovação visual do APK 1.0.1; acompanhamento após primeiro aceite até todas as demandas atribuídas terminarem. Resposta explícita permite continuar somente localização após expiração do login, com novo login obrigatório para ações nas demandas. [Contrato detalhado](../03-painel-desktop/LOCALIZACAO_CONTINUA_D114.md), governança D105–D113, esquemas/rotas/qualidade existentes e documentação oficial Android consultados. Não modificados: questionários/Base TXT, coletor, agente Windows, fotos, plano e alertas.
@@ -39,9 +39,19 @@ Evidências: `docs/05-qualidade/evidencias/localizacao-d114-2026-11-13/`: `01-av
 - Keystore e segredo preservados somente no diretório privado; não versionar.
 
 ## Publicação / rollback
-Pendente de aprovação específica desta entrega. Antes: exportação privada D1, conferir versão atual/migrações; aplicar 0033; comparar contadores à consulta canônica; publicar somente painel/APK; conferir hash remoto, ativos de interface e fronteiras de autenticação; registrar versões/horários aqui. Não semear contas, GPS ou demandas fictícias em produção. Coletor deve continuar na versão `c678978a-9e71-4cab-a2dc-9744ec6d6e1c`.
+Responsável autorizou expressamente: “Sim, publicar e disponibilizar o APK 1.0.2”. Publicado somente painel/APK, mantendo o coletor na versão `c678978a-9e71-4cab-a2dc-9744ec6d6e1c`, conferida pela lista de deployments. Não foram criados GPS, contas ou demandas fictícias em produção.
 
-Versão anterior esperada do painel: `f9329df4-d5d7-4d24-953c-f9ce056a5914`; reler antes de qualquer publicação. Retorno mantém tabelas 0033/histórico; versão antiga não suporta a capacidade nativa nova. Não restaurar dump sobre contribuições feitas após publicação.
+- Backup privado: `private-data/backups/d114-before-2026-11-13.sql`, 14.783.925 bytes, SHA-256 `1151140f761d6a0893373dcb74b4b009e47eaffce8fa68cf1b531441b8b7cc42`.
+- `scripts/verify-technician-tracking-backup.mjs`: restauração local íntegra; 92 tabelas anteriores inalteradas após ensaio 0033, zero violações de chaves estrangeiras e contadores iguais às atribuições canônicas.
+- Migração real: somente `0033_technician_tracking.sql`, 20 comandos. Conferência somente leitura: 33 migrações, dois técnicos com contador, zero divergências, zero acompanhamentos/posições/rotas novos. Consulta leu 80 linhas, nenhuma escrita.
+- Versão anterior confirmada: `f9329df4-d5d7-4d24-953c-f9ce056a5914`.
+- Primeira publicação D114: `858ecdb5-d052-4697-b0ba-84db2c8022b9`. Publicação final: **`86bf05ea-388b-4c07-ab1c-becf9cbfe46d`**, 100%, tag `d114-tecnico-1-0-2`, às 18:22:51 Fortaleza (21:22:51 UTC), código `7792f8d` sobre implementação `53c3353`.
+- Ajuste final: download usa o nome estável `SEMED-Tecnico.apk`, removendo cabeçalho antigo que ainda dizia 1.0.0. Manifesto/assinatura/bytes são 1.0.2 conforme hash acima.
+- 51 checks públicos do painel na primeira publicação; 11 checks do aplicativo repetidos na final (hash remoto, JS/CSS, rotas privadas), mais sete checks das rotas nativas/cabeçalho do APK. Sem credenciais ou posições oficiais usadas nos checks.
+- Evidência final: `evidencias/localizacao-d114-2026-11-13/producao/release.json` e `tracking-boundaries.json`.
+- Download: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+
+Retorno de código mantém tabelas 0033/histórico; versão antiga não suporta a capacidade nativa nova. Não restaurar dump sobre contribuições feitas após publicação.
 
 ## Pendência física
 Celular real: atualização sobre 1.0.1, permissões/notificação, GPS parado/movendo, tela bloqueada, remover dos recentes, retorno de internet/GPS, bateria do fabricante, encerramento e login expirado. Não há aparelho conectado/homologado nesta execução. Usar [roteiro detalhado TXT](../06-entregas/SEMED_TECNICO_1_0_2_LOCALIZACAO_E_TESTES.txt). Forçar parada/telefone desligado/permissão retirada não permitem garantir localização atual; o painel não deve apresentar dado vencido como atual.
