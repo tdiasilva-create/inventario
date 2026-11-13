@@ -26,5 +26,6 @@ public class MainActivity extends Activity {
  private void reply(Location l,String error){if(!requesting)return;requesting=false;clearLocation();try{JSONObject p=new JSONObject();if(error!=null)p.put("error",error);else{p.put("latitude",l.getLatitude());p.put("longitude",l.getLongitude());p.put("accuracy",l.getAccuracy());p.put("observedAt",l.getTime());}if(trusted())web.evaluateJavascript("window.semedReceiveLocation("+p.toString()+")",null);}catch(Exception ignored){}}
  private void clearLocation(){if(locationListener!=null){((LocationManager)getSystemService(LOCATION_SERVICE)).removeUpdates(locationListener);locationListener=null;}}
  @Override protected void onDestroy(){clearLocation();handler.removeCallbacksAndMessages(null);if(web!=null){web.removeJavascriptInterface("SemedNative");web.destroy();}super.onDestroy();}
- @Override public void onBackPressed(){if(web.canGoBack())web.goBack();else super.onBackPressed();}
+ private void leavePage(){if(web.canGoBack())web.goBack();else super.onBackPressed();}
+ @Override public void onBackPressed(){if(!trusted()){leavePage();return;}web.evaluateJavascript("Boolean(window.semedHandleBack && window.semedHandleBack())",result->{if(!"true".equals(result)&&!isFinishing()&&!isDestroyed())leavePage();});}
 }

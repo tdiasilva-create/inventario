@@ -61,6 +61,7 @@
     "build:technician:android": "node scripts/build-technician-android.mjs",
     "test:dispatch": "node --test tests/technical-dispatch.test.mjs",
     "test:dispatch:browser": "node tests/technical-dispatch-browser.cjs",
+    "test:technician-redesign:browser": "node tests/technician-redesign-browser.cjs",
     "test:routes": "node --test tests/dispatch-road-routing.test.mjs",
     "test:routes:browser": "node tests/dispatch-road-routing-browser.cjs",
     "test:routes:runtime": "node tests/dispatch-road-routing-runtime.cjs",

@@ -5,6 +5,17 @@ import {session,humanFetch} from './helpers/agent-client.mjs';
 import worker from '../server/worker.mjs';
 import {cleanDispatchPositions} from '../server/technical-dispatch.mjs';
 const pos=()=>({latitude:-2.54,longitude:-44.17,accuracy:12,observedAt:Date.now()});
+test('D113: aviso abre demanda atribuída, inclusive concluída, e revalida acesso atual',async()=>{const f=await setup();try{
+ await f.enable();const id=await f.task(),other=await f.task();await f.assign(id);
+ let r=await f.call('/api/technician/request?id='+id,undefined,f.os);assert.equal(r.status,200);assert.equal(r.data.item.id,id);assert.equal(r.data.item.assignments[0].userId,f.operator.id);
+ assert.equal((await f.call('/api/technician/request?id='+other,undefined,f.os)).status,404);
+ assert.equal((await f.call('/api/technician/request?id=invalid',undefined,f.os)).status,400);
+ await f.accept(id);await f.call('/api/technician/complete',f.cmd({id,version:f.ver(id)}),f.os);
+ r=await f.call('/api/technician/request?id='+id,undefined,f.os);assert.equal(r.status,200);assert.equal(r.data.item.status,'Concluída');
+ f.sqlite.prepare('UPDATE dispatch_assignments SET ended_at=? WHERE request_id=?').run(Date.now(),id);
+ r=await f.call('/api/technician/request?id='+id,undefined,f.os);assert.equal(r.status,404);assert.equal(r.data.item,undefined);
+ await f.call('/api/dispatch/technician',f.cmd({userId:f.operator.id,enabled:false}));assert.equal((await f.call('/api/technician/request?id='+id,undefined,f.os)).status,403);
+}finally{f.sqlite.close();}});
 async function setup(){const f=collectorFixture();f.env={DB:f.db,AUTH_PEPPER:'TEST',DEBUG_COLLECTION:'1'};f.rs=await session(f,f.root);f.os=await session(f,f.operator);f.call=(path,data,s=f.rs)=>humanFetch(worker,f.env,'https://teste.invalid',s,path,data);f.revision=()=>f.sqlite.prepare('SELECT revision FROM dispatch_meta').get().revision;f.cmd=(x={})=>({operationId:crypto.randomUUID(),revision:f.revision(),...x});f.task=async()=>{const id=crypto.randomUUID();let r=await f.call('/api/operations/request-save',{id,operationId:crypto.randomUUID(),version:0,unitId:f.ids.pending,equipmentId:null,description:'TESTE ISOLADO · atendimento',kind:'Visita técnica',source:'Painel',requester:'',responsible:'',scheduledDate:'',note:'',status:'Aberta'});assert.equal(r.status,201,JSON.stringify(r.data));return id;};f.ver=id=>f.sqlite.prepare('SELECT version FROM service_requests WHERE id=?').get(id).version;f.enable=async(user=f.operator)=>{let r=await f.call('/api/dispatch/technician',f.cmd({userId:user.id,enabled:true}));assert.equal(r.status,200,JSON.stringify(r.data));};f.assign=async(id,ids=[f.operator.id])=>{const r=await f.call('/api/dispatch/assign',f.cmd({id,userIds:ids}));assert.equal(r.status,200,JSON.stringify(r.data));};f.accept=async(id,s=f.os)=>f.call('/api/technician/accept',f.cmd({id,version:f.ver(id),position:pos()}),s);return f;}
 test('D105: root habilita/atribui, técnico aceita com GPS e conclui sem relato obrigatório',async()=>{const f=await setup();try{
  assert.equal((await f.call('/api/technician/queue',undefined,f.os)).status,403);await f.enable();const id=await f.task();await f.assign(id);

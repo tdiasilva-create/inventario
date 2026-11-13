@@ -68,6 +68,19 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
   return json(data);
  }
  if(get&&!admin&&endpoint==='notifications')return json(await noticeData(db,user));
+ if(get&&!admin&&endpoint==='request'){
+  const id=url.searchParams.get('id');if(!uuid(id))return fail('Demanda inválida.');
+  // Detail is fetched only on an explicit notice click. Recheck assignment here,
+  // including completed requests, without exposing another technician's queue.
+  const guard=' AND EXISTS(SELECT 1 FROM dispatch_assignments permitted WHERE permitted.request_id=? AND permitted.user_id=? AND permitted.ended_at IS NULL)';
+  const [rows,assigned]=await db.batch([
+   db.prepare(queueSql+' WHERE r.id=?'+guard).bind(id,id,user.id),
+   db.prepare(assignmentSql+' AND a.request_id=?'+guard).bind(id,id,user.id)
+  ]);
+  if(!rows.results.length)return fail('Demanda indisponível ou não mais atribuída a você.',404);
+  const item={...asRequest(rows.results[0]),assignments:assigned.results.map(a=>({id:a.id,userId:a.user_id,name:a.display_name||a.username,accepted:!!a.attendance_id&&a.expires_at>now,attendanceId:a.expires_at>now?a.attendance_id:null,startedAt:a.expires_at>now?a.started_at:null}))};
+  return json({item,serverTime:now});
+ }
  if(get&&!admin&&endpoint==='active'){
   const attendance=await db.prepare(`SELECT t.id,t.request_id FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' WHERE t.user_id=? AND t.ended_at IS NULL AND t.session_hash=?`).bind(user.id,user.token_hash).first();
   return json({attendance});

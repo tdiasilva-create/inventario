@@ -1,0 +1,102 @@
+SEMED TÉCNICO — APK 1.0.1
+Entrega de instalação e roteiro de conferência — 13/11/2026
+
+ARQUIVO
+SEMED-Tecnico-1.0.1.apk
+Pacote Android: br.gov.ma.pacodolumiar.semed.tecnico
+Android 8 ou superior. VersionCode: 2.
+Assinado com o mesmo certificado do aplicativo 1.0.0.
+SHA256: d935e212f0574e9a54609abc638717ae52096c01f241cb5c4adcb980d17c2344
+
+O QUE FOI PREPARADO
+Novo visual com Próxima parada/Agora, fila compacta, Concluídos e Avisos.
+Folhas de aceite, observação, impedimento e conclusão com resposta do servidor.
+Reenvio de operação incerta preserva o texto original sem criar duplicata.
+Páginas extras permanecem carregadas e podem ser atualizadas manualmente.
+Avisos abrem demanda permitida mesmo concluída ou fora da primeira página.
+Botão Voltar do Android fecha a folha ou volta para Fila antes de sair do app.
+
+ESTADO DESTA ENTREGA
+APK compilado e assinatura verificada. Interface e API testadas localmente.
+Publicação do novo frontend/API aguarda confirmação final do responsável.
+O APK carrega as telas pelo servidor: instalar somente o arquivo NÃO publica
+o novo visual. Antes da publicação, ele continua exibindo o visual já online.
+
+COMO ATUALIZAR
+1. Envie este APK ao celular do técnico.
+2. Abra o arquivo no Android. Se solicitado, permita instalação por essa
+   origem apenas durante a instalação.
+3. Escolha Atualizar. Não desinstale o aplicativo anterior.
+4. Abra SEMED Técnico. Use a mesma conta habilitada pelo root.
+5. Se o Android recusar atualização por assinatura diferente, não desinstale:
+   anote a mensagem e envie o relato. A assinatura deste arquivo foi comparada
+   com a versão oficial 1.0.0 e é a mesma.
+
+ROTEIRO APÓS A PUBLICAÇÃO DA INTERFACE
+Use demanda autorizada para teste; identifique claramente os registros de teste.
+
+1. ENTRADA E FILA
+   Entre com conta habilitada como técnico. Confira Próxima parada e sequência
+   atribuída pelo root. A interface não deve abrir o painel gerencial/coletor.
+   Expanda e recolha uma demanda. Confira descrição, equipe e botão de rota.
+
+2. ACEITE E GPS
+   Toque Aceitar e iniciar. Negue GPS uma vez: não pode iniciar atendimento.
+   Autorize localização e tente novamente. Deve confirmar o aceite e iniciar
+   acompanhamento com notificação visível do Android.
+   Não deve ser possível aceitar uma segunda demanda ativa para o mesmo técnico.
+
+3. OBSERVAÇÃO E TECLADO
+   Abra Observação, digite e confira se o teclado permite acessar o texto e
+   os botões. Voltar deve fechar a folha ociosa; reabri-la mantém o texto nesta
+   página. O texto não é armazenamento offline e pode se perder ao fechar o app.
+   Envie. Só deve fechar e confirmar após resposta de sucesso do servidor.
+
+4. FALHA DE CONEXÃO
+   Em teste controlado, interrompa a rede durante envio de uma observação.
+   Se o resultado for incerto, o texto fica protegido. Reenviar confirma a mesma
+   ação, não envia uma edição silenciosamente e não deve criar duas observações.
+   Depois da confirmação, uma nova observação pode ser escrita normalmente.
+
+5. IMPEDIMENTO, PAUSA E CONCLUSÃO
+   Impedimento registra relato e não conclui/pausa automaticamente a demanda.
+   Pausa encerra o acompanhamento daquele atendimento.
+   Concluir pede confirmação; qualquer integrante atribuído pode concluir pela
+   equipe, com autoria. Após concluir, confira Concluídos e retirada da posição
+   no painel, conforme a atualização normal do sistema.
+
+6. AVISOS
+   Abra Avisos e Ver demanda. A ficha deve aparecer mesmo se concluída ou fora
+   da página carregada, quando ainda atribuída ao técnico. Se root retirar a
+   atribuição, o clique deve indicar indisponibilidade e não revelar a ficha.
+
+7. PÁGINAS EXTRAS (SE HOUVER MAIS DE 100 DEMANDAS)
+   Mostrar mais acumula páginas. Uma atualização normal não elimina os extras.
+   O aviso informa que só a primeira página foi atualizada. Toque Atualizar
+   páginas carregadas para renovar todos os itens atualmente carregados.
+
+8. BOTÃO VOLTAR E ROTA
+   Voltar fecha uma folha ociosa; em Concluídos/Avisos retorna para Fila.
+   Uma ação ainda enviando fica protegida. Rota deve abrir o mapa externo.
+
+9. ANDROID FÍSICO — AINDA PRECISA DE CONFERÊNCIA
+   Verifique teclado, rotação, texto ampliado, TalkBack, atualização sobre APK
+   anterior, GPS real, tela bloqueada e economia de bateria do fabricante.
+   Confira a notificação visível do serviço e a posição no painel durante um
+   atendimento ativo. Registre modelo do celular e versão do Android.
+
+LIMITES PRESERVADOS
+Localização entre todas as demandas ainda não foi implementada: permanece a
+regra de atendimento ativo. Avisos periódicos do Android podem ser adiados pelo
+sistema operacional; não são push instantâneo. Não há fila offline durável.
+Permissões, funções do root, contas, dados, coletor e agente Windows preservados.
+
+MODELO DE RELATO
+Celular/modelo e Android:
+Usuário técnico (sem senha):
+Data e hora de Fortaleza:
+Número da demanda de teste:
+Passo executado:
+Esperado:
+O que aconteceu:
+Mensagem exata e captura de tela:

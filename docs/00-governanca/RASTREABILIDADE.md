@@ -601,3 +601,6 @@ Pedido explícito do responsável → [contrato](../03-painel-desktop/PANORAMA_C
 
 ## D-113 — revisão do redesenho técnico recebido, 13/11/2026
 MD/ZIP de Downloads → 44 hashes conferidos e quatro bases coincidentes → leitura de fontes/contratos e cinco capturas sintéticas → três sondas de lógica em Node VM → [revisão](../05-qualidade/REVISAO_REDESENHO_APP_TECNICO_2026-11-13.txt). Duas respostas explícitas registradas em DECISOES/PENDENCIAS; não houve integração, alteração de dados, APK ou deploy. Evidência local privada: review-technician-redesign-2026-11-13/independent-probes.json.
+
+## D-113 — integração local e APK, 13/11/2026
+Pedido posterior do novo APK → web/technician.html/css/js, GET autorizado em server/technical-dispatch.mjs, AndroidManifest/MainActivity e scripts de build → tests/technical-dispatch.test.mjs, technical-dispatch-browser.cjs e technician-redesign-browser.cjs → [aceite local](../05-qualidade/APP_TECNICO_D113_2026-11-13.md) e [roteiro](../06-entregas/SEMED_TECNICO_1_0_1_INSTALACAO_E_TESTES.txt). Páginas extras e Avisos seguem respostas explícitas. R1/R2/R3 corrigidos, 286 testes aprovados, APK 1.0.1 com certificado original. Sem migração ou publicação nesta etapa; TXT/coletor/agente e regras de acompanhamento preservados.

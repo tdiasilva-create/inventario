@@ -1,4 +1,4 @@
-# SEMED Técnico — Android 1.0.0
+# SEMED Técnico — Android 1.0.1
 
 Pacote `br.gov.ma.pacodolumiar.semed.tecnico`, Android 8+ (API 26), target 35. WebView da interface própria `/tecnico`, LocationService para acompanhamento ativo e NoticeJob para avisos periódicos. Não inclui navegação do painel nem coletor.
 
@@ -12,11 +12,11 @@ Ferramentas utilizadas e SHA256:
 - Google platform-35_r02.zip: 0988cacad01b38a18a47bac14a0695f246bc76c1b06c0eeb8eb0dc825ab0c8e0.
 - Google build-tools_r35_windows.zip: 5753c679a1b90bcf6fbc9945a2ce39dfb9e74f1df0831a1e1866ae5b594326f0.
 
-Saída: `private-data/releases/SEMED-Tecnico-1.0.0.apk` e JSON com hash/certificado/instante. `build:desktop` copia APK para `/tecnico/SEMED-Tecnico.apk`; conferir presença antes do deploy. Alterar Java exige novo APK; frontend/API atualizam no servidor. Aumentar versionCode/versionName na próxima versão nativa.
+Saída: `private-data/releases/SEMED-Tecnico-1.0.1.apk` e JSON com hash/certificado/instante. O nome deriva do manifesto (versionCode 2). `build:desktop` copia essa versão para `/tecnico/SEMED-Tecnico.apk`; conferir presença antes do deploy. Alterar Java exige novo APK; frontend/API atualizam no servidor. A versão 1.0.1 encaminha o botão Voltar primeiro à interface: fecha folha ociosa ou retorna de Avisos/Concluídos para Fila antes de sair. Uma operação em envio permanece protegida. Não adiciona permissões, rastreamento entre demandas ou push.
 
 Assinatura RSA 3072, APK v2/v3. Certificado SHA256 `74458344d426bf1b00b82d9f5b2f106e0600497e2d788a54245721a37a9b3850`.
 
-**Guardar em cofre privado** `private-data/android-signing/semed-tecnico.keystore` e `config.json`. Não versionar ou enviar no chat. O script cria chave se ausente: para atualizar APK distribuído, restaurar a MESMA chave; não gerar outra. Pasta privada local não substitui backup institucional externo. Perder a chave impede atualização com a assinatura anterior.
+**Guardar em cofre privado** `private-data/android-signing/semed-tecnico.keystore` e `config.json`. Não versionar ou enviar no chat. O script agora interrompe se faltar a chave/configuração e confere o certificado antes de liberar a saída: para atualizar APK distribuído, restaurar a MESMA chave; não gerar outra. Pasta privada local não substitui backup institucional externo. Perder a chave impede atualização com a assinatura anterior.
 
 ## Segurança e limites
 
@@ -31,3 +31,5 @@ Fontes oficiais: [localização](https://developer.android.com/develop/sensors-a
 ## Homologação física pendente
 
 Instalação, GPS real, tela bloqueada, fabricante/economia de bateria e avisos Android precisam ser conferidos em aparelho. Compilação e navegador com GPS simulado não homologam esses itens. Seguir `docs/06-entregas/ROTEIRO_TESTES_TECNICO_D105.txt`.
+
+Redesenho D113: fila compacta com Próxima parada/Agora, folhas de ação com confirmação do servidor, abas Fila/Concluídos/Avisos. Páginas extras permanecem com aviso e atualização explícita; avisos consultam demanda autorizada no clique. Uma intenção incerta conserva texto e operationId até confirmação, somente na memória da página. Não é offline durável. Registro: `docs/05-qualidade/APP_TECNICO_D113_2026-11-13.md`.
