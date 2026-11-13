@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {DatabaseSync} from 'node:sqlite';
+import {createHash} from 'node:crypto';
+const backup=process.argv[2];if(!backup)throw Error('Informe uma exportação privada do D1 para ensaio LOCAL.');
+const raw=readFileSync(backup),db=new DatabaseSync(':memory:');db.exec(raw.toString());
+const tables=db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all().map(x=>x.name);
+const hash=v=>createHash('sha256').update(v).digest('hex');
+const digest=()=>Object.fromEntries(tables.map(t=>[t,hash(JSON.stringify(db.prepare('SELECT * FROM "'+t.replaceAll('"','""')+'"').all(),(_,v)=>v instanceof Uint8Array?Buffer.from(v).toString('base64'):v))]));
+const before=digest();db.exec(readFileSync('migrations/0032_collection_control.sql','utf8'));const after=digest();
+const result={backup_sha256:hash(raw),bytes:raw.length,originalTables:tables.length,unchanged:JSON.stringify(before)===JSON.stringify(after),integrity:db.prepare('PRAGMA integrity_check').all(),foreignKeys:db.prepare('PRAGMA foreign_key_check').all().length,presence:db.prepare('SELECT source,COUNT(*) n FROM collection_data_presence GROUP BY source').all()};
+writeFileSync(backup+'.rehearsal.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));if(!result.unchanged||result.foreignKeys||result.integrity[0].integrity_check!=='ok')process.exitCode=1;db.close();

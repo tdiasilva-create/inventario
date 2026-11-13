@@ -375,3 +375,6 @@ com posição recente na conferência noturna; função não foi desligada.
 Correção autorizada de resultados/unidades, com comparação na mesma cópia do banco e regressões de publicação, revogação, comunicação e demandas. Acompanhar estado de publicação no [registro D110](../05-qualidade/REVALIDACAO_D1_2026-11-12.md). Permanecem pendentes os dias UTC completos com tráfego real e a margem para crescimento; ensaio de consultas não é consumo diário. Homologação GPS Android físico/tela bloqueada permanece distinta, sem desativar localização ou alertas.
 
 D-110 — resolvidos nesta entrega: correção, migração 0031, publicação do painel, regressões e conferência root real. Pendência de volume diário/crescimento permanece; localização/alertas continuam habilitados e não se declarou teste físico noturno sem técnicos ativos.
+
+## D-111 — Controle das coletas, 13/11/2026
+Implementação, testes, migração e publicação concluídos; [registro de qualidade](../05-qualidade/CONTROLE_COLETAS_2026-11-13.md). Classificações de completa serão feitas pelo root após sua conferência real; não foram herdadas das visitas concluídas. Pendência operacional: login root para conferir a nova tela em produção (sessão expirou). Demais pendências, inclusive homologação GPS Android e evolução visual do APK, permanecem fora desta entrega.

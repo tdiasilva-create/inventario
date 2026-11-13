@@ -591,3 +591,7 @@ D-110 produção: migração 0031 + painel abcfcb97-c87a-4988-b9a1-c051534c31bf 
 # Preparação documental de migração física — 12/11/2026
 
 Pedido do responsável: atualizar repositório e criar branch com análise detalhada. Estado factual: D-110 / código `5cb844b`, 31 migrações; referências em [estado atual](../07-operacao/11_ESTADO_ATUAL_D110.md), [mapa de módulos](../07-operacao/12_MAPA_CODIGO_E_FLUXOS.md), [catálogo físico](../07-operacao/gerado/DICIONARIO_DADOS.md) e [registro de verificação](../05-qualidade/DOCUMENTACAO_MIGRACAO_2026-11-12.md). Não constitui decisão de mudar arquitetura nem autoriza corte de produção. Análise de destino é proposta na branch `codex/analise-migracao-servidor-fisico`; documentação original, questionário e dados preservados.
+
+
+## D-111 — classificação administrativa de cobertura, 13/11/2026
+Pedido aprovado nesta conversa → `docs/03-painel-desktop/CONTROLE_COLETAS_D111.md` → `server/collection-control.mjs`, `migrations/0032_collection_control.sql`, `web/collection-control.html`/`.js`, menu/build/Worker e CSS. Testes servidor/navegador: `tests/collection-control.test.mjs`, `tests/collection-control-browser.cjs`; ensaio de migração: `scripts/rehearse-collection-control.mjs`. [Qualidade e publicação](../05-qualidade/CONTROLE_COLETAS_2026-11-13.md). Sem dados/parcial automáticos por informação recebida; completa somente por root e persistente. Não altera Base original, conclusão de visitas, fotos, protocolo, coletor ou APK.

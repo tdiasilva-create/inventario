@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+(async()=>{const b=await require('./helpers/panel-browser.cjs')(),{page,f,origin}=b,dir='docs/05-qualidade/evidencias/controle-coletas-2026-11-13';fs.mkdirSync(dir,{recursive:true});try{
+ const i=f.sqlite.prepare('SELECT id FROM inspections WHERE unit_id=?').get(f.ids.progress).id;
+ f.sqlite.prepare("INSERT INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,'C','{\"exists\":\"Não\"}',?,?)").run(i,f.root.id,Date.now());
+ await page.goto(origin+'/controle-coletas');await page.locator('.coverage-table tbody tr').first().waitFor();
+ const row=page.locator('[data-unit="'+f.ids.progress+'"]');assert.match(await row.innerText(),/Coleta parcial/);
+ await page.mouse.move(1200,200);await page.waitForFunction(()=>document.querySelector('.sidebar').getBoundingClientRect().width<70);
+ assert.equal(await page.locator('a[href="/controle-coletas"]').count(),1);
+ assert.match(await row.getByRole('link',{name:'Ver visita aberta'}).getAttribute('href'),/vistoria=/);
+ await page.getByLabel('Buscar unidade',{exact:true}).focus();await page.locator('.sidebar').evaluate(el=>Promise.all(el.getAnimations().map(a=>a.finished)));await page.screenshot({path:dir+'/01-lista-desktop.png',fullPage:true,animations:'disabled'});
+ await row.getByRole('button',{name:'Classificar',exact:true}).click();await page.locator('#coverage-decision select').selectOption('complete');await page.screenshot({path:dir+'/02-decisao-root.png'});
+ await page.getByRole('button',{name:'Salvar classificação',exact:true}).click();await page.locator('#coverage-saved').filter({hasText:'Classificação salva'}).waitFor();await row.locator('[data-state=complete]').waitFor();
+ f.sqlite.exec("UPDATE inspection_sections SET data_json='{\"exists\":\"Sim\"}'");await page.getByRole('button',{name:'Atualizar',exact:true}).click();await row.locator('[data-state=complete]').waitFor();
+ await row.getByRole('button',{name:'Histórico',exact:true}).click();await page.locator('.coverage-history').waitFor();assert.match(await page.locator('.coverage-history').innerText(),/Coleta parcial → Coleta completa/);await page.screenshot({path:dir+'/03-historico.png'});await page.keyboard.press('Escape');
+ await page.getByLabel('Buscar unidade',{exact:true}).fill('sem inventário');await page.getByRole('button',{name:'Filtrar',exact:true}).click();await page.waitForFunction(()=>document.querySelectorAll('.coverage-table tbody tr').length===1);assert.match(await page.locator('.coverage-table').innerText(),/Sem dados/);
+ await page.getByRole('button',{name:'Limpar',exact:true}).click();await page.waitForFunction(()=>document.querySelectorAll('.coverage-table tbody tr').length===4);
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:dir+'/04-mobile.png',fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.route('**/api/collection-control?**',route=>route.fulfill({status:503,contentType:'application/json',body:'{"error":"TESTE ISOLADO: indisponível"}'}));await page.getByRole('button',{name:'Atualizar',exact:true}).click();await page.locator('#coverage-error').filter({hasText:'indisponível'}).waitFor();assert.equal(await page.locator('.coverage-table tbody tr').count(),4);await page.unroute('**/api/collection-control?**');
+ f.sqlite.prepare("UPDATE users SET role='visualizador' WHERE id=?").run(f.root.id);await page.reload();await page.locator('.coverage-table tbody tr').first().waitFor();assert.equal(await page.locator('[data-classify]').count(),0);
+ assert.deepEqual(b.errors,[]);fs.writeFileSync(dir+'/browser.json',JSON.stringify({status:'PASS',checks:['list','root decision','sticky complete','audit','search','mobile','read error retained','read-only role'],errors:b.errors},null,2));console.log('PASS collection-control browser');
+ }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
