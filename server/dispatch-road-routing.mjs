@@ -1,4 +1,5 @@
 import {digest} from './security.mjs';
+import {trackingGuard} from './technician-tracking.mjs';
 
 const FRESH_MS=180000, CACHE_MS=120000, MOVEMENT_M=75, SNAP_M=500;
 const PROVIDER='https://routing.openstreetmap.de/routed-car/route/v1/driving/';
@@ -9,11 +10,16 @@ export function distanceMeters(a,b){
  return 12742000*Math.asin(Math.min(1,Math.sqrt(h)));
 }
 export async function readDispatchMap(db,now=Date.now()){
- const [positions,routes]=await db.batch([
+ const [positions,routes,tracking]=await db.batch([
   db.prepare(`SELECT t.id,t.request_id,t.user_id,COALESCE(NULLIF(u.display_name,''),u.username) AS name,p.latitude,p.longitude,p.accuracy,p.observed_at,p.received_at,r.number,r.unit_id,un.name AS unit_name,un.latitude AS destination_latitude,un.longitude AS destination_longitude,tp.image_id AS avatar_id FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN dispatch_technicians cap ON cap.user_id=t.user_id AND cap.enabled=1 JOIN users u ON u.id=t.user_id AND u.active=1 JOIN sessions s ON s.token_hash=t.session_hash AND s.expires_at>? AND s.credential_version=u.credential_version JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' LEFT JOIN units un ON un.id=r.unit_id LEFT JOIN technician_profiles tp ON tp.user_id=t.user_id LEFT JOIN dispatch_positions p ON p.attendance_id=t.id WHERE t.ended_at IS NULL`).bind(now),
-  db.prepare(`SELECT a.user_id,COALESCE(NULLIF(tech.display_name,''),tech.username) AS technician_name,r.id,r.number,r.unit_id,u.name,u.latitude,u.longitude,o.position FROM dispatch_assignments a JOIN dispatch_technicians cap ON cap.user_id=a.user_id AND cap.enabled=1 JOIN users tech ON tech.id=a.user_id AND tech.active=1 JOIN service_requests r ON r.id=a.request_id AND r.status!='Concluída' JOIN dispatch_order o ON o.request_id=r.id LEFT JOIN units u ON u.id=r.unit_id WHERE a.ended_at IS NULL ORDER BY o.position,r.number`)
+  db.prepare(`SELECT a.user_id,COALESCE(NULLIF(tech.display_name,''),tech.username) AS technician_name,r.id,r.number,r.unit_id,u.name,u.latitude,u.longitude,o.position FROM dispatch_assignments a JOIN dispatch_technicians cap ON cap.user_id=a.user_id AND cap.enabled=1 JOIN users tech ON tech.id=a.user_id AND tech.active=1 JOIN service_requests r ON r.id=a.request_id AND r.status!='Concluída' JOIN dispatch_order o ON o.request_id=r.id LEFT JOIN units u ON u.id=r.unit_id WHERE a.ended_at IS NULL ORDER BY o.position,r.number`),
+  db.prepare(`SELECT t.id,t.user_id,COALESCE(NULLIF(u.display_name,''),u.username) AS name,p.latitude,p.longitude,p.accuracy,p.observed_at,p.received_at,tp.image_id AS avatar_id
+   FROM dispatch_tracking t JOIN users u ON u.id=t.user_id LEFT JOIN technician_profiles tp ON tp.user_id=t.user_id
+   LEFT JOIN dispatch_tracking_positions p ON p.tracking_id=t.id WHERE ${trackingGuard}`)
  ]);
- const items=await Promise.all(positions.results.map(async p=>({...p,
+ const runs=tracking.results.map(p=>{const next=routes.results.find(r=>r.user_id===p.user_id);return {...p,tracking:true,request_id:next.id,number:next.number,unit_id:next.unit_id,unit_name:next.name,destination_latitude:next.latitude,destination_longitude:next.longitude};});
+ const combined=[...positions.results.filter(p=>!runs.some(t=>t.user_id===p.user_id)),...runs];
+ const items=await Promise.all(combined.map(async p=>({...p,
   fresh:!!p.observed_at&&p.observed_at>=now-FRESH_MS&&p.received_at>=now-FRESH_MS,
   routeKey:await digest(JSON.stringify([p.id,...routes.results.filter(r=>r.user_id===p.user_id).map(r=>[r.id,r.unit_id,r.latitude,r.longitude])]))
  })));
@@ -56,7 +62,8 @@ export async function roadRoute(env,userId,{json}){
  if(missing.length)return json({...base,...unavailable('MISSING_COORDINATES','Cadastre as coordenadas das unidades indicadas para calcular toda a sequência.',{requestNumbers:missing.map(r=>r.number)})});
  // Refuse requests above the provider bound explicitly; never silently skip stops.
  if(stops.length>99)return json({...base,...unavailable('TOO_MANY_STOPS','O roteiro ultrapassa 99 demandas. Reduza as atribuições pendentes para calcular as ruas.')});
- const cached=await db.prepare('SELECT * FROM dispatch_road_routes WHERE attendance_id=?').bind(p.id).first();
+ const table=p.tracking?'dispatch_tracking_routes':'dispatch_road_routes',key=p.tracking?'tracking_id':'attendance_id';
+ const cached=await db.prepare(`SELECT * FROM ${table} WHERE ${key}=?`).bind(p.id).first();
  if(cached&&cached.route_key===p.routeKey&&cached.expires_at>now&&distanceMeters(origin,[cached.origin_latitude,cached.origin_longitude])<MOVEMENT_M){
   return json({...JSON.parse(cached.response_json),cached:true});
  }
@@ -78,8 +85,9 @@ export async function roadRoute(env,userId,{json}){
  const current=await context(db,userId);
  if(!current||current.p.routeKey!==p.routeKey||distanceMeters(origin,[current.p.latitude,current.p.longitude])>=MOVEMENT_M)return json({...base,status:'changed',message:'Roteiro ou localização mudou durante o cálculo.'});
  const expiresAt=Date.now()+(result.status==='ready'?CACHE_MS:30000),out={...base,...result,calculatedAt:Date.now(),expiresAt,cached:false};
- await db.prepare(`INSERT INTO dispatch_road_routes(attendance_id,route_key,origin_latitude,origin_longitude,expires_at,response_json)
-  SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM dispatch_attendances t JOIN dispatch_positions p ON p.attendance_id=t.id WHERE t.id=? AND t.ended_at IS NULL)
-  ON CONFLICT(attendance_id) DO UPDATE SET route_key=excluded.route_key,origin_latitude=excluded.origin_latitude,origin_longitude=excluded.origin_longitude,expires_at=excluded.expires_at,response_json=excluded.response_json`).bind(p.id,p.routeKey,...origin,expiresAt,JSON.stringify(out),p.id).run();
+ const live=p.tracking?`SELECT 1 FROM dispatch_tracking t JOIN dispatch_tracking_positions p ON p.tracking_id=t.id WHERE t.id=? AND ${trackingGuard}`:'SELECT 1 FROM dispatch_attendances t JOIN dispatch_positions p ON p.attendance_id=t.id WHERE t.id=? AND t.ended_at IS NULL';
+ await db.prepare(`INSERT INTO ${table}(${key},route_key,origin_latitude,origin_longitude,expires_at,response_json)
+  SELECT ?,?,?,?,?,? WHERE EXISTS(${live})
+  ON CONFLICT(${key}) DO UPDATE SET route_key=excluded.route_key,origin_latitude=excluded.origin_latitude,origin_longitude=excluded.origin_longitude,expires_at=excluded.expires_at,response_json=excluded.response_json`).bind(p.id,p.routeKey,...origin,expiresAt,JSON.stringify(out),p.id).run();
  return json(out);
 }

@@ -2,6 +2,7 @@ import {measuredEnvironment,timed,timingHeader} from './request-timing.mjs';
 import {d1DailyQuotaResponse} from './d1-budget.mjs';
 import {d1UsageRoutes,refreshD1Usage} from './d1-usage.mjs';
 import {technicalDispatchRoutes,isTechnician,cleanDispatchPositions} from './technical-dispatch.mjs';
+import {trackingMachineRoutes} from './technician-tracking.mjs';
 import {hardwareReviewRoutes} from './hardware-review.mjs';
 import {panelSearch} from './panel-search.mjs';
 import {pendingIndicatorsRoutes} from './pending-indicators.mjs';
@@ -40,6 +41,7 @@ async function handle(request,env){const url=new URL(request.url),path=url.pathn
  // Agente Windows (proposta D-053): rotas de MÁQUINA autenticadas por assinatura ECDSA; não usam cookie, CSRF nem Origin.
  // Lista fechada em server/agentes/index.mjs; as rotas humanas do módulo seguem o fluxo normal de sessão abaixo.
  if(db){const machine=await handleAgentMachine(request,url,env);if(machine)return machine;}
+ if(db&&env.AUTH_PEPPER){const tracking=await trackingMachineRoutes(request,url,env,{json,fail,body});if(tracking)return tracking;}
  if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||!(['/api/collector/photo-upload','/api/collector/photo-thumb','/api/root/photo-thumbnails','/api/dispatch/avatar'].includes(path)?['image/jpeg','image/png','image/webp'].includes(request.headers.get('Content-Type')):request.headers.get('Content-Type')?.startsWith('application/json'))))return fail('Origem ou conteúdo inválido.',403);
  const identityAssets=['/desktop-theme.css','/tokens.css','/assets/paisagem-coleta.jpg','/painel-favicon.svg',...['400','500','600','700'].flatMap(w=>['/vendor/chakra-petch/ChakraPetch-'+w+'.woff2','/vendor/barlow/Barlow-'+w+'.woff2']),'/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2'];
  if(env.APP_KIND!=='collector'&&identityAssets.includes(path))return assetResponse(request,env);

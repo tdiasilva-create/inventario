@@ -1,11 +1,13 @@
 import {digest} from './security.mjs';
 import {readDispatchMap,roadRoute} from './dispatch-road-routing.mjs';
 import {technicianAvatarRoutes} from './technician-avatars.mjs';
+import {cleanTracking,trackingCredential} from './technician-tracking.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const freshMs=180000;
 export async function cleanDispatchPositions(db,now=Date.now()){
  await db.batch([db.prepare("UPDATE dispatch_attendances SET ended_at=?,end_reason='session_expired' WHERE ended_at IS NULL AND NOT EXISTS(SELECT 1 FROM sessions s JOIN users u ON u.id=s.user_id AND u.active=1 AND u.credential_version=s.credential_version WHERE s.token_hash=dispatch_attendances.session_hash AND s.expires_at>?)").bind(now,now),db.prepare('DELETE FROM dispatch_positions WHERE received_at<? OR observed_at<?').bind(now-freshMs,now-freshMs)]);
  await db.prepare('DELETE FROM dispatch_road_routes WHERE expires_at<=?').bind(now).run();
+ await cleanTracking(db,now);
 }
 export async function isTechnician(db,id){return !!await db.prepare('SELECT 1 FROM dispatch_technicians WHERE user_id=? AND enabled=1').bind(id).first();}
 export function validPosition(p,now=Date.now()){
@@ -143,6 +145,11 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  const note=typeof a.note==='string'?a.note.trim():'';if(note.length>2000)return fail('Observação muito longa.');
  const active=await db.prepare('SELECT t.id,t.request_id,t.session_hash,s.expires_at FROM dispatch_attendances t LEFT JOIN sessions s ON s.token_hash=t.session_hash WHERE t.user_id=? AND t.ended_at IS NULL').bind(user.id).first();
  if(endpoint==='accept'){
+  if(a.tracking!==undefined&&!trackingCredential(a.tracking))return fail('Credencial de acompanhamento inválida.',422);
+  if(a.tracking){
+   const prior=await db.prepare('SELECT * FROM dispatch_tracking WHERE id=?').bind(a.tracking.id).first();
+   if(prior&&(prior.user_id!==user.id||prior.ended_at!==null||prior.token_hash!==await digest(a.tracking.token)))return json({error:'O acompanhamento anterior terminou. Toque em aceitar novamente para iniciar outro.',code:'TRACKING_ENDED'},409);
+  }
   if(!validPosition(a.position,now))return fail('Permita a localização e aguarde uma posição atual para aceitar.',422);
   if(active&&active.expires_at>now)return fail('Você já tem um atendimento ativo. Conclua ou interrompa-o antes de aceitar outro.',409);
  }else if(!['complete','note','pause','blocked'].includes(endpoint))return fail('Operação não encontrada.',404);
@@ -150,16 +157,22 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  if(endpoint==='pause'&&(!active||active.request_id!==a.id))return fail('Este atendimento não está ativo para você.',409);
  if(endpoint==='complete'&&!await db.prepare('SELECT 1 FROM dispatch_attendances WHERE request_id=? AND ended_at IS NULL').bind(a.id).first())return fail('Aceite o atendimento antes de concluir.',422);
  const id=crypto.randomUUID(),status=endpoint==='complete'?'Concluída':endpoint==='accept'?'Em atendimento':row.status;
+ const trackingHash=endpoint==='accept'&&a.tracking?await digest(a.tracking.token):null;
  return command(db,user,a,meta.revision,({stmt,event,notify,now})=>{
   const statements=[];
   if(endpoint==='accept'){
    statements.push(stmt('UPDATE dispatch_attendances SET ended_at=?,end_reason=? WHERE user_id=? AND ended_at IS NULL AND $gate',[now,'session_expired',user.id]));
    statements.push(stmt('INSERT INTO dispatch_attendances SELECT ?,?,?,?,?,?,NULL,NULL WHERE $gate',[id,assignment.id,a.id,user.id,user.token_hash,now]));
-   const p=a.position;statements.push(stmt('INSERT INTO dispatch_positions SELECT ?,?,?,?,?,? WHERE $gate',[id,p.latitude,p.longitude,p.accuracy,p.observedAt,now]));
+   const p=a.position;if(!trackingHash)statements.push(stmt('INSERT INTO dispatch_positions SELECT ?,?,?,?,?,? WHERE $gate',[id,p.latitude,p.longitude,p.accuracy,p.observedAt,now]));
+   if(trackingHash){
+    statements.push(stmt("UPDATE dispatch_tracking SET ended_at=?,end_reason='device_replaced' WHERE user_id=? AND ended_at IS NULL AND id!=? AND $gate",[now,user.id,a.tracking.id]));
+    statements.push(stmt('INSERT INTO dispatch_tracking(id,user_id,session_hash,credential_version,token_hash,started_at) SELECT ?,?,?,?,?,? WHERE $gate ON CONFLICT(id) DO UPDATE SET session_hash=excluded.session_hash',[a.tracking.id,user.id,user.token_hash,user.credential_version,trackingHash,now]));
+    statements.push(stmt('INSERT INTO dispatch_tracking_positions SELECT ?,?,?,?,?,? WHERE $gate ON CONFLICT(tracking_id) DO UPDATE SET latitude=excluded.latitude,longitude=excluded.longitude,accuracy=excluded.accuracy,observed_at=excluded.observed_at,received_at=excluded.received_at WHERE excluded.observed_at>dispatch_tracking_positions.observed_at',[a.tracking.id,p.latitude,p.longitude,p.accuracy,p.observedAt,now]));
+   }
   }
   if(endpoint==='pause')statements.push(stmt('UPDATE dispatch_attendances SET ended_at=?,end_reason=? WHERE user_id=? AND request_id=? AND ended_at IS NULL AND $gate',[now,'paused',user.id,a.id]));
   statements.push(stmt('UPDATE service_requests SET status=?,version=version+1,updated_at=?,last_operation=? WHERE id=? AND version=? AND $gate',[status,now,a.operationId,a.id,a.version]));
-  const labels={accept:'Atendimento aceito pelo técnico.',complete:'Conclusão confirmada pelo técnico.',pause:'Compartilhamento interrompido pelo técnico; demanda permanece aberta.',blocked:'Impedimento registrado pelo técnico.',note:'Observação do técnico.'};
+  const labels={accept:'Atendimento aceito pelo técnico.',complete:'Conclusão confirmada pelo técnico.',pause:'Atendimento pausado; demanda permanece aberta.',blocked:'Impedimento registrado pelo técnico.',note:'Observação do técnico.'};
   statements.push(stmt('INSERT INTO service_request_events SELECT ?,?,?,?,?,?,?,? WHERE $gate',[a.operationId,a.id,user.id,user.display_name||user.username,JSON.stringify({action:endpoint,note}),JSON.stringify({...asRequest(row),status,version:row.version+1}),labels[endpoint]+(note?' '+note:''),now]));
   statements.push(event(endpoint,{note,attendanceId:endpoint==='accept'?id:active?.id||null}));
   return statements;

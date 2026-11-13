@@ -142,3 +142,6 @@ A limitação documental D105 “tracejado indica sequência, não vias” deixa
 
 ## D-112 — indicadores de coletas no Panorama
 Pedido posterior substitui Coletas concluídas (visitas) e Coletas pendentes D-085 no Panorama pelos estados administrativos D-111. Não reclassificar visitas nem herdar conclusão técnica como completa. Scope global explícito, como Controle das coletas sem filtro. APIs e páginas técnicas antigas continuam preservadas fora desta apresentação.
+
+## D-114 — localização deixa de depender da demanda individual
+O novo pedido e a confirmação sobre expiração do login superam a limitação de acompanhamento por atendimento D105 e o adiamento registrado em D113. Só a capacidade de enviar a própria posição continua sem login vigente; consulta/escrita de demandas não recebe essa exceção. Concluir/pausar uma demanda mantém a localização enquanto houver outra atribuição aberta; sair/revogar/zerar a fila encerra. Não promover instalações/aceites antigos automaticamente. APK 1.0.2 necessário; limites do Android e teste físico explícitos em ../03-painel-desktop/LOCALIZACAO_CONTINUA_D114.md.

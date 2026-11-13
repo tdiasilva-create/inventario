@@ -8,7 +8,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),{createRequire}
   const now=Date.now(),position={id:'attendance-test',request_id:'task-test',user_id:'user-test',latitude:-2.54,longitude:-44.17,observed_at:now,received_at:now},stop={id:'task-test',user_id:'user-test',unit_id:'unit-test',latitude:-2.535,longitude:-44.167};
   let calls=0,mode;
   const env={DB:{
-   batch:async()=>[{results:[position]},{results:[stop]}],
+   batch:async()=>[{results:[position]},{results:[stop]},{results:[]}],
    prepare:()=>({bind(){return this;},first:async()=>null,run:async()=>({meta:{changes:1}})})
   }};
   const redirect=new URL(request.url).searchParams.has('redirect');

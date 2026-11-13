@@ -6,6 +6,7 @@ const $ = (s, root = document) => root.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const icon = (name, cls = '') => `<svg aria-hidden="true"${cls ? ` class="${cls}"` : ''}><use href="#i-${name}"/></svg>`;
 const native = () => window.SemedNative;
+const queueNative = () => typeof native()?.prepareQueueTracking === 'function';
 const fmtTime = ms => new Date(ms).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 const fmtDate = ms => new Date(ms).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -44,7 +45,7 @@ async function api(path, payload, signal) {
   throw Error(e.name === 'TimeoutError' || e.name === 'AbortError' ? 'O servidor não respondeu a tempo.' : 'Sem conexão com o servidor.');
  }
  const v = await r.json().catch(() => { throw Error('Resposta inválida do servidor.'); });
- if (!r.ok) { const e = Error(v.error || 'Não foi possível comunicar com o servidor.'); e.status = r.status; throw e; }
+ if (!r.ok) { const e = Error(v.error || 'Não foi possível comunicar com o servidor.'); e.status = r.status; e.code=v.code; throw e; }
  if (payload && v.ok === false) throw Error(v.error || 'O servidor não confirmou a operação.');
  return v;
 }
@@ -89,6 +90,9 @@ function locate() {
  });
 }
 async function tracking(epoch = readEpoch) {
+ // APK 1.0.2 owns one native capability for the queue. Never stop it on tab
+ // changes, completion of one request, transient reads or UI-session expiry.
+ if(queueNative()){if(currentRead(epoch))native().resumeQueueTracking(user.id);return;}
  try {
   const { attendance: a } = await api('/api/technician/active', undefined, readController.signal);
   if (!currentRead(epoch)) return;
@@ -265,7 +269,7 @@ function noticeCard(n) {
 /* ---------------------------------------------------------------- render (sem substituir #app inteiro) */
 function shell() {
  $('#app').className = '';
- $('#app').innerHTML = `<div id="pending-command" hidden role="status"></div><div id="extra-pages" hidden role="status"></div><section class="region" id="agora" hidden></section><section class="region" id="list"><h2 class="region-title" id="list-title"></h2><div id="rows"></div><div class="more" id="more"></div></section><p class="download" id="download" hidden><a href="/tecnico/SEMED-Tecnico.apk" download>Baixar aplicativo Android</a></p>`;
+ $('#app').innerHTML = `<div id="pending-command" hidden role="status"></div><div id="extra-pages" hidden role="status"></div><p id="queue-location" class="note" hidden></p><section class="region" id="agora" hidden></section><section class="region" id="list"><h2 class="region-title" id="list-title"></h2><div id="rows"></div><div class="more" id="more"></div></section><p class="download" id="download" hidden><a href="/tecnico/SEMED-Tecnico.apk" download>Baixar aplicativo Android</a></p>`;
  $('#tabs').hidden = false; $('#logout').hidden = false; $('#refresh').hidden = false;
 }
 let tabsSig = '';
@@ -301,6 +305,8 @@ function reconcile(container, entries) {
 }
 function render() {
  if (!$('#agora')) return;
+ const sharing=$('#queue-location');sharing.hidden=!native()?.hasQueueTracking?.();
+ sharing.textContent='Localização do roteiro em segundo plano. Continua entre atendimentos até terminar a fila. Confira o envio na notificação do Android; Sair encerra o acompanhamento.';
  renderTabs();
  const unresolved = $('#pending-command'); unresolved.hidden = !pending;
  unresolved.innerHTML = pending ? `<p>Há um envio sem confirmação. Confira a mesma ação antes de iniciar outra.</p><button type="button" class="secondary-wide" data-pending>Conferir envio pendente</button>` : '';
@@ -429,18 +435,27 @@ async function perform(name, id, note, progress) {
   if (pending && pending.action === name && pending.payload.id === id) payload = pending.payload;
   else {
    payload = { id, version: row.version, note, operationId: crypto.randomUUID() };
-   if (name === 'accept') { progress?.('Obtendo localização…'); payload.position = await locate(); }
+   if (name === 'accept') {
+    progress?.('Obtendo localização…'); payload.position = await locate();
+    if(queueNative()){
+     const credential=JSON.parse(native().prepareQueueTracking(user.id));
+     if(!credential.id||!credential.token)throw Error(credential.error||'Não foi possível preparar o acompanhamento.');
+     payload.tracking=credential;
+    }
+   }
    pending = { action: name, payload, row, ownerId: user.id };
   }
   progress?.('Enviando…');
   setOp(id, { action: name, phase: 'sending' });
   const result = await api('/api/technician/' + name, payload);
   if (result.ok !== true) throw Error('O servidor não confirmou o envio.');
+  if(queueNative())native().resumeQueueTracking(user.id);
   pending = null;
   if (['complete', 'pause'].includes(name)) stop();
   setOp(id, { action: name, phase: 'confirmed' });
   banner('');
  } catch (e) {
+  if(e.code==='TRACKING_ENDED'&&pending?.payload.tracking)native()?.clearEndedTracking?.(pending.payload.tracking.id);
   if (e.status && e.status < 500) pending = null;
   const retry = !!(pending && pending.action === name && pending.payload.id === id);
   if (retry) e.message += ' O envio não foi confirmado. O texto permanece protegido: reenvie a mesma ação para confirmar sem duplicar; depois poderá registrar outra observação.';
@@ -469,14 +484,14 @@ async function action(name, id) {
  }
  if (name === 'accept') {
   await sheet({ title: 'Aceitar e iniciar?', confirmLabel: retrying ? 'Reenviar' : 'Aceitar e iniciar',
-   body: `<p>O app vai pedir sua localização atual para registrar o início do atendimento em <strong>${esc(row.current_unit_name || row.context?.unit_name)}</strong>. ${native() ? 'O Android mostra uma notificação enquanto o acompanhamento durar.' : 'No navegador, mantenha esta página aberta durante o atendimento.'}</p>`,
+   body: `<p>O app vai pedir sua localização atual para registrar o início do atendimento em <strong>${esc(row.current_unit_name || row.context?.unit_name)}</strong>. ${queueNative() ? 'A localização continuará em segundo plano, mesmo com a tela fechada e entre atendimentos, até concluir todas as demandas atribuídas. O Android mostrará uma notificação. Sair da conta encerra o envio.' : native() ? 'O Android mostra uma notificação enquanto o acompanhamento durar.' : 'No navegador, mantenha esta página aberta durante o atendimento.'}</p>`,
    run: (_, progress) => perform('accept', id, '', progress) }).catch(() => {});
   await refresh(); return;
  }
  if (name === 'complete') {
   const own = ownAssignment(row), team = !own?.accepted;
   await sheet({ title: team ? 'Concluir pela equipe?' : 'Concluir atendimento?', confirmLabel: retrying ? 'Reenviar' : 'Confirmar',
-   body: `<p>A conclusão será registrada em seu nome e encerrará o acompanhamento desta demanda para toda a equipe.</p>`,
+   body: `<p>A conclusão será registrada em seu nome para toda a equipe. ${queueNative() ? 'Se ainda houver demandas atribuídas a você, a localização continuará ativa até terminar a fila.' : 'O acompanhamento desta demanda será encerrado.'}</p>`,
    run: (_, progress) => perform('complete', id, '', progress) }).catch(() => {});
   await refresh(); return;
  }
@@ -486,7 +501,11 @@ async function action(name, id) {
    run: (text, progress) => perform(name, id, text, progress) }).catch(() => {});
   await refresh(); return;
  }
- if (name === 'pause') { await perform('pause', id, '').catch(() => {}); await refresh(); }
+ if (name === 'pause') {
+  if(queueNative())await sheet({title:'Pausar atendimento?',body:'<p>A demanda permanece na fila. A localização continua enquanto houver demandas atribuídas. Para encerrar o envio, saia da conta.</p>',confirmLabel:'Pausar',run:(_,progress)=>perform('pause',id,'',progress)}).catch(()=>{});
+  else await perform('pause', id, '').catch(() => {});
+  await refresh();
+ }
 }
 
 /* ---------------------------------------------------------------- telas de acesso */
@@ -499,13 +518,13 @@ function passwordField(name, label, auto, extra = '') {
 }
 function login(message) {
  invalidateReads(); clearInterval(timer); stop(); user = null;
- $('#logout').hidden = true; $('#refresh').hidden = true; $('#tabs').hidden = true;
+ $('#logout').hidden = !native()?.hasQueueTracking?.(); $('#refresh').hidden = true; $('#tabs').hidden = true;
  banner(''); $('#updated').textContent = '';
  $('#app').className = 'auth-mode';
  $('#app').innerHTML = `<section class="auth"><div class="auth-mark">${icon('shield')}</div><h1>Atendimento técnico</h1><p class="lead">Entre com a conta de técnico habilitada pela SEMED.</p>` +
   `<form class="login card" novalidate><label class="field"><span>Usuário</span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>${passwordField('password', 'Senha', 'current-password')}` +
   `<p class="form-status" role="alert"></p><button type="submit" class="primary">Entrar ${icon('arrow')}</button></form>` +
-  `<p class="auth-help">Sem acesso? A habilitação e a senha provisória são feitas pela coordenação da SEMED.</p></section>`;
+  `<p class="auth-help">Sem acesso? A habilitação e a senha provisória são feitas pela coordenação da SEMED.</p>${native()?.hasQueueTracking?.()?'<p class="auth-help">O acompanhamento da fila continua. Use Sair para encerrar a localização ou entre novamente para atender às demandas.</p>':''}</section>`;
  const form = $('#app form');
  if (message) formStatus(form, message, 'error');
  form.onsubmit = async e => {
@@ -546,7 +565,8 @@ function accessError(message) {
 $('#logout').onclick = async () => {
  if (busy) return;
  invalidateReads(); clearInterval(timer); busy = true; stop();
- try { await api('/api/auth/logout', {}); user = null; accountId = null; items = []; data = null; pending = null; ops.clear(); drafts.clear(); pages.clear(); expanded.clear(); native()?.signedOut(); login(); banner('Você saiu.', 'ok', { hold: 6000 }); }
+ native()?.stopQueueTracking?.();
+ try { try{await api('/api/auth/logout', {});}catch(e){if(e.status!==401)throw e;} user = null; accountId = null; items = []; data = null; pending = null; ops.clear(); drafts.clear(); pages.clear(); expanded.clear(); native()?.signedOut(); login(); banner('Você saiu.', 'ok', { hold: 6000 }); }
  catch (e) { banner(e.message + ' A sessão pode continuar ativa no servidor.', 'error', { hold: 10000 }); }
  finally { busy = false; if(user) timer = setInterval(() => {if(!document.hidden)refresh();},15000); }
 };

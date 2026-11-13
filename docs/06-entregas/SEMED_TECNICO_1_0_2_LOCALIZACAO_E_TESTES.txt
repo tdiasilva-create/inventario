@@ -1,0 +1,75 @@
+SEMED TÉCNICO 1.0.2 — LOCALIZAÇÃO DURANTE A FILA
+Data: 13/11/2026
+Estado: preparado localmente; conferir registro de publicação D114 antes de instalar para uso real.
+
+O QUE MUDA
+Depois do primeiro aceite, a localização continua com a tela bloqueada, em segundo plano e entre atendimentos, até não restarem demandas atribuídas ao técnico. O app mostra notificação permanente enquanto acompanha o roteiro. Pausar atendimento não encerra a localização. Sair da conta encerra o envio.
+Login expirado: a localização pode continuar, mas consultar e concluir demandas exige entrar novamente. A senha não é armazenada pelo serviço de localização.
+Não houve alteração no coletor de inventário nem no agente Windows.
+
+INSTALAÇÃO
+1. Atualizar o APK sobre o existente, sem desinstalar ou limpar dados.
+2. Conferir versão 1.0.2 nos detalhes do aplicativo Android.
+3. Entrar com uma conta habilitada como técnico e com demandas atribuídas pelo root.
+4. Permitir localização e notificações. Manter GPS e acesso à internet ativos.
+5. Se já houver atendimento iniciado pelo APK antigo, pausar e aceitar novamente no novo APK.
+6. Aceitar a primeira demanda. Ler o aviso sobre acompanhamento da fila.
+7. Conferir a notificação “SEMED · localização do roteiro”.
+
+ENDEREÇOS, APÓS PUBLICAÇÃO
+Aplicativo: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico
+APK: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+Painel root: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+TESTE EM CELULAR REAL — registrar modelo, Android, versão do APK e horários
+Usar demandas de teste identificadas/autorizadas pelo root. Não concluir uma demanda real só para testar.
+
+A. Início e posição
+- Atribuir duas demandas ao mesmo técnico. Sem aceite, não deve aparecer uma nova posição dele.
+- Negar localização: o aceite deve ser recusado com explicação.
+- Permitir e aceitar a primeira: posição aparece no mapa do root, com nome/avatar, horário e precisão. Rota segue ruas e ordem definida.
+- Ficar parado por cinco minutos: posição continua sendo atualizada se houver GPS/rede.
+
+B. Tela bloqueada e app fechado
+- Bloquear a tela por cinco minutos. No root, observar pelo menos três atualizações com horários novos.
+- Desbloquear e abrir outro aplicativo, depois Google Maps pelo botão Traçar rota. Acompanhamento deve continuar.
+- Remover a tela do SEMED da lista de aplicativos recentes. Esperar cinco minutos e conferir atualizações.
+- Reabrir: não devem aparecer dois técnicos iguais nem dois acompanhamentos.
+- Se falhar só com tela bloqueada, registrar modelo, configuração de bateria e texto da notificação. Alguns fabricantes restringem serviços; pode ser necessário permitir uso de bateria sem restrições nas configurações do Android.
+
+C. Passagem entre demandas
+- Concluir a primeira. Ela sai da rota; o técnico continua visível, pois a segunda permanece atribuída.
+- Aguardar dois minutos sem aceitar a segunda. A localização ainda deve atualizar.
+- Aceitar a segunda, pausar, conferir que a demanda continua aberta e a localização continua.
+- Aceitar novamente e concluir a última. No próximo carregamento automático do mapa, a posição/rota deve desaparecer. A notificação Android termina após a confirmação do serviço.
+- Atribuir outra demanda depois que a fila zerou: localização só reinicia com novo aceite.
+
+D. Dois técnicos e reatribuição
+- Atribuir a mesma demanda a dois técnicos, mais uma extra para somente um deles.
+- Cada um aceita com o próprio celular. Root vê duas posições.
+- Um conclui a demanda compartilhada: só deve sair do mapa quem ficou sem demandas restantes.
+- Root retira a última demanda do outro: a posição deve desaparecer, sem o celular conseguir recolocá-la com mensagem atrasada.
+
+E. Falhas de rede/GPS
+- Durante atendimento, desligar dados móveis e Wi-Fi por quatro minutos. Posição antiga não pode parecer atual; após 180 segundos ela deixa de ser recente.
+- Restaurar internet sem reabrir o app. Deve voltar a transmitir uma posição atual. Em falhas prolongadas, a espera de nova tentativa pode chegar a cinco minutos.
+- Desativar GPS e depois reativar. Conferir aviso e retorno com horário novo. Não deve reenviar trajeto antigo: não há fila de coordenadas.
+
+F. Login e revogação
+- Em teste autorizado, deixar vencer o login: a localização continua, mas operações nas demandas exigem autenticar novamente.
+- Sair da conta: o aparelho para de captar/enviar. Se estiver sem rede, a posição antiga vence e a revogação é repetida quando houver conexão.
+- Desabilitar a capacidade técnica ou trocar/resetar a senha: o serviço anterior não pode continuar enviando.
+
+LIMITES QUE NÃO SÃO PROMESSA DE FUNCIONAMENTO
+“Forçar parada”, botão “Parar” do Android, celular desligado/reiniciado, permissão retirada e restrição de fabricante podem interromper o serviço. Reabrir o aplicativo permite retomar um acompanhamento ainda autorizado. Nenhum aplicativo consegue transmitir localização atual sem GPS, rede e execução.
+Os testes locais validaram servidor, filas, permissões, concorrência, navegação e compilação. Tela bloqueada, bateria, GPS real e fabricantes exigem o teste físico acima. Não considerar esses itens homologados só porque o APK compilou.
+
+RELATO PARA ENVIAR
+Modelo/Android:
+Versão do APK:
+Técnico e números das demandas (sem senha):
+Teste A/B/C/D/E/F:
+Horário de início e fim (Fortaleza):
+Último horário da posição visto no painel:
+Texto da notificação Android:
+Comportamento observado:
