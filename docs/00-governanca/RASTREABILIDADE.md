@@ -598,3 +598,6 @@ Pedido aprovado nesta conversa → `docs/03-painel-desktop/CONTROLE_COLETAS_D111
 
 ## D-112 — indicadores do Panorama, 13/11/2026
 Pedido explícito do responsável → [contrato](../03-painel-desktop/PANORAMA_COLETAS_D112.md) → função compartilhada de totais em server/collection-control.mjs e web/collection-overview.js, desktop.js/panel-pulse.js → testes collection-control.test.mjs e collection-overview-browser.cjs → [aceite/publicação](../05-qualidade/PANORAMA_COLETAS_2026-11-13.md). D-111 preservada, sem mudança no TXT/perguntas/coletor e sem migração.
+
+## D-113 — revisão do redesenho técnico recebido, 13/11/2026
+MD/ZIP de Downloads → 44 hashes conferidos e quatro bases coincidentes → leitura de fontes/contratos e cinco capturas sintéticas → três sondas de lógica em Node VM → [revisão](../05-qualidade/REVISAO_REDESENHO_APP_TECNICO_2026-11-13.txt). Duas respostas explícitas registradas em DECISOES/PENDENCIAS; não houve integração, alteração de dados, APK ou deploy. Evidência local privada: review-technician-redesign-2026-11-13/independent-probes.json.

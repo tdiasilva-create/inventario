@@ -1,0 +1,159 @@
+SEMED TÉCNICO — REVISÃO DO REDESENHO RECEBIDO
+13/11/2026 — análise local, sem integração/publicação ou novo APK
+
+1. MATERIAL CONFERIDO
+
+- entrega-redesenho-app-tecnico-2026-11-13.md (Downloads).
+- APP_TECNICO_REDESENHO_CLAUDE_2026-11-13.zip (Downloads).
+  SHA256: 3ded15f1345f638e16c92e5d3e8ad6cb64f4c1b587607a0346a1b162d1a43c7a
+- Textos 00_LEIA_PRIMEIRO.txt, 01_RESUMO_DAS_MUDANCAS.txt,
+  02_ARQUIVOS_ALTERADOS_E_BASE.txt, 03_DECISOES_PENDENTES.txt,
+  04_TESTES_EXECUTADOS_E_LIMITES.txt e 05_INSTRUCOES_INTEGRACAO.txt.
+- FONTES/web/technician.html, technician.css e technician.js; teste de
+  navegador entregue; manifesto de arquivos e inventário de capturas.
+- Referências do projeto: 00_LEIA_ANTES_DE_TUDO.md, precedência, D-105,
+  pendências/conflitos aplicáveis, android/technician/README.md,
+  MainActivity.java, server/technical-dispatch.mjs, fontes atuais do técnico
+  e prompt de transferência app-tecnico-2026-11-13.
+
+45 arquivos no ZIP, incluindo manifesto. As 44 entradas verificáveis do
+manifesto conferem. Os quatro hashes ANTES de HTML/CSS/JS/teste conferem com
+os mesmos arquivos do repositório atual: a evolução posterior do painel
+não modificou essas quatro fontes. Isso facilita a integração; não prova
+o funcionamento de todos os fluxos do novo cliente.
+
+Foram abertas visualmente as capturas 03-fila-390x844,
+05b-atendimento-ativo-360x800, 06b-observacao-sem-confirmacao-390x844,
+10-avisos-390x844 e 14-modal-paisagem-812x375. São imagens sintéticas
+entregues pelo autor, não capturas do sistema real feitas nesta revisão.
+
+2. O DESENHO PROPOSTO
+
+- "Próxima parada": primeira demanda em destaque; se houver atendimento
+  próprio ativo, este ocupa o destaque "Agora" conservando sua posição.
+- Restante da sequência em linhas compactas, abertas no próprio lugar.
+- Uma ação principal por cartão e ações secundárias para rota, observação,
+  impedimento e pausa; conclusão pela equipe quando aplicável.
+- Barra inferior Fila / Concluídos / Avisos.
+- Confirmações e formulários em folhas inferiores; feedback perto da ação.
+- Login, senha provisória, GPS negado, falhas, vazios e modo paisagem.
+- Identidade branca/preta/vermelha/laranja/pêssego preservada; verde-petróleo
+  destaca atendimento ativo. Fontes locais, sem biblioteca ou CDN nova.
+
+Avaliação: a separação entre atendimento atual e sequência melhora a
+hierarquia. A fila compacta reduz a repetição de botões. O destaque ainda
+ocupa boa parte da primeira tela, principalmente com atendimento ativo;
+avaliar conforto no celular real, sem reduzir alvos de toque indiscriminadamente.
+
+3. LÓGICA PRINCIPAL E COMPATIBILIDADE
+
+As chamadas entregues mantêm as APIs de autenticação e atendimento, CSRF,
+versionamento e operationId. Não há alteração de servidor, SQL/migrações,
+protocolo do agente Windows, coletor ou Android no pacote.
+
+Os métodos SemedNative requestLocation/startTracking/stopTracking/signedIn/
+signedOut e callback semedReceiveLocation existem no Android atual.
+Compatibilidade estrutural conferida por leitura; não homologada no APK.
+O APK atual carrega as telas de /tecnico pelo servidor. Só alterar estas
+telas não exige, por si, reinstalação ou nova assinatura. Mudança em Java,
+incluindo eventual tratamento do Voltar, exige novo APK e mesma chave oficial.
+
+Preservar: ordem definida pelo root, até dois técnicos, uma demanda ativa
+por técnico, GPS atual para aceitar, conclusão por qualquer integrante,
+permissões no servidor e limpeza da posição ao encerrar/revogar.
+
+LOCALIZAÇÃO CONTÍNUA ENTRE DEMANDAS NÃO FOI IMPLEMENTADA. Permanece a regra
+por atendimento, com os limites Android existentes. O redesenho não resolve
+sozinho o pedido futuro de continuar acompanhando durante toda a fila.
+
+4. PROBLEMAS A CORRIGIR ANTES DA INTEGRAÇÃO
+
+R1 — Texto alterado após envio incerto pode ser ignorado.
+  O campo continua editável após falha, mas perform() reutiliza o payload
+  anterior no reenvio. Sonda local: primeira nota "Texto original" falha;
+  segunda tentativa informa "Texto editado pelo técnico"; os dois envios
+  usam "Texto original" com o mesmo operationId.
+  Referências da fonte entregue: technician.js, sheet(), perform(), linha 362.
+  Correção: separar resolução do envio incerto de uma nova edição. Exibir
+  claramente o texto que está sendo reenviado e preservar nova digitação;
+  nunca mudar o payload de um mesmo operationId nem descartar edição em silêncio.
+
+R2 — Resposta atrasada pode alimentar a aba errada.
+  refresh() usa a aba no início da chamada, mas aplica a resposta sem validar
+  se essa aba continua ativa. A troca de aba altera mode e chama refresh(),
+  que pode retornar imediatamente porque loading está verdadeiro.
+  Sonda local: consulta da Fila pendente, usuário muda para Concluídos,
+  resposta da Fila chega; uma demanda aberta é renderizada em Concluídos.
+  Referências: technician.js, refresh() linhas 328–350 e evento tabs 473–478.
+  Correção: contexto/geração por leitura e invalidação de respostas antigas;
+  tratar também logout, sessão renovada e leitura concorrente com gravação.
+
+R3 — Atualização descarta páginas adicionais.
+  items = page.items na atualização normal reduz a lista aos primeiros 100.
+  Sonda local: lista com 150 passa a 100 após refresh(). Documentado pelo
+  autor como P-01; contraria o objetivo de preservar páginas carregadas.
+  Referência: technician.js, linha 333. Decisão do responsável na seção 6.
+
+Esses achados foram reproduzidos na lógica entregue com DOM/rede simulados
+em Node VM. Não são testes de navegador/Android ou escritas no banco. Não
+atribuir todos como regressões novas: alguns padrões já existiam no cliente
+anterior; o ponto é que a entrega ainda não os resolve.
+
+5. AJUSTES DE EXATIDÃO E TESTES A COMPLEMENTAR
+
+- "Ver demanda" NÃO é sem consulta adicional como afirma B5: o código
+  limpa items e chama refresh(), que consulta queue e active. A ampliação
+  aprovada deve buscar o detalhe somente no clique, respeitando permissões.
+- Polling segue 15s, mas agora também roda com folha aberta (antes era
+  suspenso). Intervalo igual não comprova consumo igual de D1. Medir as
+  requisições e leituras com digitação longa antes de publicar.
+- O verde "Localização ativa" deriva do aceite na atribuição, não de uma
+  confirmação nativa de GPS transmitido. Não apresentar isso como prova
+  de posição recente quando houver erro/permissão revogada.
+- Validar sessão expirada com folha aberta, troca de conta, envio sem ACK,
+  reatribuição/conclusão pelo colega durante a digitação e texto de 2.000
+  caracteres. Não assumir que o teste visual de uma folha cobre os casos.
+- Verificar foco nos cartões recolhidos (o CSS reduz a altura, mas não
+  aplica hidden/inert às ações), foco do cartão principal após atualizações,
+  TalkBack e texto ampliado. São verificações pendentes, não homologações.
+- Android físico: teclado/IME, botão Voltar, safe-area, rotação, tela
+  bloqueada, economia de bateria e serviço de localização. Nenhum foi
+  executado nesta revisão nem pelo autor do pacote.
+- O pacote declara 7 testes de contrato e roteiro de navegador aprovados.
+  Esses são resultados do autor. Aqui foram verificados hashes, sintaxe
+  JavaScript, estrutura/contratos e três sondas independentes de lógica;
+  não foi repetida a suíte completa com as fontes aplicadas.
+
+6. DECISÕES RECEBIDAS NESTA REVISÃO — APROVADAS, AINDA NÃO IMPLEMENTADAS
+
+Resposta explícita do responsável em 13/11/2026:
+
+A. "Preservar páginas extras e atualizar sob demanda (recomendado)".
+   Conservar páginas carregadas além da primeira, indicar quando precisarem
+   de nova consulta e oferecer atualização explícita. Não reconsultar todas
+   as páginas automaticamente nem apresentar conteúdo antigo como atualizado.
+
+B. "Sim, abrir a demanda permitida ao clicar (recomendado)".
+   Avisos devem permitir consultar também demanda concluída ou fora da página
+   atual. Consulta adicional somente no clique, com permissão validada no
+   servidor; retirada de acesso deve resultar em indisponibilidade clara.
+
+Não transformar decisões de visual atribuídas ao responsável pelo relatório
+externo em autorização para publicar. O pedido desta rodada é leitura/revisão.
+Pausa direta, conclusão simples e GPS por atendimento já pertencem à base;
+localização entre demandas, push, offline e novos campos continuam fora.
+
+7. PRÓXIMA ETAPA TÉCNICA
+
+1) Integrar somente as três fontes visuais e adaptações de testes, preservando
+   as correções posteriores do painel e do consumo D1.
+2) Corrigir R1/R2/R3 e implementar as duas decisões da seção 6.
+3) Testar acesso, fila, paginação, concorrência, ACK/reenvio, permissões,
+   atribuição/retirada, pausa/conclusão, GPS, avisos e consumo de consultas.
+4) Conferir visual em 360/390/412 e paisagem; testar no Android real.
+5) Publicar/gerar APK conforme a etapa solicitada pelo responsável. Se houver
+   alteração nativa, aumentar a versão e assinar com a mesma chave oficial.
+
+RESULTADO DESTA RODADA: desenho aproveitável; pacote ainda requer correções
+de interação e testes antes de ser tratado como versão pronta para produção.
+Nenhuma alteração em web/, server/, Android, banco ou ambiente real nesta revisão.
