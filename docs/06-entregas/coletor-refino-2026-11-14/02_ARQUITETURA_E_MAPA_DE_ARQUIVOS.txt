@@ -1,0 +1,61 @@
+ARQUITETURA REAL E RESPONSABILIDADES
+
+Frontend atual: HTML/CSS/JavaScript em módulos ES; sem React/Vue. A V3 não é
+integralmente um wizard de uma pergunta por página: renderiza formulários por
+assunto e fichas. O rótulo técnico coleta-3.0 não aparece ao usuário.
+Servidor: Cloudflare Workers; D1 compartilhado; Drive privado para originais;
+miniaturas JPEG derivadas D1 até 320x320/64 KB por D072. Plano gratuito.
+
+ENTRADAS
+Navegador independente: /login → / → /coleta-v3?vistoria=ID&tela=...&assunto=...
+App 1.0.3: /app → iframe /app/coleta → /app/coleta/v3?... na MESMA origem.
+O outro iframe abre /tecnico?app=1. Só é criado quando solicitado. Troca de área
+esconde o documento, não o destrói. Não trocar isso por navegação que apague
+as respostas sem solução/teste. Não transferir cookie ou senha entre domínios.
+
+ARQUIVOS A REFINAR
+web/collector-v3.js: render(), header(), footer(), photos(), equipmentForm(),
+inventory(), review(), listeners, saveItem/upload, QR e transições.
+web/collector-v3.css + collector.css + tokens.css: estilos atuais e compartilhados.
+web/collector.js + collector-unit-list.js: lista inicial e escolha da visita.
+web/collector-ui.js: patch incremental, foco/cursor, visualViewport, teclado.
+web/collector-dialog.js: confirmação cancelável, Escape, restauração de foco.
+web/collector-environments.js e environment-editor.js: catálogo por ID e renomear.
+web/collector-photo-viewer.js, photo-prepare.js: imagens, redução e miniatura.
+web/collector-qr.js: scanner/vídeo, parsing, câmera negada e leitura por imagem.
+web/collector-drafts.js: fila por visita/assunto, versão e confirmação da resposta.
+web/collector-app.js: ponte ao shell; rotas, sessão, troca de área/Voltar.
+web/mobile-app.js/html/css: shell, capacidades, login, sessão e documentos vivos.
+
+CONTRATOS: NÃO TROCAR VALORES PERSISTIDOS POR NOVOS RÓTULOS
+web/collector-v3-schema.js: catálogo/validação atual, importações selecionadas V2.
+web/collector-v2-schema.js e collector-schema.js: utilitários herdados ainda usados.
+server/worker.mjs: autenticação/roteamento/autorização de todo sistema.
+server/mobile-app.mjs e shared/mobile-assets.mjs: montagem atual no painel.
+server/collector.mjs, collector-v3.mjs, collector-v2.mjs, collector-access.mjs:
+salvamento, catálogo, evidências, revisão, conclusão e continuidade entre operadores.
+server/agentes/: pareamento, assinatura, recibos, vínculos e telemetria.
+server/photo-storage.mjs e módulos Google/fotos: provedor privado e confirmação.
+migrations/: todas as 33 migrações originais; não renomear/apagar/reaplicar como seed.
+
+REFERÊNCIA DE QUALIDADE (NÃO SUBSTITUI O COLETOR)
+web/technician.html/css/js: interface técnica já aprovada, listas compactas,
+resumos claros, folha de detalhes, avisos, estados de envio e navegação.
+tests/technician-redesign-browser.cjs e technician-tracking-browser.cjs:
+garantias que o redesenho da coleta não deve quebrar.
+
+ANDROID
+android/technician/: manifesto + fontes Java, sem frameworks móveis adicionais.
+MainActivity inicia /app e limita navegação à origem/rotas permitidas.
+CollectionCamera: câmera/galeria e getUserMedia para QR; CaptureProvider privado.
+MobilePolicy: regras puras de URL/arquivo; TrackingPolicy/TrackingStore/LocationService:
+acompanhamento separado. CAMERA e localização autorizadas pelo Android, sem microfone.
+APK atual: br.gov.ma.pacodolumiar.semed.tecnico, versionCode 4, 1.0.3, Android 8+.
+Assinatura original NÃO está neste pacote. Não trocar applicationId ou certificado.
+
+COMPATIBILIDADE
+O mesmo web/collector-v3.js atende navegador e iframe, mas os builds/destinos
+são distintos. Correção compartilhada futura pode exigir publicar os dois
+Workers; D115 publicou apenas painel porque adicionou a montagem do app.
+Build panel usa bundles esbuild em partes do desktop; coletor é módulos copiados.
+Não editar dist/ como fonte. Não incluir dados privados em assets de teste.

@@ -1,3 +1,7 @@
+HISTÓRICO DE 08/11/2026. Para a auditoria atual até D122 começar em
+docs/08-auditoria/2026-11-15/00_PEDIDO_AO_CLAUDE.txt.
+Não usar as contagens/versões abaixo como descrição da entrega de 15/11.
+
 SEMED — ROTEIRO PARA AUDITORIA INDEPENDENTE DE FUNCIONAMENTO E LÓGICAS
 Referência: 08/11/2026 · America/Fortaleza
 Repositório: https://github.com/tdiasilva-create/inventario

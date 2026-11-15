@@ -1,4 +1,8 @@
-# Atualização D-115 — SEMED 1.0.3
+# Atualização D-117 — SEMED 1.0.4
+
+Correção da WebView sob a navegação Android: `SafeWebViewport` reserva barras, recortes e teclado nativamente em Android 11+, mantendo ajuste padrão em Android 8–10. Mesmo pacote/certificado, versionCode 5; exige atualização do APK, sem desinstalar. Serviço D114 e interfaces D115/D116 preservados. [Qualidade e limites](../../docs/05-qualidade/ANDROID_AREA_UTIL_D117_2026-11-14.md), [instalação/testes](../../docs/06-entregas/SEMED_APP_1_0_4_ATUALIZACAO_E_TESTES.txt).
+
+# Atualização D-115 — SEMED 1.0.3 (histórico)
 
 APK de duas áreas, mesmo pacote/assinatura. Entrada `/app`; câmera/galeria/QR em Coleta e localização contínua D114 em serviço separado. Não inicia GPS por abrir Coleta. Sem migração. Publicado em 13/11/2026 às 19:13 Fortaleza, painel `77c27c3b-b823-4a0e-a362-0854516403d0` (100%); APK remoto conferido. Homologação física de câmera/QR/GPS permanece pendente. Ver [contrato D115](../../docs/02-coleta-mobile/APP_UNIFICADO_D115.md), [qualidade](../../docs/05-qualidade/APP_UNIFICADO_D115_2026-11-13.md) e [roteiro](../../docs/06-entregas/SEMED_APP_1_0_3_INSTALACAO_E_TESTES.txt). Texto abaixo registra versões anteriores.
 

@@ -1,0 +1,268 @@
+INVENTÁRIO EXTRAÍDO DO CÓDIGO ATUAL — NÃO DO CATÁLOGO V1 HISTÓRICO
+Base 09442d0d24de214694c0236018837335b3b83068
+
+
+ASSUNTO A — Acompanhante
+A.name | Nome completo do acompanhante
+  tipo=text; obrigatório=false; exibidoQuando=null
+A.role | Cargo ou função
+  tipo=select; obrigatório=false; exibidoQuando=null
+  opções: Direção | Coordenação | Secretaria | Professor(a) | Funcionário(a) | Outro
+
+ASSUNTO C — Internet
+C.exists | A unidade possui serviço de internet?
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Sim | Não | Não foi possível verificar
+C.linkCount | Quantos links foram identificados?
+  tipo=select; obrigatório=true; exibidoQuando=a=>a.exists==='Sim'
+  opções: 1 | 2 | 3 ou mais | Não foi possível identificar
+C.links | Links de internet
+  tipo=rows; obrigatório=false; exibidoQuando=a=>a.exists==='Sim'
+C.links[].provider | Provedor (ou Não soube informar)
+  tipo=text; obrigatório=true; exibidoQuando=null
+C.links[].type | Tipo de conexão
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Fibra | Rádio | Cabo | 4G–5G | Satélite | Outro | Desconhecido
+C.links[].contracted | Velocidade contratada em Mbps (ou Não soube informar)
+  tipo=text; obrigatório=true; exibidoQuando=null
+C.links[].drops | Há quedas frequentes?
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Sim | Não | Não soube informar
+C.links[].frequency | Frequência das quedas
+  tipo=select; obrigatório=true; exibidoQuando=a=>a.drops==='Sim'
+  opções: Diariamente | Semanalmente | Ocasionalmente | Não soube informar
+C.links[].quality | Avaliação do coletor
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Boa | Regular | Ruim | Não avaliada
+C.links[].satisfaction | Satisfação informada pela unidade
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Muito satisfeito | Satisfeito | Insatisfeito | Muito insatisfeito | Não informado
+C.links[].problems | Problemas observados neste link
+  tipo=textarea; obrigatório=false; exibidoQuando=null
+
+ASSUNTO D — Redes Wi-Fi
+D.networks | Redes Wi-Fi identificadas
+  tipo=rows; obrigatório=false; exibidoQuando=null
+D.networks[].ssid | Nome da rede (ou Não identificado)
+  tipo=text; obrigatório=true; exibidoQuando=null
+D.networks[].notes | Observações / problemas da rede
+  tipo=textarea; obrigatório=false; exibidoQuando=null
+
+ASSUNTO B — Ambientes
+
+ASSUNTO F — Computadores
+
+ASSUNTO G — Impressoras
+
+ASSUNTO O — Outros equipamentos
+
+ASSUNTO H — Problemas
+H.occurrences | Problemas adicionais
+  tipo=rows; obrigatório=false; exibidoQuando=null
+H.occurrences[].type | Categoria
+  tipo=select; obrigatório=true; exibidoQuando=null
+  opções: Internet | Wi-Fi | Computador | Impressora | Energia que afeta TI | Outro
+H.occurrences[].description | Descrição
+  tipo=textarea; obrigatório=true; exibidoQuando=null
+
+FICHAS DE EQUIPAMENTO (condições por category/registration/operation)
+equipamento.category | Tipo de computador (opcional)
+  tipo=select; obrigatório=false; exibidoQuando=d=>!['printer','other'].includes(d.category)
+  opções: desktop | notebook
+equipamento.registration | Cadastro
+  tipo=select; obrigatório=true; exibidoQuando=d=>!['printer','other'].includes(d.category)
+  opções: Agente | Manual
+equipamento.manualReason | Motivo da ausência do agente
+  tipo=select; obrigatório=true; exibidoQuando=d=>computer(d)&&d.registration==='Manual'
+  opções: Não liga | Windows não inicia | Instalação falhou | Sem permissão | Sistema incompatível | Outro
+equipamento.environmentName | Qual ambiente?
+  tipo=text; obrigatório=true; exibidoQuando=d=>d.category!=='other'
+equipamento.position_label | Posição no ambiente (ex.: Bancada 2 / PC 7)
+  tipo=text; obrigatório=true; exibidoQuando=d=>!['printer','other'].includes(d.category)
+equipamento.anydesk | AnyDesk (opcional)
+  tipo=digits; obrigatório=false; exibidoQuando=d=>['computer','desktop','notebook',''].includes(d.category??'')
+equipamento.rustdesk | RustDesk (opcional)
+  tipo=digits; obrigatório=false; exibidoQuando=d=>['computer','desktop','notebook',''].includes(d.category??'')
+equipamento.assetStatus | Situação do patrimônio
+  tipo=select; obrigatório=true; exibidoQuando=d=>!['printer','other'].includes(d.category)
+  opções: Possui patrimônio | Sem patrimônio | Etiqueta ilegível | Não identificado
+equipamento.computerOrigin | Origem do equipamento
+  tipo=select; obrigatório=false; exibidoQuando=d=>!['printer','other'].includes(d.category)
+  opções: Adquirido por pedido à SEMED | Adquirido com recursos próprios | Contrato de locação | Outros | Não sabe informar
+equipamento.brand | Marca (ou Não identificado)
+  tipo=text; obrigatório=false; exibidoQuando=d=>d.category==='printer'
+equipamento.model | Modelo (ou Não identificado)
+  tipo=text; obrigatório=false; exibidoQuando=d=>d.category==='printer'
+equipamento.operation | Funcionamento observado
+  tipo=select; obrigatório=true; exibidoQuando=d=>d.category!=='other'
+  opções: Funcionando | Funciona parcialmente | Não funciona | Não foi possível testar
+equipamento.problems | Descrição dos problemas
+  tipo=textarea; obrigatório=d=>computer(d)&&['Funciona parcialmente','Não funciona'].includes(d.operation); exibidoQuando=d=>d.category!=='other'
+equipamento.origin | Origem do equipamento
+  tipo=select; obrigatório=false; exibidoQuando=a=>a.category==='printer'
+  opções: SEMED/Prefeitura | Recursos da escola | Governo estadual ou federal | Doação | Outra | Não informado
+equipamento.acquisition | Aquisição ou disponibilização
+  tipo=select; obrigatório=false; exibidoQuando=a=>a.category==='printer'
+  opções: Compra | Locação | Comodato | Cessão | Doação | Não soube informar
+equipamento.supplies | Quem fornece os suprimentos?
+  tipo=select; obrigatório=false; exibidoQuando=a=>a.category==='printer'
+  opções: SEMED/Prefeitura | Escola | Empresa terceirizada | Outro | Não soube informar
+equipamento.connection | Conexão da impressora
+  tipo=select; obrigatório=false; exibidoQuando=a=>a.category==='printer'
+  opções: USB | Cabo de rede | Wi-Fi | Não conectada | Não identificado
+equipamento.ip | Endereço IP, quando identificado
+  tipo=text; obrigatório=false; exibidoQuando=a=>a.category==='printer'&&['Cabo de rede','Wi-Fi'].includes(a.connection)
+equipamento.customCategory | Qual equipamento? (opcional)
+  tipo=text; obrigatório=false; exibidoQuando=d=>d.category==='other'
+
+VALIDAÇÕES COMPLEMENTARES: validateV3Section/Equipment e reviewV3 nos fontes.
+Fotos, QR, ambiente por ID, fachada, estados e bloqueios adicionais estão no servidor.
+environmentName é renderizado como seletor apesar do tipo text legado. registration/manualReason são renderizados em agentBlock().
+Não usar a função export-collector-questionnaire antiga para recriar perguntas V3: ela importa catálogo V1.
+
+ROTAS DECLARADAS EM LITERAIS (não inclui todas as rotas construídas dinamicamente)
+
+web/collector.js
+L14: /api/auth/me
+L29: /api/collector/photo?id=
+L58: /api/collector/review?id=
+L62: /api/mobile/units, /api/units
+L71: /api/collector/review?id=
+L74: /api/collector/inspection?id=
+L76: /api/collector/section-save
+L80: /api/collector/inventory-section
+L81: /api/collector/equipment-list?
+L82: /api/collector/equipment-unlock
+L83: /api/collector/inventory-section
+L86: /api/collector/equipment-lock
+L87: /api/collector/equipment-save
+L88: /api/collector/photo-list?
+L90: /api/collector/photo-upload
+L94: /api/collector/environment-save
+L95: /api/auth/logout
+L102: /api/collector/v3-start
+L111: /api/mobile/units, /api/units
+L120: /api/collector/equipment-lock
+L133: /api/collector/photo-remove
+L136: /api/collector/inventory-section
+L137: /api/collector/verify
+L139: /api/collector/finish
+L145: /api/auth/me, /api/collector/capabilities, /api/mobile/units, /api/units
+L148: /api/auth/me
+
+web/collector-v3.js
+L36: /api/collector/inspection?id=
+L60: /api/collector/photo?id=
+L77: /api/collector/section-save, /api/collector/inspection?id=
+L81: /api/collector/equipment-unlock
+L82: /api/collector/inventory-section, /api/collector/section-save
+L86: /api/collector/equipment-lock, /api/collector/equipment-unlock
+L89: /api/collector/equipment-lock
+L90: /api/collector/environments?inspectionId=
+L94: /api/collector/environment-save
+L104: /api/collector/equipment-list?
+L113: /api/collector/v2-problems?inspectionId=
+L115: /api/collector/equipment-save, /api/collector/equipment-lock
+L119: /api/collector/equipment-save
+L124: /api/collector/equipment-lock
+L128: /api/collector/photo-upload, /api/collector/photo-thumb, /api/collector/inspection?id=
+L134: /api/auth/me
+L139: /api/collector/equipment-lock
+L140: /api/collector/equipment-unlock
+L152: /api/agent/v1/pairings/preview
+L175: /api/collector/equipment-lock
+L183: /api/collector/equipment-lock
+L192: /api/inventory/equipment-location, /api/inventory/equipment-location-status
+L213: /api/agent/v1/pairings/claim, /api/agent/v1/pairings/claim-status
+L228: /api/collector/environment-save
+L236: /api/collector/section-save
+L243: /api/collector/environment-rename
+L259: /api/collector/review?id=
+L260: /api/collector/review?id=
+L261: /api/collector/inventory-section
+L264: /api/collector/photo-remove, /api/collector/inspection?id=
+L266: /api/collector/review?id=
+L270: /api/collector/finish
+L275: /api/auth/me, /api/collector/capabilities, /api/collector/review?id=
+
+web/mobile-app.js
+L16: /api/auth/login
+L21: /api/auth/password
+L40: /api/mobile/me
+L51: /api/mobile/me
+L65: /api/auth/logout
+
+web/collector-environments.js
+
+server/collector.mjs
+L30: /api/collector/, /api/inventory/
+L32: /api/collector/, /api/collector/photo
+L33: /api/collector/
+L39: /api/collector/v3-start
+L40: /api/collector/v2-start
+L41: /api/collector/v2-problems
+L43: /api/collector/capabilities
+L44: /api/collector/environments
+L50: /api/collector/start
+L51: /api/collector/inspection
+L58: /api/collector/environment-rename
+L62: /api/collector/environment-save
+L70: /api/collector/section-save
+L72: /api/collector/equipment-list
+L73: /api/collector/equipment-lock
+L74: /api/collector/equipment-unlock
+L75: /api/collector/equipment-save
+L126: /api/collector/verify
+L127: /api/collector/review, /api/collector/finish
+L131: /api/collector/inventory-section
+L132: /api/inventory/
+L133: /api/collector/photo
+L139: /api/collector/photo
+L140: /api/collector/photo-list
+L141: /api/collector/photo-upload
+L153: /api/collector/photo-remove
+L160: /api/inventory/summary
+L161: /api/inventory/unit
+L181: /api/inventory/equipment
+
+server/collector-v3.mjs
+
+AÇÕES DO COLETOR (handlers data-action)
+L230: cards
+L231: facade
+L232: companion
+L233: open
+L234: save
+L235: recover-session
+L236: complete
+L237: add-row
+L238: remove-row
+L239: choose-environment
+L240: refresh-environments
+L241: rename-environment
+L247: search
+L248: clear-search
+L249: next-page
+L250: refresh-list
+L251: new
+L252: edit
+L253: resume
+L254: manual
+L255: qr-scan
+L256: qr-cancel
+L257: qr-confirm
+L258: position-confirm
+L259: item-previous
+L260: save-item
+L261: complete-inventory
+L262: upload
+L263: view-photo
+L264: remove-photo
+L265: remove-preview
+L266: review
+L267: fix
+L268: reopen
+L269: fix-pending
+L270: finish
+L271: units
+L273: choose-environment

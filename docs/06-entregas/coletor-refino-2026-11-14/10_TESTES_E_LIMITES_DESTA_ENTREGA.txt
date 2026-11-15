@@ -1,0 +1,38 @@
+CONFERÊNCIA EXECUTADA EM 14/11/2026 — NÃO É HOMOLOGAÇÃO DO REDESENHO FUTURO
+
+1. Repositório de origem: 301 testes Node aprovados, zero falhas.
+2. Cópia FONTES que será entregue: os mesmos 301 testes aprovados, zero falhas.
+   Foram inicialmente detectadas duas dependências ausentes no empacotamento
+   (scripts/lib/csv.mjs e verificar-ambiente-validacao.mjs). Incluídas, suíte
+   completa repetida e aprovada. Isso era falha do pacote, não do aplicativo.
+3. Builds desktop (138 arquivos, sem APK privado) e coletor (56) aprovados
+   dentro de FONTES, usando dependências já instaladas nesta máquina. Não foi
+   feita instalação do zero em outro sistema operacional; lockfile incluído.
+4. Fluxo V3 independente: sete fotos, QR, equipamentos, validações e conclusão
+   aprovados. Retorno às categorias medido em 85 ms neste ensaio local único
+   com envio de resposta atrasado artificialmente; não é latência de produção.
+5. Refinamento D089: paginação, salvamento compacto, retomada não salva, sessão
+   do mesmo usuário, digitação durante envio, somente leitura/reabertura e links
+   guardados aprovados. Esses comportamentos existentes não devem regredir.
+6. App unificado dentro de FONTES: troca de área, foto ready, permissão por
+   capacidade, recuperação de sessão e ponte de acompanhamento simulada aprovados.
+7. Prévia interativa --smoke executada dentro da cópia: login e lista reais do
+   Worker/SQLite da fixture aprovados. Nenhuma conta oficial foi consultada.
+8. 22 capturas nesta entrega; OBS-01 reproduzido com resposta de foto retida,
+   OBS-02 medido; nenhuma exceção JavaScript registrada no roteiro de captura.
+
+ARQUIVOS DE EVIDÊNCIA
+capturas.json: viewport, descrição, observações e endpoints/tempos locais, sem
+corpos/senhas/cookies. GALERIA.html: visualização das 22 capturas.
+REGRESSAO/: saídas dos testes e capturas locais selecionadas. As mensagens
+“falha simulada após gravar” nos testes de agentes são cenários intencionais,
+não erros de produção. O resumo final da suíte informa PASS/FAIL.
+MANIFESTO_ARQUIVOS.sha256: integridade dos arquivos selecionados para o ZIP.
+
+LIMITES
+Não houve testes ou gravação em D1/Drive oficial, deploy, novo APK ou mudança
+de interface nesta entrega. Não foram usados GPS/câmera físicos, Android real
+ou Safari iPhone. Resize e permissão negada simulados não comprovam teclado,
+GPS de segundo plano, câmera OEM, consumo diário D1 ou latência na escola.
+Testes funcionais aprovados coexistem com problemas de experiência: não usar
+o número de testes para negar a avaliação do usuário.

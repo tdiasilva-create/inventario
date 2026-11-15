@@ -1,5 +1,5 @@
 // Confirmação explícita; cancelar/Esc nunca executam a operação.
-export function confirmCollection(message, {title='Confirmar ação', confirmLabel='Confirmar'}={}) {
+export function confirmCollection(message, {title='Confirmar ação', confirmLabel='Confirmar', cancelLabel='Cancelar'}={}) {
  return new Promise(resolve=>{
   const previous=document.activeElement, dialog=document.createElement('dialog');
   dialog.className='collector-confirm';
@@ -9,6 +9,7 @@ export function confirmCollection(message, {title='Confirmar ação', confirmLab
   dialog.querySelector('h2').textContent=title;
   dialog.querySelector('p').textContent=message;
   dialog.querySelector('[data-confirm]').textContent=confirmLabel;
+  dialog.querySelector('[data-cancel]').textContent=cancelLabel;
   let finished=false;
   const finish=value=>{if(finished)return;finished=true;dialog.close();dialog.remove();resolve(value);setTimeout(()=>{if(previous?.isConnected&&!previous.disabled)previous.focus({preventScroll:true});},0);};
   dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false);});

@@ -8,6 +8,7 @@ import {updateBlocks} from './desktop-blocks.js';
 import {exportInventory} from './desktop-exports.js';
 import {createThumbnailMaintenance} from './desktop-thumbnails.js';
 import {createEquipmentConsultation} from './desktop-equipment.js';
+import {createUnitEquipmentMap} from './unit-equipment-map.js';
 import {shortUnitNames} from './unit-names.js';
 import {unitFigures,networkFigures,unitFiguresLine} from './unit-figures.js';
 import {createResultsView} from './desktop-results.js';
@@ -41,6 +42,8 @@ await Promise.all([
 const root=document.querySelector('#dashboard');
 const state={page:Object.keys(pageRoutes).find(p=>pageRoutes[p]===location.pathname)||'Panorama',q:new URLSearchParams(location.search).get('q')||'',region:'Todas',type:'Todas',status:'Todas',year:'Todos',selected:null,photo:0,zoom:1,demo:false,sort:'default',layers:true};
 const equipmentConsultation=createEquipmentConsultation({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',refresh:()=>render(),onClose:id=>{requestAnimationFrame(()=>document.querySelector('.matrix [data-action="select-unit"][data-unit="'+CSS.escape(id)+'"]')?.focus());}});
+const sectorConsultation=createEquipmentConsultation({scope:'current',hostKey:'unit-map',presentation:'modal',onChanged:change=>{unitEquipmentMap.changed(change);if(change.type==='delete')toast('Cadastro apagado. Histórico e fotos preservados.');},canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',refresh:()=>render(),closeLabel:'Voltar ao mapa de setores',onClose:()=>unitEquipmentMap.focusSelection()});
+const unitEquipmentMap=createUnitEquipmentMap({onOpenEquipment:(u,id)=>{equipmentConsultation.hide();sectorConsultation.open(u,'',id);},onRefresh:()=>{sectorConsultation.hide();render();}});
 const colors={'Em dia':'#45df72','Em andamento':'#179cff','Pendente':'#ffcf3e','Com ocorrências':'#ff4057'};
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const collectorLink=()=>collectorUrl?`<a class="collection-link" href="${esc(collectorUrl)}">Abrir a interface de coleta mobile</a>`:'<span>O coletor terá endereço próprio: inventario-semed-lumiar (ainda não publicado).</span>';
@@ -134,7 +137,7 @@ function showAgentStatus(equipmentId,trigger){
  load();
 }
 function receivedAnswers(){const d=detail();return '<section class="panel"><div class="dialog-body"><h3>Questionário recebido</h3><p>'+esc(receivedDate())+'</p>'+(d?.missing?'<p class="missing-flag">'+esc(d.missing)+' equipamento(s) não localizado(s) em conferência, com caso aberto. Veja a lista de equipamentos da unidade.</p>':'')+(d?.inspection?(d.visit?'<div class="inventory-totals"><span>Computadores administrativos: <b>'+esc(d.visit.answers.administrative||'Não avaliado')+'</b></span><span>Laboratório: <b>'+esc(d.visit.answers.laboratory||'Não avaliado')+'</b></span><span>Impressoras: <b>'+esc(d.visit.answers.printers||'Não avaliado')+'</b></span></div>'+Object.entries(d.visit.answers).filter(([k,v])=>!['completed','problems','needs'].includes(k)&&typeof v==='string').map(([k,v])=>'<p>'+esc(k)+': '+esc(v)+'</p>').join(''):answerDetails(d)):'<p>Nenhuma vistoria concluída para esta unidade.</p>')+'</div></section>';}
-function showEquipment(unitId,column='',equipmentId=''){const u=catalogue.find(x=>x.id===unitId);if(!u)return;selectUnit(u.id);equipmentConsultation.open(u,column,equipmentId);}
+function showEquipment(unitId,column='',equipmentId=''){const u=catalogue.find(x=>x.id===unitId);if(!u)return;selectUnit(u.id);sectorConsultation.hide();equipmentConsultation.open(u,column,equipmentId);}
 function unitList(){const units=filteredCatalogue();return '<section class="panel unit-list">'+title('Unidades cadastradas','building')+units.map(u=>'<button class="unit-list-item" data-action="open-unit" data-unit="'+esc(u.id)+'">'+icon('building')+'<span><strong>'+esc(u.name)+'</strong><small>'+esc(u.manager_name?'Gestor: '+u.manager_name:'Gestor não informado')+'</small>'+unitFiguresLine(u)+'</span>'+icon('chevron','small-icon')+'</button>').join('')+(!units.length?emptyState('Nenhuma unidade cadastrada.',authUser?.role==='root'?'<a class="btn empty-action" href="/cadastro-unidades">Cadastrar unidade</a>':btn('Ver mapa','map-expand')):'')+'</section>';}
 const layoutBlock=(html,name)=>html.replace('<section class="','<section data-layout-block="'+name+'" class="panorama-'+name+' ');
 function unitResultsPanel(){const u=chosen();return '<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3>'+(u?'<p class="unit-context">'+esc(u.name)+'</p><div data-result-summary="'+esc(u.id)+'">'+receivedResults.brief(u.id)+'</div>':'<p>Selecione uma unidade no mapa.</p>')+'</div></section>';}
@@ -152,7 +155,7 @@ function pageContent(){
  if(state.page==='Equipamentos')return `<div class="page-view">${heading('Equipamentos por Unidade','Inventário confirmado • cores indicam quantidade, sem inferência de risco',btn(icon('download')+' Exportar matriz','export'))}${filters()}${matrixPanel(true)}${equipmentConsultation.markup()}<div class="detail-notice">Selecione o nome da unidade ou uma quantidade para consultar os equipamentos publicados da unidade. Lotes contribuem com sua quantidade física; revisitas não duplicam bens.</div></div>`;
  if(state.page==='Unidades')return `<div class="page-view">${heading('Unidades educacionais','Cadastro mestre e inventário das vistorias confirmadas.')}${filters()}<div style="margin-top:16px">${unitList()}</div></div>`;
  if(state.page==='Detalhe da Unidade'){
-  const u=chosen();return `<div class="page-view">${heading('Unidade selecionada','Cadastro mestre e última vistoria confirmada',btn('Voltar ao panorama','panorama'))}${u?`<section class="panel detail-banner"><div class="school-photo">${photo()}</div><div><span class="badge">${esc(u.region||"Polo não informado")}</span><h2>${esc(u.name)}</h2><p>Identificador da unidade: ${esc(u.id)}</p><p>Dados do cadastro mestre e última vistoria confirmada.</p>${btn(icon('pin')+' Ver no mapa','map-unit')}</div></section><div class="detail-grid">${selectedPanel()}${unitFigures(u)}${galleryPanel()}${environmentsPanel()}${receivedAnswers()}<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3><div data-result-summary="${esc(u.id)}">${receivedResults.brief(u.id)}</div></div></section></div>${btn('Consultar equipamentos recebidos','inventory-page','','data-unit="'+esc(u.id)+'" data-offset="0"')}${equipmentConsultation.markup()}`:'<div class="empty">Nenhuma unidade selecionada.</div>'}</div>`;
+  const u=chosen();return `<div class="page-view">${heading('Unidades','Cadastro mestre, equipamentos e última vistoria confirmada',btn('Voltar ao panorama','panorama'))}${u?`<section class="panel detail-banner"><div class="school-photo">${photo()}</div><div><span class="badge">${esc(u.region||"Polo não informado")}</span><h2>${esc(u.name)}</h2><p>Identificador da unidade: ${esc(u.id)}</p><p>Dados do cadastro mestre e última vistoria confirmada.</p>${btn(icon('pin')+' Ver no mapa','map-unit')}</div></section>${authUser?unitEquipmentMap.markup()+sectorConsultation.markup():''}<div class="detail-grid">${selectedPanel()}${unitFigures(u)}${galleryPanel()}${environmentsPanel()}${receivedAnswers()}<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3><div data-result-summary="${esc(u.id)}">${receivedResults.brief(u.id)}</div></div></section></div>${btn('Consultar equipamentos recebidos','inventory-page','','data-unit="'+esc(u.id)+'" data-offset="0"')}${equipmentConsultation.markup()}`:'<div class="empty">Nenhuma unidade selecionada.</div>'}</div>`;
  }
  if(state.page==='Ambientes')return `<div class="page-view">${heading('Ambientes da unidade','Escolha uma unidade para consultar os ambientes recebidos')}<label class="unit-picker">Unidade<input type="search" list="unit-options" id="unit-picker" placeholder="Buscar por nome ou INEP" value="${esc(chosen()?.name||'')}"><datalist id="unit-options">${catalogue.map(u=>`<option value="${esc(u.name)}">${esc(u.code||'')}</option>`).join('')}</datalist></label>${selectedPanel()}<div class="detail-grid">${environmentsPanel()}${galleryPanel()}</div>${equipmentConsultation.markup()}</div>`;
  if(state.page==='Ocorrências')return '<div class="page-view" id="received-findings">'+receivedResults.list()+'</div>';
@@ -183,7 +186,16 @@ function googleBlock(){
  return `<section class="panel"><div class="dialog-body"><h3>Armazenamento de fotografias</h3>${situacao}<div class="actions" style="display:flex;gap:8px;flex-wrap:wrap">${actions}${btn('Atualizar','google-refresh','secondary')}</div>${events?`<details style="margin-top:12px"><summary>Últimos eventos da integração</summary><ul>${events}</ul></details>`:''}</div></section>`;
 }
 function sidebarArt(){return `<div class="sidebar-art" aria-hidden="true"><svg viewBox="0 0 240 230" fill="none" stroke="currentColor" stroke-width="1"><path d="M0 220v-40l30-30V90l30-30h35l20-20h45l15-15h28l20 20v75l-24 24v30l-33 33v23M0 180l22-22V80l30-30h42l22-22h49l13-13h23l28 28v82l-24 24v27l-26 26v28M0 115h38l24-24h33l25-25h30l18-18h30l15 15v29l-22 22v27l-35 35v54M0 127h43l24-24h33l25-25h30l20-20h18l10 10v19l-23 23v27l-37 37v56M0 90h27l25-25h40l21-21h46M76 0v35m12-35v27m14-27v18M40 230v-40l36-36v-29h30l25-25h26m-36 130v-44l36-36v-26"/>${Array.from({length:18},(_,i)=>`<circle cx="${95+(i*19%100)}" cy="${20+(i*13%110)}" r="3" fill="#05243c"/>`).join('')}</svg><p>Tecnologia<br>que fortalece<br>a educação</p></div>`;}
-function shell(){root.innerHTML=panelShell(authUser);bindPanelShell(authUser);render();}
+function shell(){root.innerHTML=panelShell(authUser);bindPanelShell(authUser,{unitSearch:{
+ getUnits:async()=>{if(!catalogueLoaded){catalogue=(await readPanelJson('/api/units')).units;catalogueLoaded=true;}return catalogue;},
+ onSelect:unit=>{
+  equipmentConsultation.hide();sectorConsultation.hide();
+  if(['Panorama','Mapa da Rede'].includes(state.page)){
+   if(!filteredCatalogue().some(u=>u.id===unit.id)){state.q='';state.region='Todas';state.type='Todas';state.status='Todas';state.year='Todos';toast('Filtros do painel limpos para localizar a unidade selecionada.');}
+   selectUnit(unit.id);state.focus=unit.id;render();
+   if(unit.latitude==null||unit.longitude==null)toast('Esta unidade ainda não tem coordenadas cadastradas. Consulte sua ficha na aba Unidades.');
+  }else{state.selected=unit.id;navigate('Detalhe da Unidade');}
+ }}});render();}
 function detailNotice(){const error=detailErrors.get(state.selected);return error?'<p role="alert">'+esc(error)+' Use Atualizar para tentar novamente.</p>':loadingDetails.has(state.selected)?'<p role="status">Atualizando dados da unidade…</p>':'';}
 async function loadSelected(force=false){
  const id=state.selected;if(!id||!detailPages.has(state.page)||loadingDetails.has(id)||authUser?.role==='operador')return;
@@ -203,12 +215,15 @@ function renderShell(content,html){unmountMap();content.innerHTML=html;renderedP
 function render(){
  document.title=state.page+' • SEMED';ensureSelected();
  if(equipmentConsultation.active&&equipmentConsultation.unitId!==state.selected)equipmentConsultation.hide();
+ if(sectorConsultation.active&&(sectorConsultation.unitId!==state.selected||state.page!=='Detalhe da Unidade'))sectorConsultation.hide();
  const content=document.querySelector('#content'),html=pageContent();
  if(renderedPage!==state.page)renderShell(content,html);else updateBlocks(content,html);
  paintPendingIndicators();
  attachCollectionOverview(state.page==='Panorama');
  computerReport.attach();workPlan.attach();
  equipmentConsultation.attach();
+ unitEquipmentMap.attach(state.page==='Detalhe da Unidade'&&authUser?chosen():null);
+ sectorConsultation.attach();
  receivedResults.attach(filteredCatalogue());
  schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.page==='Planejamento'?'':state.q);
@@ -299,7 +314,7 @@ document.addEventListener('click',e=>{
  if(a==='google-disconnect-confirm'){b.disabled=true;googlePost('/api/root/google/disconnect').then(r=>toast('Desconectado ('+r.revoked+').')).catch(e=>toast(e.message)).finally(()=>{document.querySelector('dialog')?.close();googleStatus=null;render();});return;}
  if(a==='alerts'){navigate('Ocorrências');return;}
 
- if(a==='open-environment'){const room=[...(detail()?.catalogueEnvironments||[]),...(detail()?.environments||[])].find(x=>x.id===b.dataset.id);if(room&&chosen())equipmentConsultation.open(chosen(),'','',room);return;}
+ if(a==='open-environment'){const room=[...(detail()?.catalogueEnvironments||[]),...(detail()?.environments||[])].find(x=>x.id===b.dataset.id);if(room&&chosen()){sectorConsultation.hide();equipmentConsultation.open(chosen(),'','',room);}return;}
  if(a==='rename-environment'){renameSelectedEnvironment(b);return;}
  if(a==='environments'){navigate('Ambientes');return;}
 

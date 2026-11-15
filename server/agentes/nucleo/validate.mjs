@@ -110,7 +110,7 @@ export function validateHeartbeat(b) {
   reqObj(b, 'body');
   noExtraKeys(b, 'body', [
     'protocol_version', 'message_id', 'installation_id', 'boot_id', 'sequence', 'collected_at', 'agent_version',
-    'uptime_seconds', 'reason', 'health', 'latest_inventory_id', 'performance',
+    'uptime_seconds', 'reason', 'health', 'latest_inventory_id', 'performance', 'network_test_protocol',
   ]);
   reqEnum(b.protocol_version, 'protocol_version', ['1.0']);
   reqUuid(b.message_id, 'message_id');
@@ -120,6 +120,7 @@ export function validateHeartbeat(b) {
   reqIso(b.collected_at, 'collected_at');
   reqStr(b.agent_version, 'agent_version', { max: 32 });
   reqInt(b.uptime_seconds, 'uptime_seconds', { min: 0 });
+  if (b.network_test_protocol !== undefined) reqEnum(b.network_test_protocol,'network_test_protocol',[1]);
   if (b.reason !== undefined) reqEnum(b.reason, 'reason', HB_REASONS);
   reqObj(b.health, 'health');
   noExtraKeys(b.health, 'health', ['inventory', 'pending_messages', 'dropped_messages', 'last_error_code']);

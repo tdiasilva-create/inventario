@@ -1,0 +1,72 @@
+SEMED TÉCNICO — EVIDÊNCIAS DA PREPARAÇÃO DESTE PACOTE
+13/11/2026 · sem alteração de regras ou publicação.
+
+BASE
+Commit examinado: b3331de3a7f42f315c255128157953994b601353.
+Branch local: codex/analise-migracao-servidor-fisico.
+Estado funcional documentado: D-110, 12/11/2026, código 5cb844b.
+Fontes copiadas com SHA-256 e conferência contra o arquivo original local.
+
+EXECUTADO NESTA ENTREGA
+1. Leitura da implementação do técnico, APIs, Android, build e regras pertinentes.
+2. pnpm build:desktop: sucesso, 108 arquivos, 8 bundles; artefatos locais.
+   Esse comando pode copiar o APK privado já existente para dist; não recompila
+   nem assina um APK novo, não instala e não publica.
+3. node --test tests/technical-dispatch.test.mjs
+   tests/dispatch-road-routing.test.mjs tests/technician-avatars.test.mjs:
+   19 testes aprovados (7 atendimento, 8 rotas, 4 avatar).
+4. scripts/capture-technician-handoff.cjs: navegação local com Worker real,
+   SQLite em memória, sessão sintética do helper e GPS simulado no navegador.
+   16 capturas e quatro JSONs de exemplo; zero erros JavaScript registrados.
+   Servidor restrito a 127.0.0.1, requisições externas do navegador bloqueadas.
+5. Assertivas adicionais do ensaio: sem atendimento após GPS negado; posição
+   removida após conclusão; colega aceita e outro pode concluir pela equipe;
+   ausência de transbordamento horizontal nas vistas de fila 360 e 412 pixels.
+
+CAPTURAS
+01-login: resposta 401 induzida no teste para mostrar formulário.
+02-senha-provisoria: mustChange induzido para referência visual.
+03-fila-390: demandas criadas nas APIs do Worker local.
+04-gps-indisponivel: permissão não concedida; aceite bloqueado.
+05-atendimento-ativo: GPS simulado e aceite confirmado no banco em memória.
+06-observacao: modal com texto sintético, ainda não enviado.
+07-impedimento: modal; envio posterior registrado no ambiente local.
+08-confirmar-conclusao: modal antes de confirmar.
+09-concluidos: resultado da conclusão na lista, posição local removida.
+10-avisos: avisos gerados pelos fluxos locais.
+11-colega-ativo: segunda conta sintética aceita; botão concluir pela equipe.
+12-fila-360: largura 360, altura 800.
+13-fila-412: largura 412, altura 915.
+14-modal-paisagem: viewport 812x375, não teclado Android real.
+15-fila-vazia: envelope vazio induzido, apenas apresentação.
+16-erro-de-consulta: HTTP 503 induzido, sem sucesso fictício.
+
+Os JSONs de EXEMPLOS são retornos locais de fila, ativo, histórico e avisos.
+Nomes começam com TESTE. IDs são aleatórios do ensaio. Nenhuma conta/unidade
+real foi utilizada. Não há respostas de /auth/me para evitar copiar CSRF.
+
+LIMITES
+- Navegador desktop com viewport mobile não reproduz o teclado/IME Android.
+- Capturas com diálogo são da viewport; listas podem incluir a página inteira.
+- Link de download e mensagem "No navegador..." pertencem à versão web. APK
+  detecta a ponte nativa e muda esses detalhes; não simulamos APK homologado.
+- Sem teste físico, instalação, upgrade, assinatura nova, bateria, tela
+  bloqueada, força de parada, reboot ou notificações de fabricante.
+- Sem nova leitura de dados reais, chamada OSRM real ou escrita no D1 oficial.
+- Testes de rotas/Drive usam dependências isoladas. Não são teste remoto desses
+  fornecedores nesta data.
+- Os 19 testes confirmam regras existentes; não validam o redesenho futuro.
+- Localização até encerrar toda a fila continua adiada.
+
+REPRODUÇÃO
+No clone completo, instalar dependências pelo lockfile, executar build:desktop
+e node scripts/capture-technician-handoff.cjs. Saída em
+private-data/entregas/app-tecnico-2026-11-13. O helper injeta sessão de teste
+e usa SQLite em memória. Nunca usar esse servidor como backend de produção.
+Depois, scripts/package-technician-handoff.mjs organiza o recorte/manifesto;
+o ZIP entregue é gerado separadamente por PowerShell, com caminhos explícitos.
+
+CONFERÊNCIA VISUAL
+Foram abertas as capturas de atendimento ativo, observação e paisagem, para
+conferir a legibilidade e o vínculo com o frontend atual. Galeria inclui todas.
+Nenhuma captura foi retocada para ocultar uma limitação de interface.

@@ -1,0 +1,67 @@
+SEMED — PACOTE DE TRANSFERÊNCIA DO APLICATIVO DO TÉCNICO
+Data: 13/11/2026 · finalidade: redesenho e melhoria da experiência no celular
+
+Este pacote documenta o aplicativo EXCLUSIVO DO TÉCNICO, que recebe e atende
+demandas. Não é o coletor de inventário, o painel gerencial ou o agente Windows.
+
+PEDIDO DO RESPONSÁVEL
+Preparar informações detalhadas para desenvolver a nova aparência em outro
+ambiente. O resultado será devolvido para revisão, integração e geração de um
+novo APK. Não implementar agora a mudança de localização entre demandas.
+
+O QUE LER, NESTA ORDEM
+1. 01_MANUAL_COMPLETO_APP_TECNICO.txt: funcionamento, telas, regras, arquitetura,
+   aparência, limites, desempenho e processo de entrega.
+2. 02_CONTRATOS_API_E_ANDROID.txt: endpoints, campos, erros, transações e ponte
+   JavaScript/Android. Fonte de compatibilidade para o novo frontend.
+3. 03_PROMPT_PARA_DESENVOLVIMENTO_EXTERNO.txt: pedido pronto para encaminhar ao
+   desenvolvedor ou IA que fará o redesenho.
+4. 04_ROTEIRO_DE_TESTES_E_DEVOLUTIVA.txt: casos de aceite e formato da entrega.
+5. 05_DECISOES_VISUAIS_PARA_PREENCHER.txt: escolhas de aparência e usabilidade
+   que o responsável pode editar antes de aprovar a implementação.
+6. 06_EVIDENCIAS_E_LIMITES.txt: resultados efetivamente executados nesta entrega.
+
+NO ZIP
+- FONTES/: cópias exatas dos arquivos selecionados do repositório, com caminhos
+  preservados, Java, HTML/CSS/JS, servidor, migrações, testes e documentação.
+- EVIDENCIAS/: capturas novas do frontend atual executado localmente, com banco
+  SQLite em memória e dados sintéticos identificados. Não são prints de demandas
+  reais nem homologação do Android físico.
+- EXEMPLOS/: respostas obtidas no ensaio local, sem senha, cookie ou CSRF.
+- GALERIA.html: abra no navegador para visualizar as capturas incluídas.
+- MANIFESTO_FONTES.json: origem, tamanho e SHA-256 de cada cópia de código.
+- MANIFESTO_ARQUIVOS.sha256: conferência dos arquivos distribuídos.
+
+LIMITES DO RECORTE
+FONTES é um recorte de referência, não um clone completo e independente. O
+Worker importa outros módulos do projeto. Não execute migrações isoladamente
+nem trate o helper de testes como servidor de produção. Para executar os testes
+originais e builds, use o repositório completo no commit indicado no manifesto.
+
+Repositório: https://github.com/tdiasilva-create/inventario
+Base local examinada: b3331de3a7f42f315c255128157953994b601353
+Branch examinada: codex/analise-migracao-servidor-fisico
+Base funcional registrada em produção: 5cb844b, D-110, 12/11/2026.
+Esta entrega não consultou dados de atendimento de usuários reais nem republicou
+o sistema. A equivalência com produção é a registrada nos documentos de release,
+não uma auditoria nova do conteúdo remoto.
+
+ENDEREÇOS REAIS, POR EXTENSO — REFERÊNCIA, NÃO DESTINO DOS TESTES
+App técnico:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico
+APK atualmente distribuído:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+Organização pelo root:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/roteiro-demandas
+
+NÃO INCLUÍDO
+Banco real, nomes/rotas de técnicos reais, fotos privadas, sessões, tokens,
+senha de usuário, OAuth, AUTH_PEPPER, keystore, senha de assinatura, arquivos
+de ambiente ou instaladores. A assinatura oficial será aplicada no ambiente
+original após revisão. Não solicitar essas credenciais para desenhar telas.
+
+REGRA PARA O REDESENHO
+Separar ATUAL, PROPOSTA e PENDENTE. Uma tela bonita não aprova uma mudança de
+regra. Não afirmar que um botão novo, push, offline, câmera ou rastreamento
+contínuo funciona antes de integrar e testar. O pedido de acompanhar o técnico
+até terminar todas as demandas foi expressamente ADIADO pelo responsável.

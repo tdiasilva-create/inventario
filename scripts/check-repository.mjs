@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process';
 const paths=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 if(!paths.length)throw Error('Não há arquivos no índice Git para conferir.');
 const errors=[];
-const forbidden=/(^|\/)(private-data|backups|exports-reais|node_modules|\.wrangler|revisoes|entregas|pedidos)(\/|$)|(^|\/)\.dev\.vars(?!\.example$)|(^|\/)\.env(?!\.example$)|\.(exe|msi|apk|keystore|jks|zip|sqlite3?|db|pem|pfx|p12|key|har|trace)$/i;
+const forbidden=/(^|\/)(private-data|backups|exports-reais|node_modules|\.wrangler|revisoes|entregas|pedidos)(\/|$)|^windows\/.*\/(bin|obj)\/|(^|\/)\.dev\.vars(?!\.example$)|(^|\/)\.env(?!\.example$)|\.(exe|msi|dll|apk|keystore|jks|zip|sqlite3?|db|pem|pfx|p12|key|har|trace)$/i;
 const rules=[
  ['chave privada',/-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----/],
  ['Google OAuth secret',/GOCSPX-[A-Za-z0-9_-]{20,}/],
@@ -13,7 +13,7 @@ const rules=[
 ];
 for(const file of paths){
  if(forbidden.test(file)||/(^|\/)(client_secret[^/]*|[^/]*credentials[^/]*|[^/]*secrets[^/]*)\.json$/i.test(file))errors.push({file,reason:'arquivo privado/binário não permitido'});
- if(!/\.(mjs|cjs|js|jsonc?|sql|md|txt|ya?ml|html|css|csv)$|(^|\/)\.dev\.vars\.example$/.test(file))continue;
+ if(!/\.(mjs|cjs|js|jsonc?|sql|md|txt|ya?ml|html|css|csv|java|xml|cs|csproj|ps1|nsi|py|properties)$|(^|\/)\.dev\.vars\.example$/.test(file))continue;
  const source=execFileSync('git',['show',':'+file],{maxBuffer:16*1024*1024}).toString('utf8');
  for(const [label,pattern]of rules)if(pattern.test(source))errors.push({file,reason:label});
 }

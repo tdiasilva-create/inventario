@@ -2,7 +2,8 @@ import {readFile,readdir,access} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 const base='docs/07-operacao';
 const files=['README.md','DEVELOPMENT.md','COMECE_AQUI.md','COMO_PUBLICAR_NO_GITHUB.md','PLANO_DE_TRANSFERENCIA_E_IMPLANTACAO.md',...(await readdir(base)).filter(x=>x.endsWith('.md')).map(x=>base+'/'+x)];
-files.push(...(await readdir('docs/08-auditoria')).filter(x=>x.endsWith('.md')).map(x=>'docs/08-auditoria/'+x));
+async function markdownFiles(dir){const entries=await readdir(dir,{withFileTypes:true});return (await Promise.all(entries.map(entry=>entry.isDirectory()?markdownFiles(dir+'/'+entry.name):entry.name.endsWith('.md')?[dir+'/'+entry.name]:[]))).flat();}
+files.push(...await markdownFiles('docs/08-auditoria'));
 for(const extra of ['docs/07-operacao/gerado','docs/09-migracao-servidor-fisico']){
  try{files.push(...(await readdir(extra)).filter(x=>x.endsWith('.md')).map(x=>extra+'/'+x));}catch(error){if(error.code!=='ENOENT')throw error;}
 }

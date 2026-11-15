@@ -33,6 +33,9 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0029_technician_avatars.sql`
 - `0030_d1_read_budget.sql`
 - `0031_panel_read_revisions.sql`
+- `0032_collection_control.sql`
+- `0033_technician_tracking.sql`
+- `0034_agent_network_tests.sql`
 
 ## agent_audit_log
 
@@ -280,6 +283,30 @@ Referências: `device_id` → `agent_devices.device_id` (delete: NO ACTION).
 | last_success_at | INTEGER | sim |  | — |
 | processed | INTEGER | sim |  | — |
 
+## agent_network_tests
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| request_id | TEXT | sim |  | — |
+| requested_by | TEXT | sim |  | — |
+| device_id | TEXT | sim |  | — |
+| installation_id | TEXT | sim |  | — |
+| link_id | TEXT | sim |  | — |
+| equipment_id | TEXT | sim |  | — |
+| unit_id | TEXT | sim |  | — |
+| context_json | TEXT | sim |  | — |
+| mode | TEXT | sim |  | — |
+| state | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+| expires_at | INTEGER | sim |  | — |
+| started_at | INTEGER | não |  | — |
+| finished_at | INTEGER | não |  | — |
+| attempt_id | TEXT | não |  | — |
+| cancelled_by | TEXT | não |  | — |
+| result_json | TEXT | não |  | — |
+| observation_json | TEXT | não |  | — |
+
 ## agent_notification_reads
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -382,6 +409,14 @@ Referências: `user_id` → `users.id` (delete: CASCADE); `notification_id` → 
 | attempted_json | TEXT | sim |  | — |
 | server_json | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
+
+## collection_data_presence
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| source | TEXT | sim | 1 | — |
+| entity_id | TEXT | sim | 2 | — |
+| unit_id | TEXT | sim |  | — |
 
 ## collection_history
 
@@ -508,6 +543,15 @@ Referências: `user_id` → `users.id` (delete: NO ACTION); `request_id` → `se
 
 Referências: `user_id` → `users.id` (delete: NO ACTION).
 
+## dispatch_open_counts
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| user_id | TEXT | não | 1 | — |
+| open_count | INTEGER | sim |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION).
+
 ## dispatch_order
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -571,6 +615,47 @@ Referências: `attendance_id` → `dispatch_attendances.id` (delete: CASCADE).
 | updated_by | TEXT | sim |  | — |
 
 Referências: `user_id` → `users.id` (delete: NO ACTION).
+
+## dispatch_tracking
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | TEXT | não | 1 | — |
+| user_id | TEXT | sim |  | — |
+| session_hash | TEXT | sim |  | — |
+| credential_version | INTEGER | sim |  | — |
+| token_hash | TEXT | sim |  | — |
+| started_at | INTEGER | sim |  | — |
+| ended_at | INTEGER | não |  | — |
+| end_reason | TEXT | não |  | — |
+
+Referências: `user_id` → `users.id` (delete: NO ACTION).
+
+## dispatch_tracking_positions
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| tracking_id | TEXT | não | 1 | — |
+| latitude | REAL | sim |  | — |
+| longitude | REAL | sim |  | — |
+| accuracy | REAL | sim |  | — |
+| observed_at | INTEGER | sim |  | — |
+| received_at | INTEGER | sim |  | — |
+
+Referências: `tracking_id` → `dispatch_tracking.id` (delete: NO ACTION).
+
+## dispatch_tracking_routes
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| tracking_id | TEXT | não | 1 | — |
+| route_key | TEXT | sim |  | — |
+| origin_latitude | REAL | sim |  | — |
+| origin_longitude | REAL | sim |  | — |
+| expires_at | INTEGER | sim |  | — |
+| response_json | TEXT | sim |  | — |
+
+Referências: `tracking_id` → `dispatch_tracking.id` (delete: NO ACTION).
 
 ## environment_name_events
 
@@ -1100,6 +1185,31 @@ Referências: `assigned_by` → `users.id` (delete: NO ACTION); `unit_id` → `u
 | payload | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
 
+## unit_collection_review_history
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| operation_id | TEXT | não | 1 | — |
+| unit_id | TEXT | sim |  | — |
+| before_status | TEXT | sim |  | — |
+| after_status | TEXT | sim |  | — |
+| version | INTEGER | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| created_at | INTEGER | sim |  | — |
+
+## unit_collection_reviews
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| unit_id | TEXT | não | 1 | — |
+| status | TEXT | sim |  | — |
+| version | INTEGER | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| updated_at | INTEGER | sim |  | — |
+| operation_id | TEXT | sim |  | — |
+
 ## unit_collection_totals
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1205,9 +1315,34 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 
 ## Views e triggers
 
+- `collection_review_audit_insert` (trigger, unit_collection_reviews)
+- `collection_review_audit_update` (trigger, unit_collection_reviews)
+- `coverage_environments_delete` (trigger, environments)
+- `coverage_environments_insert` (trigger, environments)
+- `coverage_environments_update` (trigger, environments)
+- `coverage_equipments_delete` (trigger, equipments)
+- `coverage_equipments_insert` (trigger, equipments)
+- `coverage_equipments_update` (trigger, equipments)
+- `coverage_miscellaneous_equipments_delete` (trigger, miscellaneous_equipments)
+- `coverage_miscellaneous_equipments_insert` (trigger, miscellaneous_equipments)
+- `coverage_miscellaneous_equipments_update` (trigger, miscellaneous_equipments)
+- `coverage_photos_delete` (trigger, collection_photos)
+- `coverage_photos_insert` (trigger, collection_photos)
+- `coverage_photos_update` (trigger, collection_photos)
+- `coverage_sections_delete` (trigger, inspection_sections)
+- `coverage_sections_insert` (trigger, inspection_sections)
+- `coverage_sections_update` (trigger, inspection_sections)
+- `coverage_unit_delete` (trigger, units)
+- `coverage_visit_delete` (trigger, visit_answers)
+- `coverage_visit_insert` (trigger, visit_answers)
+- `coverage_visit_update` (trigger, visit_answers)
 - `dispatch_assignment_ended` (trigger, dispatch_assignments)
 - `dispatch_assignment_max` (trigger, dispatch_assignments)
 - `dispatch_attendance_ended` (trigger, dispatch_attendances)
+- `dispatch_open_assigned` (trigger, dispatch_assignments)
+- `dispatch_open_assignment_deleted` (trigger, dispatch_assignments)
+- `dispatch_open_request_status` (trigger, service_requests)
+- `dispatch_open_unassigned` (trigger, dispatch_assignments)
 - `dispatch_request_changed` (trigger, service_requests)
 - `dispatch_request_completed` (trigger, service_requests)
 - `dispatch_request_insert` (trigger, service_requests)
@@ -1216,6 +1351,14 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `dispatch_road_route_queue_changed` (trigger, dispatch_meta)
 - `dispatch_session_removed` (trigger, sessions)
 - `dispatch_technician_disabled` (trigger, dispatch_technicians)
+- `dispatch_tracking_credentials` (trigger, users)
+- `dispatch_tracking_disabled` (trigger, dispatch_technicians)
+- `dispatch_tracking_ended` (trigger, dispatch_tracking)
+- `dispatch_tracking_last_completed` (trigger, service_requests)
+- `dispatch_tracking_last_unassigned` (trigger, dispatch_assignments)
+- `dispatch_tracking_position_deleted` (trigger, dispatch_tracking_positions)
+- `dispatch_tracking_queue_changed` (trigger, dispatch_meta)
+- `dispatch_tracking_session_revoked` (trigger, sessions)
 - `dispatch_user_disabled` (trigger, users)
 - `equipment_deleted_identity` (trigger, equipments)
 - `equipment_totals_delete` (trigger, equipments)

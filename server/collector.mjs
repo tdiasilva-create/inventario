@@ -4,12 +4,13 @@ import {thumbnailResponse} from './photo-thumbnails.mjs';
 import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
 import {equipmentRead} from './inventory-equipment.mjs';
+import {unitEquipmentMapRead} from './unit-equipment-map.mjs';
 import {assertUnitScope,inventoryScopeSql} from './unit-scope.mjs';
 import {visitRoutes,visitReview} from './visit-routes.mjs';
 import {visitVersion,validateVisitEquipment} from '../web/visit-schema.js';
-import {isV3,startV3,reviewV3,resolveV3Environment,v3ExtraEquipmentKeys} from './collector-v3.mjs';
+import {isV3,startV3,reviewV3,v3ReviewEquipmentStatement,resolveV3Environment,v3ExtraEquipmentKeys} from './collector-v3.mjs';
 import {v3Sections,validateV3Section,validateV3Equipment,validV3SectionShape} from '../web/collector-v3-schema.js';
-import {isV2 as isOriginalV2,startV2,reviewV2,v2Evidence,v2ExtraEquipmentKeys,validSectionShape,pendingAgentLinkCount,pendingDraftCount,similarEnvironments} from './collector-v2.mjs';
+import {isV2 as isOriginalV2,startV2,reviewV2,v2Evidence,v2EvidenceStatement,v2ExtraEquipmentKeys,validSectionShape,pendingAgentLinkCount,pendingDraftCount,similarEnvironments} from './collector-v2.mjs';
 import {v2Sections,validateV2Section,validateV2Equipment,validateV2Draft,containsSecret} from '../web/collector-v2-schema.js';
 import {inProgressRead} from './in-progress.mjs';
 import {inventoryResults} from './inventory-results.mjs';
@@ -50,10 +51,16 @@ export async function collectorRoutes(request,url,user,env,{json,fail,body}){
  if(p==='/api/collector/start'&&write){const data=await body(request),u=await unit(data.unitId);if(!u)return fail('Unidade não autorizada.',403);const now=Date.now(),id=crypto.randomUUID();await db.prepare("INSERT OR IGNORE INTO inspections(id,unit_id,created_by,created_at,updated_at) VALUES(?,?,?,?,?)").bind(id,u.id,user.id,now,now).run();const i=await db.prepare("SELECT * FROM inspections WHERE unit_id=? AND state='open'").bind(u.id).first();const previous=await db.prepare("SELECT id FROM inspections WHERE unit_id=? AND state='completed' ORDER BY completed_at DESC,id DESC LIMIT 1").bind(u.id).first();const rows=previous?(await db.prepare('SELECT section,data_json FROM inspection_sections WHERE inspection_id=?').bind(previous.id).all()).results:[];await db.batch(groups.map(([g])=>db.prepare('INSERT OR IGNORE INTO inspection_sections(inspection_id,section,data_json,updated_by,updated_at) VALUES(?,?,?,?,?)').bind(i.id,g,g==='A'?'{}':rows.find(r=>r.section===g)?.data_json||'{}',user.id,now)));return json({inspection:i});}
  if(p==='/api/collector/inspection'&&!write){
   const i=await inspection(url.searchParams.get('id'));if(!i||!editor)return fail('Vistoria não autorizada.',403);
-  const rows=(await db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results,c=await context(i);
-  const photos=(await db.prepare("SELECT id,target_kind,target_id,status FROM collection_photos WHERE inspection_id=?").bind(i.id).all()).results;
-  const totals=await db.prepare('SELECT records,items,problems FROM unit_collection_totals WHERE unit_id=?').bind(i.unit_id).first()||{records:0,items:0,problems:0};
-  return json({inspection:i,unit:await unit(i.unit_id),sections:Object.fromEntries(rows.map(r=>[r.section,{...r,data:parse(r.data_json),data_json:undefined}])),environments:c.environments,photos:isV2(i)?await v2Evidence(db,i):photos,totals});
+  // Authorized first; independent reads share one binding call. No authorization cache.
+  const includeReview=isV3(i)&&url.searchParams.get('review')==='1';
+  const queries=[db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id),db.prepare('SELECT * FROM environments WHERE unit_id=? ORDER BY name').bind(i.unit_id),db.prepare('SELECT records,items,problems FROM unit_collection_totals WHERE unit_id=?').bind(i.unit_id),db.prepare('SELECT u.* FROM units u WHERE u.id=? AND u.active=1'+(user.role==='operador'?' AND '+operatorUnitAccess():'')).bind(i.unit_id,...(user.role==='operador'?operatorUnitParams(user):[])),isV2(i)?v2EvidenceStatement(db,i):db.prepare('SELECT id,target_kind,target_id,status FROM collection_photos WHERE inspection_id=?').bind(i.id)];
+  if(includeReview)queries.push(v3ReviewEquipmentStatement(db,i),db.prepare("SELECT COUNT(*) AS count FROM inventory_equipment_all e LEFT JOIN equipment_verifications v ON v.equipment_id=e.id AND v.inspection_id=? WHERE e.unit_id=? AND (v.result IS NULL OR v.result=?) AND NOT(e.storage_kind='misc' AND e.inspection_id=? AND e.verified_at IS NOT NULL)").bind(i.id,i.unit_id,'Não verificado',i.id),db.prepare("SELECT COUNT(*) AS count FROM equipment_verifications WHERE inspection_id=? AND result='Não localizado'").bind(i.id));
+  const result=await db.batch(queries),rows=result[0].results,environments=result[1].results,u=assertUnitScope(result[3].results[0],{collection:true});
+  if(!u)return fail('Unidade não autorizada.',403);
+  const photos=isV2(i)?await v2Evidence(db,i,result[4].results):result[4].results;
+  const payload={inspection:i,unit:u,sections:Object.fromEntries(rows.map(r=>[r.section,{...r,data:parse(r.data_json),data_json:undefined}])),environments,photos,totals:result[2].results[0]||{records:0,items:0,problems:0}};
+  if(includeReview)payload.review=i.state==='completed'?{completed:true,completedAt:i.completed_at}:{...await reviewV3(db,i,{environments},{rows,equipment:result[5].results,photos}),unverified:result[6].results[0].count,missing:result[7].results[0].count,revision:i.revision};
+  return json(payload);
  }
  if(p==='/api/collector/environment-rename'&&write){
   const data=await body(request),i=await inspection(data.inspectionId);if(!i)return fail('Vistoria não autorizada.',403);
@@ -179,6 +186,7 @@ async function inventoryRead(request,url,user,env,{json,fail,unit}){
   return json({visit,inspection:i,sections:hideContact(Object.fromEntries(rows.map(r=>[r.section,parse(r.data_json)])),user),environments:environments.map(e=>({...parse(e.data_json),...(e.name_version>1?{name:e.current_name}:{})})),photos:described.slice(0,photos.length),photoTotal,facade:facade?described.find(p=>p.id===facade.id):null,missing:missingRows.results[0].total});
  }
  if(p==='/api/inventory/equipment')return equipmentRead(request,url,user,env,{json,fail,unit});
+ if(p==='/api/inventory/unit-equipment-map')return unitEquipmentMapRead(request,url,user,env,{json,fail});
  return fail('Consulta não encontrada.',404);
 }
 

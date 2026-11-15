@@ -1,0 +1,81 @@
+AGENTE SEMED 0.1.9-rc3 — RECUPERAÇÃO ASSISTIDA E TESTES DE INTERNET
+
+API COMPATÍVEL PUBLICADA EM 14/11/2026. RC3 INCLUI RECUPERAÇÃO EXPLÍCITA.
+Retoma o erro conhecido do rc1 somente quando reconhece os arquivos por hash,
+o backup e o serviço parado/desabilitado. Nenhum dado ou identidade é apagado.
+Registro detalhado em %LOCALAPPDATA%\SEMED\InstallerLogs.
+O rc2 já foi testado neste projeto com cadastro, QR, vínculo e velocidade reais.
+O modo de recuperação rc3 tem testes locais com arquivos reais e falhas simuladas;
+a recuperação no computador revogado ainda deve ser conferida após a instalação.
+
+O instalador inclui o EXE original 0.1.8 e um novo núcleo 0.1.9, reconstruído do
+binário 0.1.8, com a extensão de diagnóstico. Interface, serviço Windows e runtime
+originais são preservados. Algumas etiquetas fixas da interface continuam 0.1.8;
+a versão reportada pelo núcleo e enviada ao painel é 0.1.9.
+
+No modo INSTALAR / ATUALIZAR, mantém ProgramData, chave CNG não exportável, ID,
+vínculo à escola, configuração, fila e histórico. Não usar PURGE. Faz backup do
+núcleo e tenta restaurá-lo se a atualização falhar. Um agente revogado continua
+revogado. Para o caso autorizado de reassociação, use o modo separado abaixo.
+
+RECUPERAR INSTALAÇÃO REVOGADA (BACKUP + NOVO QR)
+Selecione expressamente essa opção no assistente e confirme. Requer administrador
+local do Windows, serviço reconhecido e estado local REVOGADO. Não recupera
+automaticamente identidades válidas, corrompidas ou desconhecidas.
+1. Interrompe o serviço e impede reinício durante a troca dos diretórios.
+2. Copia TODOS os arquivos locais, incluindo fila, estado, configuração e logs.
+3. Confere tamanho e SHA-256 de cada arquivo. Sem backup íntegro, não continua.
+4. Preserva os originais e o backup em C:\ProgramData\SEMED\AgentRecovery\<ID>.
+5. Prepara um ID de instalação e nome de chave novos. O serviço cria a chave
+   CNG na sua própria conta; a chave antiga não é apagada nem exportada.
+6. Mantém a configuração/permissões e solicita cadastro automático no servidor.
+7. O operador lê o novo QR na ficha do computador da unidade correta.
+
+As mensagens pendentes antigas ficam ARQUIVADAS, não são descartadas e não são
+reenviadas sob outra identidade/unidade. O histórico que já existe no servidor
+permanece intacto. Esta operação não restaura unidade apagada nem desfaz revogação.
+O manifesto relaciona os IDs antigo/novo e o vínculo histórico. Snapshot e original
+ficam separados da nova fila. Não copie esses arquivos para dentro da nova fila.
+A chave privada não exportável permanece protegida neste Windows: copiar o backup
+não significa poder usar a identidade antiga em outro computador.
+
+Se faltar energia ou ocorrer erro, repita ESTE instalador no modo Recuperar.
+Uma transação pendente é retomada, sem gerar outro ID. O serviço fica parado até
+a retomada ser concluída. Não desinstale com /PURGE e não apague AgentRecovery.
+Se não houver QR após recuperar, confira conexão/diagnóstico no agente. Não faça
+outra recuperação em identidade válida; aguarde a tentativa automática ou suporte.
+
+Para evitar duplicidade, no coletor abra a ficha existente da unidade correta
+quando houver e leia o QR nela. Crie nova ficha somente se o equipamento ainda
+não estiver cadastrado. O instalador não escolhe escola/ambiente por conta própria.
+
+Em instalação nova, a base 0.1.8 cria serviço, permissões e atalhos, sem iniciar.
+O núcleo é atualizado antes do primeiro início. Conta virtual do serviço mantida.
+Não cria uma escola nem vincula a máquina automaticamente: o operador lê o QR.
+
+Somente root solicita os testes no painel. O computador precisa estar vinculado,
+conectado e comunicar suporte. Entrega pela comunicação periódica existente,
+sem execução remota de PowerShell, shell, arquivos ou URLs livres pelo servidor.
+O PowerShell deste instalador atua apenas durante a instalação administrativa.
+
+Verificação leve: cinco amostras de latência HTTP, até 15 segundos.
+Velocidade: até 32 MiB recebidos e 8 MiB enviados, até 45 segundos; destino fixo
+HTTPS speed.cloudflare.com. Não envia arquivos pessoais. O provedor de medição
+vê o IP público e o tráfego sintético. Dados resumidos vão ao servidor SEMED.
+Teste pode consumir banda e afetar outras atividades. Se houver tráfego local
+detectado antes da transferência, a medição é recusada e precisa ser solicitada
+em outro momento. Não promete ausência de impacto nem detecta uso de outras máquinas.
+
+O resultado é a amostra daquele computador naquele instante, não a velocidade
+contratada, a garantia da prestadora ou prova de link dedicado/banda larga.
+Esses dados contratuais precisam de conferência administrativa. Wi-Fi, cabo,
+VPN, proxy e congestionamento podem afetar o resultado.
+
+Cancelamento e revogação são conferidos antes das fases e periodicamente durante
+o tráfego. Falha/queda de energia não repete o tráfego automaticamente. O resultado
+é guardado localmente e pode ser reenviado por até 24 horas quando a comunicação
+voltar; o último registro local fica preservado para diagnóstico.
+
+Assinatura Authenticode: não disponível. Confira o SHA-256 publicado do pacote.
+Não é necessário pagar plano Cloudflare; nenhuma contratação foi realizada.
+O serviço público de medição não oferece neste projeto garantia de disponibilidade.

@@ -1,0 +1,52 @@
+CONTRATOS PARA IMPLEMENTAR E TESTAR — CÓDIGO DO WORKER É A REFERÊNCIA EXATA
+
+Autenticação: /api/auth/login, /api/auth/me, /api/auth/logout, troca de senha atual.
+App: /api/mobile/me (capacidades), /api/mobile/units (catálogo elegível).
+Coletor: /api/collector/capabilities; /api/collector/v3-start com unitId e
+preservePrevious; /api/collector/inspection?id=... lê unidade/seções/fotos/versões.
+section-save envia inspectionId,section,version,answers; snapshot por assunto.
+Concluir assunto/reabrir usa rotas existentes e versão, não mudar state no browser.
+equipment-list usa unitId,inspectionId,category,q,cursor, devolve items/nextCursor.
+equipment-lock recebe inspectionId,id e opcional token; retorna equipamento,
+versão/vínculo e token. Unlock recebe id/token. Não guardar token em URL.
+equipment-save recebe inspectionId,id,version,lockToken,environmentId,data e
+draft quando aplicável. A edição antiga preserva campos históricos ausentes.
+environment-save recebe inspectionId,name,type; rename inclui identidade/versão.
+review recebe id da visita e devolve revisão/errors/details/pending. finish recebe
+inspectionId,confirm:true,revision; sucesso só com completed confirmado.
+Consultas declarativas de endpoints extraídas estão em 09_INVENTARIO_TECNICO.txt;
+handlers e testes do pacote contêm formatos completos e recusas.
+
+FOTO: POST photo-upload com bytes de imagem e headers Content-Type,
+X-CSRF-Token, X-Photo-Id, X-Inspection-Id, X-Target-Kind, X-Target-Id.
+Só ready significa recebida. Derivada em photo-thumb com X-Source-SHA256.
+Leitura /api/collector/photo?id=ID&size=thumb autenticada. Remoção também autenticada.
+Não substituir por data URL persistida no D1, link público do Drive ou envio fake.
+
+AGENTE: pairings/preview, claim, claim-status e inventory/equipment-location/status.
+Manter request_id/recibo, expected_version, lock_token, unidade/ambiente/posição.
+O QR não é senha de operador nem prova de posse da unidade. Não logar pairing_code.
+Servidor é responsável por validar vínculo atual, revogação, expiração, conflito.
+
+RESPOSTAS A TRATAR
+401: sessão expirada → preservar RAM, autenticar MESMO usuário e renovar CSRF.
+403: sem permissão/ação vedada → não sugerir modo alternativo que contorne segurança.
+400/422: campos/regras específicas → destacar campo/registro correto.
+409 e códigos de versão/trava: explicar conflito; não sobrescrever silenciosamente.
+429: respeitar Retry-After quando existente, sem repetir agressivamente.
+Timeout/desconexão após POST: resultado desconhecido, verificar recibo/estado.
+500/503/provedor: manter preenchimento/prévia e oferecer retomada com contexto.
+
+DADOS E HISTÓRICO
+Inspeção, seção, equipamento, ambiente, foto, instalação/vínculo são IDs diferentes.
+Data JSON de equipamento e seção não são contrato novo inventado pelo layout.
+published_json, dados correntes parciais e rastros históricos não são equivalentes.
+Um novo estilo não pode exigir recadastrar equipamentos/repetir fotos antigas.
+Null/vazio/zero/não informado precisam de semânticas preservadas.
+
+CONSUMO E GRATUITO
+Esta conta já atingiu o limite diário de leituras D1. Preservar D108/D110,
+paginação, índices e invalidações. Não ler inventário inteiro a cada clique;
+medir chamadas/rows_read por ação, abortar respostas antigas e pausar áreas ocultas.
+Não criar timer de sessão/catálogo/miniaturas que consulta continuamente.
+Não usar cache compartilhado de autorização; permissões revalidadas no servidor.

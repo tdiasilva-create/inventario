@@ -124,6 +124,18 @@
     {
       "file": "0031_panel_read_revisions.sql",
       "sha256": "0681aae76dfee8853353ed22090f35c578f42745bc3f060b05c29ec00b58c150"
+    },
+    {
+      "file": "0032_collection_control.sql",
+      "sha256": "be689b8478090dc9749db1effa3a0d0266273144f8fbe99d45123e8839147030"
+    },
+    {
+      "file": "0033_technician_tracking.sql",
+      "sha256": "e392e80b82df8af7317cc5bb87a9c6a787158e5cb3fb3299d9144bc565dfb54e"
+    },
+    {
+      "file": "0034_agent_network_tests.sql",
+      "sha256": "162638468096bc49f7e4fd56245a05d1fad619fad9bb84816a322049f0777b04"
     }
   ],
   "tables": [
@@ -1411,6 +1423,164 @@
       "foreignKeys": []
     },
     {
+      "name": "agent_network_tests",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "requested_by",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "device_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "installation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "link_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "equipment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "context_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "mode",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "started_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "finished_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "attempt_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "cancelled_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "result_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "observation_json",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "agent_notification_reads",
       "columns": [
         {
@@ -1892,6 +2062,36 @@
           "cid": 6,
           "name": "created_at",
           "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "collection_data_presence",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "source",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "entity_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "unit_id",
+          "type": "TEXT",
           "notnull": 1,
           "dflt_value": null,
           "pk": 0
@@ -2609,6 +2809,39 @@
       ]
     },
     {
+      "name": "dispatch_open_counts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "open_count",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
       "name": "dispatch_order",
       "columns": [
         {
@@ -2889,6 +3122,217 @@
           "seq": 0,
           "table": "users",
           "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_tracking",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "session_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "credential_version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "token_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "started_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "ended_at",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "end_reason",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_tracking_positions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "tracking_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "latitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "longitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "accuracy",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "observed_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "received_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "dispatch_tracking",
+          "from": "tracking_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "dispatch_tracking_routes",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "tracking_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "route_key",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "origin_latitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "origin_longitude",
+          "type": "REAL",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "response_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "dispatch_tracking",
+          "from": "tracking_id",
           "to": "id",
           "on_update": "NO ACTION",
           "on_delete": "NO ACTION",
@@ -5815,6 +6259,138 @@
       "foreignKeys": []
     },
     {
+      "name": "unit_collection_review_history",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "before_status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "after_status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "unit_collection_reviews",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "version",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "updated_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "unit_collection_totals",
       "columns": [
         {
@@ -6501,6 +7077,30 @@
   "objects": [
     {
       "type": "index",
+      "name": "agent_network_delivery",
+      "tbl_name": "agent_network_tests",
+      "sql": "CREATE INDEX agent_network_delivery ON agent_network_tests(device_id,state,expires_at)"
+    },
+    {
+      "type": "index",
+      "name": "agent_network_history",
+      "tbl_name": "agent_network_tests",
+      "sql": "CREATE INDEX agent_network_history ON agent_network_tests(created_at DESC,id)"
+    },
+    {
+      "type": "index",
+      "name": "agent_network_one_per_unit",
+      "tbl_name": "agent_network_tests",
+      "sql": "CREATE UNIQUE INDEX agent_network_one_per_unit ON agent_network_tests(unit_id) WHERE state IN ('queued','running','cancelling')"
+    },
+    {
+      "type": "index",
+      "name": "agent_network_unit_history",
+      "tbl_name": "agent_network_tests",
+      "sql": "CREATE INDEX agent_network_unit_history ON agent_network_tests(unit_id,created_at DESC)"
+    },
+    {
+      "type": "index",
       "name": "agent_notifications_equipment",
       "tbl_name": "agent_notifications",
       "sql": "CREATE INDEX agent_notifications_equipment ON agent_notifications(equipment_id,detected_at DESC)"
@@ -6528,6 +7128,12 @@
       "name": "assignments_unit",
       "tbl_name": "unit_assignments",
       "sql": "CREATE INDEX assignments_unit ON unit_assignments(unit_id)"
+    },
+    {
+      "type": "index",
+      "name": "collection_data_presence_unit",
+      "tbl_name": "collection_data_presence",
+      "sql": "CREATE INDEX collection_data_presence_unit ON collection_data_presence(unit_id)"
     },
     {
       "type": "index",
@@ -6561,6 +7167,12 @@
     },
     {
       "type": "index",
+      "name": "collection_review_history_unit",
+      "tbl_name": "unit_collection_review_history",
+      "sql": "CREATE INDEX collection_review_history_unit ON unit_collection_review_history(unit_id,created_at DESC,operation_id)"
+    },
+    {
+      "type": "index",
       "name": "dispatch_active_user",
       "tbl_name": "dispatch_attendances",
       "sql": "CREATE UNIQUE INDEX dispatch_active_user ON dispatch_attendances(user_id) WHERE ended_at IS NULL"
@@ -6588,6 +7200,18 @@
       "name": "dispatch_request_attendance",
       "tbl_name": "dispatch_attendances",
       "sql": "CREATE INDEX dispatch_request_attendance ON dispatch_attendances(request_id,ended_at)"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_tracking_current",
+      "tbl_name": "dispatch_tracking",
+      "sql": "CREATE UNIQUE INDEX dispatch_tracking_current ON dispatch_tracking(user_id) WHERE ended_at IS NULL"
+    },
+    {
+      "type": "index",
+      "name": "dispatch_tracking_session",
+      "tbl_name": "dispatch_tracking",
+      "sql": "CREATE INDEX dispatch_tracking_session ON dispatch_tracking(session_hash) WHERE ended_at IS NULL"
     },
     {
       "type": "index",
@@ -6969,6 +7593,12 @@
     },
     {
       "type": "table",
+      "name": "agent_network_tests",
+      "tbl_name": "agent_network_tests",
+      "sql": "CREATE TABLE agent_network_tests (\n id TEXT PRIMARY KEY,\n request_id TEXT NOT NULL UNIQUE,\n requested_by TEXT NOT NULL,\n device_id TEXT NOT NULL,\n installation_id TEXT NOT NULL,\n link_id TEXT NOT NULL,\n equipment_id TEXT NOT NULL,\n unit_id TEXT NOT NULL,\n context_json TEXT NOT NULL,\n mode TEXT NOT NULL CHECK(mode IN ('light','speed')),\n state TEXT NOT NULL CHECK(state IN ('queued','running','cancelling','completed','failed','cancelled','expired')),\n created_at INTEGER NOT NULL,\n expires_at INTEGER NOT NULL,\n started_at INTEGER,\n finished_at INTEGER,\n attempt_id TEXT,\n cancelled_by TEXT,\n result_json TEXT,\n observation_json TEXT\n)"
+    },
+    {
+      "type": "table",
       "name": "agent_notification_reads",
       "tbl_name": "agent_notification_reads",
       "sql": "CREATE TABLE agent_notification_reads (\n notification_id TEXT NOT NULL REFERENCES agent_notifications(id) ON DELETE CASCADE,\n user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n read_at INTEGER NOT NULL,\n PRIMARY KEY(notification_id,user_id)\n)"
@@ -7029,6 +7659,12 @@
     },
     {
       "type": "table",
+      "name": "collection_data_presence",
+      "tbl_name": "collection_data_presence",
+      "sql": "CREATE TABLE collection_data_presence(source TEXT NOT NULL,entity_id TEXT NOT NULL,unit_id TEXT NOT NULL,PRIMARY KEY(source,entity_id))"
+    },
+    {
+      "type": "table",
       "name": "collection_history",
       "tbl_name": "collection_history",
       "sql": "CREATE TABLE collection_history(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,inspection_id TEXT NOT NULL,entity_id TEXT NOT NULL,event TEXT NOT NULL,before_json TEXT,after_json TEXT,actor_id TEXT NOT NULL,created_at INTEGER NOT NULL)"
@@ -7083,6 +7719,12 @@
     },
     {
       "type": "table",
+      "name": "dispatch_open_counts",
+      "tbl_name": "dispatch_open_counts",
+      "sql": "CREATE TABLE dispatch_open_counts(user_id TEXT PRIMARY KEY REFERENCES users(id),open_count INTEGER NOT NULL CHECK(open_count>=0))"
+    },
+    {
+      "type": "table",
       "name": "dispatch_order",
       "tbl_name": "dispatch_order",
       "sql": "CREATE TABLE dispatch_order(request_id TEXT PRIMARY KEY REFERENCES service_requests(id),position INTEGER NOT NULL)"
@@ -7116,6 +7758,24 @@
       "name": "dispatch_technicians",
       "tbl_name": "dispatch_technicians",
       "sql": "CREATE TABLE dispatch_technicians(user_id TEXT PRIMARY KEY REFERENCES users(id),enabled INTEGER NOT NULL CHECK(enabled IN (0,1)),updated_at INTEGER NOT NULL,updated_by TEXT NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_tracking",
+      "tbl_name": "dispatch_tracking",
+      "sql": "CREATE TABLE dispatch_tracking (\n id TEXT PRIMARY KEY,\n user_id TEXT NOT NULL REFERENCES users(id),\n session_hash TEXT NOT NULL,\n credential_version INTEGER NOT NULL,\n token_hash TEXT NOT NULL UNIQUE,\n started_at INTEGER NOT NULL,\n ended_at INTEGER,\n end_reason TEXT\n)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_tracking_positions",
+      "tbl_name": "dispatch_tracking_positions",
+      "sql": "CREATE TABLE dispatch_tracking_positions (\n tracking_id TEXT PRIMARY KEY REFERENCES dispatch_tracking(id),\n latitude REAL NOT NULL CHECK(latitude BETWEEN -90 AND 90),\n longitude REAL NOT NULL CHECK(longitude BETWEEN -180 AND 180),\n accuracy REAL NOT NULL CHECK(accuracy>0 AND accuracy<=5000),\n observed_at INTEGER NOT NULL,\n received_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
+      "name": "dispatch_tracking_routes",
+      "tbl_name": "dispatch_tracking_routes",
+      "sql": "CREATE TABLE dispatch_tracking_routes (\n tracking_id TEXT PRIMARY KEY REFERENCES dispatch_tracking(id),\n route_key TEXT NOT NULL,\n origin_latitude REAL NOT NULL,\n origin_longitude REAL NOT NULL,\n expires_at INTEGER NOT NULL,\n response_json TEXT NOT NULL\n)"
     },
     {
       "type": "table",
@@ -7353,6 +8013,18 @@
     },
     {
       "type": "table",
+      "name": "unit_collection_review_history",
+      "tbl_name": "unit_collection_review_history",
+      "sql": "CREATE TABLE unit_collection_review_history(operation_id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,before_status TEXT NOT NULL,after_status TEXT NOT NULL,version INTEGER NOT NULL,actor_id TEXT NOT NULL,actor_name TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "unit_collection_reviews",
+      "tbl_name": "unit_collection_reviews",
+      "sql": "CREATE TABLE unit_collection_reviews(unit_id TEXT PRIMARY KEY,status TEXT NOT NULL CHECK(status IN ('partial','complete')),version INTEGER NOT NULL,actor_id TEXT NOT NULL,actor_name TEXT NOT NULL,updated_at INTEGER NOT NULL,operation_id TEXT NOT NULL UNIQUE)"
+    },
+    {
+      "type": "table",
       "name": "unit_collection_totals",
       "tbl_name": "unit_collection_totals",
       "sql": "CREATE TABLE unit_collection_totals(unit_id TEXT PRIMARY KEY,records INTEGER NOT NULL DEFAULT 0,items INTEGER NOT NULL DEFAULT 0,problems INTEGER NOT NULL DEFAULT 0)"
@@ -7377,6 +8049,132 @@
     },
     {
       "type": "trigger",
+      "name": "collection_review_audit_insert",
+      "tbl_name": "unit_collection_reviews",
+      "sql": "CREATE TRIGGER collection_review_audit_insert AFTER INSERT ON unit_collection_reviews BEGIN\n INSERT INTO unit_collection_review_history SELECT NEW.operation_id,NEW.unit_id,CASE WHEN EXISTS(SELECT 1 FROM collection_data_presence WHERE unit_id=NEW.unit_id) THEN 'partial' ELSE 'none' END,NEW.status,NEW.version,NEW.actor_id,NEW.actor_name,NEW.updated_at;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "collection_review_audit_update",
+      "tbl_name": "unit_collection_reviews",
+      "sql": "CREATE TRIGGER collection_review_audit_update AFTER UPDATE ON unit_collection_reviews BEGIN\n INSERT INTO unit_collection_review_history VALUES(NEW.operation_id,NEW.unit_id,OLD.status,NEW.status,NEW.version,NEW.actor_id,NEW.actor_name,NEW.updated_at);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_environments_delete",
+      "tbl_name": "environments",
+      "sql": "CREATE TRIGGER coverage_environments_delete AFTER DELETE ON environments BEGIN\n DELETE FROM collection_data_presence WHERE source='environments' AND entity_id=OLD.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_environments_insert",
+      "tbl_name": "environments",
+      "sql": "CREATE TRIGGER coverage_environments_insert AFTER INSERT ON environments WHEN 1 BEGIN\n INSERT INTO collection_data_presence VALUES('environments',NEW.id,NEW.unit_id); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_environments_update",
+      "tbl_name": "environments",
+      "sql": "CREATE TRIGGER coverage_environments_update AFTER UPDATE OF unit_id ON environments\n WHEN (1) IS NOT (1) OR NEW.unit_id IS NOT OLD.unit_id\n BEGIN\n DELETE FROM collection_data_presence WHERE source='environments' AND entity_id=OLD.id;\n INSERT INTO collection_data_presence SELECT 'environments',NEW.id,NEW.unit_id WHERE 1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_equipments_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER coverage_equipments_delete AFTER DELETE ON equipments BEGIN\n DELETE FROM collection_data_presence WHERE source='equipments' AND entity_id=OLD.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_equipments_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER coverage_equipments_insert AFTER INSERT ON equipments WHEN 1 BEGIN\n INSERT INTO collection_data_presence VALUES('equipments',NEW.id,NEW.unit_id); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_equipments_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER coverage_equipments_update AFTER UPDATE OF unit_id ON equipments\n WHEN (1) IS NOT (1) OR NEW.unit_id IS NOT OLD.unit_id\n BEGIN\n DELETE FROM collection_data_presence WHERE source='equipments' AND entity_id=OLD.id;\n INSERT INTO collection_data_presence SELECT 'equipments',NEW.id,NEW.unit_id WHERE 1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_miscellaneous_equipments_delete",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER coverage_miscellaneous_equipments_delete AFTER DELETE ON miscellaneous_equipments BEGIN\n DELETE FROM collection_data_presence WHERE source='miscellaneous_equipments' AND entity_id=OLD.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_miscellaneous_equipments_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER coverage_miscellaneous_equipments_insert AFTER INSERT ON miscellaneous_equipments WHEN 1 BEGIN\n INSERT INTO collection_data_presence VALUES('miscellaneous_equipments',NEW.id,NEW.unit_id); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_miscellaneous_equipments_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER coverage_miscellaneous_equipments_update AFTER UPDATE OF unit_id ON miscellaneous_equipments\n WHEN (1) IS NOT (1) OR NEW.unit_id IS NOT OLD.unit_id\n BEGIN\n DELETE FROM collection_data_presence WHERE source='miscellaneous_equipments' AND entity_id=OLD.id;\n INSERT INTO collection_data_presence SELECT 'miscellaneous_equipments',NEW.id,NEW.unit_id WHERE 1; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_photos_delete",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER coverage_photos_delete AFTER DELETE ON collection_photos BEGIN\n DELETE FROM collection_data_presence WHERE source='photos' AND entity_id=OLD.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_photos_insert",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER coverage_photos_insert AFTER INSERT ON collection_photos WHEN NEW.status='ready' BEGIN\n INSERT INTO collection_data_presence VALUES('photos',NEW.id,NEW.unit_id); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_photos_update",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER coverage_photos_update AFTER UPDATE OF status,unit_id ON collection_photos\n WHEN (NEW.status='ready') IS NOT (OLD.status='ready') OR NEW.unit_id IS NOT OLD.unit_id\n BEGIN\n DELETE FROM collection_data_presence WHERE source='photos' AND entity_id=OLD.id;\n INSERT INTO collection_data_presence SELECT 'photos',NEW.id,NEW.unit_id WHERE NEW.status='ready'; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_sections_delete",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER coverage_sections_delete AFTER DELETE ON inspection_sections BEGIN\n DELETE FROM collection_data_presence WHERE source='sections' AND entity_id=OLD.inspection_id||':'||OLD.section; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_sections_insert",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER coverage_sections_insert AFTER INSERT ON inspection_sections WHEN EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%') BEGIN\n INSERT INTO collection_data_presence VALUES('sections',NEW.inspection_id||':'||NEW.section,(SELECT unit_id FROM inspections WHERE id=NEW.inspection_id)); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_sections_update",
+      "tbl_name": "inspection_sections",
+      "sql": "CREATE TRIGGER coverage_sections_update AFTER UPDATE OF data_json ON inspection_sections\n WHEN (EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%')) IS NOT (EXISTS(SELECT 1 FROM json_tree(OLD.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%')) OR (SELECT unit_id FROM inspections WHERE id=NEW.inspection_id) IS NOT (SELECT unit_id FROM inspections WHERE id=OLD.inspection_id)\n BEGIN\n DELETE FROM collection_data_presence WHERE source='sections' AND entity_id=OLD.inspection_id||':'||OLD.section;\n INSERT INTO collection_data_presence SELECT 'sections',NEW.inspection_id||':'||NEW.section,(SELECT unit_id FROM inspections WHERE id=NEW.inspection_id) WHERE EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_unit_delete",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER coverage_unit_delete AFTER DELETE ON units BEGIN\n DELETE FROM collection_data_presence WHERE unit_id=OLD.id;\n DELETE FROM unit_collection_reviews WHERE unit_id=OLD.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_visit_delete",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER coverage_visit_delete AFTER DELETE ON visit_answers BEGIN\n DELETE FROM collection_data_presence WHERE source='visit' AND entity_id=OLD.inspection_id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_visit_insert",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER coverage_visit_insert AFTER INSERT ON visit_answers WHEN EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%') BEGIN\n INSERT INTO collection_data_presence VALUES('visit',NEW.inspection_id,(SELECT unit_id FROM inspections WHERE id=NEW.inspection_id)); END"
+    },
+    {
+      "type": "trigger",
+      "name": "coverage_visit_update",
+      "tbl_name": "visit_answers",
+      "sql": "CREATE TRIGGER coverage_visit_update AFTER UPDATE OF data_json ON visit_answers\n WHEN (EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%')) IS NOT (EXISTS(SELECT 1 FROM json_tree(OLD.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%')) OR (SELECT unit_id FROM inspections WHERE id=NEW.inspection_id) IS NOT (SELECT unit_id FROM inspections WHERE id=OLD.inspection_id)\n BEGIN\n DELETE FROM collection_data_presence WHERE source='visit' AND entity_id=OLD.inspection_id;\n INSERT INTO collection_data_presence SELECT 'visit',NEW.inspection_id,(SELECT unit_id FROM inspections WHERE id=NEW.inspection_id) WHERE EXISTS(SELECT 1 FROM json_tree(NEW.data_json) j WHERE j.type NOT IN ('object','array','null') AND (j.type<>'text' OR trim(j.atom)<>'') AND j.fullkey NOT LIKE '$.completed[%'); END"
+    },
+    {
+      "type": "trigger",
       "name": "dispatch_assignment_ended",
       "tbl_name": "dispatch_assignments",
       "sql": "CREATE TRIGGER dispatch_assignment_ended AFTER UPDATE OF ended_at ON dispatch_assignments WHEN NEW.ended_at IS NOT NULL BEGIN\n UPDATE dispatch_attendances SET ended_at=NEW.ended_at,end_reason='reassigned' WHERE assignment_id=NEW.id AND ended_at IS NULL;\n DELETE FROM dispatch_positions WHERE attendance_id IN (SELECT id FROM dispatch_attendances WHERE assignment_id=NEW.id);\nEND"
@@ -7392,6 +8190,30 @@
       "name": "dispatch_attendance_ended",
       "tbl_name": "dispatch_attendances",
       "sql": "CREATE TRIGGER dispatch_attendance_ended AFTER UPDATE OF ended_at ON dispatch_attendances WHEN NEW.ended_at IS NOT NULL BEGIN\n DELETE FROM dispatch_positions WHERE attendance_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_open_assigned",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_open_assigned AFTER INSERT ON dispatch_assignments\nWHEN NEW.ended_at IS NULL AND EXISTS(SELECT 1 FROM service_requests WHERE id=NEW.request_id AND status!='Concluída') BEGIN\n INSERT INTO dispatch_open_counts VALUES(NEW.user_id,1) ON CONFLICT(user_id) DO UPDATE SET open_count=open_count+1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_open_assignment_deleted",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_open_assignment_deleted AFTER DELETE ON dispatch_assignments\nWHEN OLD.ended_at IS NULL AND EXISTS(SELECT 1 FROM service_requests WHERE id=OLD.request_id AND status!='Concluída') BEGIN\n UPDATE dispatch_open_counts SET open_count=open_count-1 WHERE user_id=OLD.user_id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_open_request_status",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_open_request_status AFTER UPDATE OF status ON service_requests\nWHEN (OLD.status='Concluída')!=(NEW.status='Concluída') BEGIN\n INSERT INTO dispatch_open_counts(user_id,open_count) SELECT user_id,0 FROM dispatch_assignments WHERE request_id=NEW.id AND ended_at IS NULL ON CONFLICT(user_id) DO NOTHING;\n UPDATE dispatch_open_counts SET open_count=open_count+CASE WHEN NEW.status='Concluída' THEN -1 ELSE 1 END WHERE user_id IN (SELECT user_id FROM dispatch_assignments WHERE request_id=NEW.id AND ended_at IS NULL);\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_open_unassigned",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_open_unassigned AFTER UPDATE OF ended_at ON dispatch_assignments\nWHEN OLD.ended_at IS NULL AND NEW.ended_at IS NOT NULL AND EXISTS(SELECT 1 FROM service_requests WHERE id=NEW.request_id AND status!='Concluída') BEGIN\n UPDATE dispatch_open_counts SET open_count=open_count-1 WHERE user_id=NEW.user_id;\nEND"
     },
     {
       "type": "trigger",
@@ -7440,6 +8262,54 @@
       "name": "dispatch_technician_disabled",
       "tbl_name": "dispatch_technicians",
       "sql": "CREATE TRIGGER dispatch_technician_disabled AFTER UPDATE OF enabled ON dispatch_technicians WHEN NEW.enabled=0 BEGIN\n UPDATE dispatch_assignments SET ended_at=NEW.updated_at WHERE user_id=NEW.user_id AND ended_at IS NULL;\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_credentials",
+      "tbl_name": "users",
+      "sql": "CREATE TRIGGER dispatch_tracking_credentials AFTER UPDATE OF active,credential_version ON users\nWHEN NEW.active=0 OR NEW.credential_version!=OLD.credential_version BEGIN\n UPDATE dispatch_tracking SET ended_at=CAST(strftime('%s','now') AS INTEGER)*1000,end_reason='credentials_revoked' WHERE user_id=NEW.id AND ended_at IS NULL;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_disabled",
+      "tbl_name": "dispatch_technicians",
+      "sql": "CREATE TRIGGER dispatch_tracking_disabled AFTER UPDATE OF enabled ON dispatch_technicians\nWHEN NEW.enabled=0 BEGIN\n UPDATE dispatch_tracking SET ended_at=NEW.updated_at,end_reason='access_revoked' WHERE user_id=NEW.user_id AND ended_at IS NULL;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_ended",
+      "tbl_name": "dispatch_tracking",
+      "sql": "CREATE TRIGGER dispatch_tracking_ended AFTER UPDATE OF ended_at ON dispatch_tracking\nWHEN NEW.ended_at IS NOT NULL BEGIN\n DELETE FROM dispatch_tracking_positions WHERE tracking_id=NEW.id;\n DELETE FROM dispatch_tracking_routes WHERE tracking_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_last_completed",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_tracking_last_completed AFTER UPDATE OF status ON service_requests\nWHEN NEW.status='Concluída' BEGIN\n UPDATE dispatch_tracking SET ended_at=NEW.updated_at,end_reason='queue_completed'\n WHERE ended_at IS NULL AND user_id IN (SELECT user_id FROM dispatch_assignments WHERE request_id=NEW.id AND ended_at IS NULL)\n AND NOT EXISTS(SELECT 1 FROM dispatch_assignments a JOIN service_requests r ON r.id=a.request_id\n WHERE a.user_id=dispatch_tracking.user_id AND a.ended_at IS NULL AND r.status!='Concluída');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_last_unassigned",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_tracking_last_unassigned AFTER UPDATE OF ended_at ON dispatch_assignments\nWHEN NEW.ended_at IS NOT NULL BEGIN\n UPDATE dispatch_tracking SET ended_at=NEW.ended_at,end_reason='queue_unassigned'\n WHERE user_id=NEW.user_id AND ended_at IS NULL\n AND NOT EXISTS(SELECT 1 FROM dispatch_assignments a JOIN service_requests r ON r.id=a.request_id\n WHERE a.user_id=NEW.user_id AND a.ended_at IS NULL AND r.status!='Concluída');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_position_deleted",
+      "tbl_name": "dispatch_tracking_positions",
+      "sql": "CREATE TRIGGER dispatch_tracking_position_deleted AFTER DELETE ON dispatch_tracking_positions\nBEGIN DELETE FROM dispatch_tracking_routes WHERE tracking_id=OLD.tracking_id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_queue_changed",
+      "tbl_name": "dispatch_meta",
+      "sql": "CREATE TRIGGER dispatch_tracking_queue_changed AFTER UPDATE OF revision ON dispatch_meta\nBEGIN DELETE FROM dispatch_tracking_routes; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_tracking_session_revoked",
+      "tbl_name": "sessions",
+      "sql": "CREATE TRIGGER dispatch_tracking_session_revoked AFTER DELETE ON sessions\nWHEN OLD.expires_at>CAST(strftime('%s','now') AS INTEGER)*1000 BEGIN\n UPDATE dispatch_tracking SET ended_at=CAST(strftime('%s','now') AS INTEGER)*1000,end_reason='session_revoked' WHERE session_hash=OLD.token_hash AND ended_at IS NULL;\nEND"
     },
     {
       "type": "trigger",

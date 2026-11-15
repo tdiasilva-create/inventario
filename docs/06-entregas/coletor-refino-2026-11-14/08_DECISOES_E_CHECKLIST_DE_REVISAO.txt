@@ -1,0 +1,35 @@
+PONTOS QUE JÁ TÊM DECISÃO — NÃO PERGUNTAR NOVAMENTE SEM CONFLITO NOVO
+- Um app, duas áreas, mesma conta; regras de papel e localização preservadas.
+- Identidade branco/preto/vermelho/laranja/pêssego, referência técnica aprovada.
+- Fachada primeiro na recomendação, categorias livres; conclusão manual.
+- Nome/função acompanhante opcionais; não coletar número de patrimônio computador.
+- AnyDesk/RustDesk opcionais; foto de computador opcional; upload automático.
+- Ambiente cadastrado selecionado por ID; criar novo explicitamente.
+- Cadastro manual de computador permitido, com motivo.
+- Prévia QR sem conferência de código visual; revisita só Editar.
+- Impressora abre lista direta; foto inicial exigida quando não há válida.
+- Root controla classificação de coleta completa; visita concluída não a determina.
+
+DECISÕES NOVAS QUE CLAUDE PODE PROPOR, MAS NÃO ASSUMIR
+1 Ampliar busca para host/ambiente/posição/AnyDesk/RustDesk (D089 hoje limita).
+2 Alterar sequência obrigatória, perguntas ou obrigatoriedade. Agrupar campos
+  em blocos/etapas sem mudar regras é proposta técnica de interface.
+3 Autosave integral de ficha, conclusão automática ou ações em lote.
+4 Offline durável, fila persistente de fotos e política de conflitos/proteção local.
+5 Excluir registros pelo operador ou fundir duplicados automaticamente.
+6 Mudança de stack/framework/native, novos serviços ou gasto de hospedagem.
+7 Alterar comportamento da localização além de manter D114 ao trocar áreas.
+Nada disso é necessário para corrigir mensagens, foco, dimensões e hierarquia.
+
+CHECKLIST PARA REVISÃO DO MANTENEDOR QUANDO RECEBER O RETORNO
+[ ] Base exata e hashes, alterações alheias preservadas.
+[ ] Nenhum arquivo de dados/segredo em assets/ZIP; exemplos somente fixtures.
+[ ] Perguntas, chaves/opções/IDs/estados mantidos ou decisão nova destacada.
+[ ] APIs não contornadas; sem sucesso fake, senha no frontend ou código QR em URL.
+[ ] Foto/QR/histórico e ambiente corretos após navegar/trocar áreas.
+[ ] Sessão/trava/concorrência preservadas; ações sem ACK permanecem incertas.
+[ ] Layout medido com shell, teclado, nome longo e Android real.
+[ ] Consumo D1 não aumenta por polling/reconsulta/feedback de cada tecla.
+[ ] Técnico/GPS/perfis continuam iguais; navegador independente também funciona.
+[ ] Build/testes e screenshots reproduzidos; limites e falhas declarados.
+[ ] Só então decidir publicação e novo APK com versão maior/assinatura original.

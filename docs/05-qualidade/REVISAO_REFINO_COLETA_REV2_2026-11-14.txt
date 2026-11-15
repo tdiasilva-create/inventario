@@ -1,0 +1,212 @@
+SEMED — REVISÃO INDEPENDENTE DA DEVOLUTIVA DO COLETOR · REV2
+14/11/2026
+RESULTADO: correções anteriores confirmadas nos cenários originais;
+integração/publicação ainda não recomendadas por dois achados reproduzidos.
+
+1. PACOTE E ESCOPO
+
+Recebido: COLETA_REFINO_CLAUDE_REV2_2026-11-14.zip
+SHA-256: 55609437f91ddb9a3830eca48b331d1304f80d983f2a77afd5413b92f2ad94d2
+Base: 09442d0d24de214694c0236018837335b3b83068.
+
+Conferidos 146 hashes de conteúdo do manifesto, nove arquivos ANTES contra
+a cópia de trabalho original, nove DEPOIS e dois arquivos novos. Sem divergência.
+O manifesto é o arquivo adicional, não coberto por seu próprio hash.
+
+Fontes sobrepostas somente em cópia isolada do git archive dessa base.
+Servidor, schema, migrações, protocolo de QR e Android não foram substituídos.
+Documentos da entrega usados: 00_LEIA_PRIMEIRO.txt,
+RESPOSTA_REVISAO_INDEPENDENTE.txt, DECISOES_PENDENTES.txt,
+RISCOS_E_INTEGRACAO.txt e MANIFESTO.json; fontes e testes confrontados com o
+contrato atual e com a revisão anterior. Alegações de testes do fornecedor
+não foram tratadas como evidência independente.
+
+Nenhuma publicação, novo APK, migração ou alteração de dados oficiais.
+Nenhum acesso a D1/Drive de produção foi necessário nesta revisão.
+O resultado permanece separado do código de produto do repositório principal.
+
+2. ESCOLHAS DO RESPONSÁVEL — D116
+
+Confirmadas no candidato:
+- Blocos de leitura da ficha mantidos, sem mudar catálogo de perguntas.
+- Navegação entre assuntos durante preparação/envio de fotos preservada.
+  Os cenários de vinculação da foto ao registro original passaram.
+- Contador “N de 8 assuntos concluídos” retirado; somente estados individuais.
+- Texto de revisão distingue dados parciais recebidos, encerramento da visita
+  e classificação da unidade no painel.
+- Diálogo de saída identifica a conta; barra compacta preservada.
+
+Não há nova dúvida funcional que precise de resposta do responsável para
+corrigir os dois achados abaixo. Trata-se de preservar os estados e as fotos
+que ele já decidiu manter, sem alterar perguntas ou impor fotos obrigatórias.
+
+3. RETESTE DOS TRÊS ACHADOS ANTERIORES
+
+R1 original — outra sessão da mesma conta grava respostas DIFERENTES:
+CORRIGIDO no cenário reproduzido. A tela mostra conflito, mantém a resposta
+local e não declara recebido o conteúdo que só existia no navegador.
+Existe, entretanto, a variante R1-F abaixo, ainda não coberta.
+
+R2 original — navegar enquanto a foto está sendo preparada:
+CORRIGIDO no cenário reproduzido. Rascunho e foto foram gravados com o ID da
+ficha original; uma miniatura recebida, sem erro 409 de alvo inexistente.
+Também passaram espera antes de criar outra ficha e navegação durante envio.
+
+R3 original — releitura durante confirmação da miniatura duplica a foto:
+CORRIGIDO no cenário reproduzido. Uma foto no banco e uma na interface.
+O teste adicional recebido de leitura atrasada e remoção também passou.
+
+Não é necessário refazer a proposta visual nem pedir novamente as escolhas
+D116. Preservar essas correções e acrescentar os casos seguintes à regressão.
+
+4. R1-F — ALTA: RASCUNHO CONFUNDIDO COM SALVAMENTO COMPLETO
+
+Arquivo do candidato: web/collector-v3.js.
+Referências: savedKeys/sameAsServer, linhas 417–421; reconciliação na 431;
+confirmação de 409 na 456 e exclusão local de draft na 463.
+
+Causa:
+A comparação nova verifica campos do formulário, versão e autor, mas não
+verifica o estado draft que distingue rascunho mínimo de ficha salva.
+saveItem manda um salvamento completo, porém aceita como confirmação uma
+gravação concorrente draft:true com as mesmas respostas.
+
+Reprodução independente (Worker real com SQLite em memória):
+1. Abrir ficha existente; editar sua posição para MINHA EDICAO · MESA C.
+2. Interromper o envio do Salvar equipamento ANTES de chegar ao Worker.
+3. Simular outra sessão da mesma conta obtendo a trava e enviando o mesmo
+   conteúdo por equipment-save, mas com draft:true. Esse corpo é aceito
+   pelo servidor atual; rascunhos também são usados no fluxo foto/QR.
+4. Deixar o cliente reconciliar a falha pela resposta de equipment-lock.
+
+Resultado observado:
+- Interface: “Equipamento recebido · confirmado após a falha de rede”.
+- Retorna à lista, sem a indicação de que a ficha continua rascunho.
+- Banco: versão 2, mesma posição, mas data_json.draft = true.
+- O salvamento completo não ocorreu. A revisão do servidor continua exigindo
+  salvar essa ficha antes de concluir o assunto.
+
+O evento concorrente foi injetado pela API de teste, não por duas pessoas
+usando celulares. A validação, persistência, reconciliação e tela são reais
+na fixture; não há mock de sucesso ou manipulação direta do banco nesse caso.
+
+Correção necessária:
+- Para reconhecer um Salvar equipamento como confirmado, exigir também que
+  o registro do servidor NÃO seja rascunho. Conferir tanto a reconciliação
+  via trava quanto a resposta 409 com dados da versão concorrente.
+- Não apagar draft local nem mostrar confirmação completa se o servidor
+  ainda informa rascunho. Preservar respostas e indicar a necessidade de
+  salvar/reconciliar com a versão atual, conforme o contrato de conflito.
+- Não exige nova migração ou recibo de operação para fechar este defeito.
+  Recibo idempotente continua melhoria futura, não condição desta correção.
+
+Aceite:
+Mesmo conteúdo + versão seguinte + mesmo usuário + draft:true NÃO é sucesso
+de salvamento completo. Resposta perdida de gravação realmente completa
+continua recuperável sem duplicação. Cobrir os dois caminhos de confirmação.
+
+Evidências: probe-rascunho/resultado.json e 01-falso-salvo.png.
+Sonda: reviewer-draft-ack.cjs.
+
+5. R4 — ALTA: VISITA ENCERRA COM FOTO SELECIONADA QUE FALHOU
+
+Arquivo do candidato: web/collector-v3.js.
+Referências: settleUploads, linhas 211–219 (retorno antecipado na 217);
+revisão na 295; ação finish nas linhas 663–669.
+
+Causa:
+settleUploads só verifica prévias com erro quando teve algum processamento
+ou upload ativo para aguardar. Se a tentativa já terminou em falha, não há
+entrada ativa nesses mapas e “if(!waited)return” pula a verificação.
+A revisão considera só o que existe no servidor. Ele não sabe que há uma
+foto ainda não enviada no navegador. A conclusão pode fechar essa visita.
+
+Reprodução independente:
+1. Receber uma foto válida da fachada e salvar uma ficha de outro equipamento.
+2. Selecionar a foto opcional desse equipamento. O teste faz o transporte
+   responder 503 ao photo-upload, simulando falha de armazenamento.
+3. A tela mostra a prévia “Falhou”. Navegar às categorias.
+4. Preparar os assuntos concluídos pelas APIs reais da fixture e abrir
+   Revisar visita. Esta preparação isola o efeito da foto; não contorna
+   a revisão nem o endpoint de conclusão.
+5. Clicar Confirmar conclusão e confirmar o diálogo.
+
+Resultado observado:
+- Revisão diz “Requisitos recebidos e validados pelo servidor”.
+- Visita é encerrada: inspections.state = completed.
+- Banco tem somente a foto da fachada; foto do equipamento não chegou.
+- A visita encerrada não permite reenviar aquela foto. Sua prévia estava
+  apenas na memória e se perde ao fechar/recarregar o aplicativo.
+
+Correção necessária:
+- Examinar prévias pendentes/falhas MESMO quando não existir upload ativo;
+  não depender exclusivamente da variável waited.
+- Antes de concluir a visita, resolver todas as fotos que o operador já
+  selecionou: reenviar, ou remover explicitamente a prévia se não a deseja.
+- Na revisão, identificar a ficha/ambiente/ocorrência com foto pendente e
+  permitir voltar ao alvo exato. Não mostrar “tudo recebido” se o navegador
+  conhece uma foto selecionada ainda não recebida.
+- Manter câmera/foto OPCIONAL: a obrigação é resolver uma tentativa pendente,
+  não exigir que todos os equipamentos tenham fotografia.
+- Manter navegação na mesma unidade durante o envio, conforme D116.
+- A mesma proteção deve funcionar para preparação mal sucedida, múltiplas
+  fotos com sucesso parcial e armazenamento indisponível/sessão expirada.
+
+Aceite:
+Falha 503 já encerrada não permite fechar a visita com a foto abandonada.
+Reenvio bem sucedido libera; remoção explícita da prévia opcional libera.
+Sem fotos pendentes, a conclusão normal permanece manual e funciona.
+Repetir na coleta independente e na coleta embutida no app.
+
+Evidências: probe-foto-falha/resultado.json e três capturas.
+Sonda: reviewer-failed-photo.cjs.
+
+6. TESTES REEXECUTADOS NESTA REVISÃO
+
+Windows, Node 24, Edge/Playwright; Worker real e SQLite em memória.
+- 301 testes Node: passaram, zero falhas.
+- Build coletor: 56 arquivos; build painel: 138 arquivos, nove bundles.
+  APK privado não foi incluído nessa cópia de revisão; aviso esperado.
+- Dez roteiros de navegador existentes passaram:
+  collector-v3-browser, collector-refinement-browser,
+  collector-review-pending-browser, collector-environments-browser,
+  mobile-app-browser, technician-redesign-browser,
+  technician-tracking-browser, collector-identity-browser,
+  environment-rename-browser, photo-thumbnails-browser.
+- Novo collector-concurrency-browser recebido: 14 verificações passaram.
+- Três sondas originais adaptadas para exigir correção: R1/R2/R3 não se
+  reproduzem nos casos originais, com respostas locais/ID/contagem conferidos.
+- Duas sondas adicionais próprias reproduzem R1-F e R4 acima. Elas NÃO são
+  testes de aprovação: os asserts atuais exigem a reprodução do defeito.
+- Roteiro capture-coleta-refino repetido: 31 capturas, zero erros JavaScript.
+  Capturas de categorias e das falhas foram abertas visualmente.
+- Medições locais do roteiro (uma execução, NÃO latência de produção):
+  abrir assunto A: 46 ms, zero chamadas; salvar ficha: 49 ms, uma chamada;
+  primeira página com 1000+ fichas: 52 ms, uma chamada; revisão: 107 ms,
+  duas chamadas. Sem nova consulta por tecla ou novo polling identificado.
+
+As sondas usam dados TESTE ISOLADO. Não fizeram exclusões reais, seed oficial,
+acesso a segredos ou armazenamento externo. Logs não contêm credenciais reais.
+
+Limites: não foi testado Android físico, WebView OEM, câmera real, teclado,
+Voltar nativo, GPS com tela bloqueada, Safari/iPhone ou consumo diário D1.
+Regressão do acompanhamento técnico passou, mas não substitui teste físico.
+
+7. INSTRUÇÃO PARA A PRÓXIMA DEVOLUTIVA
+
+Corrigir somente R1-F/R4 e seus testes, mantendo os avanços da rev2 e D116.
+Acrescentar regressões que exijam o comportamento SEGURO; as duas sondas de
+reprodução aqui entregues devem deixar de reproduzir depois da correção.
+Não reintroduzir contador geral, bloqueio de navegação durante todo upload,
+nova obrigatoriedade de foto, autosave integral, busca ampliada ou mudanças
+de servidor/Android sem necessidade demonstrada.
+
+Atualizar relatório/manifesto e distinguir testes locais de homologação
+física e de publicação. Preservar base e patches para revisão independente.
+Não afirmar que o conjunto está pronto somente porque os testes antigos
+passam: os casos adicionais devem ser incluídos.
+
+Não há novo APK nesta revisão. O APK 1.0.3 carrega as páginas do servidor;
+o redesenho isoladamente não exige reinstalação. A integração futura precisa
+conferir os dois builds, permissões, QR/fotos e continuidade do acompanhamento.
+Publicação permanece separada da revisão técnica e não foi executada.

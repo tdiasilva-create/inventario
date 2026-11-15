@@ -1,0 +1,138 @@
+{
+  "date": "2026-11-15",
+  "timezone": "America/Fortaleza",
+  "scope": "Local isolated preparation checks; not independent audit or production deployment",
+  "node": {
+    "files": 66,
+    "tests": 326,
+    "passed": 326,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": [
+    {
+      "file": "tests/collector-concurrency-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 29239,
+      "error": null
+    },
+    {
+      "file": "tests/collector-unit-navigation-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 3666,
+      "error": null
+    },
+    {
+      "file": "tests/mobile-app-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 4331,
+      "error": null
+    },
+    {
+      "file": "tests/mobile-safe-viewport-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 4279,
+      "error": null
+    },
+    {
+      "file": "tests/technician-tracking-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 2865,
+      "error": null
+    },
+    {
+      "file": "tests/technician-redesign-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 22023,
+      "error": null
+    },
+    {
+      "file": "tests/collection-control-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 2835,
+      "error": null
+    },
+    {
+      "file": "tests/collection-overview-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 4179,
+      "error": null
+    },
+    {
+      "file": "tests/network-tests-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 2851,
+      "error": null
+    },
+    {
+      "file": "tests/panel-unit-search-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 10034,
+      "error": null
+    },
+    {
+      "file": "tests/panorama-map-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 4932,
+      "error": null
+    },
+    {
+      "file": "tests/equipment-consultation-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 8109,
+      "error": null
+    },
+    {
+      "file": "tests/technical-dispatch-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 10297,
+      "error": null
+    },
+    {
+      "file": "tests/dispatch-road-routing-runtime.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "ms": 1151,
+      "error": null
+    }
+  ],
+  "jvm": {
+    "tracking": 21,
+    "mobile": 20,
+    "physicalDevice": false
+  },
+  "windows": {
+    "legacyCore": 61,
+    "installerPowerShell51": 11,
+    "recoveryPowerShell51": 35,
+    "networkCore": 14,
+    "recoveryCore": 27,
+    "realServiceTouched": false
+  },
+  "schema": {
+    "migrations": 34,
+    "tables": 96,
+    "explicitIndexes": 66,
+    "views": 2,
+    "triggers": 101,
+    "integrity": "ok",
+    "foreignKeyErrors": 0
+  },
+  "builds": {
+    "panel": true,
+    "collector": true
+  }
+}

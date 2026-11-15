@@ -1,0 +1,127 @@
+ESPECIFICAÇÃO FUNCIONAL — MAPA DE SETORES E EQUIPAMENTOS
+Sistema: Inventário Tecnológico SEMED
+Objetivo: criar uma visualização hierárquica de unidades, setores/ambientes e equipamentos, seguindo o modelo de referência aprovado.
+
+1. OBJETIVO DA FUNCIONALIDADE
+
+Disponibilizar, dentro da página de cada unidade cadastrada, uma aba ou seção denominada "Mapa de Setores e Equipamentos". Nessa visão, o usuário deve conseguir identificar rapidamente:
+- qual unidade está sendo visualizada;
+- quais setores/ambientes estão cadastrados nessa unidade;
+- quais equipamentos estão vinculados a cada setor;
+- a quantidade de equipamentos em cada setor;
+- os detalhes de um equipamento ao selecioná-lo.
+
+A apresentação deve seguir um ORGANOGRAMA VISUAL com três níveis:
+
+UNIDADE
+  ├── SETOR / AMBIENTE 1
+  │     ├── EQUIPAMENTO 1
+  │     ├── EQUIPAMENTO 2
+  │     └── EQUIPAMENTO 3
+  ├── SETOR / AMBIENTE 2
+  │     ├── EQUIPAMENTO 4
+  │     └── EQUIPAMENTO 5
+  └── SETOR / AMBIENTE 3
+        └── EQUIPAMENTO 6
+
+Exemplo ilustrativo:
+- Unidade A
+  - Laboratório: PC 01, PC 02 e PC 03
+  - Secretaria: PC 01 e PC 02
+  - Coordenação: PC 01
+
+IMPORTANTE: o organograma representa VÍNCULO DE CADASTRO E LOCALIZAÇÃO dos equipamentos, e não conexões físicas ou lógicas de rede entre computadores.
+
+2. APARÊNCIA E ORGANIZAÇÃO DA TELA
+
+Manter a identidade visual já existente no Inventário Tecnológico SEMED:
+- fundo branco/cinza-claro;
+- cartões simples, bordas discretas e boa legibilidade;
+- detalhes em laranja/vermelho, conforme o tema atual;
+- ícones pequenos de unidade, setor e tipo de equipamento;
+- sem estética futurista, neon, grandes ilustrações ou excesso de efeitos.
+
+Estrutura visual esperada:
+A) Cabeçalho do painel: "UNIDADES".
+B) "Organograma" e "Lista".
+C) Cada cartão de setor deve exibir:
+   - nome do setor/ambiente (por exemplo: LABORATÓRIO);
+   - total de equipamentos vinculados àquele setor (por exemplo: "3 PCs" quando a lista estiver filtrada para computadores);
+   - lista dos equipamentos cadastrados, cada um como item selecionável.
+F) Abaixo do organograma: faixa/painel "Equipamento selecionado", exibindo as informações resumidas do item clicado e um botão "Ver dados do equipamento".
+
+O modelo da imagem enviada pelo solicitante é a REFERÊNCIA PRINCIPAL de layout: unidade central na parte superior, setores lado a lado e computadores listados dentro de cada setor.
+
+3. DADOS E RELACIONAMENTOS
+
+A tela deve utilizar os cadastros REAIS já existentes no sistema, sem exigir duplicação de registros.
+
+Relações esperadas:
+- UMA unidade pode ter VÁRIOS setores/ambientes;
+- CADA setor/ambiente pertence a UMA unidade;
+- UM equipamento deve estar vinculado ao seu setor/ambiente e à unidade correspondente;
+- UM setor/ambiente pode ter ZERO, UM ou VÁRIOS equipamentos.
+
+Utilizar os IDs internos das entidades para realizar os vínculos, e não apenas seus nomes.
+Exemplo: "PC 01" pode existir tanto no Laboratório quanto na Secretaria; são registros distintos e precisam ser identificados pelo seu ID ou patrimônio.
+
+Se atualmente algum equipamento está associado à unidade, mas não a um setor definido, mostrar em grupo próprio, como "Setor não informado", sem ocultar o equipamento.
+Se um setor estiver cadastrado e não possuir equipamento, exibi-lo com a indicação "Nenhum equipamento cadastrado".
+
+4. COMPORTAMENTO DO ORGANOGRAMA
+
+4.1. AO CLICAR NO SETOR ABRIR OS EQUIPAMENTOS 
+
+4.2. Seleção de equipamento
+AO SELECIONAR O EQUIPAMENTO DEVE APARECER ALGUMAS OPCOES COMO TESTE DE VELOCIDADE , EXIBIR DADOS , JA APARECENDO A FOTO DO EQUIPAMENTO 
+
+
+4.3. Quantidades
+- Mostrar a contagem real de equipamentos de cada setor.
+- Caso a funcionalidade inclua outros tipos de equipamento além de PCs, apresentar contagem genérica ("X equipamentos") ou contagem por tipo; não chamar impressoras, notebooks e outros itens de "PCs".
+- As quantidades devem corresponder aos itens efetivamente associados ao setor na visualização em uso.
+
+5. ADAPTAÇÃO PARA DIFERENTES UNIDADES
+
+O painel deve funcionar para qualquer unidade existente no inventário, independentemente da quantidade de ambientes e equipamentos.
+- Poucos setores: manter o layout organizado e centralizado.
+- Muitos setores: permitir rolagem horizontal no organograma ou uma disposição que não esmague os cartões.
+- Muitos equipamentos no mesmo setor: permitir expansão/rolagem/listagem sem tornar a página inutilizável.
+- Telas menores: manter legibilidade e disponibilizar a alternativa "Lista".
+
+6. INTEGRAÇÃO COM O INVENTÁRIO ATUAL
+
+- Adicionar a seção à página de detalhes da unidade, sem substituir as áreas existentes de cadastro, estatísticas, galeria e ambientes individualizados.
+- Reaproveitar os dados já coletados de unidade, ambiente/setor e equipamento.
+- Se um ambiente existente no sistema for a mesma entidade de "setor" neste mapa, utilizar o mesmo registro e nomenclatura; não criar um segundo cadastro paralelo.
+- Respeitar permissões de acesso do sistema. A visualização não deve conceder acesso a dados ou ações restritas.
+- Não inventar status de conectividade: se no futuro houver indicador online/offline, este deverá refletir informação real da aplicação, e não apenas a existência do equipamento no cadastro.
+
+7. CRITÉRIOS DE ACEITAÇÃO
+
+[ ] Ao selecionar uma unidade, aparece o cartão dessa unidade no topo.
+[ ] Todos os setores/ambientes pertencentes à unidade são apresentados abaixo.
+[ ] Cada setor contém SOMENTE os equipamentos vinculados a ele.
+[ ] A quantidade exibida por setor corresponde aos registros reais.
+[ ] Equipamentos com nomes iguais em setores diferentes continuam distintos.
+[ ] Setores sem equipamento continuam visíveis.
+[ ] Equipamentos sem setor aparecem identificados em "Setor não informado".
+[ ] Ao clicar em um equipamento, ele é destacado e o resumo inferior é atualizado.
+[ ] O botão "Ver dados do equipamento" abre o cadastro correto.
+[ ] Os botões "Organograma" e "Lista" funcionam sem modificar dados.
+[ ] A interface continua utilizável com muitos setores/equipamentos e em diferentes tamanhos de tela.
+[ ] Cores, espaçamento e componentes seguem o padrão visual claro do sistema SEMED.
+
+8. MELHORIAS FUTURAS (NÃO OBRIGATÓRIAS NESTA ENTREGA)
+
+- Filtros por tipo de equipamento, patrimônio e situação cadastral.
+- Busca dentro dos setores e equipamentos da unidade.
+- Expandir/recolher setores com muitos itens.
+- Exibir miniatura da foto do equipamento no painel de seleção.
+- Exportar ou imprimir a estrutura por unidade.
+
+9. RESUMO PARA O DESENVOLVEDOR
+
+Implementar, na página de cada unidade do Inventário Tecnológico SEMED, uma nova visualização chamada "Mapa de Setores e Equipamentos", inspirada no organograma da referência enviada. O mapa deve apresentar a unidade no topo, seus setores em cartões conectados por linhas e, dentro de cada cartão, os computadores/equipamentos cadastrados naquele local. A seleção de qualquer equipamento deve mostrar seus dados resumidos e permitir abrir sua ficha completa. Incluir opção de alternar entre "Organograma" e "Lista". A funcionalidade deve ler os dados existentes e preservar a identidade visual atual do sistema: interface clara, técnica e discreta, com detalhes em laranja/vermelho.
+
+FIM DA ESPECIFICAÇÃO

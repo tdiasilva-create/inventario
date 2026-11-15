@@ -1,3 +1,20 @@
+# Auditoria atual — 15/11/2026, até D122
+
+O pedido atual é a auditoria integral pelo Claude. Use a branch `codex/auditoria-completa-2026-11-15` e o commit registrado no manifesto do pacote. A preparação consolida código recente e documentação; não é auditoria independente concluída nem implantação nova.
+
+1. [Pedido completo ao Claude em TXT](2026-11-15/00_PEDIDO_AO_CLAUDE.txt).
+2. [Estado vigente, versões e limitações](../07-operacao/13_ESTADO_ATUAL_D122.md).
+3. [Matriz de 40 áreas e contraprovas](2026-11-15/01_ESCOPO_E_CRITERIOS.md).
+4. [Execução e cenários](2026-11-15/02_EXECUCAO_E_CENARIOS.md).
+5. [Modelo da devolutiva](2026-11-15/03_MODELO_DEVOLUTIVA.md).
+6. [Verificações da preparação](2026-11-15/04_VERIFICACAO_DA_PREPARACAO.md).
+
+O pacote reproduz código/documentação versionados do commit, com hashes e omissões explícitas das capturas/logs operacionais históricos. Fonte Windows disponível é o Core reconstruído mais instalador/testes, não o projeto original completo. Segredos, dados operacionais, binários privados e assinaturas não acompanham o material.
+
+## Registro histórico da preparação de 08/11/2026
+
+O conteúdo a seguir permanece para rastreabilidade; suas contagens e versões não descrevem o estado atual.
+
 # Preparação para auditoria do Inventário Tecnológico SEMED
 
 Referência: 08/11/2026, America/Fortaleza. Pedido do responsável: atualizar o repositório para auditar funcionamento e lógicas. Esta entrega organiza fontes, amplia a verificação automática e envia os commits locais ao repositório existente. Não é um parecer de auditoria independente nem uma nova implantação em produção.

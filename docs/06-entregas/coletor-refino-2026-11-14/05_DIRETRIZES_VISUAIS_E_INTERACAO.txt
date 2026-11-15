@@ -1,0 +1,57 @@
+REFINAMENTO — ORIENTAÇÕES CONCRETAS, NÃO UM NOVO LAYOUT OBRIGATÓRIO
+
+Referência: a área Atendimento técnico foi aprovada pelo responsável em 13/11.
+Use os arquivos reais technician.* e captura 03. Aproveitar hierarquia clara,
+cartões concisos, ações com rótulos diretos, estados legíveis, detalhes progressivos.
+Não copiar sua lista de tarefas para dentro do questionário nem unir permissões.
+
+Identidade mantida: fundo #f3f4f5; superfícies brancas; texto/preto #16191d;
+vermelho #d70825; laranja #ff4b1e; pêssego #ffad78; estados sem depender só de cor.
+Fontes locais Chakra Petch (títulos), Barlow (leitura), JetBrains Mono quando útil.
+Ícones SVG do sistema. Não reintroduzir tema azul escuro dos mockups históricos.
+
+TELA A TELA
+Entrada/unidades: lista imediata, pesquisa clara, estados vazios úteis, diferenciação
+entre rascunho/visita e classificação administrativa, retorno à unidade atual.
+Fachada: câmera/galeria evidentes, progresso de envio sem botão morto, histórico
+distinto de nova prévia, próxima ação simples sem impedir categorias livres.
+Categorias: estado curto por assunto; destacar retomar e revisar, sem contagem
+percentual geral de escola nem alerta vermelho para toda ausência opcional.
+Internet/Wi-Fi: repetir registros com identidade legível (Provedor/SSID), reduzir
+“Registro 1/2/3” como única identificação; campos condicionais e erros locais claros.
+Ambientes: catálogo pesquisável, seleção pelo ID, ação criar separada e renomear
+sem confundir com criar novo ambiente. Nomes longos precisam continuar legíveis.
+Computador: QR/manual como primeira escolha; contexto unidade/ambiente/posição,
+ficha salva/rascunho, foto e dados opcionais organizados sem longos avisos repetidos.
+Impressora: preservar fotografia exigida e mostrar falta antes da conclusão.
+Outros: descrição e imagem com baixa fricção, sem inventar novos obrigatórios.
+Revisão: próximo impedimento concreto, registro identificável, correção focalizada,
+estado recebido/pendente e botão concluir com causa clara quando indisponível.
+
+TECLADO E TAMANHOS
+Alvos de toque confortáveis (referência 44px), sem transformar tudo em botão
+gigante de tela inteira. Fonte de campos 16px, labels persistentes. Teclado
+numérico para IDs de dígitos, sem parseInt. Enter/Próximo não deve salvar/concluir
+sem intenção nem inserir quebra inválida; textarea aceita linhas.
+Campo/label/erro e ação de salvar devem caber na área visível. Usar visualViewport
+com cuidado dentro do iframe. Não depender exclusivamente de innerHeight do shell.
+Safe areas/rodapé/teclado/landscape: conferir no app real; evitar scrolls aninhados
+sem necessidade, saltos de foco, scrollTo(0,0) a cada render e overlay sobre campo.
+
+FEEDBACK
+Definir estados: editando, aguardando envio, enviando, recebido, validação pendente,
+sem rede, sessão expirada, conflito e resultado desconhecido. Rótulo deve indicar
+objeto: resposta/ficha/foto/visita. Loading de ação não pode paralisar tudo sem aviso.
+Não abrir modais automaticamente por cada autosave. Diálogos só para decisão real.
+Erros devem dizer o que aconteceu, o que foi preservado e como continuar.
+Toast de sucesso após ACK não substitui estado persistente da ficha.
+
+ACESSIBILIDADE
+Foco visível, labels, aria-describedby/invalid, resumo de erros, Escape/Voltar,
+retorno ao controle acionador. Contraste, nomes longos, zoom de fonte, leitor de tela,
+redução de movimento. Não depender de hover no celular.
+
+PROPONHA ANTES DE MUDAR REGRA
+Remover/adicionar/reordenar conteúdo, ampliar busca, salvamento automático total,
+marcar assunto automático, offline, edição de múltiplas fichas em paralelo, exclusão,
+fotos obrigatórias/opcionais e novas permissões são decisões distintas do visual.

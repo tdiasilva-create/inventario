@@ -1,0 +1,78 @@
+ACHADOS — NÃO CONFUNDIR RELATOS COM TESTES CONCLUÍDOS
+
+REL-01 · RELATO DO RESPONSÁVEL · prioridade alta de experiência
+Coleta ainda cansativa/confusa, botões e teclado inadequados, percepção de lentidão.
+A versão 1.0.3 mudou entrada/composição, não redesenhou as telas internas. Confirmado
+pelo contrato D115 e reutilização de collector-v3.js/css. Não assumir que cada bug
+histórico persiste: várias correções D062/D089 existem e têm testes. Reavaliar fluxo.
+
+OBS-01 · REPRODUZIDO LOCAL · ação aparentemente disponível é ignorada
+Passos: /app → Coleta → unidade → Fachada → Galeria; reter resposta photo-upload
+na fixture; clicar Voltar às categorias. Botão isEnabled=true, mas permanece Fachada.
+Causa: listener data-action retorna imediatamente se photoBusy em collector-v3.js.
+Captura 06 e capturas.json comprovam. Não é medição de latência real do Drive.
+Melhoria: feedback imediato de preparo/envio e política clara de navegação; não
+retirar guard sem garantir que callbacks continuem vinculados à foto/ficha original.
+Se impedir navegar, desabilitar/explicar com acessibilidade; se liberar, testar troca
+de ficha/unidade, câmera, conclusão e resposta atrasada. Nunca perder a prévia.
+
+OBS-02 · MEDIDO/OBSERVADO LOCAL · área útil reduzida por cabeçalhos
+Viewport 390×844: shell ocupa 111px antes de começar iframe, que recebe 733px;
+o coletor acrescenta cabeçalho/rodapé próprios. Capturas 13,16,17,22. Uma altura
+390×470 foi simulada, NÃO é teclado Android real. Propor menos repetição de títulos,
+troca de área discreta e ações estáveis. Não reduzir alvo de toque indiscriminadamente.
+
+OBS-03 · OBSERVADO VISUALMENTE · revisão com texto concatenado extenso
+Captura 20: campos faltantes de Internet aparecem em uma mensagem longa, com vários
+rótulos seguidos. pending[] já existe; não apagar sua precisão. Propor lista curta
+de causas, contagem por ação e abertura/foco na resposta exata. Causa/ID e estado do
+servidor devem permanecer como fonte. Evitar duplicar blocos de pendências/resumo.
+
+OBS-04 · OBSERVADO VISUALMENTE · estados com escopos pouco claros
+Captura 13: cabeçalho Rascunho no servidor junto de Ficha nova — ainda não enviada.
+Não afirmar corrupção: são escopos diferentes. Refinar rótulos da visita/ficha,
+sem prometer salvamento total. Mostrar estado perto da operação a que se refere.
+
+LIM-01 · CONFIRMADO NO CÓDIGO · salvamento desigual
+A/C/D/H possuem fila de rascunho; equipamento requer Salvar. Foto/QR salva rascunho
+mínimo. Após ler QR ou receber foto ainda pode faltar salvar ficha e concluir assunto.
+Preservar distinções e orientar próxima ação; autosave completo/concluir automático
+seriam mudanças de regra a propor, não autorização implícita de UX.
+
+LIM-02 · DECISÃO VIGENTE D089 · busca limitada
+Pesquisa marca/modelo/série/patrimônio/categoria/descrição de Outros. Não inclui
+hostname, posição, ambiente, AnyDesk ou RustDesk. Limitação aprovada anteriormente;
+ampliação pode ser proposta separada, com índices/escopo/paginação e decisão.
+
+LIM-03 · CONFIRMADO · perda possível se processo/aba for encerrado
+RAM preservada ao alternar áreas não é offline durável. Não há backup do rascunho
+do equipamento/foto no dispositivo após encerramento. Nenhum texto “salvo local”
+deve fingir durabilidade. Offline requer projeto de proteção/sync/conflitos próprio.
+
+LIM-04 · CONFIRMADO · URL de ficha vira inventário, sem ID de edição
+route() grava tela=inventory quando screen=equipment. Recarregar não reconstrói
+automaticamente a ficha não salva. Melhorar retomada por ID é proposta técnica
+possível, mas nunca inserir respostas/tokens/QR na URL; avaliar política de conflito.
+
+INV-01 · INVESTIGAR · rede/performance, sem atribuir culpa ao D1 sem medição
+load() aguarda flushAll antes de reler inspeção; saveItem envolve POST, eventual
+lock, load e unlock. Upload relê inspeção; navegação bloqueia por busy/photoBusy.
+Medir por ação/endpoint sob atraso, não usar quantidade de linhas JavaScript como
+diagnóstico. Comparar D1 chamadas/linhas com mesmo volume, cache/versão/permissão.
+Não multiplicar polling, buscar remotamente por tecla ou reconsultar páginas extras.
+
+INV-02 · INVESTIGAR · erros concorrentes/expiração/retomada
+Session recovery, lock renewal, unknown receipt e input tardio já têm proteções.
+Reproduzir Android/WebView + troca de área + texto digitado durante POST; não
+substituir código de recuperação por recarregamento que apague a memória.
+
+INV-03 · PENDENTE FÍSICO
+Teclado, botão Voltar nativo, permissões câmera, galeria, QR, rotação, seleção de
+foto seguida de processo morto, tela bloqueada e serviço GPS. Resize de navegador
+e stub SemedNative não substituem ensaio em aparelho. Declarar esse limite.
+
+ORDEM SUGERIDA DE TRABALHO (PROPOSTA)
+P0: perda/duplicação/estado falso, confirmação de save/foto/QR, volta e sessão.
+P1: tela de ficha, revisão explicável, teclado/rodapé/cabeçalhos e feedback de espera.
+P2: modularização, desempenho medido, lista longa e refinamento de acessibilidade.
+O usuário ainda não aprovou novo questionário, offline, perfis ou exclusão no coletor.

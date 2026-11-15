@@ -1,0 +1,375 @@
+SEMED — CONTRATOS DO APP TÉCNICO, SERVIDOR E ANDROID
+13/11/2026 · descrição da implementação examinada, não nova especificação.
+
+01. CONVENÇÕES COMUNS
+
+Origem do app e APIs (produção, não usar em testes destrutivos):
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev
+
+GETs retornam JSON. POSTs comuns usam application/json, Origin igual à origem
+do Worker e X-CSRF-Token obtido em /api/auth/me. Login ainda não tem CSRF de
+sessão, mas exige origem/conteúdo válidos. Cookie de sessão __Host-semed é
+HttpOnly/Secure, não um token a ser colocado em query string/localStorage.
+O cliente nativo usa CookieManager e envia esse cookie ao mesmo host.
+
+Cliente JS: timeout 20.000ms, lê JSON, erro por response.error ou mensagem
+genérica, conserva status HTTP no Error. Não tem retry automático de escrita.
+Nativo: connect/read timeout de 12.000ms cada; não segue redirect; só aceita
+path começando /api/technician/. Limite de resposta aproximadamente 1 MiB.
+Timestamp de atendimento, avisos, GPS e posição é época em MILISSEGUNDOS.
+
+Limite de body JSON das rotas /api/technician/ e /api/dispatch/: 16.384 bytes.
+Observação é no máximo 2.000 caracteres após trim. UUID exigido nos IDs.
+Null significa ausência; não substituir por coordenada zero ou texto inventado.
+
+API técnica não funciona no Worker do coletor (403). /api/dispatch/* exige root;
+/api/technician/* exige habilitação técnica ativa, qualquer que seja o papel.
+Credenciais/sessão/capacidade/vínculo são verificados pelo servidor.
+
+02. AUTENTICAÇÃO
+
+POST /api/auth/login
+Body: {"username":"<conta>","password":"<senha>","application":"technician"}
+Não enviar o literal <senha>: este exemplo é notação, não credencial de teste.
+Username normalizado com trim/lowercase; formato aceito [a-z0-9._-], 2–80.
+Respostas: 200 com redirect /tecnico e Set-Cookie; 401 credencial inválida,
+403 conta não habilitada, 429 aguardar tentativas, 503 indisponibilidade.
+Frontend usa init() depois do sucesso, não segue homeUrl gerencial.
+
+GET /api/auth/me
+200: {id, username, role, mustChange, csrf, canView, displayName, homeUrl}.
+401: autenticação necessária. mustChange força formulário de nova senha antes
+de consultar as demandas. Não exportar o csrf de sessão real em logs/fixtures.
+
+POST /api/auth/password
+Body: {currentPassword, password}. Exige CSRF/sessão.
+Nova senha 6–256 caracteres, diferente da atual/provisória; sem serviço externo
+de vazamentos. Sucesso invalida sessões e frontend pede login novamente.
+403 senha atual inválida; 409 credencial mudou em outra sessão; 400 validação.
+
+POST /api/auth/logout
+Body {}. Encerra sessão, apaga cookie; triggers encerram atendimentos associados.
+Frontend pede stopTracking antes da resposta e signedOut depois do sucesso.
+
+03. FILA E HISTÓRICO DO TÉCNICO
+
+GET /api/technician/queue?history=0&offset=0
+history=1 consulta concluídas; demais valores não ativam histórico.
+offset inteiro seguro >=0; tamanho fixo de página 100.
+Ordenação da fila: dispatch_order.position, número da demanda.
+Histórico: updated_at decrescente.
+Só demandas atualmente atribuídas ao usuário e, no histórico, concluídas.
+
+Envelope retornado:
+{
+  "items": [ /* demandas */ ],
+  "total": 3,
+  "revision": 12,
+  "offset": 0,
+  "nextOffset": null,
+  "serverTime": 0,
+  "notifications": [ /* até 30 avisos recentes */ ],
+  "unread": 0
+}
+serverTime=0 acima é apenas forma documental, não valor real a enviar.
+Exemplos com dados reais de teste local estão no diretório EXEMPLOS do ZIP.
+
+Cada demanda contém os campos de service_requests (r.*), mais:
+- context: objeto obtido de context_json (context_json é retirado deste retorno);
+- position: ordem global armazenada, não posição física;
+- current_unit_name: nome atual da unidade;
+- latitude, longitude: destino atual cadastrado;
+- assignments: atribuições ativas e habilitadas.
+
+Campos de interesse do cartão:
+id(UUID), number(número legível), unit_id, equipment_id(opcional), description,
+status, version, context.unit_name, context.hostname, context.environment,
+context.position, current_unit_name, latitude, longitude e assignments.
+Campos adicionais da demanda incluem kind, source, requester, responsible,
+scheduled_date, autores/instantes e operação; conferir esquema em FONTES.
+O frontend atual não exibe todos os campos retornados.
+
+assignment:
+{id, userId, name, accepted, attendanceId, startedAt}.
+accepted depende de atendimento sem encerramento e sessão com prazo válido.
+attendanceId/startedAt ficam null se sessão correspondente expirou.
+Exibir accepted do próprio usuário separadamente de outro integrante.
+
+total é número de demandas da consulta, não técnicos, unidades ou notificações.
+nextOffset=null encerra paginação. Não inferir mais páginas pelo tamanho visual.
+revision é controle global da fila; não confundir com version de uma demanda.
+
+04. COMANDOS DE ATENDIMENTO
+
+Envelope comum para accept/note/blocked/pause/complete:
+{
+  "id": "UUID_DA_DEMANDA",
+  "version": 4,
+  "note": "",
+  "operationId": "UUID_NOVO_DA_OPERACAO"
+}
+Strings UUID_* acima são placeholders, não UUIDs aceitos.
+version vem da demanda lida. operationId gerado via crypto.randomUUID().
+Nessas ações do técnico não é necessário enviar revision global: servidor
+consulta a atual e usa compare-and-swap na transação.
+
+POST /api/technician/accept
+Adiciona position:{latitude,longitude,accuracy,observedAt} ao envelope.
+Exige posição válida, atribuição atual, versão e nenhum outro atendimento
+próprio com sessão ainda válida. Permite aceitar demanda posterior da fila.
+Cria attendanceId no banco; o cliente obtém depois pelo endpoint active.
+Define demanda Em atendimento, incrementa versão e registra eventos.
+
+POST /api/technician/note
+note não vazio, <=2.000; registra observação. Não exige GPS novo, não conclui.
+Pode registrar em demanda atribuída ainda não aceita; não inventar bloqueio
+de início que o servidor não exige hoje.
+
+POST /api/technician/blocked
+Mesma obrigatoriedade de note; registra impedimento. Conserva o status da
+demanda e o acompanhamento, salvo outra ação separada.
+
+POST /api/technician/pause
+Exige atendimento próprio ativo na demanda. Encerra esse atendimento e sua
+posição; demanda permanece não concluída, conservando seu status textual.
+Não há note obrigatório. Frontend atual envia direto, sem diálogo.
+
+POST /api/technician/complete
+Exige atribuição atual e algum atendimento iniciado na demanda. Pode concluir
+pela equipe, mesmo quando o ativo é o colega. Não exige relato nem GPS novo.
+Status Concluída; encerra atendimentos/posições de todos na demanda.
+Identifica autor nos eventos; não aceita um nome de autor fornecido no body.
+
+Resposta de escrita bem-sucedida: {ok:true}.
+Repetição válida após ACK perdido: {ok:true,replayed:true}.
+Não esperar retorno de ficha/attendance novo nesse ACK.
+
+05. IDEMPOTÊNCIA E CONCORRÊNCIA
+
+dispatch_receipts guarda operation_id, actor_id, hash do payload e instante.
+Mesma operação + mesmo ator + payload idêntico: recupera sucesso.
+Mesmo ID com outro payload/ator: 409.
+O recibo do técnico é consultado antes de rejeitar por versão/status já mudado,
+permitindo repetir uma conclusão cujo ACK se perdeu.
+
+dispatch_meta.revision e attempt controlam transação atômica. Versão da demanda
+é conferida também; outra aba ou colega não deve ser sobrescrito silenciosamente.
+Evento, recibo e mudança entram juntos ou são revertidos juntos.
+
+Regra para novo frontend:
+- uma intenção de escrita -> um operationId;
+- não recriar operação automaticamente após timeout;
+- não mudar texto/version/id dentro de uma tentativa pendente;
+- reconciliar/confirmar antes de iniciar nova intenção;
+- impedir duplo toque com estado visível, além do bloqueio lógico;
+- manter mensagem de sucesso distinta de erro ao reler a lista depois do ACK.
+
+O código atual só guarda pending em memória, não IndexedDB/arquivo.
+Não anunciar suporte offline pelo fato de existir retry de uma operação.
+
+06. ATENDIMENTO ATIVO E POSIÇÃO
+
+GET /api/technician/active
+200: {attendance:null} ou {attendance:{id,request_id}}.
+Requer a MESMA sessão que aceitou; outra sessão do mesmo usuário não herda
+automaticamente o direito de atualizar aquele attendanceId.
+
+POST /api/technician/position
+{
+ "attendanceId":"UUID_DO_ATENDIMENTO",
+ "position":{
+  "latitude":-2.54,
+  "longitude":-44.17,
+  "accuracy":20,
+  "observedAt":0
+ }
+}
+Valores são exemplo de forma; observedAt precisa ser Date.now() da observação,
+e GPS de produção deve vir do dispositivo, não de valores fixos do exemplo.
+Não usa operationId nem version: só observação mais nova substitui a anterior.
+
+ValidPosition: números finitos, lat ±90, lon ±180, accuracy (0,5000], observação
+entre now-90.000 e now+30.000ms. 422 para inválida/antiga.
+Autorização cruza atendimento, usuário, sessão, atribuição, técnico habilitado
+e demanda não concluída. 409 se acompanhamento já terminou. Mensagem atrasada
+não pode recolocar no mapa alguém cuja atribuição foi retirada.
+
+Campos armazenados: attendance_id, latitude, longitude, accuracy, observed_at,
+received_at. Não há lista histórica de pontos nesse modelo.
+
+07. AVISOS
+
+GET /api/technician/notifications
+{notifications:[{id,request_id,message,created_at,read_at}],unread}.
+Até 30 mais recentes, ordem id DESC. request_id pode ser null (aviso de acesso).
+unread pode ser maior que 30. Não deduzir total só pelo array recebido.
+
+POST /api/technician/notifications-read
+{through: MAIOR_ID_RECEBIDO}. Inteiro seguro >=0.
+Marca avisos do próprio usuário com id<=through e read_at ainda null.
+Não conclui tarefa e não marca avisos de outro usuário.
+O cursor de notificação Android é outra coisa: indica aviso mostrado no aparelho,
+não confirmação de leitura no banco.
+
+08. ROTAS ROOT DE CONTEXTO — NÃO USAR NO APP DO TÉCNICO
+
+GET /api/dispatch/queue?offset=0
+Fila global não concluída + lista de contas/técnicos para organização.
+POST /api/dispatch/technician
+{operationId,revision,userId,enabled}. Root habilita conta ativa; desabilitação
+encerra atribuições e posições. Não habilitar automaticamente em login.
+POST /api/dispatch/assign
+{operationId,revision,id,userIds:[UUID,UUID]}. Zero a dois distintos.
+POST /api/dispatch/move
+{operationId,revision,id,beforeId}. beforeId null move para o fim.
+GET /api/dispatch/map
+Posições/rotas autorizadas para root; indicador fresh de 180 segundos.
+GET /api/dispatch/road-route?technician=UUID
+Estados ready/waiting/unavailable/changed; geometria viária e chave da sequência.
+Rotas retornadas podem ficar obsoletas: conferir chave antes de desenhar.
+
+Avatar (root): avatar-info, avatar, avatar-remove. Leitura autenticada de imagem
+atual, sem URL pública Drive; upload binário PNG com headers de versão/operação.
+Fonte exata: server/technician-avatars.mjs e documento D-107 incluídos.
+Não acrescentar esses botões/endpoints à tela técnica como se fossem permitidos.
+
+09. MATRIZ DE ERROS IMPORTANTES
+
+400: formato/limite inválido, note vazio, operação incorreta, página inválida.
+401: sessão ausente/expirada; pedir login, sem exibir tarefas de outro usuário.
+403: CSRF/origem inválidos, capacidade ausente, atribuição retirada, acesso root.
+404: demanda ou operação não encontrada.
+409: versão/revisão mudou; operação reaproveitada com outro conteúdo; outra
+     demanda já ativa; acompanhamento encerrado; conclusão concorrente.
+422: GPS inválido, conta indisponível, habilitação necessária, concluir sem aceite.
+429: limite de tentativas de autenticação; respeitar mensagem, sem loop.
+503: indisponibilidade/cota; não declarar que ação foi aceita.
+Falha de rede/timeout: resultado possivelmente desconhecido; conservar comando.
+
+Mensagens reais incluem:
+"Você já tem um atendimento ativo. Conclua ou interrompa-o antes de aceitar outro."
+"Esta demanda não está atribuída a você."
+"A demanda mudou. Atualize antes de continuar."
+"Permita a localização e aguarde uma posição atual para aceitar."
+"O acompanhamento deste atendimento foi encerrado."
+"Descreva a observação ou impedimento."
+"Aceite o atendimento antes de concluir."
+
+Evitar tratar tudo como "erro de conexão". Não traduzir 401/403 como fila vazia.
+Se transformar copy, manter o significado e oferecer ação de recuperação.
+
+10. PONTE JAVASCRIPT / ANDROID
+
+Objeto injetado: window.SemedNative.
+Não está presente no navegador comum. O JS usa a existência dele para escolher
+GPS nativo e ocultar download. Mock de bridge só para teste explicitamente local.
+
+requestLocation(): void
+Pede permissão fina/aproximada e busca posição de GPS/NetworkProvider.
+Resposta assíncrona: window.semedReceiveLocation({...}) no contexto web.
+Sucesso: {latitude,longitude,accuracy,observedAt}.
+Falha: {error:"mensagem"}.
+Não colocar nome diferente da callback sem atualizar os dois lados.
+
+startTracking(attendanceId, csrf): void
+MainActivity confirma página confiável, formato do ID e tamanho do CSRF e chama
+startForegroundService. ID/CSRF são contexto transitório, não credencial fixa.
+Mesmo ID já em serviço não reinicia executor. Não assumir confirmação de envio
+de GPS só porque esse método JavaScript retornou void.
+
+stopTracking(): void
+Interrompe LocationService. Usado em ausência de atendimento, fim, pausa/logout.
+
+signedIn(username): void
+Flush dos cookies; agenda NoticeJob; mantém/limpa cursor conforme usuário;
+pede POST_NOTIFICATIONS no Android 13+.
+
+signedOut(): void
+Cancela job 105, cursor local e notificações. Não substitui logout no servidor.
+
+Compatibilidade: frontend novo precisa funcionar com APK 1.0.0 enquanto houver
+usuários nele. Não chamar métodos novos sem detectar existência/versão.
+Não injetar SemedNative em página externa arbitrária. Não deixar localhost de
+desenvolvimento como origem de um APK distribuído oficialmente.
+
+11. CICLO NATIVO E RESTRIÇÕES ATUAIS
+
+MainActivity: WebView, JS habilitado, dom storage desabilitado, cookies primários,
+sem terceiros/file/content/mixed. Navegação interna limitada a /tecnico no host;
+links HTTPS/geo externos abrem Intent quando apropriado.
+onDestroy remove listener temporário da primeira posição e destrói WebView;
+não chama stopService diretamente. Serviço é componente separado.
+
+LocationService: notification channel location, notificação ID105, foreground
+type location, START_NOT_STICKY. Valida active antes de enviar. Não salva GPS
+em disco nem recupera automaticamente serviço após reboot/processo morto.
+Afere autorização a cada ciclo; erro por mais de três minutos para o serviço.
+Não remover esses controles no redesenho para que um marcador não desapareça.
+
+NoticeJob: canal demands, notificação ID106, job ID105 (espaço de IDs diferente).
+Intervalo 15min, rede qualquer, thread de consulta; 401/403 cancela agenda.
+ID novo + unread>0 gera aviso genérico e atualiza cursor local.
+onStopJob pede retry; não equivale a canal push instantâneo.
+
+Manifesto atual: INTERNET, ACCESS_NETWORK_STATE, ACCESS_COARSE_LOCATION,
+ACCESS_FINE_LOCATION, FOREGROUND_SERVICE, FOREGROUND_SERVICE_LOCATION,
+POST_NOTIFICATIONS. Serviço location não exportado. Activity launcher exportada.
+Não há ACCESS_BACKGROUND_LOCATION nem receiver de boot; isso não significa
+que um foreground service iniciado corretamente não possa continuar minimizado.
+O comportamento físico precisa ser testado sob o Android/aparelho alvo.
+
+12. ESQUEMA E EFEITOS AUTOMÁTICOS
+
+0027_technical_dispatch.sql cria nove tabelas:
+dispatch_meta; dispatch_technicians; dispatch_order; dispatch_assignments;
+dispatch_attendances; dispatch_positions; dispatch_receipts; dispatch_events;
+dispatch_notifications.
+
+Dependências: users/sessions; units; service_requests/service_request_events.
+Os nove nomes acima não representam o banco inteiro do sistema.
+
+Triggers importantes:
+- Limite de duas atribuições ativas e técnico habilitado antes de inserir.
+- Nova demanda entra no final da ordem e muda revisão.
+- Atualização de demanda gera avisos aos atribuídos e muda revisão.
+- Conclusão encerra atendimentos e apaga posições dessa demanda.
+- Fim de atribuição encerra atendimento correspondente e apaga posição.
+- Encerramento de atendimento apaga sua posição.
+- Desabilitar técnico/usuário encerra atribuições.
+- Apagar sessão encerra atendimentos ligados àquela sessão.
+
+0028: cache de rota por atendimento e controle global de acesso OSRM; triggers
+limpam cálculo ao encerrar atendimento/apagar posição. Não é trilha permanente.
+0029: perfis/uploads/eventos de avatar; imagens privadas fora do D1.
+0030/0031: otimizações/projeções do sistema, preservar mesmo em redesign técnico.
+Não aplicar apenas 0027 sobre banco vazio e declarar servidor pronto.
+
+13. COMPATIBILIDADE DO BUILD
+
+O frontend técnico é copiado como technician.html/js/css no build desktop;
+não presumir que tem os mesmos bundles/versionamento de todas as telas desktop.
+Se renomear arquivo ou criar chunk, atualizar build, allowlist de assets,
+CSP e acesso antes do login. Nenhum import de CDN funciona automaticamente.
+
+Alteração de versão nativa precisa conferir quatro lugares:
+- AndroidManifest.xml (versionCode/versionName);
+- scripts/build-technician-android.mjs (saída APK/JSON);
+- scripts/build-desktop.mjs (APK a copiar);
+- server/worker.mjs (nome em Content-Disposition).
+Apksigner/certificado oficial, host e package id devem ser conferidos antes da
+publicação. Chave/senha não acompanham este pacote.
+
+14. FONTES OFICIAIS PARA VALIDAR LIMITES ANDROID
+
+Estas são referências técnicas para a equipe; não substituem o código do app
+nem comprovam teste físico deste APK. Rever ao alterar target SDK ou permissões.
+https://developer.android.com/develop/sensors-and-location/location/permissions
+https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start
+https://developer.android.com/develop/background-work/services/fgs/handle-user-stopping
+https://developer.android.com/training/permissions/requesting
+
+A documentação de interrupção pelo usuário confirma que parar um app com
+foreground service remove o app da memória. Não prometer rastreamento que
+continue após uma parada explícita do Android. Uma proposta de melhorias deve
+distinguir minimizar, bloquear tela, remover dos recentes, matar processo,
+forçar parada e reiniciar o telefone.

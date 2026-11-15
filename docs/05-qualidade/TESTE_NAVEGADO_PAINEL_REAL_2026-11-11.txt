@@ -1,0 +1,128 @@
+SEMED — TESTE NAVEGADO NO PAINEL REAL
+Data: 11/11/2026
+Perfil: root, sessão já autenticada do responsável.
+Ambiente: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+ESCOPO
+Conferência da implementação disponível e de uma seleção dos comportamentos
+do relatório AVERIGUACAO_TOUR_PAINEL_2026-11-11.txt. Navegação pelo navegador
+real, com dados existentes. Este registro complementa a averiguação local;
+não representa execução de todos os 20 cenários da auditoria em produção.
+
+Nenhuma correção de código ou publicação foi realizada nesta conferência.
+Não houve importação, exclusão, edição de cadastro, mudança de senha,
+aceitação de hardware ou criação de demanda. Controles de consulta foram
+abertos; os valores apresentados são um retrato do momento do teste.
+
+ALTERAÇÕES JÁ DISPONÍVEIS QUE FUNCIONARAM
+
+1. Ampliação do mapa do Panorama.
+   O mapa passou a ocupar a área do navegador e exibiu “Voltar ao Panorama”.
+   A consulta permaneceu no Panorama.
+
+2. Zoom pela roda do mouse no mapa ampliado.
+   A escala passou de 3 km para 200 m, com alteração visível do mapa.
+
+3. Retorno pelo botão.
+   Restaurou a composição do Panorama, a matriz de equipamentos e a escala
+   anterior de 3 km. O botão de ampliar reapareceu.
+
+4. Retorno pela tecla Esc.
+   Nova ampliação seguida de Esc também restaurou o mapa no Panorama.
+
+5. Indicadores de escolas online e offline.
+   Os indicadores compactos estavam presentes no canto do mapa, com offline
+   acima de online. Esta conferência visual não revalidou o algoritmo de
+   contagem nem simulou desconexão de agentes.
+
+OUTRAS CONSULTAS QUE FUNCIONARAM
+
+6. Sino de hardware.
+   Abriu o modal “Qual providência tomar?” e concluiu a consulta mostrando
+   “Nenhuma alteração de hardware aguardando parecer”. Não havia alerta
+   pendente para testar decisões; nenhuma decisão foi registrada.
+
+7. Configurações.
+   A integração de fotografias, a seção de cadastro automático e a lista de
+   agentes carregaram. Recebimento de fotos apareceu habilitado. Não foram
+   acionados testes de envio, reautorização ou controles de instalação.
+
+8. Matriz e ficha de equipamento.
+   A célula de computadores da SEMED abriu a lista recebida. A ficha do
+   DESKTOP-62CIVDK abriu com dados publicados, vínculo ativo e informações
+   técnicas do agente. A comunicação estava separada do vínculo, mostrando
+   suspensão informada pelo agente.
+
+9. Fotografia real.
+   “Ampliar foto 1” abriu a fotografia do equipamento em um modal, com
+   unidade e vínculo identificados. A imagem concluiu o carregamento:
+   720 x 1600 pixels. O modal fechou corretamente.
+   Isso confirma esta fotografia; não homologa todas as fotos históricas
+   nem reproduz a falha transitória descrita em TP-14.
+
+10. Galeria vazia (TP-05).
+    “Ver todas (0)” apresentou “Nenhuma fotografia de coleta concluída
+    nesta unidade.” A alegação de ausência total de feedback não se
+    confirmou neste teste real.
+
+11. Importação sem arquivo (TP-12).
+    Ao abrir “Importar planilha (CSV/XLSX)” e acionar “Validar e visualizar”
+    sem escolher arquivo, apareceu “Escolha uma planilha.” Não houve
+    importação. Os modelos fornecidos foram avaliados na auditoria anterior.
+
+PROBLEMAS REPRODUZIDOS NO AMBIENTE REAL
+
+12. Sobreposição de unidades no mapa (TP-02).
+    Selecionada a SECRETARIA MUNICIPAL DE EDUCAÇÃO - SEMED, o centro do
+    ponto da EMI ALANA LUDMILA ficou coberto pelo marcador da SEMED.
+    O clique nessa posição foi recebido pela SEMED e manteve sua seleção.
+    A inspeção do elemento visível no centro do marcador confirmou os dois
+    nomes. Trata-se de sobreposição de alvos; este teste não demonstrou
+    troca indevida de IDs no servidor.
+    Pendente: permitir distinguir e escolher unidades muito próximas.
+
+13. Voltar do navegador em dados parciais (TP-03).
+    Lista de coletas -> “Ver dados parciais” da SEMED -> Voltar do navegador:
+    o painel voltou ao Panorama, em vez da lista de coletas.
+    O botão próprio “Voltar à lista” existe; o defeito é o histórico de
+    navegação não representar a abertura do detalhe como etapa própria.
+
+14. Seleção em Ambientes após recarregar (TP-06).
+    A SEMED foi selecionada e seu nome apareceu na unidade consultada.
+    Após recarregar /ambientes, a seleção voltou ao ALMOXARIFADO CENTRAL.
+    Pendente: preservar a unidade selecionada na navegação/URL.
+
+15. Menus de ações de usuários (TP-11).
+    Abrir “Ações de admin” e “Ações de operador” deixou os dois menus
+    abertos. Clique fora e Esc não os fecharam.
+    Nenhuma ação administrativa dos menus foi acionada.
+
+16. Menu do perfil (TP-16).
+    O menu de root permaneceu expandido depois de Esc, mostrando Minha
+    conta e Sair. Clique fora fechou o menu.
+    Pendente: fechamento por Esc e tratamento de foco.
+
+ERROS DE CONSOLE E LIMITES
+Nas consultas ao console do navegador feitas durante esta navegação não
+foram encontrados erros ou avisos da aplicação. O erro Leaflet “intersects”
+não apareceu. Ausência nesta sessão não prova que a falha intermitente não
+exista em outros contextos.
+
+Não foram simulados novos alertas, perda de conexão, importação de linhas,
+troca de peças, escrita concorrente ou exclusões. Não foi realizado teste
+com celular físico nesta etapa. As demais conclusões da averiguação local
+continuam com o grau de confirmação registrado naquele documento.
+
+EVIDÊNCIAS LOCAIS
+Pasta: private-data/teste-painel-real-2026-11-11/
+- mapa-ampliado-zoom.jpg
+- panorama-restaurado.jpg
+- ambientes-semed-antes-recarregar.jpg
+- ambientes-apos-recarregar.jpg
+- galeria-vazia-com-feedback.jpg
+- mapa-sobreposicao-alana-semed.jpg
+- fotografia-real-equipamento.jpg
+- panorama-final.jpg
+
+As capturas contêm dados reais e ficam na pasta privada, fora do Git.
+O painel foi deixado aberto no Panorama para conferência do responsável.

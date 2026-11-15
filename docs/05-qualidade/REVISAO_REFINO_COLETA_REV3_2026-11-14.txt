@@ -1,0 +1,161 @@
+SEMED — REVISÃO INDEPENDENTE DO REFINAMENTO DA COLETA · REV3
+14/11/2026
+RESULTADO: APROVAÇÃO TÉCNICA LOCAL nos cenários desta revisão.
+Não é publicação, integração no produto ou homologação Android física.
+
+1. ARQUIVOS RECEBIDOS E INTEGRIDADE
+
+- entrega-refino-coleta-rev3-resposta-revisao-2-2026-11-14.md
+- COLETA_REFINO_CLAUDE_REV3_2026-11-14.zip
+SHA-256 do ZIP:
+dbabc151f4c033868b3b183140792e175bf3d7b03f49ac3baa5fae80aa6b28d6
+
+Base: 09442d0d24de214694c0236018837335b3b83068.
+Conferidos 175 hashes de conteúdo, nove hashes ANTES contra a cópia original,
+nove DEPOIS e dois arquivos novos. Sem divergências. O manifesto é o arquivo
+adicional, não coberto por seu próprio hash: 176 arquivos ao todo.
+
+Revisão feita em cópia isolada dessa base, sobrepondo somente FONTES/.
+Comparação direta com a rev2 confirmou alterações em collector-v3.js,
+collector-v3.css e collector-concurrency-browser.cjs. Restante da proposta
+visual preservado; sem alteração de servidor, migrações, perguntas/schema,
+Android, protocolo QR, credenciais ou regras de acompanhamento do técnico.
+
+Consultados o MD externo, RESPOSTA_REVISAO_REV2.txt, DECISOES_PENDENTES.txt,
+MANIFESTO.json, fontes e testes modificados, revisões anteriores e contratos
+de precedência/D116. O comportamento foi confrontado com o Worker e a fila
+de rascunhos reais do projeto. Declarações do pacote não foram tomadas como
+prova de aprovação: testes e reproduções foram executados novamente.
+
+2. RESULTADO DOS ACHADOS
+
+R1 original — respostas diferentes gravadas por outra sessão:
+CORRIGIDO. Conflito explícito, resposta local preservada, sem confirmação falsa.
+
+R2 — navegação durante preparação/envio da foto:
+CORRIGIDO. A foto e o rascunho mínimo permanecem no ID da ficha original.
+Navegar entre assuntos continua permitido. Abertura de outra ficha aguarda
+o processamento necessário; troca de unidade não abandona prévias.
+
+R3 — duplicação visual após releitura durante upload:
+CORRIGIDO. Uma fotografia recebida corresponde a uma apresentação por ID.
+Releitura atrasada não apaga confirmação recente nos cenários testados;
+remoção mantém contagem coerente.
+
+R1-F — rascunho concorrente confundido com ficha salva:
+CORRIGIDO. sameAsServer recusa registro remoto com draft verdadeiro.
+Testados independentemente:
+- Falha de transporte e reconciliação pela trava: mesma conta, mesma resposta,
+  versão seguinte, porém draft:true. Mostra conflito; mantém a resposta local.
+- Resposta 409 de VERSÃO com rascunho: não vira sucesso de salvamento completo.
+  A sonda distingue esse caminho do 409 de trava, preservando o token na
+  fixture apenas para alcançar o ramo exato; não modifica produção.
+- Recarregar e salvar depois produz registro completo; os testes de resposta
+  perdida de salvamento realmente completo continuam passando.
+
+R4 — conclusão com foto selecionada cujo envio falhou:
+CORRIGIDO. A revisão lista a pendência local com identificação do alvo,
+mensagem de falha e ações para abrir o registro ou descartar a prévia.
+“Confirmar conclusão” fica desabilitado, e o handler mantém uma guarda extra.
+
+Na sonda independente: upload 503 já terminado; demais requisitos satisfeitos;
+visita permaneceu aberta e não apareceu a mensagem de tudo recebido. Cancelar
+o descarte manteve a prévia e o bloqueio. Somente o descarte confirmado
+liberou a conclusão, que então funcionou pelo endpoint real da fixture.
+Nos testes recebidos repetidos: reenviar com sucesso também libera; concluir
+o assunto com foto pendente desse assunto é recusado; coleta independente e
+coleta dentro de /app aplicam a proteção.
+
+Foto permanece OPCIONAL. Resolver uma tentativa pendente não significa exigir
+fotografia em todo equipamento. Fotos obrigatórias já previstas continuam
+validadas pelo servidor, mesmo que uma prévia local seja descartada.
+
+3. DECISÕES E AJUSTE ADJACENTE
+
+D116 preservada:
+- Blocos de leitura mantidos, sem mudança nas perguntas.
+- Navegação durante fotos na mesma unidade mantida, preservando o vínculo.
+- Somente estado por assunto; sem “N de 8” nem percentual geral.
+
+O ajuste adjacente em load() sincroniza uma entrada LIMPA da fila com a versão
+recém-lida do servidor. Não substitui respostas locais pendentes por dados
+remotos. Reabertura/conclusão após alteração por outra sessão foi exercitada
+no roteiro R4-D; regressões de rascunhos, sessão e concorrência passaram.
+
+DP-19/DP-20 do pacote descrevem comportamentos implementados para fechar os
+defeitos, compatíveis com D116 e com preservação de respostas. Não precisam
+de nova escolha do responsável para esta aprovação local. Não adotar as
+alternativas propostas de ignorar foto pendente ou sobrescrever outra sessão.
+
+Busca ampliada, autosave integral, conclusão automática, offline durável,
+fusão/exclusão pelo operador e recibo de operação continuam fora desta entrega.
+Não são pré-requisitos para integrar este refinamento.
+
+4. TESTES REEXECUTADOS
+
+Ambiente: Windows, Node 24, Edge via Playwright, Worker real, SQLite em memória,
+armazenamento de fotos sintético. Nenhum dado de produção usado.
+
+- node --test --test-concurrency=1 tests/*.test.mjs:
+  301 passaram; zero falhas.
+- Builds: coletor 56 arquivos; painel 138 arquivos, nove bundles.
+  Sem APK privado na cópia de revisão; aviso do build esperado.
+- Dez roteiros existentes de navegador passaram:
+  collector-v3-browser; collector-refinement-browser;
+  collector-review-pending-browser; collector-environments-browser;
+  mobile-app-browser; technician-redesign-browser; technician-tracking-browser;
+  collector-identity-browser; environment-rename-browser;
+  photo-thumbnails-browser.
+- collector-concurrency-browser recebido: 22 verificações passaram.
+  Inclui tratamento de resposta perdida, mesma/outra conta, alvo de foto,
+  leitura atrasada, remoção, rascunho concorrente e pendência no /app.
+- Quatro scripts independentes desta revisão passaram com assertivas seguras:
+  reviewer-coleta-rev2.cjs (três casos originais);
+  reviewer-draft-ack-rev3.cjs (rascunho + falha de conexão);
+  reviewer-draft-version409-rev3.cjs (409 de versão com rascunho);
+  reviewer-failed-photo-rev3.cjs (falha já encerrada, cancelar descarte,
+  descarte confirmado e conclusão posterior).
+  Diferentemente das sondas anteriores, estes scripts exigem NÃO reproduzir
+  os defeitos. Não se limitam a esperar timeout nas ações antigas.
+- Roteiro visual recebido repetido: 31 capturas; zero erros JavaScript.
+  Foram abertas capturas do conflito de rascunho, revisão bloqueada com foto
+  pendente e revisão da coleta embutida no /app.
+
+Medições locais ilustrativas, uma execução com outras suítes em andamento:
+abrir assunto A 75 ms/zero chamadas; salvar ficha 89 ms/uma chamada;
+primeira página com 1000+ fichas 95 ms/uma chamada; revisão 127 ms/duas chamadas.
+Esses tempos NÃO são benchmark de produção nem comparação estatística de
+velocidade entre versões. As contagens de chamadas observadas foram mantidas.
+Nenhuma nova consulta periódica ou busca por tecla foi adicionada na proposta.
+
+5. LIMITES E PRÓXIMA ETAPA
+
+Não identifiquei bloqueio técnico restante nos cenários revisados.
+R1/R2/R3/R1-F/R4 ficam encerrados nesta revisão local. Não é necessário
+pedir outra rodada ao Claude para esses mesmos defeitos.
+
+Ainda falta:
+1. Integrar os arquivos revisados e seus testes à árvore de produto,
+   preservando alterações documentais existentes e conferindo hashes.
+2. Preparar e publicar os dois builds quando essa etapa for solicitada;
+   conferir os arquivos efetivamente servidos e as sessões/permissões reais.
+3. Conferir no Android físico: teclado, rotação, câmera, galeria, QR, Voltar,
+   troca Técnico/Coleta, queda/retorno da rede e acompanhamento com tela
+   bloqueada. Esses testes não foram feitos nesta revisão.
+4. Observar latência e consumo D1 reais sem aumentar polling/varrer o banco.
+
+O APK 1.0.3 carrega as páginas do servidor. Este refinamento não altera a ponte
+nativa nem exige sozinho outro binário; isso não equivale a teste do APK em
+aparelho físico. Sem homologação de Safari/iPhone, HEIC real ou fabricantes.
+
+Nesta entrega: somente documentação da revisão e evidências foram adicionadas
+ao projeto. Nada integrado em web/server/android, nada publicado, nenhum APK
+novo, nenhuma migração, commit/push, seed ou mudança no D1/Drive oficial.
+
+6. EVIDÊNCIAS
+
+O ZIP de revisão acompanha este TXT, manifesto de integridade, logs, resultados
+das quatro sondas e capturas selecionadas. Os nomes históricos de algumas
+capturas foram conservados; “falso-salvo” agora mostra conflito seguro, e
+“concluida-foto-nao-enviada” mostra conclusão APÓS descarte explícito.
+O resultado JSON é a referência para entender cada captura.

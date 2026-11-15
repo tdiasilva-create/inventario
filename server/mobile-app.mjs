@@ -1,5 +1,5 @@
 import {assetResponse} from './asset-response.mjs';
-import {collectorPages,collectorAssets,mobileAssets,canCollect} from '../shared/mobile-assets.mjs';
+import {collectorPages,collectorAssets,mobileAssets,canCollect,isCollectorBundle} from '../shared/mobile-assets.mjs';
 export {canCollect};
 export async function mobilePublic(request,env){
  const path=new URL(request.url).pathname;
@@ -12,8 +12,9 @@ export async function mobilePublic(request,env){
 }
 export async function mobileCollector(request,env,user){
  if(env.APP_KIND==='collector')return null;
- const url=new URL(request.url),page=collectorPages[url.pathname],asset=collectorAssets.includes(url.pathname.slice(1));
+ const url=new URL(request.url),page=collectorPages[url.pathname],asset=collectorAssets.includes(url.pathname.slice(1))||isCollectorBundle(url.pathname);
  if(!page&&!asset)return null;
+ if(isCollectorBundle(url.pathname)&&!canCollect(user.role))return new Response('Perfil sem permissão de coleta.',{status:403});
  if(!page&&!canCollect(user.role))return null;
  if(!canCollect(user.role))return new Response('Perfil sem permissão de coleta.',{status:403});
  if(page)url.pathname='/'+page;

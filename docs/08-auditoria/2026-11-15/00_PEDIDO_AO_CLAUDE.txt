@@ -1,0 +1,129 @@
+PEDIDO DE AUDITORIA COMPLETA DO CÓDIGO — INVENTÁRIO TECNOLÓGICO SEMED
+Referência: 15/11/2026, America/Fortaleza. Estado funcional até D-122.
+Responsável solicita averiguação de TODAS as lógicas e possíveis erros.
+
+OBJETIVO
+Faça uma auditoria independente do sistema existente. Leia a implementação,
+rastreie os fluxos entre interfaces, APIs, persistência e agentes e procure
+defeitos reais. Não se limite a ler os relatórios, contar testes aprovados ou
+revisar a aparência. Quero saber o que funciona, o que pode falhar, em quais
+condições, qual o impacto e o que deve ser corrigido primeiro.
+
+O resultado será devolvido ao responsável e ao Codex para revisão e execução
+das correções. Nesta etapa entregue análise, reproduções locais e propostas.
+Não publique, migre, instale agentes, altere cadastros reais ou acione testes
+de velocidade/GPS em dispositivos de pessoas. Autorizações antigas registradas
+no histórico dizem respeito às entregas antigas, não a esta auditoria.
+
+COMO COMEÇAR
+1. Confira PACOTE.json e MANIFESTO_SHA256.txt, quando receber o ZIP. FONTES/
+   contém o projeto do commit identificado. Também é possível usar a branch
+   codex/auditoria-completa-2026-11-15 no GitHub tdiasilva-create/inventario.
+   Não audite main por engano: ela não representa necessariamente esta entrega.
+2. Entre em FONTES/ (ou na raiz do clone). Leia 00_LEIA_ANTES_DE_TUDO.md,
+   AGENTS.md, docs/00-governanca/REGRAS_DE_PRECEDENCIA.md, DECISOES.md,
+   PENDENCIAS.md, CONFLITOS_DOCUMENTAIS.md e RASTREABILIDADE.md.
+3. Leia docs/07-operacao/13_ESTADO_ATUAL_D122.md e os arquivos deste diretório:
+   01_ESCOPO_E_CRITERIOS.md, 02_EXECUCAO_E_CENARIOS.md,
+   03_MODELO_DEVOLUTIVA.md e 04_VERIFICACAO_DA_PREPARACAO.md.
+4. Consulte docs/07-operacao/gerado/: esquema SQL, arquivos, hashes e rotas
+   literais. O índice é auxiliar; rotas dinâmicas e dependências reais exigem
+   leitura das funções. A matriz de 08/11 é histórica; use a matriz atual.
+5. Para coletor, leia integralmente a Base original e as decisões posteriores.
+   Para aparência, abra as referências, distinguindo os desenhos históricos
+   dos refinamentos publicados. Para Windows, leia a proveniência do Core.
+
+COMPONENTES QUE DEVEM SER AUDITADOS
+- Painel desktop: autenticação, cadastro de usuários/unidades, Panorama, mapa,
+  pesquisa, equipamentos, ambientes, organograma e modal, parciais, controle
+  administrativo das coletas, demandas, alertas, relatórios e planejamento.
+- Coletor no navegador e no APK: seleção/retomada de unidade, assuntos,
+  formulários, fotos, QR, validação, salvamento, travas, revisão e conclusão.
+- APK Android: áreas Atendimento técnico e Coleta na mesma conta, WebView,
+  permissões, câmera/galeria/QR, insets, sessão, notificações e GPS de fundo.
+- Atendimento: fila ordenada pelo root, atribuição a até dois técnicos,
+  um atendimento ativo por técnico, aceite com GPS, conclusão pela equipe,
+  retirada/reordenação, avisos, posição, rota viária OSRM e avatar.
+- Agente Windows: Core reconstruído, fila durável, assinatura, cadastro,
+  heartbeat, inventário, QR/vínculo, atualização/recuperação e medição de rede.
+- Servidor: os dois Workers, todas as APIs, regras no servidor, crons,
+  D1/migrações/índices/triggers, Drive/R2, miniaturas, KV e integrações.
+- Segurança, integridade, concorrência, desempenho, consumo D1, acessibilidade,
+  confiabilidade operacional, testes, builds, documentação e recuperação.
+
+REGRAS CENTRAIS PARA NÃO PROPOR REGRESSÕES
+- Dados atuais/parciais, inventário publicado, estado de assunto, visita
+  concluída e classificação administrativa completa são conceitos diferentes.
+  Completa permanece até root mudar, mesmo recebendo novas contribuições.
+- Cada equipamento tem ID permanente. Nome administrativo pode ser editado
+  sem perder fotos/vínculo/histórico; não confundir nome com hostname do agente.
+- Coleta por vários usuários exige autoria, versão, trava e conflitos claros.
+  Falha de resposta não deve duplicar gravações nem produzir sucesso falso.
+- Foto pertence ao alvo capturado no início; navegar durante upload não pode
+  transferi-la para outro equipamento. Falhas/pendências não são ACK de envio.
+- Sem dados não significa zero. Sem agente não é máquina offline. Presença
+  recente usa prazo técnico de 17 minutos; log de perda usa MAIS DE 48 horas.
+- Sino trata hardware aguardando parecer; ler aviso não equivale a decidir.
+  Demandas abertas sinalizam a unidade no mapa e não acabam por reconexão.
+- Root/admin/operador/visualizador e habilitação técnica são distintos.
+  Ocultar botão não substitui permissão na API; operador não ganha dashboard.
+- Senhas de 6–256 caracteres livres e ausência de verificação externa de
+  vazamentos são decisões expressas. Avalie implementação e riscos residuais;
+  não reintroduza regras anteriores como se fossem correções autorizadas.
+- Somente a capacidade restrita de enviar posição pode sobreviver à expiração
+  do login. APIs de demandas/coleta continuam exigindo sessão. Localização
+  termina ao zerar a fila, sair, revogar ou conforme revogação de credenciais.
+- A localização não deve parar ao alternar de Atendimento para Coleta.
+  Rota segue ruas e ordem root; não usar fallback reto nem otimização silenciosa.
+- Fotos originais ficam privadas no Drive configurado. A exceção D-072 admite
+  somente miniaturas derivadas no D1, após ready, até 320x320 e 64 KB.
+- Preservar plano gratuito, localização e alertas. Não resolver consumo
+  removendo esses recursos ou contratando serviço. Medir linhas, não apenas
+  quantidade de chamadas: batch não significa automaticamente menos leituras.
+- IP público/provedor são observações do servidor, separados do IP interno.
+  Teste de velocidade não comprova link dedicado nem velocidade contratada.
+- Agentes 0.1.8 não executam a nova medição. Atualização normal preserva
+  identidade; recuperação de revogado arquiva fila antiga e gera outra, sem
+  reatribuir automaticamente pendências/histórico à nova unidade.
+- Não inventar dados oficiais, perguntas, indicadores ou decisões pendentes.
+
+MÉTODO ESPERADO
+Faça primeiro um mapa de cobertura. Para cada área registre fontes examinadas,
+fluxos alcançados, testes existentes executados, contraprovas e lacunas.
+Construa cenários independentes; um teste que repete a implementação não prova
+a regra. Investigue especialmente duas sessões/abas, latência, falha antes e
+depois do commit, resposta fora de ordem, expiração, revogação e paginação.
+
+Não assuma que todo documento datado descreve o estado atual: há adendos que
+superam pendências anteriores. Documentação não comprova execução. Código
+publicado, commit Git, APK e instalador têm identificadores diferentes.
+
+Utilize fixtures isoladas. Nunca use .dev.vars, cookies, dumps ou credenciais
+da produção. Não solicite senhas no relatório. O ZIP não contém esses dados.
+Não execute scripts antigos de entrega sem ler: alguns dependem de artefatos
+privados ou se destinam à publicação. Testes locais seguros estão no roteiro.
+
+PARA CADA ACHADO
+Informe ID, gravidade, classificação, confiança, regra/decisão aplicável,
+arquivo e linha do commit auditado, pré-condições, reprodução passo a passo,
+esperado, observado, causa provável, impacto, evidência e correção proposta.
+Inclua teste de regressão necessário e diga se a solução depende do responsável.
+Se não conseguir executar, classifique como suspeita ou análise estática;
+nunca chame de falha reproduzida. Diferencie falha do ambiente de teste,
+documentação desatualizada, limitação física conhecida e defeito de produto.
+
+ENTREGA OBRIGATÓRIA
+1. Resumo executivo compreensível ao responsável, priorizado pelo impacto.
+2. Matriz completa das áreas auditadas, parcialmente auditadas e não auditadas.
+3. Achados confirmados com evidências; suspeitas em seção separada.
+4. Plano de correção P0/P1/P2/P3, dependências, risco e critérios de aceite.
+5. Lista curta de decisões que realmente precisam do responsável.
+6. Testes executados, falhas, comandos, ambientes e limitações.
+7. Se houver scripts de reprodução, arquivos separados, dados sintéticos,
+   instruções e manifesto de hashes; não substituir o projeto inteiro.
+8. Nenhum APK/EXE/deploy novo nesta fase. Não declarar auditoria completa se
+   faltou backend, Android, Windows, permissões ou concorrência: liste o restante.
+
+Prioridade: preservar dados, identidade, vínculo e autorização; evitar
+confirmações falsas, consumo excessivo D1 e perda de fotos; depois melhorar
+fluidez e clareza sem alterar as decisões aprovadas.

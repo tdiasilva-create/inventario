@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const files=execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
-const selected=[...new Set(files)].filter(p=>/^(server|web|scripts|migrations|android\/technician|config|tests)\//.test(p)||/^(wrangler[^/]*\.jsonc|package\.json|pnpm-lock\.yaml|\.github\/workflows\/ci\.yml)$/.test(p)).filter(p=>/\.(mjs|cjs|js|html|css|sql|java|xml|jsonc?|ya?ml|properties)$/.test(p)&&!p.includes('/vendor/')&&!p.includes('/build/')).sort();
+const selected=[...new Set(files)].filter(p=>/^(server|web|shared|scripts|migrations|android\/technician|windows\/agent|config|tests)\//.test(p)||/^(wrangler[^/]*\.jsonc|package\.json|pnpm-lock\.yaml|\.github\/workflows\/ci\.yml)$/.test(p)).filter(p=>/\.(mjs|cjs|js|html|css|sql|java|xml|jsonc?|ya?ml|properties|cs|csproj|ps1|nsi|py)$/.test(p)&&!p.includes('/vendor/')&&!p.includes('/build/')&&!p.includes('/bin/')&&!p.includes('/obj/')).sort();
 const unique=a=>[...new Set(a)].sort();
 const records=[];
 for(const path of selected){
@@ -17,7 +17,7 @@ for(const path of selected){
 const out='docs/07-operacao/gerado';await mkdir(out,{recursive:true});
 await writeFile(out+'/codigo.json',JSON.stringify({scope:'Código e configuração públicos, sem vendor e binários. Extração estática por expressão regular; imports dinâmicos, exports agrupados e rotas compostas podem não constar. Não é OpenAPI nem grafo completo de execução.',files:records},null,2)+'\n');
 let md='# Índice do código e referências de API\n\nGerado por `pnpm docs:code`. '+records.length+' arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.\n\n';
-for(const family of ['server','web','migrations','android','config','scripts','tests','configuração raiz']){
+for(const family of ['server','web','shared','migrations','android','windows','config','scripts','tests','configuração raiz']){
  const group=records.filter(r=>(r.path.includes('/')&&!r.path.startsWith('.github/')?r.path.split('/')[0]:'configuração raiz')===family);
  md+='## '+family+'\n\n| Arquivo | Linhas | Bytes |\n|---|---:|---:|\n'+group.map(r=>`| [${r.path}](../../../${r.path}) | ${r.lines} | ${r.bytes} |`).join('\n')+'\n\n';
 }

@@ -57,7 +57,8 @@ async function boot(resume=false){
 }
 async function logout(){
  const pending=[...frames.values()].some(f=>f.contentWindow.semedAppPending?.());
- $('#confirm-text').textContent=(pending?'Há preenchimento ou uma operação pendente nesta sessão. Sair descartará o que ainda não foi recebido pelo servidor. ':'')+'Sair encerra também o acompanhamento de localização das demandas. Para apenas mudar de área, use os botões acima.';
+ // Identificação da conta acessível na saída (a barra oculta o nome abaixo de 600 px).
+ $('#confirm-text').textContent='Conta: '+(user?.displayName||user?.username||owner?.username||'não identificada')+'. '+(pending?'Há preenchimento ou uma operação pendente nesta sessão. Sair descartará o que ainda não foi recebido pelo servidor. ':'')+'Sair encerra também o acompanhamento de localização das demandas. Para apenas mudar de área, use os botões acima.';
  const d=$('#confirm');if(d.open)return;d.showModal();
  $('#cancel-exit').onclick=()=>d.close();
  $('#confirm-exit').onclick=async()=>{

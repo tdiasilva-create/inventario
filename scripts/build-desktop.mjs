@@ -1,3 +1,4 @@
+import {bundleCollector} from './bundle-collector.mjs';
 import {collectorAssets,mobileAssets} from '../shared/mobile-assets.mjs';
 import {copyFile,mkdir,readFile,writeFile,rm,stat} from 'node:fs/promises';
 import {resolve,join,sep} from 'node:path';
@@ -18,7 +19,7 @@ files.push('hardware-attention.js','desktop-notifications.js','desktop-equipment
 files.push('desktop-demand-count.js','operations.html','operations.js','agent-connection.js','unit-name-picker.js');
 files.push('desktop-request.js','desktop-thumbnails.js',"photo-prepare.js","vendor/heic-to/heic-to.min.js","vendor/heic-to/LICENSE","vendor/heic-to/ORIGEM.txt");
 const manifest=[];
-files.push('panel-status.js','account-entry.js');
+files.push('panel-status.js','account-entry.js','panel-unit-search.js');
 files.push('dispatch.html','dispatch.js','dispatch-map.js','technician-avatar.js','technician.html','technician.js','technician.css');
 files.push('environment-editor.js','panel-confirm.js','school-presence.js');
 files.push('unit-map-palette.js','communication-log.html','communication-log.js');
@@ -26,6 +27,7 @@ files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-st
 files.push('desktop-blocks.js','desktop-exports.js','panel-search.html','panel-search.js');
 files.push('pending-collections.html','pending-collections.js','desktop-management.js','provider-report.js');
 files.push('collection-control.html','collection-control.js','collection-overview.js');
+files.push('network-tests.html','network-tests.js','unit-equipment-map.js','equipment-signal.js');
 files.push(...[...collectorAssets,...mobileAssets].filter(f=>!files.includes(f)));
 for(const file of files){
  const target=join(destination,file);await mkdir(resolve(target,'..'),{recursive:true});
@@ -42,7 +44,7 @@ try{await stat(technicianApk);await mkdir(join(destination,'tecnico'),{recursive
 await writeFile(join(destination,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Robots-Tag: noindex, nofollow\n');
 await writeFile(join(destination,'robots.txt'),'User-agent: *\nDisallow: /\n');
 // Build evidence stays outside the published assets.
-const bundled=await bundleDesktop(destination);
+const bundled=[...await bundleDesktop(destination),...await bundleCollector(destination)];
 // Hash final HTML, not the unbundled input. Keep legacy modules for existing tabs.
 manifest.length=0;
 for(const file of [...files,...bundled]){const bytes=await readFile(join(destination,file));manifest.push({file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}

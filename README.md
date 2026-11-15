@@ -1,6 +1,6 @@
 # Inventário Tecnológico SEMED · Paço do Lumiar
 
-Código, documentação, migrações e testes do sistema municipal de inventário. O **coletor** registra visitas, equipamentos e fotografias; o **painel** recebe, consulta e analisa os dados. O **aplicativo do técnico** atende demandas e compartilha localização durante o atendimento. São dois Workers e uma persistência compartilhada; o aplicativo técnico usa as APIs do painel. O agente Windows identifica computadores e envia inventário técnico, vinculado por QR à unidade e à posição do equipamento.
+Código, documentação, migrações e testes do sistema municipal de inventário. O **coletor** registra visitas, equipamentos e fotografias; o **painel** consulta e analisa os dados. O **APK único** oferece Atendimento técnico e Coleta na mesma conta, com capacidades separadas. A localização técnica continua durante a fila após o primeiro aceite conforme D114. São dois Workers e uma persistência compartilhada. O agente Windows envia inventário técnico, vinculado por QR à unidade e ao equipamento; versões compatíveis executam medições de internet solicitadas pelo root.
 
 ## Endereços em uso
 
@@ -12,7 +12,7 @@ As sessões são separadas. Dados, senhas e tokens de produção não fazem part
 
 ## Começar por aqui
 
-**Nesta branch:** [análise detalhada para migração física](docs/09-migracao-servidor-fisico/README.md) e [plano completo em TXT](docs/09-migracao-servidor-fisico/PLANO_COMPLETO_MIGRACAO.txt). É uma proposta técnica; o runtime físico e o corte ainda não foram implementados. A main contém a documentação factual do sistema atual.
+**Nesta branch `codex/auditoria-completa-2026-11-15`:** código consolidado até D122, [pedido de auditoria ao Claude](docs/08-auditoria/2026-11-15/00_PEDIDO_AO_CLAUDE.txt), [matriz de cobertura](docs/08-auditoria/2026-11-15/01_ESCOPO_E_CRITERIOS.md) e [estado atual](docs/07-operacao/13_ESTADO_ATUAL_D122.md). A [análise de migração física](docs/09-migracao-servidor-fisico/README.md) permanece proposta, sem corte realizado. `main` não deve ser presumida idêntica à versão desta auditoria.
 
 1. [Regras e fontes](00_LEIA_ANTES_DE_TUDO.md), [AGENTS.md](AGENTS.md) e [precedência](docs/00-governanca/REGRAS_DE_PRECEDENCIA.md).
 2. [Manual atual de operação e migração](docs/07-operacao/README.md).

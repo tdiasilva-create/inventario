@@ -1,0 +1,161 @@
+SEMED TÉCNICO — ROTEIRO DO REDESENHO E MODELO DE DEVOLUTIVA
+13/11/2026 · executar em ambiente isolado; não usar demandas oficiais em ensaio.
+
+REGISTRO POR CASO
+ID / versão-base / aparelho ou viewport / navegador-WebView / usuário sintético
+/ pré-condição / passos / esperado / observado / passou-falhou-não testado
+/ screenshot-log / data-hora / limite da verificação.
+Nenhuma senha, cookie, CSRF, token ou posição real no relatório público.
+
+A. ACESSO
+A01 Sem sessão: abrir /tecnico mostra login sem conteúdo de outro usuário.
+A02 Conta válida habilitada: abre fila própria, sem painel gerencial.
+A03 Conta válida não habilitada: mensagem clara e nenhum bypass de tela/API.
+A04 Senha incorreta: erro junto ao formulário; pode corrigir e tentar novamente.
+A05 Limite de tentativas: explicar espera, sem disparar login em loop.
+A06 Provisória: formulário com senha atual e nova; 6–256, livre, diferente.
+A07 Troca confirmada: novo login; chamadas antigas não recuperam sessão vencida.
+A08 Conta desativada/revogada durante uso: ações posteriores bloqueadas.
+A09 Logout confirmado: limpa estado visual/avisos/posição; nenhum dado residual
+    visível ao próximo usuário na mesma instalação.
+A10 Falha de logout: não afirmar revogação que o servidor não confirmou.
+
+B. FILA E ESTADOS
+B01 Vazio confirmado é diferente de carregando e de erro de consulta.
+B02 Três demandas atribuídas aparecem na ordem do root; sem acesso às alheias.
+B03 Até dois nomes de equipe, longos e com acentos, sem quebrar largura.
+B04 Demanda sem equipamento não apresenta hostname fictício.
+B05 Descrição extensa quebra linhas e permanece acessível integralmente.
+B06 Status da demanda e acompanhamento próprio não são confundidos.
+B07 Mostrar mais carrega outra página, sem duplicar IDs; documentar a limitação
+    atual de refresh e verificar a solução se for modificada no redesenho.
+B08 Atualização durante leitura preserva rolagem/foco/expansões no novo desenho.
+B09 Atualização com diálogo aberto não descarta texto.
+B10 Root reordena/reatribui em segunda sessão: lista muda sem receber tarefas
+    não atribuídas. Uma resposta antiga não restaura ordem anterior.
+B11 Ordem fora do primeiro item: documentar comportamento atual permitido;
+    não implementar bloqueio de ordem sem decisão.
+B12 Sem coordenadas: explicar ausência e não abrir destino arbitrário.
+
+C. ACEITE E GPS
+C01 GPS negado: não aceitar, explicar permissão e permitir tentar novamente.
+C02 GPS desligado/timeout: não gravar aceite fictício.
+C03 Posição antiga (>90s no servidor), futura (>30s), accuracy zero/negativa ou
+    >5000m, lat/lon fora de limite: recusar.
+C04 Posição válida + aceite confirmado: card ativo e atendimento no servidor.
+C05 Outro atendimento próprio ativo: 409 compreensível e sem trocar de demanda.
+C06 Segundo técnico aceita mesma demanda: ambos autorizados conforme regra.
+C07 Atendimento em outra sessão: não compartilhar seu attendanceId sem autorização.
+C08 Autorização retirada durante obtenção de GPS: envio não deve efetivar aceite.
+C09 Duplo toque e ACK perdido: mesma operação não cria dois atendimentos/eventos.
+C10 Timeout de localização seguido de novo aceite: callback atrasado não atende
+    a solicitação errada; registrar se requer correção nativa.
+
+D. AÇÕES
+D01 Observação vazia: impedida; preenchida: evento correto e sem conclusão.
+D02 Impedimento: exige texto, mantém estado/GPS conforme regra atual.
+D03 2.000 caracteres aceitos, excedente recusado sem truncamento silencioso.
+D04 Cancelar/Escape modal: nenhuma escrita, foco volta à ação de origem.
+D05 Pausar: encerra acompanhamento próprio, não conclui a demanda.
+D06 Novo aceite após pausa: novo atendimento, sem restaurar ponto encerrado.
+D07 Conclusão cancelada: nada muda.
+D08 Conclusão confirmada: autoria, fila/histórico, fim da posição da equipe.
+D09 Colega atribuído conclui pela equipe: só uma conclusão, ambos deixam de enviar.
+D10 Demanda alterada por root antes do POST: 409, atualização consciente.
+D11 Nota enviada com falha de resposta: retry preserva mesmo payload/operationId.
+D12 ACK recebido e falha na releitura: confirmar gravação separadamente do erro
+    de lista; não reenviar escrita como se não tivesse sido concluída.
+D13 Botão em envio visível; toques repetidos não parecem ações ignoradas.
+D14 Concluir demanda atual com outra pendente: tracking termina na regra atual.
+    O acompanhamento de toda a fila está adiado, não tratar como caso aprovado.
+
+E. AVISOS E HISTÓRICO
+E01 Avisos não lidos têm marca textual/visual; contagem não é total de demandas.
+E02 Abrir Avisos marca até o maior ID, apenas para aquele usuário.
+E03 Trinta avisos no array e unread maior: não inventar paginação existente.
+E04 Concluídos ordenados por atualização, sem botões de aceitar/concluir.
+E05 Reatribuição: histórico mostrado depende da atribuição atual, não é arquivo
+    global de todas as participações anteriores.
+E06 Logout/troca de usuário: cursor Android não reaproveita aviso de outra conta.
+
+F. NAVEGAÇÃO EXTERNA
+F01 Traçar rota abre destino da demanda selecionada e não aceita automaticamente.
+F02 Sem app de mapas: informar falha; retorno mantém estado.
+F03 Nenhuma senha, cookie ou token nos links de Maps.
+F04 Tela técnica não possui mapa gerencial de colegas ou indicadores do painel.
+
+G. USABILIDADE / ACESSIBILIDADE
+G01 360x800, 390x844, 412x915 e 812x375: sem scroll horizontal involuntário.
+G02 Nome de unidade de 100+ caracteres, descrição longa e equipe dupla legíveis.
+G03 Teclado real aberto em nota e impedimento: campo/erro/confirmar alcançáveis.
+G04 Voltar Android fecha diálogo/detalhe adequadamente e não perde texto sem aviso.
+G05 Refresh 15s durante digitação/leitura: não salta, apaga, fecha nem rouba foco.
+G06 TalkBack: botões nomeados, estados anunciados, ordem de foco coerente.
+G07 Texto ampliado 200%, contraste, foco e alvo de toque; cor não é único sinal.
+G08 Tema sistema claro/escuro: não produzir campos ilegíveis por ajuste automático.
+G09 Barras do Android, recorte/safe area e tela edge-to-edge não cobrem controles.
+G10 Movimento reduzido respeitado; animações não atrasam ação.
+G11 Status de erro perto do ponto de ação; mensagem não desaparece antes de ler.
+G12 Indicadores de envio/sucesso verificam servidor, não só delay de animação.
+
+H. APK FÍSICO — OBRIGATÓRIO PARA DECLARAR HOMOLOGAÇÃO NATIVA
+H01 Instalar APK de teste isolado, conferir versão, assinatura e origem.
+H02 Atualizar sobre a versão anterior com mesma chave e package id; não pedir
+    desinstalação como rotina para instalar atualização institucional.
+H03 Android com GPS preciso/aproximado, permissão negada e "não perguntar".
+H04 Aceitar, minimizar, bloquear tela 5/15/30min; conferir envio e notificação.
+H05 Remover dos apps recentes: observar fabricante; não inferir por teste web.
+H06 Economia de bateria e restrição do fabricante: registrar efeitos.
+H07 Forçar parada e reboot: confirmar limite atual, não prometer retomada que
+    não foi implementada. Separar isso de simplesmente minimizar.
+H08 Wi-Fi/dados móveis/sem sinal/retorno: GPS e sessão coerentes, sem duplicação.
+H09 Mais de 3min sem confirmar autorização: serviço atual para; reabrir testa
+    retomada autorizada. Localização não fica falsamente ao vivo.
+H10 Sessão expira com app minimizado: serviço não mantém acesso indevido.
+H11 Android 13+ notificações permitidas/negadas; não declarar push imediato.
+H12 NoticeJob com tela bloqueada: medir atraso real, registrar modelo/Android.
+H13 Conclusão pelo colega/root com outro app fechado: posição encerrada e envios
+    posteriores recusados; nenhum ponto deve ressurgir por pacote atrasado.
+H14 APK antigo com frontend novo: compatibilidade de todos os métodos da bridge.
+
+I. SERVIDOR, CUSTO E SEGURANÇA
+I01 Testes locais D105, rotas, avatares e autenticação continuam passando.
+I02 Rodar todos os testes relevantes do clone após alterações de contratos.
+I03 Zero escritas em produção durante testes locais.
+I04 Sem request por card/pergunta/tecla no redesenho.
+I05 Contar requisições durante 5min visível/oculto e comparar ao original.
+I06 Medir payload/tempo de render/tarefas longas; teste com rede lenta e erro.
+I07 Não usar número de requests como estimativa automática de linhas D1.
+I08 Autorização fresca e reatribuição/revogação continuam funcionando.
+I09 Nenhum segredo em fonte, screenshot, fixture, pacote ou console.
+I10 Sem service worker/cache público guardando respostas privadas por engano.
+
+COMANDOS ORIGINAIS NO CLONE COMPLETO (NÃO NO RECORTE PARCIAL)
+pnpm install --frozen-lockfile
+pnpm build:desktop
+pnpm test:dispatch
+pnpm test:dispatch:browser
+pnpm test:routes
+pnpm test:routes:browser
+pnpm test:routes:runtime
+node --test tests/technician-avatars.test.mjs
+pnpm test:auth:browser
+
+O teste technical-dispatch-browser escreve evidências em pasta do repositório.
+Não confundir alteração de screenshots sintéticos com modificação do produto.
+Android oficial só se compila no ambiente que tem chave institucional correta.
+
+FORMATO DO ZIP DE DEVOLUÇÃO
+00_LEIA_PRIMEIRO.txt
+01_RESUMO_DAS_MUDANCAS.txt
+02_ARQUIVOS_ALTERADOS_E_BASE.txt
+03_DECISOES_PENDENTES.txt
+04_TESTES_EXECUTADOS_E_LIMITES.txt
+05_INSTRUCOES_INTEGRACAO.txt
+FONTES/ (estrutura original, só fontes editáveis necessárias)
+EVIDENCIAS/ (capturas com dados sintéticos e identificação de viewport)
+MANIFESTO_SHA256.txt
+
+Declarar explicitamente: houve publicação? houve acesso a dados reais? houve
+teste de aparelho físico? qual APK, Android/modelo e teste com tela bloqueada?
+Se não fez, escrever NÃO EXECUTADO. Não converter roteiro em alegação de teste.

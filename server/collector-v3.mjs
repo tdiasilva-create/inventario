@@ -29,16 +29,17 @@ export async function resolveV3Environment(db,i,name,user,history,touch){
  }
  return {id,unit_id:i.unit_id,name,type:'',name_version:1};
 }
-export async function reviewV3(db,i,context){
- const rows=(await db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results,errors={},details={};
+export const v3ReviewEquipmentStatement=(db,i)=>db.prepare('SELECT id,data_json,environment_id,position_label,EXISTS(SELECT 1 FROM agent_equipment_links l WHERE l.equipment_id=inventory_equipment_all.id AND l.ended_at IS NULL) AS agent_linked FROM inventory_equipment_all WHERE unit_id=? AND (inspection_id=? OR id IN (SELECT equipment_id FROM equipment_verifications WHERE inspection_id=?))').bind(i.unit_id,i.id,i.id);
+export async function reviewV3(db,i,context,snapshot={}){
+ const rows=snapshot.rows??(await db.prepare('SELECT * FROM inspection_sections WHERE inspection_id=?').bind(i.id).all()).results,errors={},details={};
  // 10/11/2026 (P0): além de errors/details (compatibilidade), devolve `pending` — uma ação concreta por pendência,
  // com assunto, entidade, rótulo, campos faltantes e destino. O diagnóstico não altera nada e não conclui assunto algum.
  const pending=[],order=topics.map(([g])=>g),sectionName=g=>topics.find(t=>t[0]===g)?.[1]||g;
  for(const [g]of topics){const row=rows.find(r=>r.section===g);const fields=validateV3Section(g,parse(row?.data_json),context);
   if(Object.keys(fields).length){details[g]=fields;errors[g]=Object.values(fields).join(' ');pending.push({code:'RESPOSTA_PENDENTE',section:g,kind:'section',id:null,label:sectionName(g),fields,message:'Faltam respostas: '+Object.values(fields).join(' '),action:'open-section',blocking:true});}
   if(!row||row.state!=='Concluído'){if(!errors[g])errors[g]='Marque este assunto como concluído.';pending.push({code:'ASSUNTO_NAO_CONCLUIDO',section:g,kind:'section',id:null,label:sectionName(g),message:row?.state==='Em andamento'?'Assunto em andamento: falta marcá-lo como concluído.':'Assunto ainda não concluído.',action:'complete-section',blocking:true});}}
- const equipment=(await db.prepare('SELECT id,data_json,environment_id,position_label,EXISTS(SELECT 1 FROM agent_equipment_links l WHERE l.equipment_id=inventory_equipment_all.id AND l.ended_at IS NULL) AS agent_linked FROM inventory_equipment_all WHERE unit_id=? AND (inspection_id=? OR id IN (SELECT equipment_id FROM equipment_verifications WHERE inspection_id=?))').bind(i.unit_id,i.id,i.id).all()).results;
- const photos=await v2Evidence(db,i);
+ const equipment=snapshot.equipment??(await v3ReviewEquipmentStatement(db,i).all()).results;
+ const photos=snapshot.photos??await v2Evidence(db,i);
  if(!photos.some(p=>p.target_kind==='facade')){errors.facade='Envie a fotografia inicial da fachada.';pending.push({code:'FOTO_OBRIGATORIA_PENDENTE',section:'facade',kind:'facade',id:i.unit_id,label:'Fachada da unidade',message:'Envie a fotografia inicial da fachada.',action:'open-facade',blocking:true});}
  const roomName=id=>context.environments?.find(e=>e.id===id)?.name||'';
  const fieldLabel=key=>v3EquipmentFields.find(f=>f.key===key)?.label||key;

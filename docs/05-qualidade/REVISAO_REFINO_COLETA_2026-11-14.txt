@@ -1,0 +1,232 @@
+SEMED — REVISÃO INDEPENDENTE DO REFINAMENTO DA COLETA
+14/11/2026 · resultado: APROVAÇÃO TÉCNICA AINDA NÃO CONCEDIDA
+
+1. ESCOPO E INTEGRIDADE
+
+Recebidos:
+- entrega-refino-coleta-2026-11-14.md
+- COLETA_REFINO_CLAUDE_2026-11-14.zip
+
+SHA-256 do ZIP recebido:
+ee7c48817b2b36116f3b03be7ced5bb2c05f9b94ac61a4389efae60e8e53d80c
+
+Base declarada: 09442d0d24de214694c0236018837335b3b83068.
+Conferidos 119 hashes do MANIFESTO.json, oito hashes ANTES contra a cópia
+de trabalho original e oito hashes DEPOIS. Um script novo acompanha a entrega.
+O arquivo extra MANIFESTO.json completa os 120 arquivos do ZIP.
+O git archive usa LF em alguns arquivos; a comparação ANTES foi feita com
+os bytes CRLF da cópia de trabalho que originou o pacote enviado ao Claude.
+
+Revisão em cópia isolada, sem substituir web/, servidor ou Android do projeto.
+Nenhum acesso ou escrita em D1/Drive oficial; nenhum deploy, APK ou migração.
+Somente documentação da revisão e decisões atualizada no repositório principal.
+
+Lidos os sete documentos internos da entrega, manifesto, oito arquivos
+alterados, script novo e contratos D089/D114/D115 aplicáveis. Comparados
+fluxos de gravação, trava, foto, QR, erro, sessão e navegação com servidor e
+fontes atuais. Capturas atuais foram abertas visualmente.
+
+2. ESCOLHAS CONFIRMADAS PELO RESPONSÁVEL NESTA REVISÃO (D-116)
+
+- MANTER os blocos de leitura da ficha, sem alterar perguntas/ordem/regras.
+- PERMITIR responder outros assuntos da mesma unidade durante envio de foto.
+  A foto deve permanecer vinculada ao seu registro; troca de unidade e
+  conclusão devem aguardar o processamento/envio, com falha explícita.
+- MOSTRAR APENAS o estado de cada assunto. RETIRAR o texto “N de 8 assuntos
+  concluídos” da proposta. Não substituir por porcentagem geral.
+
+Essas escolhas não aprovam os defeitos abaixo, publicação, novas perguntas,
+autosave integral de equipamento, busca ampliada ou offline durável.
+
+3. O QUE MELHOROU E FOI CONFERIDO
+
+- Cabeçalho do app menor; área acima do conteúdo caiu de 183 para 144 px
+  na referência 390 × 844 (39 px recuperados; medição local).
+- Fichas em blocos e lista com ambiente/posição e vínculo explícitos.
+- Revisão com campos pendentes identificados e salto ao campo exato.
+- Mensagens por estado da ficha/visita e ações de conflito mais claras.
+- Renovação de trava vencida antes de gravar e tratamento do caso simples
+  de resposta perdida reproduzidos com sucesso.
+- QR vencido retorna mensagem específica; consulta de prévia não é feita
+  nesse caso na proposta.
+- Cenário normal de salvar ficha: uma chamada equipment-save; não houve
+  consulta por tecla ou novo polling na coleta. Não é medição diária do D1.
+
+Perguntas/schema, servidor, migrações, protocolo QR e fontes Android não
+foram alterados no pacote. Os testes existentes passaram, mas não cobriam
+todos os cenários de concorrência introduzidos pelo novo código cliente.
+
+4. R1 — PRIORIDADE ALTA: CONFIRMAÇÃO DE EDIÇÃO QUE NÃO FOI GRAVADA
+
+Arquivo recebido: web/collector-v3.js, linhas 390–396, em reconcileSave;
+consumo do resultado nas linhas 420–429.
+
+Causa:
+O cliente considera a operação confirmada quando a versão remota é a versão
+enviada + 1 e updated_by corresponde ao usuário atual. Isso identifica uma
+gravação da conta, não a operação nem o conteúdo que esta aba enviou.
+
+Reprodução independente com Worker real e SQLite em memória:
+1. Abrir uma ficha existente e editar a posição para MINHA EDICAO · MESA C.
+2. Interromper essa requisição antes de chegar ao Worker.
+3. Outra sessão da mesma conta obtém a trava e grava OUTRA ABA · MESA B,
+   avançando uma versão. D089 permite ao mesmo usuário renovar sua trava.
+4. A primeira aba reconcilia após a falha da conexão.
+
+Observado:
+- Tela: “Equipamento recebido · confirmado após a falha de rede”.
+- Lista local: MINHA EDICAO · MESA C.
+- Banco: OUTRA ABA · MESA B, versão 2.
+- A primeira edição NÃO foi gravada, mas a tela a tratou como recebida.
+
+Correção necessária:
+Não declarar sucesso apenas por versão/autor. Confirmar a operação exata
+por recibo idempotente ou comparar todos os valores graváveis do payload
+congelado com a representação canônica retornada pelo servidor. A comparação
+não pode ignorar campos editáveis nem usar o texto que o operador digitou
+depois do envio. Se não for possível comprovar, manter resultado incerto ou
+conflito com respostas locais preservadas; não voltar à lista como sucesso.
+
+Aceite:
+- Mesma conta em duas abas/aparelhos com conteúdos diferentes NÃO produz
+  confirmação falsa, sobrescrita silenciosa nem descarte das respostas.
+- Resposta realmente perdida após a gravação continua recuperável.
+- Outro usuário, nova ficha, edição durante envio e falha antes de gravar
+  também têm testes de regressão.
+
+5. R2 — PRIORIDADE ALTA: FOTO PERDE O CONTEXTO DURANTE A PREPARAÇÃO
+
+Arquivo recebido: web/collector-v3.js, linhas 154–166 e 177–181.
+Também revisar barreiras em settleUploads/newItem/openEquipment/units.
+
+Causa:
+preparePhotos captura a chave da foto, mas só escolhe o objeto target após
+aguardar compressão/miniatura, usando screen/item daquele momento. Se o
+operador navegou, startUpload recebe null ou outra ficha. O rascunho mínimo
+da ficha original não é criado. As barreiras verificam uploads, mas não
+cobrem de forma equivalente preparing durante toda a operação.
+
+Reprodução independente:
+1. Preencher ambiente/posição de computador novo, sem Salvar equipamento.
+2. Selecionar foto e atrasar createImageBitmap para simular processamento.
+3. Voltar às categorias enquanto a foto está em preparação.
+4. Liberar o processamento e retomar a ficha.
+
+Observado:
+- Nenhuma chamada equipment-save criou o rascunho antes do upload.
+- photo-upload respondeu 409.
+- Foto mostra “Salve o equipamento ou ocorrência antes de enviar a foto”.
+- Zero fotografias gravadas; prévia preservada com falha.
+
+Correção necessária:
+Capturar desde a seleção o contexto da operação: visita, unidade, tipo/ID do
+alvo e objeto/versão necessários para salvar o rascunho. Não depender da tela
+ou ficha corrente após awaits. Incluir preparação no controle de pendências
+e na coordenação de troca de ficha, troca de unidade e conclusão. Navegar
+entre assuntos deve continuar permitido conforme escolha do responsável.
+
+Aceite:
+- Navegar durante compressão e durante upload mantém alvo original e envio.
+- Trocar/criar outra ficha não grava rascunho na ficha errada.
+- Trocar unidade, concluir, falhar e renovar sessão não deixam trabalho sem
+  identificação ou descartam prévias silenciosamente.
+
+6. R3 — PRIORIDADE MÉDIA: UMA FOTO APARECE DUAS VEZES NA INTERFACE
+
+Arquivo recebido: web/collector-v3.js, linhas 185–191; interação com load.
+
+Causa:
+Após o upload, o cliente usa collection.photos.push sem verificar o ID.
+Enquanto a miniatura aguarda confirmação, outra ação pode reler a visita
+e receber essa mesma foto, que já está ready no servidor.
+
+Reprodução independente:
+1. Enviar foto da fachada; original é recebido no servidor.
+2. Reter apenas a resposta de photo-thumb.
+3. Abrir Ambientes e cadastrar um ambiente, disparando load da visita.
+4. Liberar resposta da miniatura e voltar à fachada.
+
+Observado:
+- Banco: uma foto ready.
+- Tela: “2 recebida(s)”, duas miniaturas e controles para o MESMO photo ID.
+- Não é duplicação de arquivos no Drive/D1; é duplicação do estado cliente.
+  Esse estado também participa da contagem local do limite de cinco fotos.
+
+Correção necessária:
+Atualização idempotente por ID da foto e contexto da visita, preservando
+metadados que já vieram do servidor; não acrescentar cegamente à lista.
+Evitar que uma leitura atrasada apague uma confirmação mais recente.
+
+Aceite:
+Atualizar/cadastrar ambiente durante envio, repetir ACK e navegar não
+duplicam apresentação/contagem; remoção e limite de fotos permanecem corretos.
+
+7. AJUSTES DE DOCUMENTAÇÃO E APRESENTAÇÃO
+
+- Aplicar a escolha posterior: retirar a contagem N de 8 (linha 213).
+- DECISOES_PENDENTES diz “NADA implementado”, mas DP06/09/10/11/12 já têm
+  implementações visuais ou de interação. Separar propostas implementadas
+  de recursos ainda ausentes e refletir D116.
+- O pacote diz que nome da conta aparece na confirmação de saída no celular.
+  mobile-app.css o oculta abaixo de 600 px e o texto de logout atual não inclui
+  esse nome. Corrigir a declaração ou oferecer identificação acessível na
+  conta/saída, sem ampliar desnecessariamente a barra.
+- “Concluir a visita envia ... ao painel” pode sugerir que nada chega antes;
+  manter claro que dados já recebidos podem aparecer como parciais e que
+  visita concluída não classifica a unidade como Coleta completa (D111).
+- Q4 (GPS durante a Coleta) já é regido por D114/D115: preservar indicador e
+  acompanhamento ativo, sem pedir nova decisão nem iniciar GPS pela coleta.
+- Q1 (fachada histórica) e Q2 (trava após recarga): preservar o contrato
+  existente; texto novo não deve criar dispensa/regra adicional.
+- Roteiro físico B3 ainda pede o contador rejeitado nesta revisão; corrigir.
+  O passo D5 diz que Voltar nativo da ficha leva à lista, mas o callback
+  recebido (linha 663) aciona categorias. Não declarar esse passo aprovado
+  sem alinhar roteiro e comportamento, e testar no Android físico.
+- Busca ampliada, autosave integral, conclusão automática, offline durável,
+  exclusão/fusão pelo operador e novas consultas periódicas ficam fora da
+  integração deste refinamento. Não são pré-requisito para corrigir R1–R3.
+
+8. TESTES REPETIDOS INDEPENDENTEMENTE
+
+Windows/Node 24/Edge via Playwright, dados sintéticos em SQLite em memória.
+
+- node --test --test-concurrency=1 tests/*.test.mjs: 301 passaram, zero falhas.
+- build-collector: 56 arquivos; build-desktop: 138 arquivos (sem APK privado).
+- Dez roteiros de navegador passaram:
+  collector-v3-browser; collector-refinement-browser;
+  collector-review-pending-browser; collector-environments-browser;
+  mobile-app-browser; technician-redesign-browser;
+  technician-tracking-browser; collector-identity-browser;
+  environment-rename-browser; photo-thumbnails-browser.
+- Roteiro recebido capture-coleta-refino: 31 capturas, zero erros JS,
+  1000+ fichas paginadas e uma requisição por página no cenário local.
+- Três sondas novas independentes reproduziram R1/R2/R3. Seu sucesso significa
+  confirmação do DEFEITO, não aprovação do produto. Depois de corrigir,
+  inverter os asserts para exigir os resultados seguros.
+
+Não houve teste físico Android/WebView, câmera OEM, teclado real, Voltar
+nativo, GPS/tela bloqueada, Safari/iPhone ou medição do consumo D1 oficial.
+Os dados do técnico e as permissões passaram nas regressões existentes,
+mas isso não substitui homologação de celular.
+
+9. ARQUIVOS DESTA DEVOLUTIVA
+
+Este TXT, tests/reviewer-coleta-refino.cjs, probes/resultado.json,
+três PNGs das reproduções, integridade.json, resultados dos builds e testes.
+O roteiro utiliza o Worker real do projeto somente em fixture local.
+Não contém credenciais ou fotografias oficiais.
+
+Executar a sonda na raiz de uma cópia com o pacote do Claude aplicado:
+  node tests/reviewer-coleta-refino.cjs
+Saída padrão da sonda: ../probes (relativa à cópia de revisão).
+
+10. PRÓXIMA ETAPA
+
+Corrigir R1/R2/R3, aplicar as escolhas D116 e adicionar regressões duráveis.
+Repetir builds e testes nas duas montagens: coletor independente e /app/coleta.
+Revisar o resultado antes de integrar/publicar. O APK 1.0.3 carrega essas telas
+do servidor; novo visual não exige sozinho reinstalação. Qualquer APK futuro
+deve preservar assinatura, permissões e o serviço de acompanhamento D114.
+
+Não houve publicação nesta revisão. Não solicitar senhas, tokens, reset,
+seed ou alterações em dados reais para reproduzir esses defeitos.

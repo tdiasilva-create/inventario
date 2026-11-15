@@ -1,7 +1,8 @@
 import {readFile,readdir,writeFile} from 'node:fs/promises';
 const dir='docs/07-operacao';
 let text=`SEMED · TRANSFERÊNCIA, OPERAÇÃO E MIGRAÇÃO
-Referência: 12/11/2026, estado D-110. Gerado dos guias mantidos em docs/07-operacao/.
+Referência: 15/11/2026, estado até D-122. Gerado dos guias mantidos em docs/07-operacao/.
+Começar pelo guia 13_ESTADO_ATUAL_D122; os guias datados anteriores preservam o histórico.
 Repositório: https://github.com/tdiasilva-create/inventario
 Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
 Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login

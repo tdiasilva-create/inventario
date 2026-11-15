@@ -41,6 +41,8 @@ client_secret*.json
 *.trace
 playwright-report/
 test-results/
+windows/**/bin/
+windows/**/obj/
 /docs/05-qualidade/evidencias/
 /docs/01-projeto/relatos-navegacao-2026-10-28/
 /docs/01-projeto/avaliacao-coleta-ficticia-2026-10-28/

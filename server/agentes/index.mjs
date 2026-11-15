@@ -4,9 +4,11 @@
 import {createApp,DEFAULT_CONFIG} from './nucleo/worker.mjs';
 import {D1Store} from './nucleo/d1-store.mjs';
 import {catalogo} from './catalogo.mjs';
+import {pendingNetworkTest,networkTestMachine} from '../agent-network-tests.mjs';
 export const VERSAO_MODULO='0.1.8-semed.2';
 const AGENT='/api/agent/v1';
 export const MACHINE_ROUTES=new Set([`${AGENT}/enrollment-challenge`,`${AGENT}/enrollments`,`${AGENT}/enrollment-status`,`${AGENT}/enrollment-renew`,`${AGENT}/pairings/confirm-device`,`${AGENT}/heartbeat`,`${AGENT}/inventory`,`${AGENT}/config`,`${AGENT}/rotate-key`]);
+for(const action of ['start','check','result'])MACHINE_ROUTES.add(`${AGENT}/network-tests/${action}`);
 export const HUMAN_POST_ROUTES=new Set([`${AGENT}/pairings/preview`,`${AGENT}/pairings/claim`,'/api/root/agent-install-grants','/api/root/agent-install-grants/revoke','/api/root/agent-revoke','/api/inventory/equipment-location','/api/root/agent-maintenance']);
 export const HUMAN_GET_ROUTES=new Set([`${AGENT}/pairings/catalog`,`${AGENT}/pairings/claim-status`,'/api/inventory/agent-status','/api/inventory/agent-history','/api/inventory/equipment-location-status','/api/root/agent-install-grants','/api/root/agent-devices']);
 // [R2-A] consulta do recibo de um comando humano (claim / localização) pelo request_id do PRÓPRIO usuário: permite ao coletor
@@ -40,7 +42,7 @@ export const moduleUser=user=>user?{id:user.id,name:user.display_name||user.user
 function app(env,user,opts={}){
  const store=new D1Store(env.DB,{catalogo,keepHeartbeats:Math.max(0,Number(env.AGENTES_GUARDAR_HEARTBEATS??20)||0)});
  const auth=async(request,{ApiError})=>{const u=moduleUser(user);if(!u)throw new ApiError(401,'SESSION_REQUIRED','Sessão humana obrigatória');return u;};
- return createApp({store,auth,now:opts.now,config:agentConfig(env)});
+ return createApp({store,auth,now:opts.now,config:agentConfig(env),extensions:{networkPending:(device,now)=>pendingNetworkTest(env,device,now),networkTest:(request,body,context)=>networkTestMachine(env,request,body,context)}});
 }
 /** Rotas de máquina (antes da autenticação de sessão). Devolve null quando a rota não é do módulo. */
 export async function handleAgentMachine(request,url,env,opts){if(!isMachineRoute(url.pathname,request.method))return null;return app(env,null,opts).fetch(request);}

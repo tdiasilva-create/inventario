@@ -1,0 +1,978 @@
+﻿SEMED — PAINEL DESKTOP: ABAS, ITENS E AÇÕES PARA REVISÃO
+Data de referência: 10/11/2026 — America/Fortaleza
+Base: código atual do painel, incluindo D-090; implementação publicada af9c6bf.
+Documento editável para revisão do responsável.
+
+ENDEREÇO DO PAINEL
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+COMO USAR ESTE ARQUIVO
+Cada item tem um código e um espaço [   ]. Preencha com:
+  M = manter; R = remover da tela; A = alterar; T = transferir para outra tela.
+Exemplo: [ T ] PAN-14 ... Destino: Detalhe da unidade.
+Exemplo: [ A ] COM-07 ... Mostrar hostname maior e ocultar o ID.
+Você pode apagar linhas e escrever novos itens. Para evitar dúvida, prefira
+marcar R quando desejar remover e indicar o destino quando mover.
+Ao final de cada seção, registre novos itens, ordem e observações.
+Remover da interface NÃO significa excluir dados do banco.
+As escolhas servirão de base para a próxima implementação.
+
+O QUE ESTA LISTAGEM REPRESENTA
+- Itens e ações do código da versão publicada, não uma nova proposta visual.
+- Visão completa do root, com diferenças de acesso indicadas por tela.
+- Itens condicionais ficam vazios/ocultos se não houver dados ou permissão.
+- Nenhum cadastro, foto, conta ou registro foi alterado para gerar este TXT.
+- Levantamento por arquivos do painel e documentação de publicação; não é
+  nova homologação de cada tela em sessão autenticada no ambiente real.
+- Quantidades são dinâmicas; este documento não fixa números de escolas ou bens.
+
+ÍNDICE
+00 — Elementos presentes em várias telas [GER] — Estrutura comum
+01 — Panorama [PAN] — Menu — Consulta
+02 — Coletas em andamento [COL] — Menu — Consulta
+03 — Mapa da Rede [MAP] — Menu — Consulta
+04 — Unidades [UNI] — Menu — Consulta
+05 — Ambientes [AMB] — Menu — Consulta
+06 — Computadores [COM] — Menu — Consulta
+07 — Log de comunicação [LOG] — Menu — Consulta
+08 — Equipamentos [EQU] — Menu — Consulta
+09 — Ocorrências [OCR] — Menu — Consulta
+10 — Relatórios [REL] — Menu — Consulta
+11 — Central de demandas [DEM] — Menu — Gestão
+12 — Planejamento [PLA] — Menu — Gestão
+13 — Exportar dados [EXP] — Menu — Gestão
+14 — Cadastro (Cadastro de unidades) [CAD] — Menu — Administração
+15 — Usuários [USR] — Menu — Administração
+16 — Operadores × unidades [ATR] — Menu — Administração
+17 — Segurança e auditoria [SEG] — Menu — Administração
+18 — Configurações [CFG] — Menu — Administração
+19 — Detalhe da unidade [DET] — Tela aberta ao selecionar uma unidade
+20 — Busca em toda a rede [BUS] — Tela aberta pelo cabeçalho
+21 — Coletas pendentes [PEN] — Tela aberta por indicadores/atalhos
+22 — Janela de alterações de hardware [HWD] — Janela aberta por sino, mapa ou indicador
+23 — Ficha detalhada do equipamento [FIC] — Consulta embutida; também acessível pela busca/matriz/unidade
+24 — Visualizador de fotografias [FOT] — Janela de fotos; sem aba própria
+25 — Minha conta [CON] — Tela do menu do usuário
+26 — Login do painel [ENT] — Página de entrada; não é aba interna
+
+DIFERENÇAS IMPORTANTES PARA DECIDIR A ORGANIZAÇÃO
+1. Cadastro mestre: dados registrados pelo root sobre a unidade.
+2. Coleta parcial: dados/fotos salvos, mas visita ainda não concluída.
+3. Inventário publicado: dados confirmados após conclusão da visita.
+4. Telemetria: dados e comunicação enviados pelo agente Windows.
+5. Ocorrência da coleta: problema/necessidade do questionário.
+6. Demanda: atendimento administrado pela equipe, com situação/histórico.
+7. Alerta de hardware: alteração técnica detectada, com parecer.
+Os três últimos podem se relacionar, mas não são a mesma lista ou contagem.
+
+==============================================================================
+00 — ELEMENTOS PRESENTES EM VÁRIAS TELAS [GER]
+==============================================================================
+Tipo: Estrutura comum
+Acesso: Root, admin e visualizador; ações variam por perfil
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+Finalidade atual: Navegação, busca e acompanhamento geral.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] GER-01  Menu lateral por ícones, com nomes ao expandir e opção de manter aberto.
+[   ] GER-02  Grupos do menu: Consulta, Gestão e Administração.
+[   ] GER-03  Cabeçalho com nome do sistema e Centro de Inteligência Tecnológica.
+[   ] GER-04  Busca geral de unidades e equipamentos em toda a rede.
+[   ] GER-05  Sino de notificações: alterações de hardware aguardando parecer.
+[   ] GER-06  Identificação do usuário e perfil; Minha conta e Sair.
+[   ] GER-07  Faixa superior: computadores Comunicando, Sem comunicação e Sem agente.
+[   ] GER-08  Faixa superior: Coletas pendentes, Demandas abertas e Hardware aguardando parecer.
+[   ] GER-09  Horário da última consulta de comunicação e aviso de falha.
+[   ] GER-10  Rodapé com nome do sistema e identificação da versão.
+[   ] GER-11  Mensagens de carregamento, ausência de dados, erro e nova tentativa.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+A faixa superior é de toda a rede; não equivale aos filtros locais de cada tela. O operador usa o coletor, não o painel gerencial.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+01 — PANORAMA [PAN]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+Finalidade atual: Visão geral da rede e da unidade selecionada.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] PAN-01  Mapa de Paço do Lumiar, com pontos das unidades e cores por tipo.
+[   ] PAN-02  Controles do mapa: ampliar, reduzir, reenquadrar; Ruas, Satélite, limite municipal, ampliar área e informações cartográficas.
+[   ] PAN-03  Escolas offline acima de Escolas online, sobre o mapa.
+[   ] PAN-04  Círculo/halo animado nas unidades com alterações de hardware; clique abre providências.
+[   ] PAN-05  Matriz Equipamentos por Unidade: computadores, notebooks, tablets, projetores, impressoras, TVs, rede, outros e total; ordenação e consulta por clique.
+[   ] PAN-06  Unidades por categoria: Escolas municipais; Das quais militares; Creches municipais; Núcleos Educa Paço; Núcleos tecnológicos; Unidades administrativas; Obras em andamento.
+[   ] PAN-07  Totais de equipamentos, ambientes mapeados e coletas concluídas, do inventário confirmado.
+[   ] PAN-08  Indicadores separados de coletas pendentes, demandas abertas e hardware aguardando parecer; atalhos para cada consulta.
+[   ] PAN-09  Rede em números: alunos, turmas, vagas disponíveis e servidores; quantas unidades informaram esses dados.
+[   ] PAN-10  Filtros de unidades: nome/INEP/gestor, regional, tipo e situação; Filtros avançados.
+[   ] PAN-11  Unidade selecionada: nome, gestor, última vistoria, situação do inventário, números cadastrais e acesso ao detalhe; Atualizar.
+[   ] PAN-12  Evidência da Última Coleta: fotografia da unidade selecionada, com ampliação.
+[   ] PAN-13  Questionário recebido: respostas da última coleta concluída da unidade selecionada.
+[   ] PAN-14  Galeria da Coleta: miniaturas, ampliação e acesso às demais fotos da unidade selecionada.
+[   ] PAN-15  Computadores e impressoras recebidos: funcionamento parcial, sem funcionar, não testados e total de impressoras das vistorias concluídas.
+[   ] PAN-16  Funcionamento e impressoras da unidade: resumo selecionado, incluindo computadores funcionando e impressoras por marca/funcionamento.
+[   ] PAN-17  Alertas e Insights: ocorrências por prioridade/tipo e acessos a hardware, log de comunicação, demandas e computadores.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Escolas municipais inclui militares; Das quais militares é subconjunto, não parcela para somar novamente. A matriz reflete dados publicados. Funcionamento declarado na visita é diferente de comunicação do agente. As providências são globais; outros blocos dependem da unidade selecionada.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+02 — COLETAS EM ANDAMENTO [COL]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador; ações administrativas somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/coletas-em-andamento
+Finalidade atual: Acompanhar dados já salvos antes de concluir a visita.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] COL-01  Lista de visitas abertas, identificadas como PARCIAL / EM ANDAMENTO.
+[   ] COL-02  Unidade, autor que iniciou, data de início e última atividade no servidor.
+[   ] COL-03  Estado dos assuntos: pendente, em andamento ou concluído.
+[   ] COL-04  Quantidade de fichas trabalhadas, itens físicos, fichas novas e alterações de bens já publicados.
+[   ] COL-05  Ver dados parciais; atualização manual/automática e paginação.
+[   ] COL-06  No detalhe: respostas salvas, ambientes cadastrados e últimas atividades com autor/data.
+[   ] COL-07  Equipamentos salvos: identificação, ambiente/posição, quantidade, conservação/funcionamento, problemas e ficha parcial.
+[   ] COL-08  Indicação de vínculo com agente, alterações parciais e duplicidades sinalizadas.
+[   ] COL-09  Fotografias já recebidas, com paginação e ampliação.
+[   ] COL-10  Dados do agente quando houver vínculo.
+[   ] COL-11  Root: editar nome de computador/impressora e apagar cadastro de equipamento com prévia, motivo e confirmação.
+[   ] COL-12  Quando a visita termina: aviso e atalho ao resultado oficial da unidade.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Só aparecem respostas confirmadas no servidor e fotos enviadas. Digitação ainda não salva não aparece. O painel não conclui a visita pelo operador.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+03 — MAPA DA REDE [MAP]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/mapa
+Finalidade atual: Localizar unidades e acompanhar sua distribuição.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] MAP-01  Mapa ampliado com coordenadas reais cadastradas.
+[   ] MAP-02  Filtros por unidade, regional, tipo e situação.
+[   ] MAP-03  Pontos e legenda por categoria.
+[   ] MAP-04  Cores: municipal roxo #7523C9; militar vermelho #DC2626; creche rosa #DB2777; Educa Paço laranja #EA580C; tecnológico ciano #0891B2; administrativo amarelo #EAB308; obra cinza #64748B.
+[   ] MAP-05  Ruas inicialmente; Satélite opcional; limite municipal ativado por escolha.
+[   ] MAP-06  Zoom, reenquadramento e informações sobre cartografia.
+[   ] MAP-07  Escolas offline e online segundo comunicação recente dos computadores.
+[   ] MAP-08  Sinal circular de hardware; clique abre alteração e providências.
+[   ] MAP-09  Lista lateral de unidades com nome, gestor e resumo cadastral disponível; abertura do detalhe.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+A cor do ponto identifica o tipo; o halo indica hardware. Offline pela métrica significa nenhum computador comunicando, não diagnóstico garantido de falta de internet ou energia. Não há posição inventada para unidade sem coordenadas.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+04 — UNIDADES [UNI]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/unidades
+Finalidade atual: Encontrar uma unidade e abrir suas informações.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] UNI-01  Lista das unidades conforme os filtros.
+[   ] UNI-02  Nome e gestor.
+[   ] UNI-03  Resumo dos números cadastrais disponíveis, como alunos, turmas e servidores.
+[   ] UNI-04  Filtros de nome/INEP/gestor, regional, tipo e situação.
+[   ] UNI-05  Clique na unidade para abrir dados cadastrais e última vistoria confirmada.
+[   ] UNI-06  Mensagem de lista vazia; root recebe atalho para cadastrar.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Consulta e cadastro são telas diferentes. Criar, editar ou excluir unidade fica em Cadastro de unidades.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+05 — AMBIENTES [AMB]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador; renomear somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/ambientes
+Finalidade atual: Consultar espaços internos da unidade.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] AMB-01  Selecionar unidade por nome ou INEP.
+[   ] AMB-02  Resumo da unidade e última vistoria.
+[   ] AMB-03  Ambientes com nome e tipo.
+[   ] AMB-04  Clique no ambiente para consultar seus equipamentos publicados.
+[   ] AMB-05  Editar nome do ambiente, pelo root, preservando equipamentos e fotos vinculadas.
+[   ] AMB-06  Galeria de fotos da unidade e opção de ampliar/ver todas.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Root vê o cadastro atual de ambientes, inclusive de coleta em andamento; a consulta de equipamentos usa a localização publicada. A galeria é da unidade, não necessariamente filtrada pelo ambiente clicado.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+06 — COMPUTADORES [COM]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Consulta root/admin/visualizador; organização e demandas root/admin; editar/apagar root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/computadores
+Finalidade atual: Acompanhar computadores por unidade e laboratório.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] COM-01  Indicadores: cadastrados, comunicando, sem comunicação recente, sem agente e outros estados.
+[   ] COM-02  Clique no estado para listar toda a rede, agrupada por unidade.
+[   ] COM-03  Lista lateral de todas as unidades, busca, quantidade de computadores, quantos comunicam e demandas abertas.
+[   ] COM-04  Filtro: todas, com computadores, sem computadores confirmado e ausência não confirmada.
+[   ] COM-05  Selecionar ambiente/laboratório e filtrar vínculo/cadastro.
+[   ] COM-06  Máquinas agrupadas por ambiente; laboratórios cadastrados sem máquinas também aparecem.
+[   ] COM-07  Ícone por máquina, nome/posição, hostname, cor de comunicação, etiqueta do vínculo, PARCIAL e demandas.
+[   ] COM-08  Ao passar o mouse: nome, hostname, unidade, ambiente, posição, vínculo e comunicação.
+[   ] COM-09  Ao clicar: janela com unidade, ambiente, posição, hostname, último contato, ID e demandas.
+[   ] COM-10  Na janela: registrar/ver demandas; root pode editar nome e apagar cadastro.
+[   ] COM-11  Organizar ambientes: laboratório, outro ou não classificado; confirmar unidade sem computadores quando não há computador cadastrado.
+[   ] COM-12  Atualizar, paginar e abrir Central de demandas; atualização automática.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Sem computadores confirmado difere de inventário não informado. Sem agente não significa necessariamente manual: também há vínculo pendente, encerrado ou não informado. Ficha e quantidade física de um lote são conceitos diferentes.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+07 — LOG DE COMUNICAÇÃO [LOG]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/log-comunicacao
+Finalidade atual: Consultar perdas prolongadas de comunicação.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] LOG-01  Perdas de comunicação superiores a 48 horas.
+[   ] LOG-02  Busca e filtro de abertos, encerrados ou todos.
+[   ] LOG-03  Unidade, ambiente e indicação de localização na detecção ou atual em registro antigo.
+[   ] LOG-04  Nome/hostname, posição e ID do computador; PARCIAL quando aplicável.
+[   ] LOG-05  Último contato e momento da detecção.
+[   ] LOG-06  Duração do período sem comunicação.
+[   ] LOG-07  Situação aberta/encerrada e data/motivo do encerramento.
+[   ] LOG-08  Links para unidade e computadores.
+[   ] LOG-09  Última execução do monitor, aviso de atraso, atualizar e paginar.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Perdas não entram no sino. O prazo de 48 horas para incidente é diferente do prazo usado para mostrar comunicação recente na aba Computadores.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+08 — EQUIPAMENTOS [EQU]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador; nomes/exclusão somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+Finalidade atual: Consultar inventário publicado de todos os tipos de equipamento.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] EQU-01  Matriz ampliada por unidade, categorias e total.
+[   ] EQU-02  Cores e legenda de quantidade, sem inferir risco.
+[   ] EQU-03  Ordenar por nome ou quantidade.
+[   ] EQU-04  Filtros de unidades por nome/INEP/gestor, regional, tipo e situação.
+[   ] EQU-05  Exportar matriz.
+[   ] EQU-06  Clique no nome abre equipamentos da unidade; clique na quantidade restringe a categoria.
+[   ] EQU-07  Consulta embutida: busca, categoria, vínculo/cadastro e com/sem foto.
+[   ] EQU-08  Lista: imagem, tipo, quantidade/lote, ID, ambiente/posição, funcionamento e vínculo.
+[   ] EQU-09  AnyDesk/RustDesk informados nos computadores, com Copiar.
+[   ] EQU-10  Ficha, fotos, dados técnicos e histórico de localização/vínculo disponíveis.
+[   ] EQU-11  Root: editar nome de computador/impressora e apagar cadastro com confirmação.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+A matriz usa fichas publicadas. Busca geral e Computadores podem mostrar PARCIAL ainda ausente da matriz. Fotos e agente são consultados pelo mesmo ID da ficha.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+09 — OCORRÊNCIAS [OCR]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/ocorrencias
+Finalidade atual: Ler problemas e necessidades das coletas concluídas.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] OCR-01  Ocorrências e necessidades recebidas.
+[   ] OCR-02  Filtro por unidade, quantidade, atualizar e paginar.
+[   ] OCR-03  Tipo/origem: infraestrutura, problema de equipamento, necessidade ou demanda geral da coleta.
+[   ] OCR-04  Unidade, descrição, local, prioridade e quantidade quando aplicável.
+[   ] OCR-05  Marca e funcionamento quando presentes.
+[   ] OCR-06  Fotos de evidência com ampliação.
+[   ] OCR-07  Ver unidade.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Não é Central de demandas. Registros publicados do questionário não são automaticamente atendimentos abertos. Esta lista não oferece, por si, o fluxo de atendimento/conclusão da Central.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+10 — RELATÓRIOS [REL]
+==============================================================================
+Tipo: Menu — Consulta
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/relatorios
+Finalidade atual: Consultar/exportar o relatório operacional de computadores.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] REL-01  Computadores por unidade e ambiente.
+[   ] REL-02  Busca por nome, hostname, posição ou ID.
+[   ] REL-03  Filtros de unidade, ambiente, comunicação, vínculo/cadastro, publicado/parcial e ativa/inativa.
+[   ] REL-04  Aplicar, limpar filtros e atualizar.
+[   ] REL-05  Resumos: fichas no relatório, comunicando, sem comunicação recente, sem vínculo ativo e outros estados.
+[   ] REL-06  Tabela: unidade/ambiente/posição, nome/hostname/ID, vínculo, comunicação, último contato e publicado/PARCIAL.
+[   ] REL-07  Identificação de lote e quantidade registrada.
+[   ] REL-08  Exportar todos os resultados filtrados em CSV/Excel.
+[   ] REL-09  Preparar impressão e imprimir/salvar PDF pelo navegador.
+[   ] REL-10  Paginação, horário da consulta e quantidade de fichas parciais.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Não é biblioteca geral de relatórios pedagógicos/financeiros ou gráficos históricos. Uma linha representa uma ficha; lote não individualiza automaticamente suas máquinas.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+11 — CENTRAL DE DEMANDAS [DEM]
+==============================================================================
+Tipo: Menu — Gestão
+Acesso: Root/admin registram e atendem; visualizador consulta
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/demandas
+Finalidade atual: Organizar pedidos, visitas, manutenção e insumos.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] DEM-01  Contagens: Aberta, Em atendimento, Aguardando material, Visita agendada e Concluída.
+[   ] DEM-02  Filtros por situação, unidade e texto; atualizar e paginar.
+[   ] DEM-03  Número da demanda, unidade, equipamento/local vinculado, descrição e situação.
+[   ] DEM-04  Tipo: Manutenção, Reposição de insumo, Visita técnica ou Outro.
+[   ] DEM-05  Origem: Telefone, Presencial, Painel ou Outro.
+[   ] DEM-06  Solicitante e responsável pelo atendimento, se informados.
+[   ] DEM-07  Data de visita e última atualização.
+[   ] DEM-08  Registrar demanda e Atender / histórico.
+[   ] DEM-09  Cadastro: unidade obrigatória; equipamento opcional com busca de computador, impressora ou outro item.
+[   ] DEM-10  O que a unidade precisa?, situação e registro do atendimento/solução.
+[   ] DEM-11  Histórico de alterações, autores, datas e notas.
+[   ] DEM-12  Conclusão com descrição do que foi realizado; recarregar se houver conflito de edição.
+[   ] DEM-13  Ver computadores da unidade.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Também atende unidade sem computadores. Voltar a comunicar não conclui demanda. Toner e teclado/mouse são exemplos de pedidos, não novas categorias automáticas.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+12 — PLANEJAMENTO [PLA]
+==============================================================================
+Tipo: Menu — Gestão
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/planejamento
+Finalidade atual: Reunir providências por unidade.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] PLA-01  Fila de trabalho por unidade, sem prioridade automática.
+[   ] PLA-02  Busca por unidade/INEP.
+[   ] PLA-03  Filtro: coleta pendente, demanda aberta, hardware aguardando parecer ou todas.
+[   ] PLA-04  Indicadores separados das três providências.
+[   ] PLA-05  Tabela: unidade, estado da coleta, demandas abertas e hardware aguardando parecer.
+[   ] PLA-06  Atalhos para unidade, coleta parcial, demandas e janela de hardware.
+[   ] PLA-07  Demandas preservadas de unidades inativas/removidas.
+[   ] PLA-08  Resumo Coletas em andamento, com quantidade/prévia e acesso ao acompanhamento.
+[   ] PLA-09  Atualizar e paginar; atualização automática.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Não é calendário completo, distribuição de técnicos, rotas ou prioridade calculada. A data de visita de uma demanda não equivale a uma agenda completa.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+13 — EXPORTAR DADOS [EXP]
+==============================================================================
+Tipo: Menu — Gestão
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/exportar
+Finalidade atual: Baixar conjuntos de dados.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] EXP-01  Conjunto: unidades cadastradas.
+[   ] EXP-02  Conjunto: matriz de equipamentos por unidade.
+[   ] EXP-03  Conjunto: fichas publicadas de equipamentos.
+[   ] EXP-04  Conjunto: ocorrências recebidas.
+[   ] EXP-05  Formatos CSV e XLSX.
+[   ] EXP-06  Exportar, progresso e erros de preparação.
+[   ] EXP-07  Respeito aos filtros de unidades do painel.
+[   ] EXP-08  Fichas e ocorrências de todas as páginas do conjunto selecionado.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Fichas/ocorrências usam inventário publicado. Relatórios pode incluir PARCIAL explicitamente. Exportação não é backup completo nem download de todas as fotos.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+14 — CADASTRO (CADASTRO DE UNIDADES) [CAD]
+==============================================================================
+Tipo: Menu — Administração
+Acesso: Somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/cadastro-unidades
+Finalidade atual: Criar, editar, importar, inativar e excluir unidades oficiais.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] CAD-01  Campo: Nome da unidade.
+[   ] CAD-02  Campo: INEP.
+[   ] CAD-03  Campo: Tipo de unidade.
+[   ] CAD-04  Campo: Polo/Regional.
+[   ] CAD-05  Campo: Bairro.
+[   ] CAD-06  Campo: Endereço.
+[   ] CAD-07  Campo: Nome do gestor.
+[   ] CAD-08  Campo: Telefone.
+[   ] CAD-09  Campo: E-mail.
+[   ] CAD-10  Campo: Latitude.
+[   ] CAD-11  Campo: Longitude.
+[   ] CAD-12  Campo: Situação.
+[   ] CAD-13  Campo: Alunos (total).
+[   ] CAD-14  Campo: Alunos creche.
+[   ] CAD-15  Campo: Alunos pré-escola.
+[   ] CAD-16  Campo: Alunos anos iniciais.
+[   ] CAD-17  Campo: Alunos anos finais.
+[   ] CAD-18  Campo: Alunos EJA.
+[   ] CAD-19  Campo: Turmas.
+[   ] CAD-20  Campo: Vagas disponíveis.
+[   ] CAD-21  Campo: Capacidade total.
+[   ] CAD-22  Campo: Servidores lotados.
+[   ] CAD-23  Campo: Professores.
+[   ] CAD-24  Campo: Código do prédio.
+[   ] CAD-25  Campo: Observações.
+[   ] CAD-26  Campo: Fonte dos números.
+[   ] CAD-27  Campo: Data de referência.
+[   ] CAD-28  Campo escolar opcional / Identificação e funcionamento escolar: Nome oficial da escola.
+[   ] CAD-29  Campo escolar opcional / Identificação e funcionamento escolar: Nome do secretário escolar.
+[   ] CAD-30  Campo escolar opcional / Identificação e funcionamento escolar: Zona da escola.
+[   ] CAD-31  Campo escolar opcional / Identificação e funcionamento escolar: Turnos de funcionamento.
+[   ] CAD-32  Campo escolar opcional / Identificação e funcionamento escolar: Atendimento em tempo integral.
+[   ] CAD-33  Campo escolar opcional / Identificação e funcionamento escolar: Prédio compartilhado.
+[   ] CAD-34  Campo escolar opcional / Programas, estrutura e segurança: Situação do PDDE.
+[   ] CAD-35  Campo escolar opcional / Programas, estrutura e segurança: Possui pendências no Censo Escolar.
+[   ] CAD-36  Campo escolar opcional / Programas, estrutura e segurança: Possui quadra poliesportiva.
+[   ] CAD-37  Campo escolar opcional / Programas, estrutura e segurança: Possui videomonitoramento.
+[   ] CAD-38  Campo escolar opcional / Programas, estrutura e segurança: Salas de aula (total).
+[   ] CAD-39  Campo escolar opcional / Programas, estrutura e segurança: Salas de aula em uso.
+[   ] CAD-40  Campo escolar opcional / Detalhamento de matrículas e espera: Alunos EJA — anos iniciais.
+[   ] CAD-41  Campo escolar opcional / Detalhamento de matrículas e espera: Alunos EJA — anos finais.
+[   ] CAD-42  Campo escolar opcional / Detalhamento de matrículas e espera: Fila de espera — creche.
+[   ] CAD-43  Campo escolar opcional / Detalhamento de matrículas e espera: Fila de espera — pré-escola.
+[   ] CAD-44  Campo escolar opcional / Detalhamento de matrículas e espera: Fila de espera — ensino fundamental.
+[   ] CAD-45  Campo escolar opcional / Composição da equipe escolar: Servidores — gestão e coordenação.
+[   ] CAD-46  Campo escolar opcional / Composição da equipe escolar: Servidores — apoio pedagógico.
+[   ] CAD-47  Campo escolar opcional / Composição da equipe escolar: Servidores — administrativo.
+[   ] CAD-48  Campo escolar opcional / Composição da equipe escolar: Servidores — alimentação.
+[   ] CAD-49  Campo escolar opcional / Composição da equipe escolar: Servidores — limpeza e manutenção.
+[   ] CAD-50  Campo escolar opcional / Composição da equipe escolar: Servidores — vigilância / vigilantes.
+[   ] CAD-51  Campo escolar opcional / Composição da equipe escolar: Servidores — Educa Paço.
+[   ] CAD-52  Campo escolar opcional / Composição da equipe escolar: Servidores — outras funções.
+[   ] CAD-53  Campo escolar opcional / Composição da equipe escolar: Servidores efetivos.
+[   ] CAD-54  Campo escolar opcional / Composição da equipe escolar: Servidores contratados.
+[   ] CAD-55  Campo escolar opcional / Composição da equipe escolar: Servidores comissionados.
+[   ] CAD-56  Prévia do mapa; clicar para preencher latitude/longitude.
+[   ] CAD-57  Salvar cadastro e Limpar formulário.
+[   ] CAD-58  Lista com nome, INEP, tipo, gestor, polo e ações.
+[   ] CAD-59  Busca por nome/gestor/INEP, filtros tipo/polo, ordem por nome ou INEP e paginação.
+[   ] CAD-60  Editar, ativar/inativar e excluir unidade conforme escopo.
+[   ] CAD-61  Excluir: prévia de vínculos afetados, confirmação do nome e motivo; diferente de apagar só uma ficha.
+[   ] CAD-62  Importar CSV/XLSX: baixar modelo, escolher arquivo, validar/visualizar e confirmar.
+[   ] CAD-63  Prévia por linha com erros/avisos; abrir a prévia não grava as linhas.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Os 28 campos novos ficam em quatro blocos opcionais recolhíveis. CONTRATO ficou de fora. Tipos escolares exibem esses blocos; outros tipos conservam os campos comuns. Modelo atual: 55 colunas, aceitando antigos de 12/27. INEP obrigatório para tipos escolares atuais, opcional para núcleos/administrativos/obras. Nome oficial complementa o nome da unidade. Vazio não é zero/Não. Não há importação automática da planilha Google.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+15 — USUÁRIOS [USR]
+==============================================================================
+Tipo: Menu — Administração
+Acesso: Root; admin com ações limitadas pelo servidor
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/usuarios
+Finalidade atual: Administrar contas de acesso.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] USR-01  Criar: nome da pessoa, usuário e perfil (root).
+[   ] USR-02  Perfis root, admin, operador e visualizador.
+[   ] USR-03  Senha provisória: copiar/ocultar e ocultação automática.
+[   ] USR-04  Lista: nome, usuário, perfil, situação, último acesso e ações.
+[   ] USR-05  Situação ativo, desativado ou senha pendente.
+[   ] USR-06  Root altera perfil, encerrando sessões afetadas.
+[   ] USR-07  Redefinir senha, revogar sessões, ativar/desativar nos limites do perfil.
+[   ] USR-08  Confirmação das ações administrativas.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Não incluímos senhas neste documento. Criar usuário é exclusivo do root. Esta não é a lista de contas locais dos computadores monitorados.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+16 — OPERADORES × UNIDADES [ATR]
+==============================================================================
+Tipo: Menu — Administração
+Acesso: Somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/operadores-unidades
+Finalidade atual: Guardar referências de organização.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] ATR-01  Selecionar operador ativo.
+[   ] ATR-02  Lista de unidades ativas com caixas de seleção.
+[   ] ATR-03  Salvar atribuições.
+[   ] ATR-04  Aviso de que atribuições não dão exclusividade nem bloqueiam outros operadores.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+O código atual mantém esta aba no menu root; sua utilidade pode ser revista. A regra permite qualquer operador autenticado em unidade ativa elegível, sem propriedade permanente.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+17 — SEGURANÇA E AUDITORIA [SEG]
+==============================================================================
+Tipo: Menu — Administração
+Acesso: Somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/seguranca
+Finalidade atual: Ajustar prazos de acesso e consultar ações.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] SEG-01  Duração das novas sessões em minutos.
+[   ] SEG-02  Validade das novas senhas provisórias em horas.
+[   ] SEG-03  Salvar prazos; aviso de que valem para novas emissões.
+[   ] SEG-04  Últimas 100 ações: data, responsável e ação.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+O código atual mantém esta aba no menu root. Não reúne todo o histórico de equipamentos, demandas e vínculos, que também possuem consultas próprias.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+18 — CONFIGURAÇÕES [CFG]
+==============================================================================
+Tipo: Menu — Administração
+Acesso: Root/admin; integrações e manutenção detalhadas somente root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/configuracoes
+Finalidade atual: Consultar sistema e administrar integrações.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] CFG-01  Nome e versão do sistema.
+[   ] CFG-02  Informações técnicas do sistema (root).
+[   ] CFG-03  Fotografias: provedor, conexão, conta institucional e pasta privada.
+[   ] CFG-04  Datas de autorização/renovação/teste, resultado/erro, fotos e exclusões pendentes.
+[   ] CFG-05  Indicação de recebimento de fotos habilitado/desabilitado.
+[   ] CFG-06  Drive: conectar/reautorizar, testar envio, desconectar, atualizar, abrir pasta, conforme estado.
+[   ] CFG-07  Últimos eventos da integração.
+[   ] CFG-08  Miniaturas: gerar pendentes, continuar lotes, progresso/falhas, preservando originais.
+[   ] CFG-09  Agentes Windows: explicação do cadastro automático e vínculo via QR no coletor.
+[   ] CFG-10  Agentes e vínculos: filtros unidade/situação/texto; hostname, ID/versão, unidade/ambiente/posição, ficha, estado e último contato.
+[   ] CFG-11  Atualizar, filtrar, paginar, consultar Dados e revogar agente com motivo/confirmar.
+[   ] CFG-12  Manutenção e retenção: explicação e Executar manutenção agora.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+O modo atual é cadastro automático sem autorização de lote. Há formulário alternativo no código para outro modo, não uma exigência atual. Não existe aba Fotografias independente.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+19 — DETALHE DA UNIDADE [DET]
+==============================================================================
+Tipo: Tela aberta ao selecionar uma unidade
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/unidade?id=ID_DA_UNIDADE
+Finalidade atual: Concentrar informações de uma unidade.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] DET-01  Nome, polo/regional, ID e fachada recebida.
+[   ] DET-02  Voltar ao Panorama e Ver no mapa.
+[   ] DET-03  Gestor, última vistoria e resumo do inventário.
+[   ] DET-04  Totais de equipamentos por categoria.
+[   ] DET-05  Dados/números do cadastro mestre, campos escolares preenchidos, fonte e data de referência.
+[   ] DET-06  Galeria da coleta e ampliação.
+[   ] DET-07  Ambientes individualizados.
+[   ] DET-08  Questionário da última vistoria confirmada.
+[   ] DET-09  Funcionamento de computadores e impressoras; impressoras por marca/funcionamento.
+[   ] DET-10  Consultar equipamentos recebidos e abrir ficha.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Não é aba principal própria. Cadastro, inventário concluído e comunicação têm fontes e datas diferentes.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+20 — BUSCA EM TODA A REDE [BUS]
+==============================================================================
+Tipo: Tela aberta pelo cabeçalho
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/busca
+Finalidade atual: Encontrar unidades e equipamentos em toda a rede.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] BUS-01  Termo e quantidade de resultados.
+[   ] BUS-02  Resultados de unidades separados dos equipamentos.
+[   ] BUS-03  Unidade: nome, tipo, INEP, gestor e Abrir unidade.
+[   ] BUS-04  Equipamento: nome/hostname/posição, categoria, marca/modelo, unidade, ambiente, ID e vínculo.
+[   ] BUS-05  Etiquetas Publicado ou PARCIAL.
+[   ] BUS-06  AnyDesk/RustDesk quando informados.
+[   ] BUS-07  Ver ficha e fotos; voltar aos resultados.
+[   ] BUS-08  Paginação independente, erro/nova tentativa.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Inclui dados atuais já salvos; não transforma rascunho em inventário concluído. Mínimo de dois caracteres.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+21 — COLETAS PENDENTES [PEN]
+==============================================================================
+Tipo: Tela aberta por indicadores/atalhos
+Acesso: Root, admin e visualizador
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/coletas-pendentes
+Finalidade atual: Encontrar unidades que precisam de conclusão ou têm revisita aberta.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] PEN-01  Total de unidades pendentes; cada unidade conta uma vez.
+[   ] PEN-02  Busca unidade/INEP e filtro: não iniciada, em andamento ou visita anterior preservada.
+[   ] PEN-03  Tabela: unidade, tipo, INEP e situação.
+[   ] PEN-04  Ver unidade ou Ver coleta parcial.
+[   ] PEN-05  Atualizar, paginar e horário da consulta.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Obras e unidades fora do escopo não entram nesta lista. Coleta pendente pode ser visita ainda nem iniciada, não apenas pergunta faltando.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+22 — JANELA DE ALTERAÇÕES DE HARDWARE [HWD]
+==============================================================================
+Tipo: Janela aberta por sino, mapa ou indicador
+Acesso: Root/admin decidem; visualizador consulta
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+Finalidade atual: Mostrar o que mudou e registrar providências.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] HWD-01  Filtros: aguardando parecer, pendentes e demandas abertas ou histórico completo.
+[   ] HWD-02  Unidade, ambiente, nome/hostname e posição.
+[   ] HWD-03  Data observada, ID da ficha/alerta e momento de detecção.
+[   ] HWD-04  Componente modificado e comparativo Antes/Depois.
+[   ] HWD-05  Localização no momento da detecção e PARCIAL quando aplicável.
+[   ] HWD-06  Observação opcional; Aceitar alteração ou Enviar à Central de demandas.
+[   ] HWD-07  Decisão, responsável, data e observação registrada.
+[   ] HWD-08  Demanda vinculada e situação, com atalho.
+[   ] HWD-09  Atualizar, paginar, estado do monitor e Fechar.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Sino = hardware aguardando parecer, não perda de comunicação. Aceitar preserva histórico. Encaminhar abre atendimento vinculado. O círculo no mapa muda com parecer/atendimento.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+23 — FICHA DETALHADA DO EQUIPAMENTO [FIC]
+==============================================================================
+Tipo: Consulta embutida; também acessível pela busca/matriz/unidade
+Acesso: Root, admin e visualizador; ações administrativas root
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/equipamentos
+Finalidade atual: Consultar cadastro, evidências e agente de um item.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] FIC-01  Nome no painel, categoria, ID, ambiente e posição.
+[   ] FIC-02  Marca, modelo, série, patrimônio e demais campos preenchidos/históricos disponíveis.
+[   ] FIC-03  Quantidade/lote, conservação, funcionamento e problemas/ações.
+[   ] FIC-04  Vínculo: agente vinculado, manual, aguardando vínculo, encerrado ou não informado.
+[   ] FIC-05  Fotos do equipamento, quantidade e ampliação.
+[   ] FIC-06  AnyDesk/RustDesk com Copiar.
+[   ] FIC-07  Comunicação, último contato, versão e identificação do vínculo.
+[   ] FIC-08  Resumo técnico: processador, memória, discos e sistema operacional.
+[   ] FIC-09  Seções técnicas recebidas: sistema/placa-mãe/BIOS, CPU, memória, armazenamento, vídeo, rede, sistema operacional e contas locais; qualidade/data da leitura.
+[   ] FIC-10  Histórico de localização/vínculo e indicação de localização parcial.
+[   ] FIC-11  Root: editar nome de computador/impressora; apagar cadastro com prévia, motivo e confirmação.
+[   ] FIC-12  Voltar, fechar e tentar novamente.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Nome editado no painel não altera hostname do Windows. Apagar ficha retira das contagens ativas preservando arquivo/histórico/fotos conforme regra atual; não equivale a excluir unidade ou revogar instalação. Dados técnicos dependem do envio pelo agente.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+24 — VISUALIZADOR DE FOTOGRAFIAS [FOT]
+==============================================================================
+Tipo: Janela de fotos; sem aba própria
+Acesso: Perfis autorizados ao contexto
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+Finalidade atual: Ampliar evidências identificando a origem.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] FOT-01  Imagem ampliada, legenda e posição na sequência.
+[   ] FOT-02  Unidade e item/contexto da foto.
+[   ] FOT-03  Data/autoria/estado conforme metadados disponíveis.
+[   ] FOT-04  Indicação de coleta parcial ou concluída.
+[   ] FOT-05  Anterior, próxima, carregar mais quando houver e fechar.
+[   ] FOT-06  Abrir unidade ou coleta em andamento correspondente.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+É o visualizador compartilhado por várias telas, não um cadastro independente de imagens.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+25 — MINHA CONTA [CON]
+==============================================================================
+Tipo: Tela do menu do usuário
+Acesso: Usuário autenticado
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/conta
+Finalidade atual: Gerenciar a própria senha e sessões.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] CON-01  Acesso liberado e Continuar no painel/coletor conforme perfil.
+[   ] CON-02  Alterar minha senha: atual/provisória, nova e confirmação.
+[   ] CON-03  Orientação de primeiro acesso/redefinição quando exigida.
+[   ] CON-04  Sessões, dispositivos/navegadores e expiração.
+[   ] CON-05  Encerrar sessão com confirmação e Sair da conta.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+Diferente de Usuários, onde o root administra outras pessoas.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+26 — LOGIN DO PAINEL [ENT]
+==============================================================================
+Tipo: Página de entrada; não é aba interna
+Acesso: Público para autenticação
+Endereço de referência: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
+Finalidade atual: Entrar com conta fornecida pela administração.
+
+ITENS / INFORMAÇÕES / AÇÕES ATUAIS
+[   ] ENT-01  Identidade visual, fotografia de fundo, logotipo e apresentação.
+[   ] ENT-02  Nome de usuário e senha.
+[   ] ENT-03  Mostrar/ocultar senha e Entrar.
+[   ] ENT-04  Esqueceu sua senha? e orientação para recuperação administrativa.
+[   ] ENT-05  Perfis de acesso e erros de autenticação.
+
+OBSERVAÇÕES SOBRE O COMPORTAMENTO ATUAL
+O questionário e login do coletor possuem endereço próprio; não estão sendo redesenhados neste documento.
+
+MINHAS DECISÕES PARA ESTA TELA
+Nome desejado para a aba/tela: ____________________________________________
+Itens novos a acrescentar: _______________________________________________
+Nova ordem dos itens: ____________________________________________________
+O que mover e para onde: _________________________________________________
+Quem deve ver / quem deve poder alterar: _________________________________
+Observações livres: _____________________________________________________
+
+==============================================================================
+REPETIÇÕES E SOBREPOSIÇÕES PARA VOCÊ AVALIAR
+==============================================================================
+[   ] REP-01  Mapa em Panorama e Mapa da Rede: manter resumo e tela ampliada ou concentrar?
+[   ] REP-02  Matriz em Panorama e Equipamentos: manter ambas?
+[   ] REP-03  Dados da unidade em Panorama, Unidades, Ambientes e Detalhe: qual deve ser o lugar principal?
+[   ] REP-04  Questionário em Panorama e Detalhe: manter ambos?
+[   ] REP-05  Fotos em Panorama, Ambientes, Detalhe e Coletas em andamento: em quais contextos permanecer?
+[   ] REP-06  Evidência da última coleta e Galeria no Panorama: um bloco é suficiente?
+[   ] REP-07  Funcionamento/impressoras em Panorama e Detalhe: qual resumo em cada lugar?
+[   ] REP-08  Coletas em andamento no menu e no Planejamento: manter resumo e atalho?
+[   ] REP-09  Providências no cabeçalho, Panorama e Planejamento: quais contadores repetir?
+[   ] REP-10  Computadores e Equipamentos: manter comunicação separada do inventário publicado?
+[   ] REP-11  Exportar dados e exportações de Relatórios: separar ou reunir?
+[   ] REP-12  Operadores × unidades: ainda é útil como organização, com acesso compartilhado?
+[   ] REP-13  Segurança e auditoria: aba própria ou reunir em Configurações?
+[   ] REP-14  Versão/explicações técnicas: rodapé, Configurações ou ocultas no uso diário?
+
+Nenhuma dessas escolhas foi presumida. São perguntas para sua revisão.
+
+PONTOS QUE NÃO DEVEM SER CONFUNDIDOS COM RECURSOS PRONTOS
+- Não existe aba exclusiva Fotografias.
+- Não existe calendário completo ou distribuição automática de técnicos.
+- Não existe filtro funcional de Ano para séries históricas em todas as abas.
+- O relatório atual é de computadores, não uma biblioteca de todos os relatórios.
+- Quantidade física de lote e número de fichas precisam permanecer distinguíveis.
+- A ampliação escolar não importou automaticamente a planilha nem incluiu CONTRATO.
+- Unidade cadastrada não garante inventário preenchido; comunicação não prova uso por pessoa.
+- Retirar um botão não altera por si só a permissão no servidor.
+
+MODELO CURTO PARA DEVOLVER UMA DECISÃO
+Tela: ______________________  Código do item: _____________________________
+Manter / remover / alterar / mover: _______________________________________
+Como quero que fique: ____________________________________________________
+Destino (se mover): ______________________________________________________
+Dados que devem aparecer: ________________________________________________
+Ação esperada ao clicar: __________________________________________________
+Perfis autorizados: ______________________________________________________
+Prioridade: alta / média / baixa _________________________________________
+
+FONTES DO LEVANTAMENTO (REFERÊNCIAS TÉCNICAS)
+web/panel-shell.js; web/desktop.js; web/desktop-results.js; web/desktop-blocks.js;
+web/desktop-progress.js; web/desktop-progress-photos.js; web/desktop-management.js;
+web/operations.js; web/communication-log.js; web/pending-collections.js;
+web/panel-search.js; web/desktop-equipment.js; web/desktop-inventory.js;
+web/desktop-exports.js; web/admin-units.js; web/unit-schema.js; web/unit-figures.js;
+web/account.html; web/account.js; web/account-shell.js; web/desktop-agents.js;
+web/desktop-thumbnails.js; web/photo-viewer.js; web/hardware-attention.js;
+web/panel-pulse.js; web/equipment-link-state.js; web/unit-map-palette.js;
+docs/00-governanca/REGRAS_DE_PRECEDENCIA.md;
+docs/05-qualidade/CADASTRO_ESCOLAS_2026-11-10.md.
+
+FIM — nenhuma aba ou função foi alterada/publicada por esta listagem.

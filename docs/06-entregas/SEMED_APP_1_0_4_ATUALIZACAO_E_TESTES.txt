@@ -1,0 +1,45 @@
+SEMED — APK 1.0.4: BOTÕES ACIMA DA BARRA DO ANDROID
+14/11/2026
+
+Esta correção exige atualizar o APK. Ela reserva a área das barras do Android
+e do teclado na janela que contém Técnico e Coleta. Não muda as perguntas,
+as permissões nem a regra de acompanhamento das demandas.
+
+DOWNLOAD
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk?v=1.0.4
+
+COMO ATUALIZAR
+1. Termine os salvamentos e aguarde todas as fotos serem recebidas.
+2. Baixe o APK e escolha Atualizar sobre o aplicativo já instalado.
+3. Não desinstale a versão anterior nem limpe os dados do aplicativo.
+4. Abra o app após atualizar. Se houver demanda ativa, confira a notificação
+   de acompanhamento e a posição no painel. A instalação pode interromper
+   temporariamente o processo Android; reabrir retoma a fila autorizada.
+5. Em Informações do aplicativo no Android, confirme a versão 1.0.4.
+
+CONFERÊNCIA NO CELULAR
+1. Abra Coleta > a unidade em que o botão estava coberto > Fachada.
+   Continuar deve ficar inteiro acima de Voltar/Início/Recentes do Android.
+2. Avance, volte e confira Salvar/Continuar em outros assuntos.
+3. Abra um campo de texto: ele e o botão Salvar compacto devem ficar visíveis.
+   Feche o teclado: o rodapé normal deve reaparecer, sem uma grande faixa vazia.
+4. Gire a tela. Confira que a navegação Android na lateral não encobre controles.
+5. Se você costuma usar gestos, confira também nesse modo. Não é obrigatório
+   alterar o modo de navegação que prefere para usar o app.
+6. Confira câmera/galeria e retorno à mesma ficha. Não envie fotos de teste
+   para unidades reais; use um registro autorizado.
+7. Se tiver demanda real ativa, alterne Técnico/Coleta e confira o acompanhamento.
+   Não conclua demandas apenas para testar.
+
+RELATO
+Modelo / versão Android / versão Android System WebView:
+Versão do aplicativo:
+Modo de navegação: três botões ou gestos:
+Tela e orientação (retrato/paisagem):
+Teclado aberto ou fechado:
+Horário e captura do problema:
+
+LIMITES DA VALIDAÇÃO
+Compilação/assinatura, 41 verificações JVM, dois fluxos do app e sete cenários
+de área útil simulada passaram. O Android físico do usuário ainda precisa ser
+conferido. Não se afirma teste em todos os fabricantes/modelos.

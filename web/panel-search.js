@@ -24,7 +24,7 @@ async function load(){
  const params=parameters(),input=$('.search input');input.value=params.q;
  $('#search-term').textContent=params.q?'Resultados para “'+params.q+'”':'Busca em toda a rede';
  $('#search-error').hidden=true;
- if(!params.q){data=null;$('#search-status').textContent='Digite pelo menos 2 caracteres na busca do cabeçalho e pressione Enter ou o botão de pesquisa.';$('#search-results').innerHTML='';return;}
+ if(!params.q){data=null;$('#search-status').textContent='A busca do cabeçalho agora localiza somente unidades, com sugestões enquanto você digita.';$('#search-results').innerHTML='';return;}
  $('#search-results').setAttribute('aria-busy','true');$('#search-status').textContent='Buscando unidades e equipamentos…';$('#search-results').innerHTML='';
  try{const result=await read('/api/inventory/search?'+new URLSearchParams(params),controller.signal);if(seq!==sequence)return;
   // A exclusão/edição de outro usuário pode esvaziar a última página.

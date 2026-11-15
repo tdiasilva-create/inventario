@@ -1,0 +1,54 @@
+SEMED — CONFERÊNCIA DA COLETA REFINADA NO CELULAR
+Publicação: 14/11/2026. APK atual 1.0.3: não precisa reinstalar.
+
+COLETA NO NAVEGADOR
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+APP UNIFICADO (mesma página carregada pelo APK)
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/app
+
+Antes de recarregar: salve o preenchimento e aguarde fotos em envio. Depois,
+feche e reabra a tela para receber a versão publicada. Não limpe dados nem
+desinstale o aplicativo. O refinamento não oferece offline durável.
+
+1. Entre com sua conta e abra Coleta. Confira que aparecem apenas as áreas
+   permitidas. Não é necessário sair da conta para alternar para Técnico.
+2. Selecione uma unidade com trabalho autorizado. Confira os assuntos em
+   lista, cada um com seu próprio estado, sem percentual nem N de 8.
+3. Abra uma ficha de computador. Confira os blocos Cadastro, Localização,
+   Acesso remoto e Funcionamento. Observe campos/teclado, rolagem e Salvar.
+4. Fotografe um item real e vá para outro assunto da mesma unidade durante
+   o envio. Volte à ficha original: a foto deve aparecer apenas nela, uma vez.
+5. Se houver falha de foto, confira a indicação da ficha na Revisão. Reenvie
+   ou descarte somente a prévia que não deseja mais enviar. Cancelar descarte
+   deve manter a pendência. Uma foto opcional sem tentativa não é obrigatória.
+6. Confira que a revisão leva diretamente à ficha/campo pendente. Conclua
+   cada assunto manualmente e confirme a visita somente quando apropriado.
+7. Com uma demanda real aceita no APK e localização autorizada, alterne para
+   Coleta: o acompanhamento do técnico deve continuar. Confirme no mapa do
+   root. Depois teste tela bloqueada e retorno. Não use “Forçar parada”.
+8. Ao terminar todas as demandas atribuídas, confirme o encerramento da
+   localização conforme a regra existente. Não conclua demandas só para testar.
+9. Em uma ficha de teste ainda não enviada, volte aos assuntos e escolha
+   Trocar unidade. Cancelar deve preservar o preenchimento. Se você realmente
+   quiser descartá-lo, confirme Descartar e trocar: deve voltar à lista, sem
+   segunda confirmação do navegador. Fotos em envio ainda bloqueiam a saída.
+
+PARA RELATAR
+Modelo do celular / Android / navegador ou APK:
+Usuário (sem senha):
+Unidade e ficha:
+Horário Fortaleza:
+Passo acima:
+O que esperava / o que ocorreu:
+Mensagem exata e screenshot:
+
+Já aprovados em ambiente isolado: 301 testes gerais; 22 verificações de
+concorrência e fotos; navegação, revisão, sessão e ponte de localização;
+31 capturas sem erros JavaScript. Em produção: publicação e 104 verificações
+HTTP. Isso não substitui câmera, teclado e GPS em aparelho físico.
+
+Complemento publicado às 11:38 Fortaleza: conferência autenticada aprovada,
+correção da saída após descarte e testes no navegador/coleta embutida. Os 22
+cenários de concorrência/fotos e os fluxos D114/D115 passaram novamente; mais
+53 verificações HTTP aprovadas. Nenhum equipamento de teste salvo em produção.

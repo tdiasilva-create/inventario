@@ -1,0 +1,84 @@
+PROMPT PRONTO — REDESENHO DO SEMED TÉCNICO
+
+Você receberá um pacote documental e fontes do aplicativo SEMED Técnico.
+Quero melhorar aparência e experiência de uso no celular e devolver código
+editável para revisão no repositório original, onde será gerado o novo APK.
+
+Não é o coletor de inventário, não é o painel desktop, não é o agente Windows.
+É um app exclusivo de atendimento às demandas atribuídas pelo administrador.
+
+ANTES DE PRODUZIR TELAS
+Leia os arquivos 00 a 06 do pacote, contratos, fontes e capturas. Informe o que
+entendeu e distinga funcionamento existente, proposta e ponto pendente. Se o
+ambiente não puder abrir algum arquivo ou executar Android, declare o limite.
+Não substitua a lógica por um modelo genérico de lista de tarefas.
+
+O QUE PRECISA CONTINUAR FUNCIONANDO
+- Login institucional de conta habilitada, troca obrigatória quando exigida,
+  sessão/CSRF/servidor como autoridades e quatro papéis atuais preservados.
+- Fila particular do técnico na sequência do root; até dois por demanda.
+- Uma demanda ativa por técnico, aceite exige GPS atual e autorização.
+- Conclusão por qualquer integrante para a equipe, autoria preservada.
+- Observação, impedimento, pausa, navegação externa e histórico de concluídas.
+- Avisos; estados de erro/carregamento/vazio/permissão e sessão expirada.
+- Idempotência, versões e conflito explícito, sem duplicação de comandos.
+- Sem edição gerencial, coleta de equipamentos ou acesso a outros técnicos.
+- Localização e avisos Android pela ponte SemedNative existente.
+
+FOCO DO NOVO DESENHO
+Quero telas mais práticas para trabalho em campo, menos botões competindo na
+mesma área, cartões claros e compactos, boa leitura e estados de envio claros.
+O técnico deve encontrar a unidade, entender a tarefa e executar a ação com
+poucos toques. Evitar textos técnicos ou números de versão na rotina do usuário.
+Teclado não pode cobrir o campo, o erro nem o botão de confirmação. Atualizações
+não podem perder texto, foco, rolagem ou páginas que já foram carregadas.
+
+Proponha hierarquia de ação principal/secundárias, navegação Fila/Concluídos/
+Avisos, detalhe de demanda se fizer sentido e comportamento de retorno/modal.
+Respeite a identidade branco/preto/vermelho/laranja/pêssego e verde-petróleo
+funcional; uma mudança de paleta deve ser apresentada separadamente.
+
+NÃO IMPLEMENTAR AGORA
+O responsável solicitou futuramente manter localização entre todas as demandas,
+mas adiou essa mudança antes deste redesenho. Não trocar o ciclo de tracking
+por jornada, não manter posição antiga como ao vivo e não eliminar limpeza.
+Também não inventar offline, FCM, anexos, chat, prioridade, SLA, assinatura,
+QR, mapa gerencial no app, ordem obrigatória ou novos campos obrigatórios.
+Não alterar plano gratuito, frequência de GPS/polling ou serviço de rotas sem
+decisão. Melhorar DOM/feedback não exige aumentar consultas ao D1.
+
+ENTREGA ESPERADA
+1. Análise do fluxo atual e proposta de telas com justificativa de usabilidade.
+2. Arquivos HTML/CSS/JS editáveis, reaproveitando as APIs e bridge atuais.
+   Se propuser outro framework, explicar tamanho, build, migração e compatibilidade
+   antes de substituir a stack. Não é requisito usar framework novo.
+3. Todas as telas: login, senha provisória, fila vazia/cheia, ativa própria,
+   colega ativo, GPS negado, erro de rede, conflito, nota, impedimento,
+   confirmação de conclusão, histórico e avisos lidos/não lidos.
+4. Capturas 360x800, 390x844, 412x915 e paisagem, com nomes sintéticos marcados.
+5. Relatório de testes e limites: navegador não homologa APK/GPS/tela bloqueada.
+6. Lista exata de arquivos alterados, base de origem, dependências e hashes.
+7. Instruções de integração sem apagar alterações posteriores do repositório.
+8. Lista de mudanças funcionais propostas separada das puramente visuais.
+
+TESTES E DADOS
+Use dados sintéticos locais e scripts isolados. Não acessar contas reais para
+testar, aceitar/concluir demandas reais, enviar GPS inventado ou publicar.
+Não fornecer backend fake que declare sucesso de escrita no sistema oficial.
+Se houver mock de apresentação, rotule e documente que não está conectado.
+Não pedir tokens, senha root, banco real, OAuth ou keystore para desenhar.
+
+APK
+Java/Android existentes estão em FONTES. Preservar package id e bridge. Não
+assinar atualização oficial com uma chave nova. Devolva fontes; revisão,
+assinatura institucional e publicação serão feitas no ambiente original.
+Caso entregue APK de demonstração, usar identidade separada claramente DEMO,
+sem credenciais reais e sem substituir o aplicativo institucional instalado.
+
+CRITÉRIO DE SUCESSO
+O novo desenho facilita o trabalho, preserva as regras verificadas e deixa
+explícito o que está confirmado, em envio, pendente ou indisponível. Não basta
+uma tela bonita: a devolutiva deve permitir integração e testes de regressão.
+
+Ao encontrar dúvida estrutural, descreva o conflito e apresente opções antes de
+programar a regra. Continue o trabalho visual independente enquanto aguarda.

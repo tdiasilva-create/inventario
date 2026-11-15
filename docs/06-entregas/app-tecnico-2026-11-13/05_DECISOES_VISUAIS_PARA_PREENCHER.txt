@@ -1,0 +1,68 @@
+SEMED TÉCNICO — FOLHA DE REVISÃO DE APARÊNCIA E USABILIDADE
+Este arquivo é editável pelo responsável. Espaço em branco não é aprovação.
+As opções abaixo são propostas, não mudanças implantadas.
+
+Em cada item, marque MANTER / ALTERAR / RETIRAR / PROPOR e escreva a decisão.
+
+VIS-01 Identidade: manter branco/preto/vermelho/laranja, com verde em atendimento?
+Decisão:
+
+VIS-02 Fila: cartões compactos com detalhe expansível ou detalhe em outra tela?
+Decisão:
+
+VIS-03 Qual informação precisa aparecer sem abrir detalhe?
+Base atual: número/posição, unidade, status, descrição, equipamento, equipe.
+Decisão:
+
+VIS-04 Atendimento ativo: destaque no topo como atalho, mantendo ordem da fila?
+Não significa mover a tarefa na ordem definida pelo root.
+Decisão:
+
+VIS-05 Botões: qual ação principal e quais secundárias devem ficar no cartão?
+Atuais: aceitar/concluir, rota, observação, impedimento, pausa, concluir equipe.
+Decisão:
+
+VIS-06 Navegação Fila / Concluídos / Avisos: superior ou barra inferior?
+Se inferior, testar teclado/safe area e manter ações legíveis.
+Decisão:
+
+VIS-07 Texto de retorno: junto ao botão, banner compacto ou ambos?
+Manter distinção entre em envio, confirmado e sem confirmação.
+Decisão:
+
+VIS-08 Pausa: adicionar confirmação e explicar que acompanhamento será encerrado?
+Hoje pausa é direta; isso seria uma mudança de interação.
+Decisão:
+
+VIS-09 Conclusão: manter uma confirmação simples, sem relato obrigatório?
+Mudar a exigência de relato seria mudança funcional adicional.
+Decisão:
+
+VIS-10 Filtro/busca: precisa buscar por unidade, número ou descrição?
+Busca na fila inteira precisa de backend/paginação, não apenas filtro dos
+primeiros 100 itens. Definir alcance antes de implantar.
+Decisão:
+
+VIS-11 Avisos: manter lista atual ou propor acesso ao detalhe da demanda?
+Abrir detalhe por aviso ainda não existe no frontend atual.
+Decisão:
+
+VIS-12 Informações adicionais existentes: mostrar tipo, origem ou agendamento?
+Definir quais têm utilidade no trabalho de campo, preservando ausentes.
+Decisão:
+
+VIS-13 Preferências de tamanho/quantidade de texto, ícones e linguagem:
+Decisão:
+
+FUNC-01 Localização de toda a fila: ADIADA pelo responsável em 13/11/2026.
+Não executar até retomar decisão sobre feedback final, pausa, falhas e Android.
+
+FUNC-02 Ordem obrigatória, push instantâneo, anexos, offline e novos perfis:
+Não autorizados por este pacote. Registrar propostas separadas, se necessárias.
+
+APARELHOS PARA HOMOLOGAÇÃO FUTURA
+Modelo(s):
+Android / WebView:
+Tamanhos de tela:
+Rede usada:
+Responsável pelo teste físico:

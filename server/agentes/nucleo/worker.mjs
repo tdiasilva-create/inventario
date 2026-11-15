@@ -935,6 +935,7 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
           boot_id: body.boot_id,
           sequence: body.sequence,
           agent_version: body.agent_version,
+          network_test_protocol: body.network_test_protocol ?? 0,
           health: body.health,
           last_health_inventory: body.health.inventory,
           last_reason: body.reason ?? 'periodic',
@@ -953,6 +954,10 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
         config_version: cfg.policy.config_version,
       };
     });
+    if(body.network_test_protocol===1&&ack.presence_updated&&extensions?.networkPending){
+      // Optional extension failure must not break inventory/presence or trigger a repeated speed test.
+      try{ack.network_test=await extensions.networkPending(device,now());}catch{ack.network_test=null;}
+    }
     return json(200, ack);
   }
 
@@ -1272,6 +1277,17 @@ export function createApp({ store = new MemoryStore(), now = () => Date.now(), c
         case `${AGENT}/inventory`: return inventory(request, path);
         case `${AGENT}/config`: return configRoute(request, path);
         case `${AGENT}/rotate-key`: return rotateKey(request, path);
+        case `${AGENT}/network-tests/start`:
+        case `${AGENT}/network-tests/check`:
+        case `${AGENT}/network-tests/result`: {
+          if(!extensions?.networkTest)throw new ApiError(404,'NOT_FOUND','Extensão indisponível');
+          const {bytes,value:body}=await readBody(request,cfg.limits.default);
+          const {device,inst}=await authDevice(request,path,bytes,{states:['linked']});
+          requireBodyInstallation(body,inst);
+          const {link}=await requireLiveLink(device);
+          await rate(`network:${device.device_id}`,30,60);
+          return json(200,await extensions.networkTest(request,body,{device,inst,link,now:now(),ApiError}));
+        }
         // HUMANAS (sessão + CSRF + Origin), mesmo estando sob o prefixo do agente:
         case `${AGENT}/pairings/preview`: return pairingPreview(request, await humanSession(request, { csrf: true }));
         case `${AGENT}/pairings/claim`: return pairingClaim(request, await humanSession(request, { csrf: true }));

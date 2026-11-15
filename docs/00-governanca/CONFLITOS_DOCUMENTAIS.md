@@ -149,3 +149,29 @@ O novo pedido e a confirmação sobre expiração do login superam a limitação
 
 ## D-115 — duas áreas no APK
 A decisão explícita de 13/11/2026 supera a exclusividade técnica do APK em D105 e a restrição histórica a navegador da Base §3.5 somente para oferecer Coleta no mesmo APK. Não une papéis nem libera desktop ao operador; não altera perguntas, conclusão manual ou elegibilidade das unidades. D114 continua determinando duração/autorização do acompanhamento da fila, mesmo com Coleta aberta. O navegador coletor separado continua disponível. [Contrato](../02-coleta-mobile/APP_UNIFICADO_D115.md).
+
+
+## D-116 — estado individual em lugar da contagem proposta, 14/11/2026
+
+O pacote externo implementa “N de 8 assuntos concluídos” e lista algumas alterações já aplicadas como “nada implementado”. A escolha posterior do responsável exige apenas estados individuais, sem esse contador. Manter os blocos e a navegação durante fotos foi confirmado, mas não dispensa corrigir concorrência e confirmação de gravação. Essas escolhas e o estado real da entrega prevalecem sobre os rótulos de aprovação do pacote. Contratos D089/D111/D114/D115 não foram substituídos. Ver [revisão](../05-qualidade/REVISAO_REFINO_COLETA_2026-11-14.txt).
+
+
+D-116 — revisão independente da rev2, 14/11/2026: 146 hashes conferidos; 301 testes Node, onze roteiros de navegador (incluindo 14 verificações de concorrência) e 31 capturas repetidos. As escolhas D116 e os três cenários originais foram conferidos; duas sondas adicionais reproduziram R1-F (rascunho confundido com salvamento completo) e R4 (conclusão com prévia de foto cujo envio falhou). Integração/publicação ainda não recomendadas; nenhuma nova decisão funcional necessária para corrigir esses defeitos. Código de produto/Android/produção preservados. [Devolutiva rev2 e critérios](../05-qualidade/REVISAO_REFINO_COLETA_REV2_2026-11-14.txt).
+
+
+D-116 — revisão independente da rev3, 14/11/2026: aprovação técnica LOCAL. 175 hashes conferidos; 301 testes Node, onze roteiros de navegador (22 verificações de concorrência no roteiro novo), quatro sondas independentes e 31 capturas repetidos. R1/R2/R3/R1-F/R4 não se reproduzem nos cenários seguros; rascunho não confirma salvamento completo e foto pendente impede conclusão até reenvio/descarte explícito. Escolhas D116 preservadas. DP19/20 do pacote não exigem nova decisão para essas correções. Restam integração, publicação e homologação Android física; nenhuma delas executada nesta revisão. Código de produto e produção preservados. [Relatório rev3 e limites](../05-qualidade/REVISAO_REFINO_COLETA_REV3_2026-11-14.txt).
+
+
+### C-D118 — fonte do agente versus EXE indicado
+Em 14/11/2026 a pasta `agente` indicada como fonte contém somente `SemedAgente-Instalador-0.1.8.exe`. Não reutilizada a fonte 0.1.6 como padrão. Núcleo reconstruído da análise do 0.1.8, código preservado em windows/agent e proveniência registrada. Serviço/UI binários originais permanecem; rótulos fixos 0.1.8 coexistem com núcleo 0.1.9-rc1, explicitado no piloto. Não declarar código original completo ou homologação. API/implantação pendentes.
+
+## D-119 — atualização versus recuperação, 14/11/2026
+O Core 0.1.8/0.1.9 anterior recomendava PURGE/lote ao ficar revoked. Essa mensagem não atende ao pedido atual de preservar pendências e ao cadastro automático D058. Novo rc3 oferece recuperação explícita com arquivos/histórico arquivados e identidade nova, sem reativar a revogada. D056/instaladores anteriores são referências históricas preservadas; atualização normal continua sem reset. Não tratar arquivamento como sincronização da mensagem antiga nem novo QR como vínculo já efetuado. Ver docs/05-qualidade/RECUPERACAO_AGENTE_D119_2026-11-14.md.
+
+## D-121 — escopo atual e fotografia
+O novo mapa de setores usa dados atuais salvos/parciais por decisão explícita posterior; não modifica o escopo publicado das demais áreas da unidade e da matriz D069. Item 4.2 do pedido solicita fotografia imediata, enquanto item 8 a inclui em melhorias futuras: aplicada a exigência concreta do item 4.2 no resumo selecionado. Nenhuma imagem específica do organograma foi anexada, portanto não se declara correspondência pixel a pixel com referência ausente. Lotes continuam uma ficha com quantidade, total de cadastros e total de itens separados; LOG-08 não foi decidido por inferência.
+
+D121 — 15/11/2026: pedido posterior explícito substitui unidade no topo/colunas estreitas por organograma horizontal com equipamentos em grade. Somente composição; escopo de dados, comunicação, fotos, fichas, permissões e custo de consultas preservados. Ver docs/05-qualidade/MAPA_SETORES_HORIZONTAL_2026-11-15.md.
+
+## D122 — superação parcial da busca global D084
+O pedido de 15/11/2026 retira equipamentos da busca principal e exige sugestões durante digitação. Substitui o comportamento do cabeçalho D084; a rota antiga continua compatível com URLs salvas, sem ser chamada pelo novo campo. O mapa ampliado D091 agora inclui a busca dentro da área acessível; foco/câmera/retorno preservados. Nenhuma mudança no questionário, catálogo oficial ou dados de agentes.

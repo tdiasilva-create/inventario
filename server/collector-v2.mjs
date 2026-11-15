@@ -13,9 +13,10 @@ export async function startV2(request,user,env,{body,json,fail,unit,history}){
  await db.batch([...(old?[db.prepare("UPDATE inspections SET state='paused',updated_at=? WHERE id=? AND state='open'").bind(now,old.id),history(old,old.id,'inspection_preserved_for_v2',null,{newInspection:id})]:[]),db.prepare('INSERT INTO inspections(id,unit_id,questionnaire_version,created_by,created_at,updated_at) VALUES(?,?,?,?,?,?)').bind(id,u.id,questionnaireVersion,user.id,now,now),...topics.map(([g])=>db.prepare('INSERT INTO inspection_sections(inspection_id,section,data_json,state,updated_by,updated_at) VALUES(?,?,?,?,?,?)').bind(id,g,g==='A'?'{}':prior.find(r=>r.section===g)?.data_json||'{}',previous&&g!=='A'?'Concluído':'Pendente',user.id,now))]);
  return json({inspection:await db.prepare('SELECT * FROM inspections WHERE id=?').bind(id).first()},201);
 }
-export async function v2Evidence(db,i){
+export const v2EvidenceStatement=(db,i)=>db.prepare("SELECT p.id,p.target_kind,p.target_id,p.status,p.inspection_id FROM collection_photos p JOIN inspections v ON v.id=p.inspection_id WHERE p.unit_id=? AND p.status='ready' AND (v.state='completed' OR p.inspection_id=?) ORDER BY p.created_at").bind(i.unit_id,i.id);
+export async function v2Evidence(db,i,rows){
  // Current plus previously completed evidence, never another draft's photos.
- const photos=(await db.prepare("SELECT p.id,p.target_kind,p.target_id,p.status,p.inspection_id FROM collection_photos p JOIN inspections v ON v.id=p.inspection_id WHERE p.unit_id=? AND p.status='ready' AND (v.state='completed' OR p.inspection_id=?) ORDER BY p.created_at").bind(i.unit_id,i.id).all()).results.map(p=>({...p,current:p.inspection_id===i.id}));
+ const photos=(rows??(await v2EvidenceStatement(db,i).all()).results).map(p=>({...p,current:p.inspection_id===i.id}));
  return describePhotos(db,photos);
 }
 export async function reviewV2(db,i,context){

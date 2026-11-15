@@ -1,5 +1,7 @@
 # Matriz de lógicas para auditoria
 
+**Histórico de 08/11/2026.** Para a revisão atual usar [matriz de 15/11, até D122](2026-11-15/01_ESCOPO_E_CRITERIOS.md), confrontando as decisões posteriores.
+
 Referência de código anterior à organização: `a5b5af6`. Esta matriz é um índice de revisão, não substitui leitura do código, das decisões completas ou das perguntas originais. Caminhos abaixo são relativos à raiz do repositório. `pnpm test` inclui os testes `.test.mjs` citados; roteiros de navegador são executados separadamente pela CI.
 
 ## Acesso, cadastro e persistência

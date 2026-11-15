@@ -1,0 +1,42 @@
+SEMED — PACOTE PARA REFINAR A COLETA NO APLICATIVO
+14/11/2026 · Paço do Lumiar/MA · Referência: 09442d0d24de214694c0236018837335b3b83068
+
+O responsável não aprovou a experiência atual da coleta. Sua reclamação é que
+o APK 1.0.3 apenas criou uma entrada para Atendimento técnico e Coleta, mantendo
+a interface e os problemas anteriores. Ele quer o cuidado de interação, clareza
+e acabamento já obtido no app técnico, incluindo revisão de lógica e erros.
+
+ESTA ENTREGA É UM PACOTE DE TRABALHO, NÃO UMA CORREÇÃO OU PUBLICAÇÃO.
+Não basta alterar cores, fazer uma tela demonstrativa ou acrescentar outro atalho.
+É necessário navegar, reproduzir falhas e refinar o coletor conectado às APIs.
+O responsável enviará o resultado para revisão/integração por Codex antes de APK.
+
+Comece por 01_PROMPT_PARA_CLAUDE.txt. Depois leia 02–08 e abra GALERIA.html.
+09 contém o inventário técnico extraído do código, sem substituir sua leitura.
+FONTES/ preserva a estrutura do projeto: frontend, servidor, testes, migrações,
+Android, referências e documentos. MANIFESTO_FONTES.json relaciona origem/hash.
+MANIFESTO_ARQUIVOS.sha256 cobre os arquivos do pacote.
+
+EVIDÊNCIAS: 22 telas do código atual em navegador com Worker real e SQLite
+isolado. Dados TESTE ISOLADO, não cópia das escolas/contas/fotos reais. GPS e
+câmera física NÃO foram homologados por essas capturas. REGRESSAO/ contém
+ensaios funcionais separados. Um teste aprovado não prova uma boa experiência.
+
+FONTE ATUAL: D115 publicado em 13/11/2026, 19:13 Fortaleza, Worker painel
+77c27c3b-b823-4a0e-a362-0854516403d0. APK 1.0.3/versionCode 4.
+Coletor independente preservado: c678978a-9e71-4cab-a2dc-9744ec6d6e1c.
+São os últimos registros conferidos, não nova consulta autenticada de produção
+nesta entrega. Código funcional base 3c602eb, registro de publicação 09442d0.
+
+URLs reais (referência, não destino de testes sintéticos):
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/app
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Não acompanham .git, node_modules, dumps D1, credenciais, cookies, tokens,
+refresh tokens Google, chaves Android, APK/EXE nem fotografias oficiais.
+Fixtures contêm senhas/chaves SINTÉTICAS de testes, sem acesso à conta real.
+Nenhum procedimento deste pacote exige login na Cloudflare ou Google.
+Não executar scripts de deploy/bootstrap/reset/importação em ambiente oficial.
+IDs de conta/recursos nos arquivos wrangler são configuração, não credenciais.
+Não é preciso alterá-los para rodar os testes em memória; não usar deploy scripts.
+Não tratar consentimentos históricos em documentos como ordem de publicar agora.

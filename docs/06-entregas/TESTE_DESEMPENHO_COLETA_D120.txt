@@ -1,0 +1,28 @@
+SEMED — CONFERÊNCIA DA COLETA APÓS OTIMIZAÇÃO
+15/11/2026
+
+Entrada: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/app
+
+Esta atualização chega pelo servidor. O APK atual continua 1.0.4; não desinstale nem limpe os dados do aplicativo. Antes de atualizar a tela, confirme que não há foto ou resposta ainda não enviada. Atualizar/fechar a aba descarta prévias que existem apenas na memória.
+
+1. Abra o aplicativo e escolha Coleta. Retome uma visita já aberta.
+2. Toque em Computadores ou Ambientes. Deve aparecer imediatamente o título e “Carregando…”, seguido da lista recebida. Enquanto estiver lendo, Voltar às categorias deve funcionar.
+3. Faça uma troca rápida Computadores → categorias → Internet. A chegada da primeira resposta não deve retornar a tela para Computadores.
+4. Abra uma foto existente. A miniatura aparece primeiro; a foto completa substitui a prévia quando chegar. Se falhar, deve haver botão para tentar novamente.
+5. Na unidade correta, selecione duas fotos reais que deseja registrar. O envio da primeira pode começar enquanto a segunda é preparada. Confira o número de fotos recebidas e a unidade/ficha.
+6. Durante o envio, navegue para outro assunto da mesma unidade. Ao voltar, as fotos devem continuar no alvo original. Sair da unidade e concluir continuam aguardando os envios.
+7. Se houver falha real de rede, a prévia deve permanecer identificada como não enviada. Reenvie quando a conexão voltar. Não feche o aplicativo com prévias pendentes. A revisão deve apontar a foto pendente e impedir confirmação falsa.
+8. Abra Revisar visita. Confira as pendências por assunto/ficha; os estados permanecem manuais. Nenhum assunto deve ser concluído apenas por navegar.
+9. Se estiver em atendimento técnico, alterne Técnico/Coleta e confira no painel root a continuidade da posição. A atualização não muda as permissões nem o serviço de localização. GPS físico, câmera e tela bloqueada precisam desta conferência no aparelho.
+
+MEDIÇÃO LOCAL COMPARÁVEL
+Mesmo atraso artificial de 100 ms por chamada D1:
+- leitura da visita: 1.107 ms → 447 ms;
+- revisão exibida: 2.235 ms → 454–484 ms;
+- feedback do botão Computadores: 348 ms → 4–5 ms;
+- módulos JS iniciais de V3: 14 → 1.
+Esses números são de ensaio controlado, não de medição física no Samsung M54. O tempo de enviar/baixar originais ainda varia com o aparelho, a conexão e o armazenamento privado.
+
+Se ainda houver demora, anote unidade, tela, ação, horário, conexão (Wi-Fi ou móvel) e quanto tempo aproximadamente levou. Não envie senha. Isso permite correlacionar o caso aos registros técnicos sem repetir operações nem criar dados fictícios no ambiente real.
+
+Publicação confirmada em 15/11/2026 nos dois Workers. 319 testes automatizados, 41 verificações JVM e 26 verificações HTTP aprovados. Conferência da lista/fotos/revisão com sessão root real concluída sem gravar dados de teste.

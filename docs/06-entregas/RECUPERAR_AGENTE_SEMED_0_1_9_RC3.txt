@@ -1,0 +1,76 @@
+SEMED — RECUPERAR INSTALAÇÃO REVOGADA
+Instalador: SemedAgente-Instalador-0.1.9-rc3.exe
+Data: 14/11/2026
+
+ESTE É O ARQUIVO PARA O CASO RELATADO
+O computador DESKTOP-KLDMT80 estava com a instalação revogada. Atualizar o
+programa para 0.1.9 não removia essa identidade. Agora há uma opção específica
+de recuperação, com backup e nova identidade para obter outro QR.
+Não precisa desinstalar antes. Não use /PURGE.
+
+PASSO A PASSO NA MÁQUINA AFETADA
+1. Copie SemedAgente-Instalador-0.1.9-rc3.exe para o computador revogado.
+2. Feche a janela antiga do Agente SEMED.
+3. Execute o instalador e autorize como administrador do Windows.
+4. Avance até Escolha a operação.
+5. Selecione RECUPERAR INSTALAÇÃO REVOGADA (BACKUP + NOVO QR).
+   A opção padrão Instalar/atualizar mantém a identidade antiga; não é a opção
+   apropriada para a mensagem de revogação.
+6. Confirme a recuperação. Aguarde a operação terminar.
+7. Abra Agente de Inventário SEMED pelo menu Iniciar. Com internet, ele fará
+   um novo cadastro e apresentará outro QR. O cadastro automático não pede lote.
+8. No coletor, selecione a UNIDADE CORRETA, entre em Computadores e abra a ficha
+   desse computador, se ela já existir. Crie nova ficha somente se não existir.
+9. Leia o novo QR nessa ficha e informe o ambiente/posição corretos. Salve.
+10. Confira no agente que aparece Vinculado e o nome da unidade correta.
+    No painel, confira o vínculo, inventário e último contato. Para medir a
+    internet, use a área Testes de internet com uma conta root.
+
+ENDEREÇOS COMPLETOS
+Coletor:
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+Painel:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+O QUE É PRESERVADO
+Backup: C:\ProgramData\SEMED\AgentRecovery\<identificador da recuperação>
+- snapshot: cópia verificada de todos os arquivos locais antigos.
+- original: diretório original preservado.
+- manifest.json: hashes, tamanhos, identidade antiga/nova e vínculo histórico.
+- completed.json: registro de conclusão local.
+
+A mensagem pendente antiga continua no arquivo; não é descartada e não será
+reenviada como se fosse da nova unidade. O histórico já existente no servidor
+permanece intacto. A recuperação não restaura unidade excluída e não desfaz a
+revogação antiga. Ela cria uma identidade nova, aguardando vínculo humano.
+Não misture os arquivos de queue, state, pairing ou network-test do backup com
+a instalação nova. A chave antiga não exportável permanece protegida no Windows.
+Não compartilhe o backup inteiro por chat: ele contém dados do inventário.
+
+SE A INSTALAÇÃO FOR INTERROMPIDA
+Repita este mesmo EXE e escolha Recuperar instalação revogada. Se já havia uma
+transação iniciada, ele a retoma com o mesmo novo ID. Não desinstale nem apague
+pastas para tentar forçar a recuperação. Se a transação não puder terminar, o
+serviço ficará parado para proteger os dados até a retomada.
+Registro detalhado: %LOCALAPPDATA%\SEMED\InstallerLogs
+
+SE NÃO APARECER O QR
+- Confira se o computador está conectado e se o agente informa erro de servidor.
+- Aguarde a tentativa automática; não repita a recuperação de um cadastro válido.
+- Se estiver aguardando pareamento e o QR expirou, use Gerar novo QR no agente.
+- Se continuar Revogado ou aparecer erro, copie o diagnóstico e informe a mensagem
+  do instalador. Não envie QR, senhas, chaves ou arquivos de credenciais.
+
+COMPUTADORES QUE JÁ FUNCIONAM
+Use Instalar/atualizar. Esse modo mantém ID, vínculo, configuração e fila.
+A recuperação recusa identidades válidas e não remove vínculos delas.
+
+VALIDAÇÃO
+Passaram 35 verificações de arquivos/recuperação, 27 de integração com o Core,
+61 regressões do núcleo, 14 de rede/compatibilidade, 11 do instalador e 23 da
+API local. Os testes não alteraram dados reais nem recuperaram esta máquina.
+O fluxo completo de serviço/CNG/QR na máquina revogada precisa ser conferido
+agora pelo procedimento acima. O instalador não tem assinatura Authenticode.
+
+SHA-256 DO EXECUTÁVEL
+F284E9B2F030655ABD07480872E0405680B20F0B8B37583BB0891AD271C8DED7

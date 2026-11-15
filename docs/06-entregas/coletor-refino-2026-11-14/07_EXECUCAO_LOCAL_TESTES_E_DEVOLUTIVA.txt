@@ -1,0 +1,81 @@
+EXECUTAR EM AMBIENTE LOCAL ISOLADO
+
+FONTES/ é o diretório do projeto para os comandos. Node >=24 <25 (node:sqlite),
+pnpm 11.25.0 conforme package.json, dependências fixadas por pnpm-lock.yaml.
+Instalar: pnpm install --frozen-lockfile
+Build: node scripts/build-collector.mjs
+       node scripts/build-desktop.mjs
+Sem APK/chave original, build desktop avisa APK ausente; não é falha do frontend.
+Não construir APK de produção nem inventar assinatura. O mantenedor fará isso.
+
+PRÉVIA INTERATIVA: node scripts/preview-collector-refinement.cjs abre o app local
+com Worker/SQLite em memória. Login de teste é mostrado no terminal; nenhuma
+conta real. Fechar descarta a base. Não use npm start como teste autenticado:
+scripts/serve.mjs é servidor estático antigo, sem API. A prévia exige navegador
+visível; em servidor sem tela use --smoke ou os testes headless abaixo.
+
+Navegador: testes usam playwright e Edge por padrão. Em Linux/sem Edge:
+  pnpm exec playwright install chromium
+  variável SEMED_TEST_BROWSER=chromium
+No PowerShell: $env:SEMED_TEST_BROWSER='chromium'
+No Linux: SEMED_TEST_BROWSER=chromium node tests/mobile-app-browser.cjs
+Não rodar scripts verify-* remotos ou antigos com caminhos privados como testes
+locais. Use os roteiros abaixo: criam SQLite em memória, objetos sintéticos e
+Worker real em processo. Não precisam de Wrangler autenticado ou de internet.
+
+BASELINE / REGRESSÃO
+node --test --test-concurrency=1 tests/*.test.mjs
+node tests/collector-v3-browser.cjs
+node tests/collector-refinement-browser.cjs
+node tests/collector-review-pending-browser.cjs
+node tests/collector-environments-browser.cjs
+node tests/mobile-app-browser.cjs
+node tests/technician-redesign-browser.cjs
+node tests/technician-tracking-browser.cjs
+node scripts/test-technician-android.mjs (JDK necessário; verificações JVM, não APK)
+node scripts/capture-collector-refinement.cjs (reproduz capturas desta entrega)
+Não usar somente pnpm test como prova de tudo: a lista explícita de package.json
+é histórica e não inclui todos os testes novos D114/D115. Use tests/*.test.mjs.
+
+TESTES MÍNIMOS DA DEVOLUTIVA
+T01 Login dos quatro perfis; sem ampliar permissões; senha obrigatória preservada.
+T02 Lista automática, busca vazia/sem resultado, escola longa, obra/inativa fora.
+T03 Unidade→fachada→categorias, retorno/retomada sem perda, mudança de unidade.
+T04 Todos os assuntos/condições; remover linha cancela/confirma; valores históricos.
+T05 Mesmo ambiente visto por dois operadores; criar/renomear mantém ID/vínculos.
+T06 Computador manual, motivo obrigatório, campos opcionais, zeros em AnyDesk.
+T07 QR válido/negado/vencido/revogado/duplicado/outro vínculo/recibo perdido.
+T08 Foto câmera/galeria, rotação, grande/HEIC, limite 5, erro envio/miniatura;
+    em andamento navegar/trocar área sem quebrar associação ou fingir recebido.
+T09 Impressora sem foto impede concluir com motivo exato; computador sem foto aceita.
+T10 Equipamento incompleto/rascunho, Salvar→lista→reabrir, assunto manual, revisão
+    abre ID exato e volta após correção. Confirmar somente revisão atual do servidor.
+T11 Digitar durante POST lento, blur tardio, resposta antiga, timeout antes/depois
+    de gravação, idempotência, trava de outro usuário e conflito de versão.
+T12 401 no meio da ficha/upload; mesmo usuário retoma, outro não assume RAM;
+    logout avisa perda, troca de áreas conserva campos e encerra leitor QR.
+T13 1000 equipamentos em fixture local; paginação, última página, filtro e retorno
+    de scroll; sem carregar todos nem limitar quantidade cadastrável.
+T14 360/390/412px, 812x375 paisagem, zoom fonte; teclado físico Android e navegação
+    Voltar, modal + teclado, erro abaixo do campo, safe area, foco acessível.
+T15 Fila técnica ativa→Coleta→foto/QR→tela bloqueada; GPS continua conforme D114.
+    Sem demanda aceita, só Coleta não inicia GPS. Sair/zerar fila/revogar encerra.
+T16 Navegador independente e montagem /app produzem os mesmos dados/validações.
+
+MEDIÇÕES
+Registrar ambiente/dispositivo/rede, build/commit, cenário, chamadas por endpoint,
+tempo até feedback e até ACK, p50/p95 em amostra repetida (informar N), requisições
+simultâneas, D1 chamadas/linhas e payload. Mesmos dados/atraso antes/depois.
+Limite local não é latência do Drive/Cloudflare. Sem medir, escrever NÃO MEDIDO.
+
+ENTREGA ESPERADA
+1 ZIP com fontes completos alterados na árvore original + patch/unified diff.
+2 RELATORIO_ALTERACOES.txt: por problema, causa, correção, arquivos/linhas, teste.
+3 MANIFESTO.json: commit base 09442d0d24de214694c0236018837335b3b83068, SHA256 por arquivo alterado/removido.
+4 TESTES_EXECUTADOS.txt + saídas brutas; separar aprovado/falhou/não executado.
+5 Capturas antes/depois mesmos dados/tamanho + roteiro de teste no celular.
+6 DECISOES_PENDENTES.txt enumerado; não implantar regras novas silenciosamente.
+7 RISCOS_E_INTEGRACAO.txt: ambos builds, compatibilidade/migrações (se propostas),
+   impactos Android, caminho de retorno e arquivos que NÃO devem ser substituídos.
+8 Não enviar segredos, binários assinados por outra chave, banco real ou credenciais.
+Nenhum deploy desta etapa; aprovação de publicação cabe ao responsável depois.

@@ -1,5 +1,6 @@
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {equipmentLinkStateSql,linkFilterValues} from './equipment-link-state.mjs';
+import {currentSectorSql} from './unit-equipment-map.mjs';
 // D-069: consulta gerencial de fichas publicadas. Nenhuma escrita ou publicação.
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 const categorySql=record=>`CASE json_extract(${record},'$.category') WHEN 'desktop' THEN 0 WHEN 'computer' THEN 0 WHEN 'notebook' THEN 1 WHEN 'tablet' THEN 2 WHEN 'projector' THEN 3 WHEN 'printer' THEN 4 WHEN 'tv' THEN 5 WHEN 'router' THEN 6 WHEN 'ap' THEN 6 WHEN 'switch' THEN 6 ELSE 7 END`;
@@ -10,6 +11,10 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  const s=url.searchParams,id=s.get('unitId'),offset=Number(s.get('offset')||0),column=s.get('category')??'',q=(s.get('q')||'').trim(),agent=s.get('agent')||'',photo=s.get('photo')||'',environment=s.get('environmentId')||'';
  if(environment&&!uuid(environment)||!uuid(id)||!Number.isSafeInteger(offset)||offset<0||!['','0','1','2','3','4','5','6','7'].includes(column)||q.length>120||!linkFilterValues.includes(agent)||!['','yes','no'].includes(photo))return fail('Filtros de equipamentos inválidos.');
  const scope=s.get('scope')||'published';if(!['published','current'].includes(scope)||scope==='current'&&env.APP_KIND==='collector')return fail('Escopo de consulta inválido.',403);
+ const sector=s.get('sectorId')||'';
+ if(sector&&(scope!=='current'||(sector!=='unassigned'&&!uuid(sector))))return fail('Setor inválido para esta consulta.');
+ const equipmentId=s.get('equipmentId')||'';
+ if(equipmentId&&!uuid(equipmentId))return fail('Equipamento inválido.');
  const u=await unit(id);if(!u)return fail('Unidade indisponível.',403);
  // D-084: escopo atual explícito para busca global; a matriz mantém o padrão publicado.
  const current=scope==='current',record=current?'e.data_json':'e.published_json';
@@ -35,6 +40,8 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
  LEFT JOIN agent_inventory_snapshots si ON si.inventory_id=cs.inventory_id
  WHERE e.unit_id=? AND ${record} IS NOT NULL)`;
  const clauses=[],params=[id];
+ if(equipmentId){clauses.push('id=?');params.push(equipmentId);}
+ if(sector){clauses.push(`id IN (SELECT e.id FROM inventory_equipment_all e LEFT JOIN environments r ON ${currentSectorSql()} WHERE e.unit_id=? AND ${sector==='unassigned'?'r.id IS NULL':'r.id=?'})`);params.push(id,...(sector==='unassigned'?[]:[sector]));}
  if(environment){clauses.push("json_extract(published_json,'$.environment')=?");params.push(environment);}
  if(column!==''){clauses.push('column_index=?');params.push(Number(column));}
  if(q){clauses.push(`instr(lower(COALESCE(display_name,'')||' '||COALESCE(hostname,'')||' '||id||' '||COALESCE(environment_name,'')||' '||COALESCE(json_extract(published_json,'$.position_label'),'')||' '||COALESCE(json_extract(published_json,'$.asset'),'')||' '||COALESCE(json_extract(published_json,'$.serial'),'')||' '||COALESCE(json_extract(published_json,'$.brand'),'')||' '||COALESCE(json_extract(published_json,'$.model'),'')||' '||COALESCE(json_extract(published_json,'$.customCategory'),'')||' '||COALESCE(json_extract(published_json,'$.anydesk'),'')||' '||COALESCE(json_extract(published_json,'$.rustdesk'),'')),lower(?))>0`);params.push(q);}
@@ -52,6 +59,7 @@ export async function equipmentRead(request,url,user,env,{json,fail,unit}){
   return {id:r.id,data,record_partial:scope==='current'&&!!r.record_partial,link_state:r.link_state,display_name:r.display_name,environment_name:r.environment_name,position_label:position,location_state:location,verified_at:r.verified_at,updated_at:r.updated_at,
    presence_state:r.agent_linked?presenceState({state:'linked'},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):null,agent_linked:!!r.agent_linked,agent_history:!!r.device_id,hostname:r.hostname,last_contact_at:r.last_contact_at,link_ended_at:r.ended_at,
    photo_count:r.photo_count,photo_id:r.photo_id,missing_open:!!r.missing_open,
+   network_test_capable:!!r.agent_linked&&JSON.parse(r.presence_json||'{}').network_test_protocol===1,
    partial:partial?{environment:r.current_environment,position_label:r.current_position,location_state:r.current_location_state,updated_at:r.current_updated_at,inspection_id:r.current_inspection_id}:null};
  });
  return json({...counts,items,offset,pageSize:50,nextOffset:offset+items.length<counts.total?offset+50:null,source:scope,server_time:new Date().toISOString()});

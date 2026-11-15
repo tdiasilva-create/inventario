@@ -1,0 +1,311 @@
+SEMED — AVERIGUAÇÃO INDEPENDENTE DO TOUR DO PAINEL
+Data: 11/11/2026 · America/Fortaleza
+Objetivo: confirmar os comportamentos relatados antes de decidir correções.
+
+1. FONTES E LIMITE DESTA ENTREGA
+
+Arquivos recebidos e lidos:
+- AVERIGUACAO_TOUR_PAINEL_2026-11-11.txt
+- MODELO_UNIDADES2.csv
+- MODELO_UNIDADES.xlsx
+
+Versão real conferida pela listagem de publicações da Cloudflare:
+376572e4-184b-4fd8-8d4a-2057c5b81cd8, com 100% do tráfego.
+Publicada em 10/11/2026 às 22:32, Fortaleza. Implementação 2f4aa07;
+repositório auditado em b4b9fe8, que acrescenta somente o registro da publicação.
+Os módulos examinados em web/ e no pacote dist/painel são idênticos.
+
+Foram usados o Worker real e SQLite isolado, com perfis/dados sintéticos, em
+Edge/Chromium. Tamanhos: 1366x900, 1366x768 e 809x1035. Para o mapa, também
+foram consultados nomes, tipos, INEP e coordenadas das unidades no D1 real,
+exclusivamente por SELECT. Essas coordenadas foram renderizadas localmente.
+Não houve escrita no banco oficial, alteração do aplicativo ou publicação.
+As planilhas originais não foram modificadas ou importadas.
+
+Esta verificação não equivale a repetir o tour autenticado completo em produção,
+nem a testar câmera, agente instalado, celulares físicos ou Drive real.
+As sugestões abaixo são propostas, não decisões novas de requisito.
+
+2. RESUMO DAS 20 SITUAÇÕES
+
+Confirmados:             11 — TP-02, 03, 06, 08, 09, 10, 11, 13, 16, 17, 18.
+Confirmados parcialmente: 2 — TP-04, TP-19.
+Não confirmados:          4 — TP-05, TP-07, TP-12, TP-15.
+Não reproduzidos:         2 — TP-01, TP-14.
+Conferência cadastral:    1 — TP-20.
+
+“Confirmado” não significa sempre erro de gravação ou cálculo: TP-09 e TP-17
+são comportamentos de navegação que podem ser refinados. Os dados não ficaram
+incorretos nesses testes. “Não reproduzido” também não significa “resolvido”.
+
+3. RESULTADO ITEM A ITEM
+
+TP-01 — Erro JavaScript no mapa: NÃO REPRODUZIDO, ainda aberto para diagnóstico.
+Executados 40 ciclos combinando ampliar, zoom, fechar, sair/voltar ao Panorama,
+mudança de largura e atualização do monitoramento, seguidos de 16 segundos de
+observação. Nenhum erro JavaScript nem falha de renderer foi capturado.
+O mapa terminou inicializado. A renderização adicional das 76 coordenadas reais
+também não gerou erro.
+O ponto do Leaflet citado no relatório realmente usa renderer._bounds.intersects.
+Isso não demonstra, por si, que a causa seja um marcador de mapa destruído.
+Não é correto afirmar que limpar current.markers ou adicionar try/catch resolve
+sem reproduzir o ciclo que perde os bounds. A falha relatada continua relevante.
+Próximo diagnóstico: registrar a sequência exata, versão carregada dos módulos,
+stack completo e estado do renderer no momento da falha. Não mascarar exceções
+nem desligar permanentemente a atualização dos alertas.
+Arquivos: web/desktop-map.js; web/vendor/leaflet/leaflet.js.
+
+TP-02 — Sobreposição de unidades no mapa: CONFIRMADO, prioridade alta.
+Usando as 76 unidades ativas consultadas no D1, zoom 12 e viewport 1366x900,
+18 centros de marcadores recebem o clique de outro marcador.
+Caso específico confirmado: com a SECRETARIA MUNICIPAL DE EDUCAÇÃO - SEMED
+selecionada, o marcador maior da SEMED cobre o centro da EMI ALANA LUDMILA;
+clicar nesse ponto entrega o ID da SEMED ao seletor.
+Sem a SEMED selecionada, no mesmo teste, o centro da ALANA selecionou a ALANA.
+Portanto, a seleção anterior e o raio maior do ponto selecionado influenciam.
+O evento não troca arbitrariamente o ID: o navegador acerta o desenho que está
+por cima. A interface precisa permitir distinguir unidades próximas.
+O nome ao passar o mouse JÁ existe, mas identifica o ponto que recebe o mouse,
+não consegue revelar sozinho o ponto coberto.
+Proposta: abrir uma escolha das unidades próximas ao clicar numa sobreposição,
+ou usar agrupamento com expansão. A escolha deve preservar alertas de hardware
+e os tipos/cores aprovados. Apenas colocar prédios administrativos atrás
+transferiria o problema para essas unidades.
+Arquivo: web/desktop-map.js, updateMarkers/paintHardware.
+
+TP-03 — Histórico de Ver dados parciais: CONFIRMADO.
+Teste: Panorama -> Coletas em andamento -> Ver dados parciais.
+O histórico tinha 3 entradas e continuou com 3 após abrir ?vistoria=... .
+Voltar do navegador levou ao Panorama, não à lista de coletas.
+setUrl usa history.replaceState tanto para abrir como para voltar à lista.
+Proposta: tratar abertura de detalhe como navegação, preservando popstate e
+sem adicionar entradas a cada atualização automática.
+Arquivo: web/desktop-progress.js, setUrl (linha 45 na versão auditada).
+
+TP-04 — Configurações sob o botão Menu fixo: PARCIALMENTE CONFIRMADO.
+Em 1366x900, sem rolar o menu expandido, a caixa geométrica de Configurações
+fica entre y=866 e y=906. O ponto central cai no botão Menu fixo.
+Entretanto, esse item está fora da parte visível da lista rolável. Ao rolar a
+navegação até o fim, fica entre y=792 e y=832 e é clicável normalmente.
+Em 1366x768, após rolar, também fica acessível, entre y=660 e y=700.
+O botão Menu fixo JÁ está fora do nav, como irmão dele no aside. A lista JÁ
+tem overflow-y:auto. Portanto, não se confirmou bloqueio permanente nem a
+ausência da separação estrutural sugerida no relatório.
+Proposta: melhorar indicação de rolagem/descoberta dos últimos itens, avaliar
+compactação e testar foco por teclado. Não diagnosticar todo elemento recortado
+fora da área rolável como uma sobreposição de controles visíveis.
+Arquivos: web/panel-shell.js; web/painel.css (.sidebar, .navigation, .rail-pin).
+
+TP-05 — Ver todas (0) não responde: NÃO CONFIRMADO como descrito.
+O botão existe e fica ativo, mas ao clicar exibiu:
+“Nenhuma fotografia de coleta concluída nesta unidade.”
+showAllPhotos consulta a API e produz esse aviso quando a lista está vazia.
+Desabilitar/ocultar o botão com zero é uma melhoria possível; não é ausência
+de tratamento no código atual. Um aviso mais destacado também pode ser avaliado.
+Arquivo: web/desktop.js, galleryPanel/showAllPhotos.
+
+TP-06 — Unidade escolhida se perde ao recarregar: CONFIRMADO.
+Em Ambientes, escolher outra unidade altera o estado, mas mantém /ambientes
+sem identificador. Após F5 voltou à primeira unidade do catálogo.
+No Panorama, o callback dos marcadores também só altera state.selected.
+O código lê ?id=... inicialmente; o problema é não atualizar a URL ao escolher.
+Proposta: persistir na URL o ID da seleção, tratar voltar/avançar e recarregar,
+sem colocar respostas de coleta ou credenciais no endereço.
+Arquivo: web/desktop.js, onSelect, unit-picker e inicialização de state.
+
+TP-07 — Busca vazia ou de um caractere sem retorno: NÃO CONFIRMADO.
+Clique real no botão, campo vazio: navegador mostrou “Preencha este campo.”
+Digitação real de “x” seguida de clique: “Aumente esse texto para 2 caracteres
+ou mais (você está usando 1 caractere no momento).” O foco foi para o campo.
+O input tem required e minlength=2; há ainda validação de texto aparado com
+mensagem própria no submit. A mensagem nativa não é um novo nó textual no DOM;
+uma inspeção limitada ao DOM pode não capturá-la.
+Proposta opcional: mensagem persistente junto ao campo, se desejado.
+Arquivo: web/panel-shell.js, formulário .search e submit.
+
+TP-08 — Faixa superior cortada em janela estreita: CONFIRMADO.
+Em 809 px, a área tem clientWidth 809 e scrollWidth 1259: sobram 450 px.
+Os itens finais ficam inicialmente fora da tela. A rolagem horizontal existe
+e funciona, mas a barra está explicitamente oculta no CSS.
+Proposta: tornar essa rolagem perceptível ou permitir quebra controlada.
+Não é necessário criar a rolagem do zero; é preciso tornar os itens descobertos.
+Arquivo: web/painel.css, .pulse e .pulse::-webkit-scrollbar.
+
+TP-09 — Célula zero abre consulta vazia: CONFIRMADO como comportamento.
+O botão 0 abriu a consulta com “Nenhum equipamento corresponde aos filtros.”
+Não foi erro de consulta ou contagem. Todas as células são botões atualmente.
+Proposta: tornar zero não acionável, mantendo número e acessibilidade, se o
+responsável preferir. Abrir a unidade inteira no clique em zero muda o destino
+da ação e precisa ser uma decisão explícita.
+Arquivo: web/desktop.js, matrixPanel.
+
+TP-10 — Ver detalhes dentro do próprio detalhe: CONFIRMADO.
+Em /unidade?id=..., o botão navegou para exatamente a mesma URL e acrescentou
+uma entrada ao histórico (6 -> 7 no teste).
+Proposta: não renderizar esse atalho dentro da própria tela de destino.
+Arquivo: web/desktop.js, selectedPanel/Detalhe da Unidade.
+
+TP-11 — Menus de ações de usuários ficam abertos: CONFIRMADO.
+Dois menus foram abertos. Após clicar fora, continuaram 2; após Esc, 2.
+São elementos details independentes, sem tratamento de exclusividade/fechamento.
+Nenhuma ação administrativa de escrita foi executada no teste.
+Proposta: um menu por vez, fechamento por clique externo e Esc com retorno
+de foco. Preservar as confirmações atuais de ações sensíveis.
+Arquivo: web/account.js, users; CSS .actions-menu.
+
+TP-12 — Validar e visualizar sem arquivo não avisa: NÃO CONFIRMADO.
+Com Importar planilha aberto e nenhum arquivo selecionado, apareceu:
+“Escolha uma planilha.”
+O campo #import-status tem role=status; o erro é tratado no catch do botão.
+Confirmar importação permaneceu desabilitado. Pode-se melhorar o destaque
+visual da mensagem, mas ela já existe e foi observada no navegador.
+Arquivo: web/admin-units.js, import-preview; web/account.html, import-status.
+
+TP-13 — Títulos inconsistentes: CONFIRMADO, cosmético.
+Cadastro/Usuários usam “Tela • SEMED”. Computadores/Demandas usam
+“SEMED · Operação e atendimento”; Busca, Log e Coletas pendentes têm outros
+títulos específicos. O HTML administrativo inicialmente traz Minha conta,
+substituído pelo account-shell após a identificação da rota/sessão.
+Proposta: padronizar títulos sem alterar URLs ou permissões.
+Arquivos: web/account.html, account-shell.js, operations.html e páginas específicas.
+
+TP-14 — Foto mostra erro durante navegação rápida: NÃO REPRODUZIDO.
+Executados 25 ciclos de abrir, próxima, anterior e fechar com imagens válidas
+e resposta atrasada, seguidos de nova abertura. O visualizador terminou com a
+imagem carregada; não apareceu aviso de erro nas imagens visíveis.
+Foram capturadas 25 requisições net::ERR_ABORTED nessa sequência, sem que
+elas gerassem o aviso indevido relatado.
+O código realmente trata todo evento error do elemento img como falha, mas
+uma requisição ERR_ABORTED por troca de imagem não prova que esse error foi
+entregue ao elemento atual. Não atribuir a causa ao cancelamento sem correlação.
+Não foram testadas as fotografias nem o Drive real neste cenário controlado.
+Próximo diagnóstico: correlacionar ID da foto atual, resposta HTTP, cancelamento
+e momento de abrir/fechar. Repetir automaticamente toda falha pode mascarar
+problemas de permissão ou armazenamento e aumentar tráfego.
+Arquivo: web/photo-viewer.js, listeners error/load e paint.
+
+TP-15 — Miniaturas sem nome acessível: NÃO CONFIRMADO.
+Na árvore de acessibilidade, a miniatura foi reconhecida como botão com nome
+“Computador desktop · TESTE · Laboratório · Mesa 1”, herdado do alt da imagem.
+O botão não tem aria-label, mas isso não significa que esteja sem nome acessível.
+Pode ser útil explicitar “Ampliar foto: ...” para descrever a ação; é melhoria
+de redação, não ausência comprovada de nome.
+Arquivo: web/desktop.js, galleryPanel/evidencePanel.
+
+TP-16 — Menu do usuário não fecha com Esc: CONFIRMADO.
+O menu continuou visível após Esc. Há fechamento por clique externo e pelo
+próprio botão, mas o handler de Esc cuida apenas do menu lateral móvel.
+Proposta: fechar também o menu do perfil e devolver foco ao acionador.
+Arquivo: web/panel-shell.js, profile-menu e keydown.
+
+TP-17 — Dois botões de voltar na busca: CONFIRMADO, com destinos diferentes.
+A ficha mostra “Voltar aos resultados” e “← Voltar à lista”. O primeiro encerra
+a consulta embutida e retorna à busca global; o segundo fecha só a ficha,
+deixando aberta a lista de equipamentos daquela unidade.
+Não são duas ações idênticas, embora os nomes sejam pouco claros no contexto.
+Proposta: esclarecer rótulos/hierarquia. Retirar um dos caminhos sem prever
+como o usuário retorna ao respectivo contexto pode piorar a navegação.
+Arquivos: web/panel-search.js; web/desktop-equipment.js.
+
+TP-18 — Sino mostra indisponibilidade ao ocultar aba: CONFIRMADO CONDICIONALMENTE.
+Ocultar a aba entre consultas não causou alerta. Ocultá-la com consulta em
+andamento fez o visibilitychange abortar a requisição; o catch tratou isso como
+timeout, exibindo “!” e “consulta indisponível”.
+Ao voltar, o código tenta consultar imediatamente; no teste o aviso desapareceu.
+Não se confirmou uma espera obrigatória de 15 segundos em toda retomada.
+Proposta: distinguir aborto intencional por aba oculta de timeout/falha real;
+conservar a última leitura com indicação adequada e atualizar ao retornar.
+Arquivo: web/desktop-notifications.js, poll/catch/visibility.
+
+TP-19 — Ausência de carregamento: PARCIALMENTE CONFIRMADO.
+Em Configurações -> Dados do agente, mantendo a resposta pendente por 250 ms,
+o botão permaneceu habilitado, não havia diálogo aberto nem mensagem de carga.
+showAgentStatus faz fetch antes de abrir o diálogo; é o mesmo caminho empregado
+nos botões de dados do agente das tabelas parciais.
+Já a consulta embutida de equipamentos tem “Carregando equipamentos…”, estado
+de consulta de fotos e agentLoading. Selecionar uma ficha da página já recebida
+renderiza os dados imediatamente. Portanto, não generalizar a falta de retorno
+para todas as ações “Ver ficha”. A duração real de 0,8–1 s não foi medida em
+produção nesta averiguação e não demonstra, sozinha, lentidão do D1.
+Proposta: estado de carregamento e prevenção de clique repetido nos caminhos
+sem retorno, preservando os que já tratam isso.
+Arquivos: web/desktop.js, showAgentStatus; web/desktop-equipment.js.
+
+TP-20 — Natureza da EM RAIO DE LUZ: CONFERÊNCIA CADASTRAL, não erro demonstrado.
+SELECT no D1 confirmou: EM RAIO DE LUZ, Escola municipal, ativa, INEP 21277478.
+O texto da placa foi informado no relatório externo, não validado por leitura
+da fotografia real nesta etapa. Placa antiga, conveniada ou municipalizada
+precisam de comprovação da administração; não inferir classificação pelo nome
+da escola ou pela fotografia. Nenhuma reclassificação foi realizada.
+
+4. CONFERÊNCIA DAS PLANILHAS
+
+MODELO_UNIDADES2.csv:
+- CSV UTF-8, separado por ponto e vírgula.
+- Uma linha: cabeçalho com 55 colunas; nenhuma unidade preenchida.
+
+MODELO_UNIDADES.xlsx:
+- Uma aba: Unidades. Intervalo de conteúdo: A1:BC1.
+- 55 cabeçalhos, nenhuma unidade preenchida, nenhuma fórmula.
+- Nenhum cabeçalho duplicado nem caractere de substituição no conteúdo.
+
+Os cabeçalhos dos dois arquivos são idênticos entre si e correspondem
+exatamente às 55 colunas de web/unit-schema.js, modelo ampliado D-090.
+As colunas opcionais de cadastro escolar estão presentes. CONTRATO permanece
+fora, conforme decisão anterior; Servidores contratados é outro conceito.
+
+Ao selecionar cada um dos arquivos e clicar em Validar e visualizar, a resposta
+foi “Use de 1 a 200 linhas de dados, além do cabeçalho.” Confirmar importação
+permaneceu desabilitado. Isso é correto: os arquivos são modelos vazios.
+Não há evidência de defeito de codificação ou incompatibilidade de cabeçalhos.
+Não foram testadas linhas reais preenchidas porque elas não existem nos anexos.
+
+5. ORDEM RECOMENDADA PARA UMA FUTURA CORREÇÃO
+
+Primeiro: TP-02, distinguir unidades próximas; TP-03 e TP-06, histórico e
+seleção; TP-18, falso aviso de indisponibilidade por cancelamento intencional.
+Manter TP-01 sob diagnóstico prioritário, sem declarar causa confirmada.
+
+Depois: TP-08, faixa superior; TP-11 e TP-16, fechar menus; TP-10, atalho para
+a própria tela; TP-19, carregamento nos caminhos que ainda não o indicam.
+
+Refinamento de interface: TP-04, descoberta da rolagem do menu; TP-09, células
+zero; TP-13, títulos; TP-17, clareza dos dois retornos.
+
+Não corrigir como defeito comprovado o que já respondeu nos testes: TP-05,
+TP-07, TP-12 e TP-15. Qualquer melhoria visual nesses pontos deve ser descrita
+como tal. TP-14 exige reprodução adicional; TP-20 exige conferência da origem.
+
+Decisões que podem ser necessárias antes de implementar:
+- Mapa: seletor das unidades próximas ou agrupamento com expansão.
+- Células zero: manter consulta vazia ou deixar o zero não clicável.
+- Navegação da busca: preservar os dois níveis com rótulos claros, ou redefinir
+  a experiência sem perder acesso aos resultados globais e à lista da unidade.
+As demais correções técnicas não exigem inventar regras de dados ou permissões.
+
+6. EVIDÊNCIAS E INTEGRIDADE
+
+Artefatos locais em private-data/auditoria-tour-2026-11-11/:
+- verificar.cjs / resultado.json: testes de controles e navegação.
+- map-stress.cjs / map-stress.json: 40 ciclos, sem erro reproduzido.
+- map-real-coordinates.cjs / map-real-coordinates.json: sobreposição real
+  renderizada em ambiente local, sem gravação de dados oficiais.
+- async-cases.cjs / async-cases.json: aba oculta e navegação rápida de fotos.
+- TP-*.png: capturas de controles e respostas observadas.
+- sheet-headers.json: cabeçalhos extraídos, comparados ao esquema.
+- unidades-readonly.json e versao-producao.json: leituras operacionais privadas.
+
+Esses arquivos privados não foram adicionados ao Git nem incluídos no build.
+As capturas com dados sintéticos estão identificadas como auditoria local.
+Os dados oficiais consultados não se tornaram exemplos ou constantes do código.
+
+SHA-256 dos anexos originais:
+AVERIGUACAO_TOUR_PAINEL_2026-11-11.txt
+8e734527b626069a3d286464088017b991a9683fa033854f61ccbd80bf28d8bb
+MODELO_UNIDADES2.csv
+1594f4f2cf4a6f4b1c82934d4ef46646efd46668c545ceb5b90c9805b3b45a98
+MODELO_UNIDADES.xlsx
+0d5ffa09856f2c738db9e61b60109d8cf99ddff1393af33c46dade21bcb56d64
+
+Conclusão desta etapa: comportamentos averiguados e diferenças do relatório
+registradas. Nenhuma correção foi declarada implantada nesta auditoria.

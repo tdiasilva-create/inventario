@@ -1,0 +1,85 @@
+FLUXOS QUE O NOVO VISUAL DEVE EXPLICAR E PRESERVAR
+
+LOGIN E PAPÉIS
+Root/admin/operador podem coletar. Visualizador não coleta. Atendimento exige
+habilitação individual pelo root independentemente do perfil. Login inicial
+com senha provisória exige troca. Não criar papel novo nem auto-habilitar root.
+Session cookie HttpOnly/Secure/SameSite Strict, CSRF em escritas; servidor decide.
+Sessão expirada exige mesmo usuário para retomar conteúdo em RAM, novo CSRF,
+nova trava e confronto de versão. Outro usuário não recebe as respostas locais.
+
+UNIDADE E VISITA
+Lista imediata; busca opcional. Somente unidade oficial ativa e elegível,
+obras e conveniadas fora. Nenhuma escola fictícia deve ir ao banco real.
+Selecionar inicia/retoma uma visita V3; visita antiga não é convertida/apagada
+silenciosamente. Operador não é proprietário permanente da unidade.
+Sequência recomendada: fachada → acompanhante → internet → Wi-Fi → ambientes →
+computadores → impressoras → outros → problemas → revisão. Categorias livres.
+
+PERGUNTAS A/C/D/H
+Input/change altera RAM; debounce atual 600 ms para fila de rascunho. Por assunto,
+send congela payload/versão; reconcilia leitura em resposta perdida. Navegar não
+deve atribuir um blur tardio ao assunto seguinte. Salvar rascunho aguarda envio.
+Não confundir “em envio”, “recebido”, “falhou” e “resultado desconhecido”.
+Concluir assunto valida e grava estado manualmente. Reabrir pede confirmação.
+Assunto concluído acessado por URL fica somente leitura até reabrir.
+
+AMBIENTES
+Criar/renomear com ID da mesma unidade, catálogo consultado ao abrir/atualizar.
+Equipamento usa environmentId, não deduz ID pelo nome. Não fundir grafias parecidas.
+Dois operadores podem trabalhar na unidade; a ficha é protegida por trava/versão.
+Renomear mantém fotos, equipamentos e autoria. Cadastrar ambiente não é concluir B.
+
+EQUIPAMENTO
+Uma ficha por equipamento, ID permanente e quantidade=1. Não impor limite de 20,
+40 ou 100 máquinas por escola; paginar (50 por página no endpoint atual).
+Computador: tipo opcional, ambiente/posição, modo Agente/Manual, motivo manual,
+estado de patrimônio (sem coletar número), funcionamento e problema condicional.
+AnyDesk/RustDesk opcionais: texto de dígitos, preservar zeros. Não são senhas.
+Impressora entra diretamente na lista, ambiente, marca/modelo, funcionamento,
+origem/aquisição/suprimentos/conexão/IP conforme catálogo atual.
+Outros têm descrição opcional e foto opcional; não inventar ambiente obrigatório.
+Salvar ficha ≠ concluir assunto ≠ concluir visita ≠ inventário completo da unidade.
+Digitar equipamento NÃO faz autosave completo. Foto/QR podem criar rascunho mínimo.
+O aviso precisa deixar claro quando ainda falta Salvar equipamento.
+Voltar conserva a ficha em RAM e permite Retomar, mas não promete persistência.
+Nova ficha/abrir outra pede descarte quando há alteração não enviada.
+Excluir equipamento pelo operador não foi aprovado; root exclui no painel com
+prévia/motivo/arquivo histórico. Não acrescentar Apagar no coletor por conveniência.
+
+QR / AGENTE
+Ler QR → validar formato/expiração → prévia do servidor → ambiente/posição →
+salvar rascunho mínimo → vincular via claim com request_id → confirmação do servidor.
+Prévia não cria vínculo; upload não cria vínculo; scan não conclui assunto.
+Não exigir comparação de código visual (decisão D057). Não gerar QR fictício válido.
+Falha depois de enviar: consultar recibo e repetir MESMO comando/request_id.
+Não criar outro ID para contornar timeout. Duplicado, outro vínculo, expirado,
+revogado, trava e conflito de versão precisam de mensagens e ações específicas.
+Troca de localização mantém histórico; não exige motivo do operador no fluxo atual.
+Revisita oferece Editar; não reintroduzir conferência de todos os equipamentos.
+
+FOTOS
+Câmera/galeria, envio automático, até cinco por registro/visita. Reenvio conserva
+photoId; upload ready com SHA retornado, depois thumbnail; falha de miniatura não
+transforma original recebido em foto perdida. Original privado no Drive.
+Computador/ambiente/outros/ocorrência: opcionais no catálogo atual. Fachada e
+impressora iniciais: obrigatórias para conclusão quando não há evidência válida.
+Histórico válido dispensa repetir na revisita; conferir regras de alteração.
+Foto vinculada a target_kind/target_id/inspectionId da unidade correta.
+Prévia e JPEG preparado vivem na RAM; limite agregado atual 40 MiB. Sem vídeos,
+documentos ou pintura em fotos. Não converter estado “prévia” em “recebida”.
+
+REVISÃO E PAINEL
+Servidor retorna pending[] por causa/ficha, fields e action. Abrir pendência leva
+ao ID exato. Se veio da revisão, salvar retorna à revisão atualizada.
+Erro 422/400 não pode virar só botão desabilitado sem motivo. Revisão final usa
+revision contra alteração concorrente. Contagem é de ações, NÃO porcentagem.
+Visita concluída pode alimentar inventário publicado; rascunhos recebidos também
+aparecem no painel como parciais nos contextos definidos. D111/D112: classificação
+Sem dados/Parcial/Completa é separada, Completa permanece até root mudar.
+
+LOCALIZAÇÃO NO APP
+Trocar para Coleta não encerra a localização já ativa na fila técnica. Abrir Coleta
+sozinho não inicia GPS. Credencial restrita continua após expirar login, mas só
+para localização; nunca autoriza coleta ou acesso gerencial. Logout/revogação/
+fim de todas as atribuições encerra conforme D114. Não ampliar período rastreado.

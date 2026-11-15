@@ -1,0 +1,77 @@
+SEMED — PILOTO DO AGENTE COM TESTE DE INTERNET — 0.1.9-rc2
+Estado: API e painel publicados em 14/11/2026 às 17:47 (Fortaleza).
+Rc2 instalado no DESKTOP-HOJK7JH às 18:41 de 14/11/2026. Serviço ativo,
+cadastro aceito e QR disponível. Falta vincular à unidade e executar os testes.
+NÃO USAR rc1: falha de instalação no PowerShell 5.1 corrigida no rc2.
+
+PAINEL (entrar como root):
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/testes-internet
+
+INSTALADOR:
+C:\Users\SIGAE\Downloads\SEMED_PILOTO_INTERNET_0_1_9\SemedAgente-Instalador-0.1.9-rc2.exe
+SHA-256: 516186FB12A9CF82EDD996A215772BB7853DF58F973FD1D1FE483F672C5645F8
+
+1. PRÉ-REQUISITOS
+Publicação autorizada e concluída: migração 0034 e dois Workers.
+A nova função está habilitada para root; o teste usa speed.cloudflare.com.
+Escolher UMA máquina Windows x64 vinculada, fora de um atendimento crítico.
+Não começar pelas 200 máquinas. Não desinstalar, não usar PURGE, não apagar a chave.
+
+2. ANTES DA ATUALIZAÇÃO
+Copiar diagnóstico do agente: hostname, ID/vínculo, escola, ambiente e pendências.
+Guardar sem senhas ou códigos QR ativos em relatório público.
+Verificar se o agente está ativo; atualização não reativa instalação revogada.
+
+3. ATUALIZAR
+Executar SemedAgente-Instalador-0.1.9-rc2.exe como administrador.
+Conferir SHA-256 no registro da entrega. Pacote não tem assinatura Authenticode.
+Se houver erro de hash/caminho/conta de serviço, parar e entregar o texto do erro.
+O instalador deve preservar a identidade, dados pendentes e associação existente.
+Ele guarda o Core anterior em backup dentro da pasta da instalação.
+Interface/serviço originais têm algumas etiquetas 0.1.8; núcleo reporta 0.1.9.
+
+4. CONFERIR COMUNICAÇÃO
+Abrir o agente e copiar diagnóstico novamente. Mesma escola/ambiente e identidade.
+No painel, Testes de internet deve habilitar Selecionar após o novo heartbeat.
+Se aparecer Atualização necessária, aguardar a comunicação periódica.
+Não cadastrar outra ficha nem ler outro QR para atualizar máquina já vinculada.
+
+5. TESTE LEVE
+Selecionar a máquina, escolher Verificação leve e Solicitar teste uma vez.
+Histórico primeiro: Aguardando agente. Atualizar para acompanhar.
+Após execução: Concluído, IP público, rede identificada, latência e variação.
+Download/upload ficam vazios nesse modo; não devem mostrar zero inventado.
+
+6. TESTE DE VELOCIDADE
+Aguardar cinco minutos entre pedidos da mesma unidade.
+Escolher horário sem videoconferência/trabalho sensível. Teste usa até 40 MiB e 45 s.
+Selecionar Velocidade. Conferir resultado completo de download/upload e horário.
+Se detectar tráfego local, deve recusar com motivo; nunca inventar medição.
+O valor é amostra da máquina naquele momento, não velocidade contratada.
+Não classifica automaticamente como dedicado/banda larga. Wi-Fi/VPN/proxy podem interferir.
+
+7. CANCELAMENTO E FALHAS
+Cancelar um pedido ainda na fila: não pode medir depois.
+Cancelar durante execução: próximo controle deve interromper; histórico Cancelado.
+Máquina offline: aguarda, expira em 30 min; não mostrar velocidade zero.
+Se cair conexão após medir: resultado aguarda retorno; não deve repetir tráfego.
+Após reiniciar serviço no meio do teste: registrar falha/interrupção, sem repetir.
+Resultado pode chegar com atraso por até 24 h. Mesmo resultado não cria linha duplicada.
+
+8. PERMISSÕES E REGRESSÕES
+Operador/visualizador/admin não podem disparar este teste; somente root.
+Localização dos técnicos, fotos, coleta e alertas de hardware devem continuar iguais.
+Uma unidade não deve executar testes simultâneos em vários computadores.
+IP interno continua separado do IP público. Sem novos alertas de hardware por troca de IP.
+
+9. INSTALAÇÃO NOVA — SOMENTE DEPOIS DO TESTE DE ATUALIZAÇÃO
+Usar máquina designada sem identidade anterior. Instalar, aguardar cadastro automático,
+ler QR pelo coletor e vincular à ficha/unidade correta. Conferir inventário e heartbeat.
+Nenhum passo deve pedir autorização individual de lote quando o cadastro automático estiver ativo.
+
+10. RELATO
+Data/hora Fortaleza; Windows/modelo; versão do núcleo; escola/ambiente; resultado observado;
+tempo de espera; mensagem exata de erro; se o trabalho sofreu impacto; print do painel.
+Não enviar senhas, chaves privadas ou QR ainda válido.
+
+Após esses testes o responsável decide a liberação da distribuição geral.

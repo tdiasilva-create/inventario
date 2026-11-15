@@ -1,0 +1,742 @@
+SEMED — MANUAL COMPLETO DO APLICATIVO DO TÉCNICO
+Transferência para redesenho externo · 13/11/2026
+Classificação: descrição do código atual e recomendações identificadas.
+
+ÍNDICE
+01 Escopo e objetivo
+02 Fontes e precedência
+03 Arquitetura e tecnologias
+04 Identidade, distribuição e endereços
+05 Usuários, habilitação e permissões
+06 Regras de demandas e equipe
+07 Mapa completo de telas
+08 Conteúdo exato do cartão de demanda
+09 Fluxos de ações e efeitos
+10 Estados que não podem ser confundidos
+11 Localização: funcionamento real
+12 Mudança de localização solicitada e adiada
+13 Rotas, mapa do root e avatares
+14 Avisos e notificações Android
+15 Aparência atual e componentes
+16 Problemas de experiência observáveis no código
+17 Recomendações para o novo desenho
+18 Teclado, rolagem e acessibilidade
+19 Desempenho, rede, bateria e D1
+20 Falhas, concorrência e recuperação
+21 Informações existentes, ausentes e futuras
+22 Segurança e privacidade a preservar
+23 Arquivos e pontos de integração
+24 Build, assinatura, atualização e publicação
+25 O que se pode redesenhar e o que exige decisão
+26 Como trabalhar em outro ambiente
+27 O que deve voltar no novo pacote
+28 Evidências e limites de garantia
+
+==========================================================================
+01. ESCOPO E OBJETIVO
+==========================================================================
+O técnico recebe demandas atribuídas pelo root, consulta a sequência, aceita
+um atendimento com localização disponível, abre navegação externa e registra
+observação, impedimento, pausa ou conclusão. A interface precisa ser simples
+para uso em campo, com uma mão e sob condições de rede variáveis.
+
+Há quatro componentes diferentes no sistema:
+- Painel desktop: consulta, gestão, organização e acompanhamento pelo root.
+- Coletor de inventário: questionários, equipamentos, ambientes, fotos e QR.
+- App do técnico: execução de demandas já registradas e atribuídas.
+- Agente Windows: telemetria dos computadores instalados nas unidades.
+
+Este trabalho é somente sobre o terceiro componente e suas interfaces com o
+primeiro. Não colocar formulários do inventário, monitoramento Windows ou
+administração de usuários dentro do app do técnico.
+
+==========================================================================
+02. FONTES E PRECEDÊNCIA
+==========================================================================
+Foram consultados o código do app, serviço Android, APIs, migrações, testes e
+os documentos operacionais correspondentes. Arquivos principais:
+- 00_LEIA_ANTES_DE_TUDO.md; AGENTS.md;
+- docs/00-governanca/REGRAS_DE_PRECEDENCIA.md;
+- trechos D-096 e D-105 a D-110 de DECISOES.md;
+- registros pertinentes de PENDENCIAS.md e CONFLITOS_DOCUMENTAIS.md;
+- docs/03-painel-desktop/ROTEIRO_TECNICO_D105.md;
+- docs/03-painel-desktop/ROTAS_PELAS_RUAS_D106.md;
+- docs/03-painel-desktop/AVATARES_TECNICOS_D107.md;
+- docs/04-dados-apis/ORCAMENTO_D1_D108.md;
+- docs/07-operacao/11_ESTADO_ATUAL_D110.md;
+- android/technician/README.md;
+- web/technician.html, technician.css e technician.js;
+- server/technical-dispatch.mjs e rotas de autenticação em worker.mjs;
+- AndroidManifest.xml, MainActivity.java, LocationService.java, Api.java,
+  NoticeJob.java; scripts/build-technician-android.mjs;
+- migrações 0027, 0028 e 0029; testes de atendimento, rotas e avatares;
+- docs/05-qualidade/ROTEIRO_TECNICO_2026-11-12.md e roteiro de campo D105.
+
+D-105 contém propostas antigas seguidas de um adendo de implementação. Ler o
+adendo; não tratar todos os pontos originalmente abertos como ainda abertos.
+D-106 substituiu linhas retas por rotas pelas ruas no painel. D-107 adicionou
+avatares. D-108 a D-110 trataram consumo de banco sem mudar o APK.
+
+A solicitação atual é preparar a transferência. Não há nesta entrega nova
+regra de localização, novo APK, migração ou publicação.
+
+==========================================================================
+03. ARQUITETURA E TECNOLOGIAS
+==========================================================================
+Fluxo simplificado:
+Root no painel -> demandas/atribuições/ordem no D1 -> API do painel -> app.
+App -> aceite/ações/última posição -> API -> D1 -> mapa/histórico no painel.
+
+Frontend: HTML, CSS e JavaScript sem React, Vue, Flutter ou React Native.
+web/technician.js monta telas por innerHTML e delegação de eventos.
+APK: Java Android nativo contendo WebView. As telas vêm do servidor HTTPS;
+não são telas compiladas em XML nativo e não estão todas embutidas no APK.
+Funções nativas: obter GPS, serviço de localização e avisos periódicos.
+Backend: Worker Cloudflare do PAINEL, compartilhando o D1 com o inventário.
+Autenticação: sessão por cookie HttpOnly e CSRF nas escritas.
+Fotos de inventário/avatares: provedor privado atual; o app técnico não tem
+fluxo próprio de anexar evidências fotográficas nesta versão.
+
+Mudar HTML/CSS/JS no servidor muda a aparência carregada pelo APK compatível.
+Mudar Java, permissões, pacote ou comportamento nativo exige novo APK.
+Reescrever em outra stack é possível como proposta; não é exigência deste
+pedido e exige reproduzir os contratos, acesso e comportamento nativo.
+
+==========================================================================
+04. IDENTIDADE, DISTRIBUIÇÃO E ENDEREÇOS
+==========================================================================
+Nome: SEMED Técnico. Pacote Android: br.gov.ma.pacodolumiar.semed.tecnico.
+Manifesto atual: versionCode 1, versionName 1.0.0, minSdk 26, targetSdk 35.
+O README descreve suporte Android 8+; confirmar a compatibilidade no aparelho
+e na versão instalada do Android System WebView, não só pelo minSdk.
+
+App web:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico
+APK:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/tecnico/SEMED-Tecnico.apk
+Root organiza:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/roteiro-demandas
+
+/tecnico/login e /tecnico/conta servem o mesmo HTML técnico. A tela interna é
+decidida pelo estado de autenticação; não há roteador completo por demanda.
+Fila/Concluídos/Avisos são modos em memória, não URLs individuais de fichas.
+Reabrir/recarregar retorna ao fluxo inicial e à primeira página da fila.
+
+Api.java contém o host HTTPS do painel fixo. Não trocar para o host do coletor.
+O pacote Windows e o APK Android são produtos diferentes.
+
+==========================================================================
+05. USUÁRIOS, HABILITAÇÃO E PERMISSÕES
+==========================================================================
+Os quatro perfis root/admin/operador/visualizador continuam existindo.
+Ser técnico é uma habilitação adicional individual, não um quinto perfil.
+Somente root habilita/desabilita técnicos e organiza atribuições/ordem/mapa.
+Uma conta root também precisa estar habilitada se quiser usar o app técnico.
+Operador habilitado pode usar seus atendimentos sem receber o painel gerencial.
+
+Login envia application: "technician". O servidor confirma conta ativa,
+senha válida, validade da provisória e habilitação técnica. Só esconder menus
+não constitui controle de acesso.
+
+Primeiro acesso: troca da senha provisória, 6–256 caracteres, composição livre;
+senha definitiva precisa ser diferente da provisória. Após trocar, entrar
+novamente. A expiração da sessão vem da configuração do servidor; não existe
+uma credencial técnica permanente dentro do APK.
+
+Cada técnico consulta apenas suas atribuições atuais. Root organiza todas.
+Sair, desativar conta, retirar habilitação, revogar sessão ou retirar a
+atribuição pode encerrar o acompanhamento. Esses bloqueios são do servidor.
+
+==========================================================================
+06. REGRAS DE DEMANDAS E EQUIPE
+==========================================================================
+- Root organiza uma fila global por arraste vertical ou setas.
+- Cada demanda aceita de zero a dois técnicos distintos habilitados.
+- A fila do técnico é o subconjunto atribuído a ele, preservando a ordem global.
+- Cada técnico pode ter somente um atendimento ativo por vez.
+- Dois técnicos podem participar da mesma demanda.
+- Qualquer um dos dois atribuídos pode concluir a demanda para a equipe,
+  desde que haja atendimento iniciado; o autor fica registrado.
+- Retirar/alterar atribuições não apaga o histórico anterior.
+- Concluir atendimento não remove a demanda do banco: ela vai para concluídos.
+- Não existe edição da ordem pelo técnico.
+
+ATENÇÃO: atualmente a ordem ORIENTA a fila, mas o servidor não exige que o
+técnico aceite a primeira demanda. Se não tiver outra ativa, ele consegue
+aceitar uma demanda posterior. Não desenhar um cadeado de ordem obrigatória
+como se essa regra já existisse. Mudar isso exige decisão própria.
+
+Estados administrativos presentes em service_requests:
+Aberta; Em atendimento; Aguardando material; Visita agendada; Concluída.
+O app não tem um seletor livre para esses estados. Aceitar muda para Em
+atendimento; concluir muda para Concluída. Observação/impedimento/pausa não
+convertem automaticamente o estado em Aguardando material ou Visita agendada.
+
+==========================================================================
+07. MAPA COMPLETO DE TELAS
+==========================================================================
+T01 — Inicialização
+Cabeçalho SEMED · TÉCNICO. Texto "Verificando acesso…". Consulta /auth/me.
+Pode seguir para login, troca obrigatória, fila ou mensagem de acesso negado.
+Não apresentar fila vazia enquanto a consulta ainda não terminou.
+
+T02 — Login
+Título Atendimento técnico; explicação sobre conta habilitada pelo root.
+Campos Usuário e Senha; botão Entrar. Autocomplete apropriado de credenciais.
+Não há autocadastro, login Google, CPF, matrícula ou recuperação por e-mail.
+Tratamento de senha e conta é o fluxo institucional existente.
+
+T03 — Defina sua senha
+Senha provisória, Nova senha e Salvar senha. Sem confirmação repetida atual.
+Validação do servidor prevalece. Sucesso encerra sessão e pede novo login.
+
+T04 — Fila / Meus atendimentos
+Nome do usuário; orientação de seguir a sequência; navegação Fila, Concluídos,
+Avisos (quantidade), Atualizar; cartões atribuídos; Mostrar mais quando houver.
+Cabeçalho tem Sair. No navegador aparece link Baixar aplicativo Android.
+No APK, a presença da ponte SemedNative oculta esse link.
+
+T05 — Fila com atendimento próprio ativo
+Mesmo cartão com borda verde-petróleo e aviso de localização. Ação principal
+Concluir atendimento; secundárias Traçar rota, Observação, Impedimento e
+Interromper / pausar. Outros cartões continuam visíveis; outro aceite poderá
+ser recusado pelo servidor por já existir uma atividade.
+
+T06 — Fila com colega ativo
+Se outro integrante aceitou, aparece Concluir pela equipe para o atribuído
+ainda não ativo. Não significa que todos estão compartilhando localização.
+
+T07 — Modal Registrar observação
+Textarea até 2.000 caracteres, Cancelar e Confirmar. Texto não vazio obrigatório.
+Escape/cancelamento não envia. Confirmação fecha o diálogo antes da resposta
+HTTP; há limitações de recuperação descritas adiante.
+
+T08 — Modal Registrar impedimento
+Mesma estrutura de observação. Registra motivo no histórico, mas não pausa
+automaticamente nem altera o status para Aguardando material.
+
+T09 — Modal Concluir atendimento?
+Texto informa autoria e encerramento da localização para a equipe.
+Cancelar/Confirmar, sem obrigar relato escrito. Concluir é uma escrita real.
+
+T10 — Concluídos
+Demandas concluídas ainda vinculadas por atribuição ao usuário, em ordem de
+atualização decrescente; cartões sem ações operacionais de atendimento.
+Não é arquivo global de tudo que o técnico já tocou se sua atribuição terminou.
+
+T11 — Avisos
+Até 30 notificações recentes, mensagem e data/hora local pt-BR; não lidas têm
+marca vermelha. Abrir essa seção chama confirmação de leitura até o maior ID.
+Não há paginação do histórico de avisos nem botão por aviso abrindo uma ficha.
+
+T12 — Vazio
+"Nenhuma demanda nesta lista" ou "Nenhum aviso". Não confundir com erro de
+permissão, falha de rede, limite D1 ou consulta em andamento.
+
+T13 — Falhas
+Mensagens em #status (role=status), no fim do conteúdo. Algumas falhas de
+inicialização mostram título Acesso técnico e mensagem. Uma sessão expirada
+retorna ao login. Não há painel nativo completo de reconexão nesta versão.
+
+T14 — Sistema operacional / aplicativo externo
+Permissão GPS; permissão de notificações Android 13+; notificação persistente
+durante atendimento; navegação Google Maps/similar; ajustes de localização.
+Essas superfícies não são reproduzidas por CSS. Captura no navegador não prova
+o funcionamento nem a aparência nativa no aparelho.
+
+==========================================================================
+08. CONTEÚDO EXATO DO CARTÃO DE DEMANDA
+==========================================================================
+O cartão usa:
+- posição na fila do próprio usuário (i+1) e número humano da demanda;
+- nome atual da unidade, com fallback para o nome registrado no contexto;
+- status textual da demanda;
+- descrição do problema;
+- hostname, ambiente e posição do equipamento quando existirem no contexto;
+- nomes dos técnicos da equipe;
+- indicação de atendimento próprio ativo;
+- botões disponíveis conforme a condição;
+- aviso de ausência de coordenadas quando não puder abrir rota.
+
+IDs UUID são as chaves de ação; número da demanda é identificação de leitura.
+Nome/hostname podem mudar e não devem ser usados como chave de gravação.
+Algumas demandas não têm equipamento: podem ser visita ou pedido da unidade.
+Texto de contexto é histórico; current_unit_name é nome atual. Não reescrever
+automaticamente dados históricos ao fazer um novo cartão.
+
+A resposta contém outros campos (tipo, origem, responsável textual, agendamento,
+autores, versão), mas isso não significa que todos aparecem hoje na interface.
+Se passar a exibir algum deles, explicar a fonte e não inferir valor ausente.
+
+==========================================================================
+09. FLUXOS DE AÇÕES E EFEITOS
+==========================================================================
+Aceitar e iniciar:
+1. Obter posição atual e permissão.
+2. Enviar ID da demanda, versão, operationId, note vazio e posição.
+3. Servidor verifica atribuição, sessão, GPS e ausência de outro atendimento.
+4. Transação cria atendimento, primeira posição, eventos e status.
+5. Recarregar fila/atendimento; iniciar serviço nativo ou watchPosition web.
+Não mostrar aceite concluído antes da confirmação HTTP do servidor.
+
+Traçar rota:
+Abre URL HTTPS Google Maps com destination=latitude,longitude e modo driving.
+No APK, navegação externa via Intent. Não conclui/aceita nem muda a fila.
+A tela não incorpora um mapa de gestão e não desenha toda a fila no celular.
+
+Observação / Impedimento:
+Texto obrigatório e até 2.000 caracteres; grava evento e incrementa versão.
+Não encerra GPS por si só. Não adiciona foto, áudio ou arquivo na versão atual.
+
+Interromper / pausar:
+Ação atual sem modal próprio. Encerra acompanhamento individual, remove sua
+posição e mantém demanda não concluída. Status textual pode continuar Em
+atendimento. Retomar é um novo aceite; não é continuidade do mesmo attendanceId.
+
+Concluir / Concluir pela equipe:
+Confirmar modal -> servidor conclui -> encerra atendimentos associados e remove
+posições -> frontend interrompe acompanhamento e consulta fila novamente.
+Qualquer um dos dois pode concluir; não são necessárias duas confirmações.
+Não avança automaticamente para o aceite da próxima demanda.
+
+Atualizar:
+Reconsulta a primeira página do modo atual. Não grava resposta de atendimento.
+
+Mostrar mais:
+Consulta offset seguinte e concatena. Atualização periódica/manual posterior
+retorna à primeira página atualmente; registrar essa limitação no redesenho.
+
+Sair:
+Interrompe localização no cliente, encerra sessão no servidor e cancela avisos
+nativos após sucesso. Se logout HTTP falhar, a interface informa erro, mas o
+cliente já pediu a interrupção. Não fingir que a sessão foi revogada nesse caso.
+
+==========================================================================
+10. ESTADOS QUE NÃO PODEM SER CONFUNDIDOS
+==========================================================================
+Atribuída: root indicou a conta; não iniciou GPS.
+Aceita/ativa: existe atendimento individual e sessão correspondente válida.
+Em atendimento: status da demanda; não prova que há GPS ativo neste momento.
+Pausada: atendimento individual encerrado; não é um estado administrativo novo.
+Impedimento: registro de dificuldade; não é conclusão ou pausa automática.
+Concluída: fim da demanda para a equipe, com autoria.
+Aviso lido: confirmação de leitura; não resolve demanda.
+Sem posição recente: GPS/rede/sessão podem ter falhado; não conclui atendimento.
+Rota disponível: cálculo de ruas no painel; não prova que o técnico percorreu.
+
+==========================================================================
+11. LOCALIZAÇÃO: FUNCIONAMENTO REAL
+==========================================================================
+A localização é vinculada a UM attendanceId, à conta e à sessão que aceitou.
+Não é atualmente um turno, uma jornada ou sessão de roteiro inteira.
+
+Pré-condição de aceite no servidor:
+- latitude/longitude numéricas finitas, limites geográficos válidos;
+- accuracy > 0 e <= 5.000 metros;
+- observedAt em milissegundos, não anterior a 90 s nem futuro além de 30 s.
+O Android busca uma primeira posição de até 60 s e espera até 20 s.
+O JavaScript aguarda callback nativo até 25 s; navegador aguarda até 20 s.
+A precisão aceita é limite técnico, não promessa de localização exata.
+
+APK:
+- MainActivity inicia LocationService com atendimento e CSRF.
+- Serviço foreground location mostra notificação persistente visível.
+- Solicita atualizações GPS/rede com parâmetros 15 s e 10 m.
+- A cada aproximadamente 25 s valida atendimento ativo e tenta enviar posição.
+- Só envia uma posição com até 90 s; não grava trilha offline em arquivo.
+- 401/403, atendimento encerrado/trocado e certas respostas 409 param serviço.
+- Mais de 180 s sem confirmar autorização por falhas também para serviço.
+- START_NOT_STICKY: não há recuperação automática implementada para processo
+  morto. Não há receiver para reiniciar rastreamento no boot.
+
+Navegador:
+Usa getCurrentPosition/watchPosition. O envio ocorre conforme callbacks, sem
+o temporizador fixo de 25 s do Java. Há proteção contra POSTs simultâneos.
+Não prometer acompanhamento confiável com navegador fechado/tela bloqueada.
+
+Servidor/painel:
+Guarda somente última posição por atendimento. Depois de aproximadamente 180 s
+sem posição recente, marcador não aparece como ativo. Cron limpa posições
+vencidas. Conclusão/pausa/retirada/logout/sessão inválida encerram o vínculo.
+Sessão expirada não pode continuar enviando por estar com APK instalado.
+
+Minimizar a Activity não chama stopService diretamente no onDestroy; existe
+serviço separado para continuidade. Isso não é homologação física de bateria,
+fabricante, tela bloqueada ou remoção da lista de apps recentes.
+
+==========================================================================
+12. MUDANÇA DE LOCALIZAÇÃO SOLICITADA E ADIADA
+==========================================================================
+Desejo informado em 13/11: depois do primeiro aceite, continuar visível mesmo
+com app fechado, entre demandas, enquanto existirem atribuições sem feedback.
+Logo após a análise, o responsável disse "ainda não faremos" para primeiro
+rever aparência e experiência do usuário. NÃO IMPLEMENTAR nesta proposta visual.
+
+Hoje concluir a demanda ativa retira a posição mesmo havendo outras na fila.
+Ainda precisarão ser definidos: o que conta como feedback final, impedimentos,
+pausa explícita, retirada da última atribuição, expiração, retomada, reinício,
+posição antiga versus ao vivo, permissão Android e consumo de bateria/dados.
+Não trocar a regra só para fazer a nova tela parecer contínua.
+
+Se esse tema voltar, exige modelagem de ciclo de acompanhamento no servidor,
+ajustes Android, estado claro no mapa e testes físicos. Só CSS/HTML não resolve.
+Não é possível garantir localização ao vivo sem posição/conexão, nem impedir
+o usuário de parar o aplicativo pelos controles do Android.
+
+==========================================================================
+13. ROTAS, MAPA DO ROOT E AVATARES
+==========================================================================
+No PAINEL do root, D-106 calcula ruas a partir da última posição recente até
+as demandas abertas atribuídas, na ordem global do root; não otimiza a ordem.
+Usa OSRM/FOSSGIS autorizado. Se aceitou fora da ordem, a rota do painel não
+promove automaticamente a demanda aceita para a primeira posição.
+
+Recalcula por alteração de paradas/ordem, deslocamento >=75 m ou cálculo com
+dois minutos. Limites/cache globais preservados; falha não vira linha reta.
+Sem coordenadas de parada, não inventar destino nem pular silenciosamente.
+Não consultar OSRM diretamente por cartão/tecla/render do app técnico.
+
+Avatares são cadastrados somente pelo root, guardados privadamente e exibidos
+no marcador desktop. Técnico não possui hoje tela própria para trocar avatar.
+Não criar acesso público ao Drive nem puxar a imagem pelo endpoint root no app.
+O quadro superior esquerdo de seleção de técnicos foi removido do mapa por
+decisão do responsável; não reintroduzi-lo como parte de um redesenho do app.
+
+==========================================================================
+14. AVISOS E NOTIFICAÇÕES ANDROID
+==========================================================================
+App aberto: consulta fila e avisos a cada 15 s, somente quando a página está
+visível, sem outro trabalho em curso e sem diálogo aberto.
+Servidor devolve 30 avisos mais recentes e contagem total não lida do usuário.
+Ao entrar em Avisos, cliente marca leitura até o maior ID recebido. Não existe
+botão individual de excluir aviso ou histórico paginado de notificações.
+
+APK: NoticeJob é JobScheduler periódico mínimo de 15 min com exigência de rede.
+Android pode adiar; não é push instantâneo, WebSocket nem Firebase/FCM.
+Mostra notificação genérica quando há ID novo e avisos não lidos. Não inclui
+nome de unidade, coordenadas, segredo ou descrição detalhada na tela bloqueada.
+Guarda em SharedPreferences só o usuário e cursor do último aviso apresentado.
+Android 13+ solicita permissão de notificações. Logout cancela job e notificações.
+
+Fila reorganizada, atribuição alterada, acesso técnico e atualização de demanda
+geram avisos no fluxo existente. Ler aviso não altera demanda nem suas ordens.
+
+==========================================================================
+15. APARÊNCIA ATUAL E COMPONENTES
+==========================================================================
+Paleta efetivamente usada em technician.css:
+- #16191d: texto principal, botões primários, cor de tema;
+- #f3f4f5: fundo da página;
+- #ffffff: cartões, formulários e cabeçalho;
+- #ff4b1e: faixa superior e borda lateral de tarefa;
+- #d70825: marca TÉCNICO, seleção de aba e aviso não lido;
+- #006d77: atendimento ativo, foco visível e localização;
+- #f4faf9 / #e9f4f3: superfícies de atendimento/localização;
+- #fff0e9 / #9b2e0e: fundo e texto de etiqueta;
+- #d9dde1 / #cbd0d5: bordas;
+- #626b74: texto secundário; #b90027: erro.
+
+Fontes locais: Barlow 400 no texto e Chakra Petch 600 nos títulos/marca.
+Alguns pesos 600 são pedidos sem fonte Barlow 600 declarada nessa folha atual;
+se ajustar tipografia, carregar pesos necessários localmente e medir tamanho.
+Não depender de Google Fonts remoto para uma interface que hoje serve fontes.
+
+Dimensões atuais:
+body 16px/1,45; conteúdo central máximo 640px; padding lateral 16px.
+Cabeçalho sticky, padding 14px 20px, borda superior 4px.
+H1 25px; H2 20px; botão 14px, mínimo 42px, padding 10px 14px, raio 6px.
+Inputs 16px, padding 12px; textarea mínimo 100px.
+Card padding 16px, margem vertical 12px, borda lateral 3px.
+Modal até min(94vw,470px), max-height 85dvh, overflow auto e padding 22px.
+Navegação e ações usam flex-wrap; em celular pequeno podem formar várias linhas.
+Com altura <=500px, cabeçalho perde sticky e padding superior diminui.
+
+Não existe menu lateral gerencial, mapa embutido ou painel de indicadores no
+app. A identidade atual deve ser reconhecível; eventual paleta nova é proposta.
+
+==========================================================================
+16. PROBLEMAS DE EXPERIÊNCIA OBSERVÁVEIS NO CÓDIGO
+==========================================================================
+Estes são pontos para revisar, não correções já aplicadas:
+UX01. Muitas ações por cartão, todas visíveis, podem tornar a fila extensa.
+UX02. Estado de envio aparece no fim da página, podendo ficar fora da tela.
+UX03. busy evita execução repetida, mas botões de ações não recebem sempre
+      disabled/spinner. O usuário pode sentir que o toque foi ignorado.
+UX04. render substitui todo #app a cada leitura. Isso pode afetar foco,
+      posição de leitura e estabilidade; medir, não afirmar latência real.
+UX05. Mostrar mais acumula páginas, mas refresh posterior troca por página 1.
+UX06. Observação/impedimento fecham diálogo antes da resposta; uma falha não
+      mantém a caixa preenchida aberta. Parte do comando fica só em memória.
+UX07. Mensagem "Atualizado às" pode substituir rapidamente "Ação confirmada".
+UX08. Pausa não tem confirmação e mantém status Em atendimento, potencialmente
+      confuso para quem interpreta a etiqueta como GPS ativo.
+UX09. Fluxo de troca de senha tem menos feedback de envio que login.
+UX10. Não há busca/filtro da fila, detalhe completo da demanda ou timeline de
+      eventos dentro do app; quantidade de cartões pode dificultar localização.
+UX11. 401 em ação e 403 após desabilitação não têm sempre uma recuperação tão
+      guiada quanto a inicialização. Não alterar permissões para esconder erro.
+UX12. A ponte possui caminhos de timeout/retentativa que precisam de teste
+      físico; callbacks atrasados não devem ser associados ao próximo aceite.
+UX13. A atualização de avisos e modo pode deixar contagem visual defasada até
+      a próxima consulta. Não somar contagens manualmente sem confirmação.
+UX14. Não há tratamento explícito de insets/safe areas nativos no código atual;
+      validar barras do Android, recorte de tela e teclado em APK real.
+UX15. Sem texto/visão específicos de reconexão e última sincronização de GPS;
+      "atendimento aceito" não é confirmação de posição recém recebida.
+
+Não foram medidas nesta entrega velocidades em rede móvel real. Não atribuir
+lentidão ao D1 ou ao aparelho apenas pela aparência dos botões.
+
+==========================================================================
+17. RECOMENDAÇÕES PARA O NOVO DESENHO — PROPOSTAS
+==========================================================================
+Priorizar o trabalho do técnico:
+- Fila compacta e legível com posição, unidade, resumo e estado.
+- Atendimento próprio ativo fácil de encontrar sem reorganizar a ordem do root.
+- Uma ação principal por contexto; secundárias em grupo claro, sem esconder
+  ações importantes em gestos sem alternativa acessível.
+- Opção de detalhe expansível para textos longos; nomes completos acessíveis.
+- Feedback de envio no botão/cartão onde ocorreu a ação, além de role=status.
+- Manter o modal e seu texto até confirmação do servidor; sucesso fecha,
+  conflito/falha explica e conserva conteúdo para tentativa consciente.
+- Diferenciar "enviando", "confirmado", "não confirmado" e "recarregando".
+- Manter rolagem, foco, páginas carregadas e texto em edição nas atualizações.
+- Tela de permissão simples antes da solicitação Android, explicando finalidade
+  e etapa. Negativa precisa de caminho claro para tentar novamente.
+- Estado vazio com orientação; falha de leitura com ação Tentar novamente.
+- Fila, Concluídos e Avisos fáceis de alcançar; quantidade no rótulo sem ruído.
+
+Buscar/filtrar tarefas já carregadas pode ser estudo local. Busca em toda a fila
+exige API/paginação corretas; não anunciar busca global em apenas 100 registros.
+Um detalhe visual pode reaproveitar campos existentes, mas timeline completa,
+anexos, prioridade nova ou botão Reabrir demandam contratos e autorização.
+
+==========================================================================
+18. TECLADO, ROLAGEM E ACESSIBILIDADE
+==========================================================================
+Testar 360x800, 390x844, 412x915 e paisagem; depois aparelhos Android reais.
+O teclado real reduz a área visível. viewport pequeno simulado só é aproximação.
+Não fixar botões de forma que cubram textarea/erro/última linha do conteúdo.
+Garantir rolagem interna do modal e que Confirmar/Cancelar continuem alcançáveis.
+Rótulo persistente para campos; placeholder não substitui label.
+Texto de entrada >=16px e zoom acessível; não bloquear escala do usuário.
+Alvos de toque confortáveis (proposta 44–48px) sem exagerar altura de todo card.
+Estado e erro por texto/ícone, além de cor. Contraste e foco visível verificáveis.
+TalkBack: nomes acessíveis, ordem de foco, título de modal, status e restauração
+de foco ao fechar. Nenhuma ação essencial deve depender somente de arrastar.
+Respeitar preferência de movimento reduzido; evitar animação contínua sem função.
+Não habilitar autofocus desnecessário que abra teclado na entrada da fila.
+Voltar Android deve ter efeito coerente no modal/detalhe/fila, sem encerrar
+acidentalmente um atendimento nem descartar texto sem aviso.
+
+==========================================================================
+19. DESEMPENHO, REDE, BATERIA E D1
+==========================================================================
+Plano gratuito deve ser preservado. Requisição HTTP não equivale a uma linha
+D1: autorização, joins, leituras e escritas têm custos diferentes.
+Não aumentar polling nem criar um temporizador por card.
+
+Frequências atuais:
+- frontend: refresh a cada 15 s visível; queue e active em sequência;
+- fila contém também avisos; não precisa baixar cada aviso individualmente;
+- Android serviço: active + position aproximadamente a cada 25 s quando há GPS;
+- NoticeJob: mínimo 15 min, sujeito ao sistema operacional;
+- root/mapa: 15 s visível; cálculo de ruas possui cache/limites próprios.
+
+Ilustração de volume, não medição de D1: uma hora sempre aberta pode alcançar
+240 ciclos web, até 480 requests queue+active, mais aproximadamente 144 ciclos
+nativos com até 288 requests active+position. Rede real, GPS, falhas e tempo de
+resposta alteram os números. Não somar como se fossem linhas lidas/escritas.
+Não cachear autorização nem remover validação de sessão para reduzir consultas.
+
+Melhorias técnicas propostas: atualização seletiva de DOM, deduplicação de
+leitura concorrente, preservar paginação, cancelamento de respostas obsoletas,
+assets pequenos/fontes locais e retentativa com limite. Qualquer alteração dos
+intervalos ou política de rastreamento deve ser separada e aprovada.
+
+O helper api do técnico é próprio e não importa o helper de orçamento D1 do
+desktop. Não presumir que todos os tratamentos de cota/retry do painel foram
+automaticamente herdados pelo app.
+
+==========================================================================
+20. FALHAS, CONCORRÊNCIA E RECUPERAÇÃO
+==========================================================================
+Escrita usa operationId UUID, versão da demanda e transação. Se resposta se
+perder após sucesso, repetir MESMO payload e operationId pode recuperar ACK
+sem duplicar evento. Reutilizar o ID com outro texto é conflito, não nova ação.
+
+O frontend atual guarda pending só em memória. Fechar/recarregar perde esse
+contexto. Isso não é fila offline durável. Falha de rede não significa que o
+servidor não gravou; não criar outro comando automaticamente.
+
+Erros 4xx limpam pending no cliente atual; falhas de rede/5xx conservam para
+repetição. Num redesenho, não sobrescrever payload antigo por texto novo usando
+o mesmo operationId. Primeiro reconciliar o resultado da operação anterior.
+
+Se root reatribuiu, outro técnico concluiu ou versão mudou: mostrar conflito,
+atualizar contexto e não repetir indiscriminadamente. Mensagens GPS antigas não
+podem reativar uma posição de atendimento encerrado.
+
+Nenhum sucesso visual deve ser obtido gravando apenas localStorage. Não existe
+offline funcional aprovado nesta entrega. Se um protótipo simular respostas,
+usar TESTE LOCAL/DEMO evidente, endpoint local isolado e sem tráfego produtivo.
+
+==========================================================================
+21. INFORMAÇÕES EXISTENTES, AUSENTES E FUTURAS
+==========================================================================
+Existentes: unidade, descrição, número, estado, equipe, ordem, contexto opcional
+de equipamento, coordenadas de destino, eventos de ações, avisos e última posição.
+
+Não implementados no app atual:
+- criação de demanda pelo técnico; reordenação/reassignação pelo técnico;
+- upload de fotos/áudio/documentos do atendimento;
+- leitura QR de computador ou cadastro de equipamentos;
+- assinatura de responsável, estoque de material ou medição de tempo por etapa;
+- chat entre equipe e root;
+- push instantâneo; mapa gerencial de outros técnicos;
+- jornada inteira rastreada entre todas as tarefas;
+- trilha histórica permanente; fila offline durável;
+- comprovante PDF, prazo/SLA ou classificação de prioridade nova.
+
+Esses itens podem ser propostos, mas não desenhar como entregues nem ativar
+permissões/APIs fictícias. A ausência de foto neste app não significa que o
+coletor de inventário esteja sem fotos: são ambientes diferentes.
+
+==========================================================================
+22. SEGURANÇA E PRIVACIDADE A PRESERVAR
+==========================================================================
+- Cookie de sessão HttpOnly/Secure e CSRF; nunca senha/token no HTML/URL/log.
+- Backend revalida usuário, papel/capacidade e vínculo em cada ação.
+- Sem conta fixa, senha de demonstração em produção ou bypass root.
+- WebView só carrega origem HTTPS aprovada; bloqueia file/content access e
+  conteúdo misto. Links externos não recebem cookies do aplicativo.
+- Ponte nativa apenas no contexto confiável; não abrir páginas arbitrárias
+  com a interface JavaScript instalada.
+- Permissions-Policy da página hoje permite geolocation=self e nega câmera e
+  microfone. Mudar ícone não habilita uma função fotográfica inexistente.
+- Sem armazenamento de credenciais por JS e sem cache público de respostas.
+- Localização transparente para o técnico; notificação persistente durante o
+  serviço. Não ocultar acompanhamento em segundo plano.
+- Permissões do Android podem ser negadas; não contornar escolha do usuário.
+- Sem exportar dados/rotas reais no pacote de design.
+- Manter limpeza de posição e revogação atuais até nova decisão de produto.
+
+==========================================================================
+23. ARQUIVOS E PONTOS DE INTEGRAÇÃO
+==========================================================================
+web/technician.html — shell, viewport, status, assets.
+web/technician.css — identidade/responsividade atuais.
+web/technician.js — login, modos, cartões, modais, GPS, comandos e refresh.
+android/technician/AndroidManifest.xml — versão, permissões e serviços.
+MainActivity.java — WebView, navegação, bridge, primeira posição e job.
+LocationService.java — serviço durante atendimento.
+Api.java — origem, cookie, CSRF, HTTP nativo e limite de resposta.
+NoticeJob.java — aviso periódico Android.
+res/drawable/app_icon.xml — ícone nativo atual.
+server/technical-dispatch.mjs — capacidade, fila, ações, posição, organização.
+server/worker.mjs — auth, rotas, CSP, sessão e acesso ao HTML/APK.
+server/service-desk.mjs — demanda base e permissões do painel.
+server/dispatch-road-routing.mjs — rotas pelas ruas no root.
+server/technician-avatars.mjs — imagem administrada pelo root.
+web/dispatch.js, dispatch-map.js, technician-avatar.js — contraparte desktop.
+migrations/0027_technical_dispatch.sql — ciclo operacional e triggers.
+migrations/0028_dispatch_road_routes.sql — cache de trajetos, não trilha.
+migrations/0029_technician_avatars.sql — metadados/versionamento de imagem.
+scripts/build-technician-android.mjs — compilação/assinatura.
+scripts/build-desktop.mjs — distribuição web e cópia do APK.
+tests/technical-dispatch.test.mjs — contrato servidor.
+tests/technical-dispatch-browser.cjs — navegação local automatizada.
+
+Lista exata do recorte e hashes em MANIFESTO_FONTES.json. Não substituir o
+projeto inteiro por esses recortes. Dependências adicionais ficam no clone.
+
+==========================================================================
+24. BUILD, ASSINATURA, ATUALIZAÇÃO E PUBLICAÇÃO
+==========================================================================
+Pré-requisitos atuais do repositório: Node 24, pnpm do package.json/lockfile.
+Web: pnpm install --frozen-lockfile; pnpm build:desktop.
+Android: pnpm build:technician:android.
+Toolchain nativa local: JDK 21, Android platform 35, Build Tools 35.0.0.
+Compilação usa javac (--release 8), D8, aapt2, zipalign, apksigner; sem Gradle.
+Essas versões descrevem a base; não são recomendação genérica de atualização.
+
+Saída hoje: private-data/releases/SEMED-Tecnico-1.0.0.apk e JSON de hash.
+build:desktop copia para dist/painel/tecnico/SEMED-Tecnico.apk se existir.
+O build web pode terminar SEM APK se o binário não existir: conferir aviso.
+
+Antes do novo APK:
+1. Manter package id para atualizar a instalação existente.
+2. Aumentar versionCode e versionName.
+3. Atualizar também o nome de saída fixo no script Android, caminho de cópia no
+   build desktop e Content-Disposition no Worker; não modificar só manifesto.
+4. Assinar no ambiente autorizado com a MESMA chave institucional.
+5. Verificar assinatura, permissões, endpoints, hash e instalação sobre a versão
+   existente sem exigir desinstalação que perca o estado do usuário.
+6. Confirmar compatibilidade do frontend atualizado com APK antigo durante a
+   transição; bridge nova precisa de detecção de capacidade/fallback definido.
+7. Só publicar após revisão e autorização de implantação dessa entrega.
+
+ATENÇÃO: o script atual cria uma chave quando a configuração está ausente.
+Isso serve para montagem inicial isolada, não para atualizar o APK oficial.
+Não executar build oficial no ambiente externo sem a chave correta; não pedir
+ao responsável que envie keystore/senha em chat. Entregar fontes para assinatura
+posterior aqui. Certificado público esperado está no README Android.
+
+Esta entrega não compilou um APK novo, não alterou permissões Android e não
+publicou o frontend. Os testes visuais não substituem o teste físico de upgrade.
+
+==========================================================================
+25. O QUE SE PODE REDESENHAR E O QUE EXIGE DECISÃO
+==========================================================================
+Pode ser proposto e implementado LOCALMENTE para revisão:
+espaçamentos, hierarquia, tipografia, composição de cartões, modais, feedback,
+acessibilidade, botão com estado de envio e preservação de foco/rolagem.
+Manter as mesmas ações, dados e autorização como base.
+
+Precisa de decisão/contrato separado:
+localização por jornada; histórico de trajetos; push imediato; anexos; offline;
+ordem obrigatória; permissão a novos perfis; nova priorização/SLA; motivos novos
+obrigatórios; conclusão individual versus equipe; alterar intervalos; plano pago;
+mudar banco, host, framework nativo, pacote ou assinatura oficial.
+
+Não fazer agora: publicar o redesenho, trocar APK instalado, migrar dados,
+reatribuir/concluir demandas reais, criar contas técnicas reais ou apagar histórico.
+
+==========================================================================
+26. COMO TRABALHAR EM OUTRO AMBIENTE
+==========================================================================
+Use primeiro as capturas e o contrato, depois o código. Trabalhe com nomes e
+IDs sintéticos. Não apontar um protótipo externo para as APIs reais para testar.
+Recorte de FONTES não contém segredos nem banco. Para testes existentes, obtenha
+clone completo e confira commit, Node/pnpm, migrações e lockfile.
+
+pnpm start é prévia estática, não substitui o backend autenticado. Helpers de
+testes usam banco em memória e sessão injetada; são exclusivamente testes.
+Não copiá-los para a produção e não dizer que um mock confirmou uma escrita real.
+
+Se a ferramenta externa não executa Java/Android, entregar frontend e contratos
+mantidos, identificando claramente o que não foi validado. Não inventar resultado
+de GPS, notificações ou publicação. O destinatário não precisa da conta root.
+
+==========================================================================
+27. O QUE DEVE VOLTAR NO NOVO PACOTE
+==========================================================================
+Fontes editáveis, arquivos alterados, instruções de aplicação, dependências,
+capturas em vários tamanhos, relatório de testes e lista de decisões pendentes.
+Separar mudanças somente visuais das mudanças de comportamento/APIs/Android.
+Informar código-base e hash de cada arquivo. Preservar originais do pacote.
+Não entregar somente imagem de tela, vídeo ou APK sem código-fonte.
+Não distribuir chave de assinatura ou dados reais junto à devolutiva.
+O arquivo 03 traz um prompt pronto e o arquivo 04 detalha o aceite.
+
+==========================================================================
+28. EVIDÊNCIAS E LIMITES DE GARANTIA
+==========================================================================
+O relatório 06 informa os testes realmente executados nesta preparação e suas
+capturas. Imagens são do frontend atual, renderizado em navegador local com
+Worker real em memória, dados sintéticos e GPS simulado quando indicado.
+Alguns estados de login/erro são induzidos no teste, identificados no relatório.
+
+Não são medições de rede móvel real, teste Android físico, verificação do APK
+instalado em todos os telefones, nem nova homologação do ambiente produtivo.
+Localização contínua ao longo de toda a fila permanece ADIADA.

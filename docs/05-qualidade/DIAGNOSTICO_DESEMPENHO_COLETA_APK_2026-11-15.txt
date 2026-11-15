@@ -1,0 +1,437 @@
+SEMED — DIAGNÓSTICO DE DESEMPENHO DA COLETA NO APK
+Data: 15/11/2026 — Fortaleza
+Escopo solicitado: investigar fotos e botões lentos e identificar as causas.
+Estado: diagnóstico executado; propostas de correção ainda não implantadas.
+
+Complemento confirmado pelo responsável em 15/11/2026: a lentidão acontece
+no APK instalado nas DUAS situações — ao abrir fotos já cadastradas e ao
+tirar/enviar fotos novas. Esta informação confirma a abrangência do sintoma,
+não substitui a medição física nem comprova uma causa única para ambos os casos.
+
+1. CONCLUSÃO PRINCIPAL
+
+Foram confirmados gargalos no caminho web utilizado pelo APK: consultas
+duplicadas ao entrar na unidade, várias idas sequenciais ao banco, carregamento
+fragmentado de código e ações que mantêm a navegação esperando a rede.
+
+A principal causa demonstrada para parte da demora dos botões é a dependência
+de consultas sequenciais antes de apresentar a próxima tela. A interface ainda
+agrava a percepção: alguns botões são desabilitados sem trocar o texto para
+“Carregando”, enquanto outros cliques são ignorados pelo bloqueio global.
+
+Fotos exigem separar três operações diferentes:
+  a) miniatura de foto já recebida: leitura autenticada do D1;
+  b) ampliar a fotografia: pode buscar o original no Drive;
+  c) selecionar uma fotografia nova: preparação no aparelho, envio do original,
+     envio da miniatura e nova leitura para apresentar o resultado.
+
+As 124 fotos prontas consultadas em produção possuem miniaturas válidas. Logo,
+“faltam miniaturas” NÃO explica o conjunto atual. O caminho de autenticação e
+leitura continua tendo custo mesmo quando a imagem é muito pequena.
+
+LIMITAÇÃO FUNDAMENTAL: o aparelho Android não foi conectado a uma sessão de
+perfilamento. Esta avaliação confirma mecanismos de lentidão no código,
+reproduz efeitos no navegador com o Worker real e consulta o estado real do
+servidor. Não mede CPU, memória, GPU, câmera, bateria ou rede do Samsung físico.
+Não é correto afirmar que todos os atrasos relatados no APK têm uma única causa
+já comprovada, nem atribuí-los ao GPS, ao aparelho ou ao Drive sem essa medição.
+
+2. O QUE FOI FEITO E O QUE FOI PRESERVADO
+
+2.1 Ambiente real
+  - Entrada /app acessada com a sessão root já existente.
+  - Aberta visita já em andamento de CMCB 02 DE JULHO UNIDADE LXI - BANDEIRA
+    TRIBUZZI, sem iniciar outra visita. O endpoint retornou a visita existente.
+  - Conferidas fachada com foto, assuntos e lista de 22 computadores.
+  - Ao clicar em Computadores, observado o botão desabilitado mantendo o texto
+    anterior enquanto a tela aguardava a consulta; depois a lista apareceu.
+  - Nenhuma resposta alterada, ficha editada, foto enviada/removida, trava de
+    equipamento adquirida, assunto reaberto ou visita concluída nesse percurso.
+  - Consultas SQL somente de leitura: agregados de fotos e identificação de
+    visitas já abertas. O agregado final informa changed_db=false e 0 escritas.
+  - Seis GETs públicos pequenos para medir a entrada e o script do contêiner.
+  - Captura de logs por três minutos, sanitizada, sem corpos, cookies, parâmetros
+    de URL, credenciais ou coordenadas. Esse recurso não forneceu tempos de CPU
+    ou duração dos requests; não foi usado para inventar esses indicadores.
+
+2.2 Ambiente isolado
+  - Worker do projeto executado diretamente, SQLite em memória com migrações
+    atuais, sessão exclusivamente fictícia e Google Drive simulado.
+  - Foto sintética mínima e cinco registros de foto para exercitar o caminho
+    de metadados/miniaturas. Não são fotos reais nem ensaio de compressão.
+  - 25 cenários HTTP verificados por status, além da preparação da fixture.
+  - Ensaio sem atraso artificial e com 100 ms inseridos ANTES de cada chamada
+    do binding D1. Em batch, uma espera por chamada, e não por comando SQL.
+  - Navegação manual automatizada pela ferramenta de navegador, lendo a
+    instrumentação DOM da cópia isolada; sem modificar o código de produção.
+  - Medidas de clique até mudança do título, observadas no próprio documento.
+  - Caminho /app -> Coleta -> unidade -> fachada reproduzido para confirmar
+    a duplicação da leitura da visita antes/depois da navegação.
+
+2.3 Preservação
+  - Não houve deploy, migração, novo APK ou alteração de regra funcional.
+  - Localização dos técnicos, permissões, autenticação e alertas não mudaram.
+  - Nenhuma carga de dados fictícios foi enviada ao D1 ou Drive oficiais.
+  - Alterações anteriores da árvore de trabalho foram preservadas.
+  - Arquivos novos: este relatório e script diagnóstico local. A rastreabilidade
+    registra a avaliação, sem converter propostas em decisões aprovadas.
+
+3. MEDIÇÕES E INTERPRETAÇÃO
+
+3.1 Fotos em produção — leitura de 15/11/2026
+
+  Fotos ready:                           124
+  Com miniatura coerente com o original:124
+  Soma dos originais:                   26.718.024 bytes
+  Média do original:                    215.468 bytes
+  Maior original:                       658.590 bytes
+  Soma das miniaturas:                  1.363.303 bytes
+  Média aproximada da miniatura:        10.994 bytes (10,7 KiB)
+
+Miniaturas representam aproximadamente 5,1% dos bytes desses originais.
+Critério verificado: thumb_blob e thumb_sha256 presentes e
+thumb_source_sha256 igual ao sha256 do original. Não foi feita decodificação
+visual de todas as 124 imagens; isso não é uma auditoria de integridade visual.
+
+Metadados da consulta final:
+  - D1 primary: WEUR / LIS;
+  - SQL: 6,6153 ms; 124 linhas lidas; zero escritas;
+  - tamanho informado do banco: 16.429.056 bytes.
+
+O tempo de SQL NÃO é o tempo que o celular aguarda. Não inclui toda a ida pela
+rede, o restante do Worker, outras consultas, corpo da resposta e renderização.
+A localização LIS é evidência de onde esse SELECT foi servido; a influência
+exata dessa distância sobre cada request do APK ainda precisa ser medida.
+
+3.2 HTTP público, conexão deste computador Windows
+
+  /app:          348,1 ms / 83,3 ms / 80,1 ms; 1.291 bytes; HTTP 200.
+  /mobile-app.js: 99,6 ms / 89,4 ms / 95,5 ms; 8.724 bytes; HTTP 200.
+
+CF-Ray indicou entrada GRU. O conteúdo público de mobile-app.js correspondeu
+ao arquivo local por SHA-256 nas três leituras. Não foram comparados por hash
+todos os arquivos autenticados da coleta. Essas seis leituras não são p95,
+não medem a API autenticada e não representam a conexão do celular.
+
+3.3 Worker real com banco e Drive isolados
+
+Operação                         Chamadas D1   Sem atraso   +100 ms/chamada
+API mobile/me                    2             1,8 ms       226,4 ms
+API auth/me                      1             0,9 ms       111,5 ms
+Capacidades de fotos             2             1,2 ms       222,7 ms
+Retomar visita V3 existente      3             1,0 ms       329,3 ms
+Leitura completa da visita       10            3,4 ms       1.107,0 ms
+Listar ambientes                 3             2,9 ms       331,7 ms
+Listar computadores              3             1,1 ms       332,0 ms
+Revisão no servidor              10            3,0 ms       1.106,1 ms
+Ler miniatura                    2             1,5 ms       222,2 ms
+Ler original                     2             1,6 ms       222,7 ms + Drive sim.
+Miniatura condicional/304        2             --           219,9 ms
+
+Todas essas contagens incluem a sessão do Worker. Foto: uma chamada de sessão
+e um batch com dois comandos (foto + integração), portanto duas chamadas do
+binding e três comandos SQL. “Chamadas D1”, “comandos SQL” e “linhas lidas” não
+são a mesma medida. Esse ensaio NÃO mede linhas faturadas/cota em produção.
+
+O atraso de 100 ms é um experimento de sensibilidade, NÃO uma medição da
+latência real do D1. O timer do Windows e a execução acrescentam algum custo.
+Uma visita sem fotos pode executar menos consultas, pois não precisa descrever
+os rótulos. O caso medido contém fotos e usa root; não é máximo universal.
+
+3.4 Navegador isolado — clique até o novo título
+
+  Voltar aos assuntos: 4 ms.
+  Abrir Internet sem resposta alterada: 3 ms.
+  Abrir Computadores: 348 ms; equipment-list levou 330,6 ms no servidor local.
+  Abrir Revisar visita: 2.235 ms; primeiro inspection, depois review.
+
+No fluxo completo de seleção da unidade, o log registrou:
+  POST v3-start:                  338,6 ms;
+  GET inspection, na lista:       1.101,5 ms;
+  navegação para a página V3 e carregamento de arquivos;
+  GET auth/me:                   102,5 ms;
+  GET capabilities:              217,4 ms;
+  GET inspection, novamente:     1.109,1 ms;
+  GETs de cinco miniaturas:      aproximadamente 225–231 ms cada, concorrentes.
+
+Não somar tempos de recursos concorrentes para declarar o tempo da página.
+Não confundir medidas de títulos com imagem completamente decodificada ou
+responsividade do Android físico. A sonda de long tasks também não homologa
+o aparelho; não houve ensaio de foto grande/HEIC no telefone nesta rodada.
+
+3.5 Upload no caminho compartilhado de armazenamento — fixture independente
+
+  Primeiro upload: 10 comandos SQL e três chamadas ao Google simulado.
+  Pasta já existente: nove comandos SQL e uma chamada ao Google simulado.
+  Leitura de original: dois comandos SQL e uma chamada ao Google simulado.
+  Original condicional/304: dois comandos SQL e zero chamadas ao Google.
+
+Essa fixture mede comandos SQL e exclui a sessão do Worker; não comparar
+diretamente sua coluna SQL com a coluna de chamadas do item 3.3.
+O navegador ainda faz o POST separado da miniatura após o upload original.
+Google simulado não representa latência/limites do Drive real.
+
+4. ACHADOS CONFIRMADOS, POR CAUSA
+
+P1-A — Uma leitura completa da visita é desperdiçada na entrada
+
+Em web/collector.js, select-unit chama v3-start e depois loadCollection.
+loadCollection busca inspection antes de verificar questionnaire_version e
+redirecionar para a V3. A página V3 busca a mesma inspection no próprio boot.
+v3-start já devolveu a versão/id necessários para decidir o destino.
+
+Efeito: uma rodada completa de consultas e JSON antes de navegar, repetida
+após a navegação. Reproduzido no log HTTP local, não apenas deduzido do código.
+Proposta: usar o retorno de start para decidir a rota V3 e deixar a página
+destino carregar a visita uma vez. Preservar clientes/visitas anteriores,
+parâmetros da URL e a regra de não criar uma visita nova desnecessariamente.
+
+P1-B — Leitura da visita com serialização e consultas redundantes
+
+server/collector.mjs consulta, sequencialmente: sessão, inspeção, assuntos,
+ambientes, problemas dos totais, fotos do formato antigo, totais novamente,
+unidade, evidências V2/V3 e rótulos de fotos.
+
+Dois desperdícios específicos:
+  - unit_collection_totals é lida para hasProblems e novamente para totais;
+  - consulta antiga de fotos é executada, mas seu resultado é substituído por
+    v2Evidence quando a visita é V2/V3.
+
+Depois de autorizar inspeção/unidade, várias leituras restantes são independentes
+e podem ser agrupadas. Não retirar autorização, isolamento por unidade ou
+checagens de revogação para reduzir chamadas.
+Proposta: construir o payload atual com menos idas ao D1, sem alterar o contrato.
+
+P1-C — Navegação espera o servidor sem feedback suficiente
+
+web/collector-v3.js usa um busy global no handler de cliques. Enquanto uma
+ação está pendente, novos cliques com data-action são ignorados. O botão
+acionado é desabilitado, mas a ação open não tem rótulo de carregamento.
+Computadores/Impressoras/Outros aguardam loadItems antes do repaint; Ambientes
+aguarda a lista; Problemas aguarda seu resumo. Não acontece com toda navegação:
+Internet sem alteração foi praticamente imediata no ensaio.
+
+Proposta: mostrar imediatamente a tela destino com carregamento explícito,
+proteger respostas tardias por contexto/id e restringir bloqueios à operação
+que realmente depende de persistência. Mostrar falha com opção de tentar de
+novo. Não habilitar cliques duplicados de salvar/concluir nem remover barreiras
+de foto, concorrência ou confirmação de recebimento do servidor.
+
+P1-D — Revisão recarrega toda a visita antes de validar
+
+A ação review aguarda uploads/preparação, leave, load/inspection e só depois
+chama review. No caso isolado sem upload, foram duas leituras de dez chamadas
+D1 cada; o clique levou 2,235 segundos com a latência artificial.
+
+Proposta: revisar a composição desses dois payloads para que a validação e
+os dados atuais necessários à revisão sejam obtidos com menos viagens.
+Não confiar exclusivamente em cache de formulário: concorrência, versões,
+fotos pendentes e o estado fresco no servidor devem continuar protegidos.
+
+P2-A — Carregamento fragmentado de código ainda existe na coleta
+
+O grafo estático de collector-v3.js contém 14 módulos, 164.861 bytes sem
+compressão. O da lista collector.js contém sete módulos, 83.863 bytes.
+Há dependências compartilhadas; não somar esses totais como download único.
+CSS, fontes e bibliotecas dinâmicas de QR/HEIC não entram nesses números.
+
+O build versionado de desempenho já usado pelo desktop não é aplicado a essa
+entrada. Arquivos com nome mutável revalidam (public,no-cache); isso permite
+cache com validação, não significa “sem cache”. Vários scripts da coleta passam
+pela consulta de sessão a cada request. Foi medido um acesso D1 para collector.js
+e outro para collector-v3.js; alguns recursos públicos não fazem essa consulta.
+
+Proposta: empacotar/versionar os pontos de entrada da coleta, manter dependências
+grandes sob demanda e cachear somente código conforme a política aprovada.
+Não transformar API ou fotos privadas em conteúdo público para ganhar velocidade.
+
+P2-B — As miniaturas são pequenas, mas cada acesso tem trabalho de servidor
+
+Leitura atual valida sessão e acesso à foto, faz batch de foto/integração e só
+então responde a miniatura ou 304. No ensaio, thumbnail/304 não chamaram Google.
+Original novo chamou Google uma vez. O viewer pede o original sem size=thumb.
+
+Isso descarta a hipótese de que toda miniatura precise baixar o original do
+Drive. Também mostra por que cache condicional não elimina a autorização/D1.
+Proposta: preservar nós e URLs já exibidos na sessão, evitar buscas redundantes
+e apresentar o viewer imediatamente com a miniatura enquanto o original chega.
+Qualquer mudança na duração/revalidação de cache de foto exige avaliar revogação;
+não ampliar o acesso a imagens nem eliminar a validação atual.
+
+P2-C — Envio completo acumula fases sequenciais
+
+preparePhoto prepara cada arquivo selecionado, gera JPEG/miniatura; só depois
+do lote preparado startUpload inicia. Até cinco fotos por alvo são processadas
+sequencialmente. O upload espera original ready, depois aguarda photo-thumb;
+remove a prévia local e a imagem recebida passa a usar uma leitura autenticada.
+Salvar/revisar/concluir/trocar unidade podem aguardar essas fases.
+
+Propostas técnicas para medir antes/depois:
+  - informar separadamente “Preparando”, “Enviando”, “Confirmando”;
+  - preparar/enviar com fila de concorrência pequena, sem multiplicar uso de
+    memória/Drive; considerar iniciar upload do primeiro arquivo já preparado;
+  - manter a prévia local enquanto a substituta carrega, com ciclo de liberação
+    definido, sem criar armazenamento durável de imagens;
+  - estudar desvincular a espera de miniatura derivada do ACK do original,
+    somente preservando execução confiável, reenvio e barreiras aprovadas.
+
+As últimas propostas não estão implementadas nem autorizam declarar salvo antes
+do servidor. A miniatura é derivada; o recebimento da foto original e a proteção
+do alvo/ficha/unidade continuam obrigatórios.
+
+P2-D — Preparação de imagem no aparelho precisa de perfilamento físico
+
+O código usa createImageBitmap com redimensionamento quando possível, canvas
+e toBlob, com fallback e conversor HEIC. Não é correto chamar toda essa rotina
+de síncrona: há operações assíncronas. Entretanto desenho e parte da coordenação
+ocorrem no contexto da interface, sem Worker dedicado nesse caminho.
+
+A câmera Android entrega o arquivo à WebView, sem redimensionamento nativo
+prévio. Foto grande/HEIC pode ter custo de decodificação/memória diferente no
+telefone. Isso é uma hipótese relevante, ainda NÃO um gargalo cronometrado ali.
+Observação secundária: a camada Android anuncia até 40 MB, enquanto a preparação
+web aceita até 30 MB; uma seleção pode ser recusada depois de chegar à WebView.
+Não é prova de lentidão, mas merece alinhar mensagem e validação numa correção.
+
+P2-E — Timeout do cliente não cobre todo o corpo JSON
+
+Na api() de collector-v3.js, o timer de 30 s é limpo no finally do fetch, antes
+de aguardar r.json(). Se os cabeçalhos chegarem e o corpo demorar, essa etapa
+fica fora daquele limite. O mesmo risco deve ser auditado nos demais clientes.
+Confirmado por leitura do código; não foi reproduzido com perda de rede física.
+Proposta: limitar a operação completa, distinguir erro/timeout e preservar os
+rascunhos/ids de idempotência. Não repetir automaticamente escritas incertas.
+
+5. HIPÓTESES NÃO CONFIRMADAS / CONCLUSÕES QUE NÃO DEVEM SER TIRADAS
+
+  - Não foi demonstrado que o rastreamento dos técnicos causa a lentidão.
+  - Não foi demonstrado estouro de cota ou indisponibilidade D1 nesta janela.
+  - Não foi medida taxa de CPU/memória do Android/WebView.
+  - Não foi medido p95 de latência do Drive real nem upload com câmera física.
+  - Não foi provado que o problema depende do Samsung M54 ou do Android 14/15.
+  - Não foi provado que trocar de servidor sozinho resolveria a experiência.
+  - Não foram executados ensaios de carga concorrente contra produção.
+  - Não houve comparação física Wi-Fi versus rede móvel, nem com GPS ativo.
+  - Não foi confirmada a versão do APK/WebView instalada no telefone atual.
+
+Os 50 eventos capturados em três minutos incluem tráfego do painel e podem
+incluir clientes com o mesmo IP. Sem identificador de correlação do APK, não
+devem ser tratados como “50 consultas produzidas por um toque do celular”.
+Os campos cpuTimeMs/wallTimeMs estavam nulos: ausência de métrica não é zero.
+
+O diagnóstico de 05/11/2026 é histórico. Problemas antigos de fotos sem
+miniatura e reconstrução geral da interface não foram automaticamente
+reclassificados como presentes na rev3. Houve melhorias posteriores D072/D116.
+
+6. ORDEM RECOMENDADA PARA A CORREÇÃO
+
+Etapa 1 — Menos espera sem mudar os dados
+  1. Eliminar a leitura descartada antes de navegar para V3.
+  2. Eliminar consultas repetidas/inúteis de inspection e agrupar independentes.
+  3. Colocar feedback imediato em open/listas e tratar resposta atrasada.
+  4. Proteger o corpo completo das respostas com timeout.
+
+Etapa 2 — Entrada e revisão
+  5. Bundles versionados para coleta/lista e carregamento dinâmico de QR/HEIC.
+  6. Evitar duas leituras extensas para entrar na revisão.
+  7. Evitar repetição desnecessária de auth/capabilities dentro do boot, mantendo
+     toda autorização efetiva de cada operação no servidor.
+
+Etapa 3 — Fotos e aparelho
+  8. Medir decodificação, preparação, upload, miniatura e primeira exibição.
+  9. Reduzir flashes/requisições ao trocar prévia pela imagem recebida.
+ 10. Ajustar fila de fotos com limites de memória e concorrência comprovados.
+ 11. Validar câmera/galeria/HEIC em Android físico e durante GPS ativo.
+
+Não é necessário remover localização, permissões, alertas ou mudar de plano
+para realizar essas otimizações. A capacidade final do plano gratuito deve ser
+avaliada com métricas reais depois; esta avaliação não promete consumo ilimitado.
+
+7. CRITÉRIOS DE ACEITE PROPOSTOS E ROTEIRO DE COMPARAÇÃO
+
+Antes de corrigir:
+  - registrar APK/versionCode, Android e Android System WebView;
+  - identificar unidade/tela e separar miniatura, ampliação e foto nova;
+    o responsável já confirmou lentidão tanto na abertura quanto no novo envio;
+  - anotar se acontece no Wi-Fi, rede móvel, primeira abertura ou toda vez;
+  - manter uma conta/visita de teste isolada e massa realista de 20 computadores;
+  - registrar contexto do teste e tempo de cada etapa sem conteúdo pessoal.
+
+Repetir cada cenário pelo menos cinco vezes, guardando mediana e faixa:
+  A. Abrir app já autenticado -> Coleta -> unidade já em andamento.
+  B. Assuntos -> Internet -> assuntos, sem editar nada.
+  C. Assuntos -> Computadores (20 itens) -> ambiente -> retornar.
+  D. Abrir ficha e sair sem edição; observar travas e liberação.
+  E. Abrir fachada com uma e cinco miniaturas; repetir e ampliar o original.
+  F. Uma foto JPEG usual; cinco fotos; uma foto grande; HEIC se disponível.
+  G. Navegar em outro assunto durante envio; voltar e verificar alvo da foto.
+  H. Revisar sem alteração, com rascunho e com upload ativo/falhado.
+  I. Rede interrompida antes/depois de cabeçalhos; timeout com corpo incompleto.
+  J. Dois operadores alterando a mesma ficha/ambiente, sem perda de autoria.
+  K. Sessão vencida; voltar com o mesmo usuário e preservar respostas locais.
+  L. Técnico com demanda aceita: alternar áreas, bloquear tela e conferir que
+     a localização continua segundo D114, sem duplicar sua sessão ou fila.
+
+Metas propostas (avaliar/aprovar na implementação; não são resultado entregue):
+  - feedback visual em até 100 ms para toque que depende de rede;
+  - uma leitura completa de inspection ao entrar na visita V3;
+  - reduzir chamadas D1 por inspection em relação às dez do caso medido;
+  - nenhuma consulta nova para abrir assunto cujos dados já estão na tela;
+  - revisão com menos viagens ao banco e estado fresco garantido;
+  - sem rebaixar autorização/cache de foto; 304 e revogação continuam corretos;
+  - preservar destino, quantidade e histórico das fotos;
+  - sem salvamento falso, escrita duplicada, perda de rascunho ou conclusão
+    com imagem ainda pendente;
+  - medir antes/depois no mesmo dispositivo e conexão, sem confundir melhor
+    resultado de rede com ganho de código.
+
+8. ARQUIVOS E EVIDÊNCIAS PARA REPRODUÇÃO
+
+Script novo:
+  scripts/audit-collector-performance.mjs
+  node scripts/audit-collector-performance.mjs
+  node scripts/audit-collector-performance.mjs --serve
+  O modo --serve abre somente 127.0.0.1:8797 para navegação de teste.
+  Banco em memória, conta fictícia e Drive simulado; não tem modo remoto.
+
+Script existente também executado:
+  scripts/measure-photo-performance.mjs
+
+Evidências privadas locais, fora do Git:
+  private-data/audit-coleta-2026-11-15/isolated-api.json
+  private-data/audit-coleta-2026-11-15/isolated-drive.json
+  private-data/audit-coleta-2026-11-15/local-http.ndjson
+  private-data/audit-coleta-2026-11-15/ui-events.json
+  private-data/audit-coleta-2026-11-15/producao/photo-aggregate.json
+  private-data/audit-coleta-2026-11-15/producao/public-http.json
+  private-data/audit-coleta-2026-11-15/producao/worker-sanitized.ndjson
+  private-data/audit-coleta-2026-11-15/producao/capture-run.json
+
+Fontes centrais do diagnóstico:
+  web/mobile-app.js — boot, open e criação/preservação de iframe.
+  web/collector.js — select-unit e loadCollection/redirecionamento.
+  web/collector-v3.js — boot, load, open, handler/busy, api e fila de fotos.
+  web/collector-drafts.js — flushAll e proteção dos rascunhos.
+  web/photo-prepare.js — limites, decodificação e JPEG/miniatura.
+  web/collector-photo-viewer.js — ampliação do original.
+  server/collector.mjs — inspection, contexto e metadados.
+  server/collector-v2.mjs — v2Evidence reutilizado pela V3.
+  server/photo-labels.mjs — rótulos e contexto das fotos.
+  server/photo-read.mjs, photo-thumbnails.mjs, photo-response.mjs.
+  server/mobile-app.mjs, worker.mjs, asset-response.mjs, request-timing.mjs.
+  shared/mobile-assets.mjs; scripts/bundle-desktop.mjs.
+  android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/MainActivity.java
+  android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/CollectionCamera.java
+
+Documentação consultada para escopo e limites:
+  00_LEIA_ANTES_DE_TUDO.md; REGRAS_DE_PRECEDENCIA.md; AGENTS.md atual.
+  Decisões vigentes D072, D089, D108–D110 e D114–D117; trechos correspondentes
+  de DECISOES/PENDENCIAS/CONFLITOS e contratos do app/fotos.
+  APP_UNIFICADO_D115.md; MINIATURAS_D072.md.
+  PUBLICACAO_REFINO_COLETA_D116_2026-11-14.md.
+  ANDROID_AREA_UTIL_D117_2026-11-14.md.
+  ANALISE_DESEMPENHO_COLETOR_2026-11-05.txt, somente como histórico comparativo.
+
+Resultado desta rodada: causas estruturais identificadas e reproduzidas,
+evidência preservada e plano de correção ordenado. Medição física do APK ainda
+necessária para atribuir a parcela de atraso da câmera/WebView/rede do aparelho.

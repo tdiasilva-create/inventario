@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4319,
-      "lines": 156,
-      "sha256": "4cd7928a500747db9e341f5d0829befd78e2359b858323053b33d3108eb19381",
+      "bytes": 4361,
+      "lines": 157,
+      "sha256": "8bb434b7a3d2e5550430a7ee6c0ef4b545edd7b2305686944e5ae131e3090af8",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -13,9 +13,9 @@
     },
     {
       "path": "android/technician/AndroidManifest.xml",
-      "bytes": 1514,
-      "lines": 16,
-      "sha256": "8b3aaa378a0a88e2657c353cc7b034efbc822e176be0f02755361cf2c6340a34",
+      "bytes": 2246,
+      "lines": 22,
+      "sha256": "df409e00d96f3c737ea3ca17e798ca957f15481c01d8ba82d892202405432392",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -33,21 +33,42 @@
     },
     {
       "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/Api.java",
-      "bytes": 1541,
-      "lines": 17,
-      "sha256": "6c91c6e05f7120d70d364cad864f02c60bc3a4bc12cd1072d36c2d6ccd0b1f81",
+      "bytes": 2206,
+      "lines": 24,
+      "sha256": "74686ef2226f3b0e7210015e3c7f0551e4069f842b73522ab9140925e4b1a3e7",
       "imports": [],
       "exports": [],
       "environment": [],
       "apiLiterals": [
-        "/api/technician/"
+        "/api/technician/",
+        "/api/technician/tracking-"
       ]
     },
     {
-      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/LocationService.java",
-      "bytes": 3523,
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/CaptureProvider.java",
+      "bytes": 2321,
+      "lines": 20,
+      "sha256": "4e8d5cbf428914ce03f2131449ca32e1a11148b59b89825ca526f40148fc5893",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/CollectionCamera.java",
+      "bytes": 5492,
+      "lines": 45,
+      "sha256": "92765808e7f284f64c43dc12f6eb614b24d65b0c56ea63e61812a8c1795b99df",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/LegacyLocationService.java",
+      "bytes": 3529,
       "lines": 16,
-      "sha256": "60342290745834b6ede775240f68564d847f958d6bcbf6343d16b9388f746d4d",
+      "sha256": "b00c5afd02152fb2c5a23a95937552071d533c0d2a3625689761f213ef9e3633",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -57,10 +78,30 @@
       ]
     },
     {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/LocationService.java",
+      "bytes": 6939,
+      "lines": 82,
+      "sha256": "7feec9c473683735e360687a441c5127a2f18eab91a5bca23a16b7c58ecea2fa",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/MainActivity.java",
-      "bytes": 6736,
-      "lines": 31,
-      "sha256": "666b845f761ced5cf968b665737dd2bf93ef19611054f3c9eee65bac4af9a30c",
+      "bytes": 9146,
+      "lines": 42,
+      "sha256": "acc35a0b92ba3b18027d66dd851a184f5783a50ac4c7fed5731c4d12d90a31b9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/MobilePolicy.java",
+      "bytes": 693,
+      "lines": 9,
+      "sha256": "3f1743ea953363e45c0e3d54308298c0091f79fee7872a965960983e264ef10b",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -77,6 +118,46 @@
       "apiLiterals": [
         "/api/technician/notifications"
       ]
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/SafeWebViewport.java",
+      "bytes": 2201,
+      "lines": 53,
+      "sha256": "5a5e18d49528d2e35901f12d97bafa947b3ca71f6797bc0cb810bd84da829902",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/TrackingPolicy.java",
+      "bytes": 535,
+      "lines": 8,
+      "sha256": "8a7667fd8425cc8cb96483365894e46dd0aa8cad242e5130e3ae14d641915243",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/TrackingStopJob.java",
+      "bytes": 853,
+      "lines": 9,
+      "sha256": "e1cb875634dd9358ff04c497540d21aa72ab97beaebf7bd78c2c9b4e9e849ad0",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "android/technician/src/br/gov/ma/pacodolumiar/semed/tecnico/TrackingStore.java",
+      "bytes": 3349,
+      "lines": 34,
+      "sha256": "83d545f907e1e84fbe9cc91ef397959f6fc67f2c5a3d64569b5499f2e5dbab9d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "config/wrangler.coletor.example.jsonc",
@@ -409,10 +490,40 @@
       "apiLiterals": []
     },
     {
+      "path": "migrations/0032_collection_control.sql",
+      "bytes": 8926,
+      "lines": 77,
+      "sha256": "be689b8478090dc9749db1effa3a0d0266273144f8fbe99d45123e8839147030",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "migrations/0033_technician_tracking.sql",
+      "bytes": 5764,
+      "lines": 88,
+      "sha256": "e392e80b82df8af7317cc5bb87a9c6a787158e5cb3fb3299d9144bc565dfb54e",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "migrations/0034_agent_network_tests.sql",
+      "bytes": 1111,
+      "lines": 27,
+      "sha256": "162638468096bc49f7e4fd56245a05d1fad619fad9bb84816a322049f0777b04",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "package.json",
-      "bytes": 6725,
-      "lines": 84,
-      "sha256": "4a080a4f687c83bef96b4789008190155c84a11be281b4fcbad8948eab6c154b",
+      "bytes": 7397,
+      "lines": 91,
+      "sha256": "115e1e854997e619173deeb16c7018f9f39b137714fa286d2c2a892d75dc5b1c",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -431,6 +542,41 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/audit-collector-performance.mjs",
+      "bytes": 10852,
+      "lines": 79,
+      "sha256": "108ed40396943ad5ad28722d140d02a4716c301575601b3b4a812674abd01a77",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/photo-performance.mjs",
+        "node:assert/strict",
+        "node:async_hooks",
+        "node:fs",
+        "node:http",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [
+        "ASSETS",
+        "DB",
+        "SEMED_AUDIT_ASSETS",
+        "SEMED_AUDIT_DIR"
+      ],
+      "apiLiterals": [
+        "/api/auth/me",
+        "/api/collector/capabilities",
+        "/api/collector/environments?inspectionId=",
+        "/api/collector/equipment-list?",
+        "/api/collector/inspection?id=",
+        "/api/collector/photo-upload",
+        "/api/collector/photo?id=",
+        "/api/collector/review?id=",
+        "/api/collector/v3-start",
+        "/api/mobile/me"
+      ]
+    },
+    {
       "path": "scripts/bootstrap-auth.mjs",
       "bytes": 2149,
       "lines": 14,
@@ -445,10 +591,11 @@
     },
     {
       "path": "scripts/build-collector.mjs",
-      "bytes": 2186,
-      "lines": 5,
-      "sha256": "524bf1db08c75f4b628887daeb0c63a589b18490017d2a3c0fe0dce13db5549f",
+      "bytes": 2373,
+      "lines": 6,
+      "sha256": "12a9a9cdfe2acb71556af98357f9d7721f5778ea215bbf9415610f4a3d847883",
       "imports": [
+        "./bundle-collector.mjs",
         "node:fs/promises",
         "node:path"
       ],
@@ -458,10 +605,12 @@
     },
     {
       "path": "scripts/build-desktop.mjs",
-      "bytes": 6151,
-      "lines": 47,
-      "sha256": "9a723ac671a7ec5ee7df5529adf9d5234286667f92aef748025ed7ff0f558f58",
+      "bytes": 6942,
+      "lines": 55,
+      "sha256": "48fbbe75aaf66eed46c79e6899f62efcd1e4db1f2adbee199c495ec08155afe5",
       "imports": [
+        "../shared/mobile-assets.mjs",
+        "./bundle-collector.mjs",
         "./bundle-desktop.mjs",
         "node:crypto",
         "node:fs/promises",
@@ -473,9 +622,9 @@
     },
     {
       "path": "scripts/build-technician-android.mjs",
-      "bytes": 3662,
-      "lines": 29,
-      "sha256": "250e0539f6653ead98580e824fb7f6faffaf7cc3f6da64326de3ca2986cb745e",
+      "bytes": 3889,
+      "lines": 32,
+      "sha256": "1fd30f6fa2c65cd7df330867d6e2d4429049d3ecd9329c799e045975c0045568",
       "imports": [
         "node:child_process",
         "node:crypto",
@@ -487,10 +636,37 @@
       "apiLiterals": []
     },
     {
-      "path": "scripts/bundle-desktop.mjs",
-      "bytes": 2345,
+      "path": "scripts/build-windows-agent.ps1",
+      "bytes": 2653,
+      "lines": 38,
+      "sha256": "9ba8b08444f3c0c198b565e71f6cf6d880c26961a5d6545516f54e3c2b055d65",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/bundle-collector.mjs",
+      "bytes": 2220,
       "lines": 26,
-      "sha256": "e438fc0ec4734072c7a65c4e9147b6bd1ef2d291bbb15ce03d2bf3244b3d2a9e",
+      "sha256": "2e5966026efdece0854408530e3b5950425861d438fb6221ef06d15caf915fe5",
+      "imports": [
+        "esbuild",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "exports": [
+        "bundleCollector"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/bundle-desktop.mjs",
+      "bytes": 2438,
+      "lines": 27,
+      "sha256": "328166d8e89c2e440dd451f4e7b5fc57185e548f563760a9a5477cd7de75bedb",
       "imports": [
         "esbuild",
         "node:crypto",
@@ -521,6 +697,59 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/capture-coleta-refino.cjs",
+      "bytes": 24552,
+      "lines": 148,
+      "sha256": "aa23caf6d9080db762bed4fc38eb5f4867b18f2f3f297b3ad5f19c8a16d8a6a3",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/auth-fixture.mjs",
+        "../tests/helpers/playwright.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:path",
+        "qrcode"
+      ],
+      "exports": [],
+      "environment": [
+        "ASSETS",
+        "PHOTOS"
+      ],
+      "apiLiterals": [
+        "/api/",
+        "/api/collector/equipment-save",
+        "/api/collector/photo-upload",
+        "/api/dispatch/technician"
+      ]
+    },
+    {
+      "path": "scripts/capture-collector-refinement.cjs",
+      "bytes": 10697,
+      "lines": 67,
+      "sha256": "b7ef1c55a2c6859ab30645d3d6e45c56b9c2fc500a9b005c03009a20e2a0e53c",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/auth-fixture.mjs",
+        "../tests/helpers/playwright.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [
+        "ASSETS",
+        "PHOTOS"
+      ],
+      "apiLiterals": [
+        "/api/collector/photo-upload",
+        "/api/dispatch/assign",
+        "/api/dispatch/technician",
+        "/api/operations/request-save"
+      ]
+    },
+    {
       "path": "scripts/capture-panel-performance.mjs",
       "bytes": 3146,
       "lines": 36,
@@ -537,10 +766,37 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/capture-technician-handoff.cjs",
+      "bytes": 10329,
+      "lines": 75,
+      "sha256": "e51c1d72d2b67943886aebf54ddcaaef8f0a781d8d3626ff263f7322be068d55",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/me",
+        "/api/dispatch/assign",
+        "/api/dispatch/technician",
+        "/api/operations/request-save",
+        "/api/technician/accept",
+        "/api/technician/active",
+        "/api/technician/notifications",
+        "/api/technician/queue",
+        "/api/technician/queue?history=1"
+      ]
+    },
+    {
       "path": "scripts/check-doc-links.mjs",
-      "bytes": 1186,
-      "lines": 16,
-      "sha256": "ac18f52c18884b666db4488ce967cb462bc5c56e7dc7f8c34dfebc5757e0e24a",
+      "bytes": 1380,
+      "lines": 17,
+      "sha256": "6e95afc155d202c5175763afb422a7e141bfa99dcfb77e2a6a8f01481a87e2a3",
       "imports": [
         "node:fs/promises",
         "node:path"
@@ -563,9 +819,9 @@
     },
     {
       "path": "scripts/check-repository.mjs",
-      "bytes": 1733,
+      "bytes": 1804,
       "lines": 22,
-      "sha256": "01745545d0a7d371f8fb130378967cb03df20486eaaebd1480e539416b61dfc6",
+      "sha256": "3c8e35a13ae74ee2f757da6191403f083191b80e61bf2d4890c490d52e9a7c12",
       "imports": [
         "node:child_process"
       ],
@@ -575,9 +831,9 @@
     },
     {
       "path": "scripts/document-code-map.mjs",
-      "bytes": 3474,
+      "bytes": 3580,
       "lines": 27,
-      "sha256": "6f3b212081088d73f40a633cbf73026557c8669303c2892aac2ddb977ac14e85",
+      "sha256": "2dc3162c177c4316b02611e677cfcf19197ba94be336c0c031f0fde332990e5f",
       "imports": [
         "node:child_process",
         "node:crypto",
@@ -617,9 +873,9 @@
     },
     {
       "path": "scripts/export-operation-manual.mjs",
-      "bytes": 2326,
-      "lines": 36,
-      "sha256": "508b1553788d5ceeb1abdd8d98c04e24ddeefbbe3ef4ae60b6f5ca194736e0ba",
+      "bytes": 2424,
+      "lines": 37,
+      "sha256": "8f4127e042ec9a861dd67b68daa07269b38f69819c9e2b0973df202b7f65164b",
       "imports": [
         "node:fs/promises"
       ],
@@ -635,6 +891,18 @@
       "imports": [
         "node:crypto",
         "node:fs/promises"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/generate-collection-control-migration.mjs",
+      "bytes": 3822,
+      "lines": 42,
+      "sha256": "20fa2ee340c30673eaf5551331cf1ba6380d881312ab447c7c8bef7d4ed57567",
+      "imports": [
+        "node:fs"
       ],
       "exports": [],
       "environment": [],
@@ -783,6 +1051,70 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/measure-technician-tracking.mjs",
+      "bytes": 4627,
+      "lines": 36,
+      "sha256": "36e2487f0ff7c2660160fd5d3e1771a74990e5bf0567b00c6e2369e50aed0ff5",
+      "imports": [
+        "../server/security.mjs",
+        "../server/technician-tracking.mjs",
+        "../server/worker.mjs",
+        "../tests/helpers/dispatch-fixture.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:module"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/technician/accept",
+        "/api/technician/active",
+        "/api/technician/position",
+        "/api/technician/tracking-heartbeat"
+      ]
+    },
+    {
+      "path": "scripts/package-code-audit.py",
+      "bytes": 5970,
+      "lines": 105,
+      "sha256": "32d2a438f2e1624d954ea8b300875ef40ada41b22338744bd62c62fce0daebd2",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/package-collector-refinement.mjs",
+      "bytes": 47969,
+      "lines": 660,
+      "sha256": "fa128b5522c61304c9fa9dd382e11b4ea1f9cdca4b2729bcd71731c1dbcd3d2a",
+      "imports": [
+        "../web/collector-v3-schema.js",
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/package-technician-handoff.mjs",
+      "bytes": 6434,
+      "lines": 63,
+      "sha256": "50065677ba95cd3dc103aea747bf59ff589667273817730c247044b3b75b778d",
+      "imports": [
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "scripts/prepare-alternative-questionnaire-v02.mjs",
       "bytes": 12644,
       "lines": 83,
@@ -829,6 +1161,28 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/preview-collector-refinement.cjs",
+      "bytes": 3481,
+      "lines": 25,
+      "sha256": "93c9f333fa44452a6f25c1f4b6039f6c9ca68a65c4b2390919ec5125d0530231",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/auth-fixture.mjs",
+        "../tests/helpers/playwright.cjs",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [
+        "ASSETS",
+        "PHOTOS"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/technician"
+      ]
+    },
+    {
       "path": "scripts/preview-partial-photos.mjs",
       "bytes": 982,
       "lines": 9,
@@ -840,6 +1194,28 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "scripts/preview-unit-equipment-map.mjs",
+      "bytes": 4534,
+      "lines": 42,
+      "sha256": "b6a8b4a3c69ead5daa980c0fc536b4a12eb54738645ceeddb0c5f889f97ac260",
+      "imports": [
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/unit-equipment-map.mjs",
+        "node:fs",
+        "node:http",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/",
+        "/api/inventory/panel-status",
+        "/api/root/equipment-delete",
+        "/api/root/equipment-name"
+      ]
     },
     {
       "path": "scripts/read-live-panel.mjs",
@@ -899,6 +1275,20 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/rehearse-collection-control.mjs",
+      "bytes": 1444,
+      "lines": 12,
+      "sha256": "8c878c7b861f076800ccffc87c466eec379eff04e4e3b2f5985179081a43e011",
+      "imports": [
+        "node:crypto",
+        "node:fs",
+        "node:sqlite"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "scripts/serve.mjs",
       "bytes": 1023,
       "lines": 12,
@@ -912,6 +1302,31 @@
       "environment": [
         "PORT"
       ],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/test-audit-browser.mjs",
+      "bytes": 1134,
+      "lines": 21,
+      "sha256": "ce3f5d43af6f32157da690fde3ea534f8cd1d57b370e8e6cd173565af435342f",
+      "imports": [
+        "node:child_process"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/test-audit.mjs",
+      "bytes": 626,
+      "lines": 10,
+      "sha256": "87ef89d0ca7360afdf03723cb51377b8b6eb8850f04b0dcc5413fc9301aa8930",
+      "imports": [
+        "node:child_process",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
       "apiLiterals": []
     },
     {
@@ -932,6 +1347,20 @@
       "apiLiterals": [
         "/api/inventory/in-progress-photos?id="
       ]
+    },
+    {
+      "path": "scripts/test-technician-android.mjs",
+      "bytes": 1015,
+      "lines": 10,
+      "sha256": "3b0533db91944051c924e1b8c6da56f4e3e42592fd85750c128fef6526a8762c",
+      "imports": [
+        "node:child_process",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "scripts/verificar-ambiente-validacao.mjs",
@@ -1392,6 +1821,41 @@
       "apiLiterals": []
     },
     {
+      "path": "scripts/verify-mobile-release.mjs",
+      "bytes": 2601,
+      "lines": 37,
+      "sha256": "5086ad65df1ca3285dbce2b79f700868a0c977cc3d617c1d7aae22bc394e54ae",
+      "imports": [
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs/promises"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/collector/capabilities",
+        "/api/mobile/me",
+        "/api/mobile/units"
+      ]
+    },
+    {
+      "path": "scripts/verify-network-tests-release.mjs",
+      "bytes": 1576,
+      "lines": 24,
+      "sha256": "ddcadb61d529090992a2b73e739c1af6f5e42745b84be2249ddf36ccbb9bb5ce",
+      "imports": [
+        "node:assert/strict",
+        "node:fs/promises"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/agent/v1/network-tests/",
+        "/api/root/network-tests",
+        "/api/root/network-tests/computers"
+      ]
+    },
+    {
       "path": "scripts/verify-open-enrollment.mjs",
       "bytes": 2584,
       "lines": 22,
@@ -1593,9 +2057,9 @@
     },
     {
       "path": "scripts/verify-technical-release.mjs",
-      "bytes": 1607,
-      "lines": 10,
-      "sha256": "fcf5316fc7126de8ceba8cc9bd902966c1c5de4b06fd1fc6132826dbd3870282",
+      "bytes": 2170,
+      "lines": 13,
+      "sha256": "8ae0db0b15e6ff6b7559f11079e553245b08abb799286a01f0f2d14223ad767a",
       "imports": [
         "node:assert/strict",
         "node:crypto",
@@ -1608,7 +2072,38 @@
         "/api/dispatch/queue",
         "/api/technician/active",
         "/api/technician/notifications",
-        "/api/technician/queue"
+        "/api/technician/queue",
+        "/api/technician/request?id=00000000-0000-4000-8000-000000000001"
+      ]
+    },
+    {
+      "path": "scripts/verify-technician-tracking-backup.mjs",
+      "bytes": 2150,
+      "lines": 23,
+      "sha256": "a9dbbd19418a7ec442d2a7c96b8420c6b128ef21f502024f57b8aa782dd3420b",
+      "imports": [
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs",
+        "node:sqlite"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "scripts/verify-tracking-release.mjs",
+      "bytes": 1474,
+      "lines": 22,
+      "sha256": "eff35fc6c5afea9040cae12258bd9695417ff3b04e15e729955c4d5f96d48730",
+      "imports": [
+        "node:assert/strict",
+        "node:fs/promises"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/technician/"
       ]
     },
     {
@@ -1664,6 +2159,35 @@
       ]
     },
     {
+      "path": "server/agent-network-tests.mjs",
+      "bytes": 13747,
+      "lines": 113,
+      "sha256": "661d5878a4a82ff80b0b32fd2063b0286631c14820da24a407f4249896e51eb6",
+      "imports": [
+        "./agentes/connection.mjs"
+      ],
+      "exports": [
+        "NETWORK_LIMITS",
+        "NETWORK_TARGET",
+        "NETWORK_TEST_PROTOCOL",
+        "networkTestMachine",
+        "networkTestRoutes",
+        "networkTestsEnabled",
+        "pendingNetworkTest"
+      ],
+      "environment": [
+        "AGENT_NETWORK_TESTS_PROVIDER",
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/root/network-tests",
+        "/api/root/network-tests/cancel",
+        "/api/root/network-tests/computers",
+        "/api/root/network-tests/request"
+      ]
+    },
+    {
       "path": "server/agentes/catalogo.mjs",
       "bytes": 11157,
       "lines": 79,
@@ -1694,10 +2218,11 @@
     },
     {
       "path": "server/agentes/index.mjs",
-      "bytes": 10322,
-      "lines": 82,
-      "sha256": "0799047c5d2e1094ca54ed8fe1362e6d10be58c08665ca57e17005da858daf82",
+      "bytes": 10665,
+      "lines": 84,
+      "sha256": "18dfd51533e59ab58c9a36bba38b21bc5135526dbabcded4db211b24504fbe1e",
       "imports": [
+        "../agent-network-tests.mjs",
         "./catalogo.mjs",
         "./nucleo/d1-store.mjs",
         "./nucleo/worker.mjs"
@@ -1825,9 +2350,9 @@
     },
     {
       "path": "server/agentes/nucleo/validate.mjs",
-      "bytes": 12157,
-      "lines": 251,
-      "sha256": "6512757fc7efd0b3b9c49cc6cdddb8b94ead44d4f37cc3333b2852a90f1984cd",
+      "bytes": 12289,
+      "lines": 252,
+      "sha256": "d63ad10a2c23572b33aee4d9c2b450db2ef0214a87856121db2d2cfe0beb161a",
       "imports": [
         "./crypto.mjs"
       ],
@@ -1857,9 +2382,9 @@
     },
     {
       "path": "server/agentes/nucleo/worker.mjs",
-      "bytes": 76707,
-      "lines": 1339,
-      "sha256": "b214ba8db4297507d28f444438fb35352cc2c8d993ddd8b222e93ced1d63eeb4",
+      "bytes": 77761,
+      "lines": 1355,
+      "sha256": "85d3f70ab4cb8f5a275f555115575e0ec2d4844e6dd0dd7d7b08cee5021ce731",
       "imports": [
         "../connection.mjs",
         "../presence.mjs",
@@ -1907,10 +2432,12 @@
     },
     {
       "path": "server/asset-response.mjs",
-      "bytes": 951,
-      "lines": 12,
-      "sha256": "414985386738977789c468e1d55d8feeb109a10516feddc576213f89a60f613b",
-      "imports": [],
+      "bytes": 1039,
+      "lines": 13,
+      "sha256": "0ed2b1a7a6a79cefd64d572ae3ec849b65740895b355012cb3498b14c6c730d9",
+      "imports": [
+        "../shared/mobile-assets.mjs"
+      ],
       "exports": [
         "assetResponse"
       ],
@@ -1919,6 +2446,28 @@
       ],
       "apiLiterals": [
         "/api/"
+      ]
+    },
+    {
+      "path": "server/collection-control.mjs",
+      "bytes": 5702,
+      "lines": 59,
+      "sha256": "62214d4f6f17c95c91a052f07b57609a4344b5b718173cbc4bb501467a9a6183",
+      "imports": [
+        "./unit-scope.mjs"
+      ],
+      "exports": [
+        "collectionControlRoutes"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/collection-control",
+        "/api/collection-control/classify",
+        "/api/collection-control/history",
+        "/api/collection-control/summary"
       ]
     },
     {
@@ -1936,9 +2485,9 @@
     },
     {
       "path": "server/collector-v2.mjs",
-      "bytes": 7959,
-      "lines": 59,
-      "sha256": "9284098150eeed6fb3e047c7d22502ff1c6430cb531cdebbbbab74571e336974",
+      "bytes": 8040,
+      "lines": 60,
+      "sha256": "3c7c51e5c1683b1017509fab34180537314fd4d2d5021ca6a09ceaf49840d777",
       "imports": [
         "../web/collector-v2-schema.js",
         "./photo-labels.mjs"
@@ -1952,6 +2501,7 @@
         "similarEnvironments",
         "startV2",
         "v2Evidence",
+        "v2EvidenceStatement",
         "v2ExtraEquipmentKeys",
         "validSectionShape"
       ],
@@ -1962,9 +2512,9 @@
     },
     {
       "path": "server/collector-v3.mjs",
-      "bytes": 8323,
-      "lines": 61,
-      "sha256": "21f02dda737081ab154f38c8d7eb8706d9e951e88aa9f2463f19e74b3edef923",
+      "bytes": 8469,
+      "lines": 62,
+      "sha256": "c4991f1f1eef7010ed5d80cb5505ba5ed12a1443d692fd20540edddd25ba7754",
       "imports": [
         "../web/collector-v3-schema.js",
         "./collector-v2.mjs"
@@ -1974,7 +2524,8 @@
         "resolveV3Environment",
         "reviewV3",
         "startV3",
-        "v3ExtraEquipmentKeys"
+        "v3ExtraEquipmentKeys",
+        "v3ReviewEquipmentStatement"
       ],
       "environment": [
         "DB"
@@ -1983,9 +2534,9 @@
     },
     {
       "path": "server/collector.mjs",
-      "bytes": 54056,
-      "lines": 186,
-      "sha256": "f89989d986e338787cc0bb7f51b92a3dc76e20735bd78c95ea08898832a4dfea",
+      "bytes": 55711,
+      "lines": 194,
+      "sha256": "0090ee119fbe024889eab09d90672d64c5a5528f3af4a490e82556406c3c62ed",
       "imports": [
         "../web/collector-errors.js",
         "../web/collector-schema.js",
@@ -2004,6 +2555,7 @@
         "./photo-response.mjs",
         "./photo-storage.mjs",
         "./photo-thumbnails.mjs",
+        "./unit-equipment-map.mjs",
         "./unit-scope.mjs",
         "./visit-routes.mjs"
       ],
@@ -2042,7 +2594,8 @@
         "/api/inventory/",
         "/api/inventory/equipment",
         "/api/inventory/summary",
-        "/api/inventory/unit"
+        "/api/inventory/unit",
+        "/api/inventory/unit-equipment-map"
       ]
     },
     {
@@ -2103,11 +2656,12 @@
     },
     {
       "path": "server/dispatch-road-routing.mjs",
-      "bytes": 8847,
-      "lines": 86,
-      "sha256": "1e4176a161a45d7e5c23d5d9ea562847ae33ab9896a9fee8f0af9b7a9e2a6758",
+      "bytes": 9898,
+      "lines": 94,
+      "sha256": "1d725be47037b34e445068f88582530b2bbbcf34057ec38f99792bcdf5b0add7",
       "imports": [
-        "./security.mjs"
+        "./security.mjs",
+        "./technician-tracking.mjs"
       ],
       "exports": [
         "distanceMeters",
@@ -2309,12 +2863,13 @@
     },
     {
       "path": "server/inventory-equipment.mjs",
-      "bytes": 7948,
-      "lines": 59,
-      "sha256": "0283acce0efeabab903136497de020fd8e0d7d54a617bdae4d1fddbda54968f2",
+      "bytes": 8713,
+      "lines": 67,
+      "sha256": "d6653288b76d516dee95f59951374115cfa4e9014905fd157a94e04e8d174a20",
       "imports": [
         "./agentes/presence.mjs",
-        "./equipment-link-state.mjs"
+        "./equipment-link-state.mjs",
+        "./unit-equipment-map.mjs"
       ],
       "exports": [
         "equipmentRead"
@@ -2376,6 +2931,24 @@
         "/api/inventory/provider-reports",
         "/api/inventory/work-plan"
       ]
+    },
+    {
+      "path": "server/mobile-app.mjs",
+      "bytes": 1955,
+      "lines": 29,
+      "sha256": "bbfad2bd4b2c1c0e0324737480f1e676df9b93b59e6926dceb73cc99032c7bc1",
+      "imports": [
+        "../shared/mobile-assets.mjs",
+        "./asset-response.mjs"
+      ],
+      "exports": [
+        "mobileCollector",
+        "mobilePublic"
+      ],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": []
     },
     {
       "path": "server/monitoring-queries.mjs",
@@ -2695,13 +3268,14 @@
     },
     {
       "path": "server/technical-dispatch.mjs",
-      "bytes": 17228,
-      "lines": 155,
-      "sha256": "49b77c77d270a23bcc2fab12c03775685434526630b84b9eb431d57d2ca570f3",
+      "bytes": 19913,
+      "lines": 181,
+      "sha256": "246954424f7b34b0df8e0cf694c9557930e55203acebb2cbd8ecbfe1bb8a5171",
       "imports": [
         "./dispatch-road-routing.mjs",
         "./security.mjs",
-        "./technician-avatars.mjs"
+        "./technician-avatars.mjs",
+        "./technician-tracking.mjs"
       ],
       "exports": [
         "cleanDispatchPositions",
@@ -2739,6 +3313,31 @@
       ]
     },
     {
+      "path": "server/technician-tracking.mjs",
+      "bytes": 4077,
+      "lines": 50,
+      "sha256": "599157c4b20fecc60f7e4eef406ffeecc46169bdd51113684cf7000d93029e00",
+      "imports": [
+        "./security.mjs"
+      ],
+      "exports": [
+        "cleanTracking",
+        "freshTrackingPosition",
+        "openTrackingQueue",
+        "trackingCredential",
+        "trackingGuard",
+        "trackingMachineRoutes"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/technician/tracking-heartbeat",
+        "/api/technician/tracking-stop"
+      ]
+    },
+    {
       "path": "server/unit-deletion.mjs",
       "bytes": 7611,
       "lines": 74,
@@ -2755,6 +3354,25 @@
         "/api/root/unit-delete",
         "/api/root/unit-delete-preview"
       ]
+    },
+    {
+      "path": "server/unit-equipment-map.mjs",
+      "bytes": 2379,
+      "lines": 26,
+      "sha256": "de7c9bffc4fa3a7157800c719533e3b06916489a02872bf3c5882d411b29b9e2",
+      "imports": [
+        "./unit-scope.mjs"
+      ],
+      "exports": [
+        "currentSectorSql",
+        "equipmentQuantitySql",
+        "unitEquipmentMapRead"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": []
     },
     {
       "path": "server/unit-scope.mjs",
@@ -2836,13 +3454,16 @@
     },
     {
       "path": "server/worker.mjs",
-      "bytes": 28229,
-      "lines": 182,
-      "sha256": "83ae98b611fd5c2468ab05e05a754b1c3e305b4f0fc7efe605f9364892734b90",
+      "bytes": 30718,
+      "lines": 202,
+      "sha256": "c141b5c169beb243458e366a804e996ba393cc8b7ed55cf65e7cabf3f9468b15",
       "imports": [
+        "../shared/mobile-assets.mjs",
         "./agent-monitoring.mjs",
+        "./agent-network-tests.mjs",
         "./agentes/index.mjs",
         "./asset-response.mjs",
+        "./collection-control.mjs",
         "./collector.mjs",
         "./d1-budget.mjs",
         "./d1-usage.mjs",
@@ -2853,6 +3474,7 @@
         "./hardware-review.mjs",
         "./import-units.mjs",
         "./management-views.mjs",
+        "./mobile-app.mjs",
         "./panel-search.mjs",
         "./pending-indicators.mjs",
         "./photo-gallery.mjs",
@@ -2863,6 +3485,7 @@
         "./security.mjs",
         "./service-desk.mjs",
         "./technical-dispatch.mjs",
+        "./technician-tracking.mjs",
         "./unit-scope.mjs",
         "./units.mjs"
       ],
@@ -2896,13 +3519,32 @@
         "/api/collector/photo-upload",
         "/api/dispatch/",
         "/api/dispatch/avatar",
+        "/api/mobile/me",
+        "/api/mobile/units",
         "/api/operations/",
         "/api/root/assignments",
         "/api/root/import-preview",
         "/api/root/photo-thumbnails",
         "/api/root/unit-save",
-        "/api/technician/"
+        "/api/technician/",
+        "/api/units"
       ]
+    },
+    {
+      "path": "shared/mobile-assets.mjs",
+      "bytes": 1293,
+      "lines": 8,
+      "sha256": "36b85a4e8a4acd5db11974390388ab042e46a2823eab6a565d0bbd7e1fb4fde3",
+      "imports": [],
+      "exports": [
+        "canCollect",
+        "collectorAssets",
+        "collectorPages",
+        "isCollectorBundle",
+        "mobileAssets"
+      ],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "tests/agent-connection-browser.cjs",
@@ -2989,6 +3631,29 @@
       ]
     },
     {
+      "path": "tests/agent-network-tests.test.mjs",
+      "bytes": 10010,
+      "lines": 29,
+      "sha256": "b4760b157163168ac59ece27901877bb6df22d2ac196b9091eeb37ec797cac1c",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/agent-connection.mjs",
+        "./helpers/collector-db.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "AGENT_NETWORK_TESTS_PROVIDER"
+      ],
+      "apiLiterals": [
+        "/api/agent/v1/heartbeat",
+        "/api/agent/v1/network-tests/",
+        "/api/root/network-tests"
+      ]
+    },
+    {
       "path": "tests/agentes-open-enrollment.test.mjs",
       "bytes": 13192,
       "lines": 79,
@@ -3052,6 +3717,26 @@
       ]
     },
     {
+      "path": "tests/android/MobilePolicyTest.java",
+      "bytes": 992,
+      "lines": 13,
+      "sha256": "443fae1d2053e6f335b7d9c5c3352baf4dcbe1519d1f5bc45fe92212ba3e345b",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/android/TrackingPolicyTest.java",
+      "bytes": 1089,
+      "lines": 16,
+      "sha256": "68d03990962c000f5fa29b21fd158019273c730c5c192abb9234ffa1ccba7a2e",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "tests/auth-flow-browser.cjs",
       "bytes": 10656,
       "lines": 58,
@@ -3110,6 +3795,90 @@
         "USERPROFILE"
       ],
       "apiLiterals": []
+    },
+    {
+      "path": "tests/collection-control-browser.cjs",
+      "bytes": 4002,
+      "lines": 22,
+      "sha256": "740f74f179eb47b8e96f683841ce18090c50ad1dd861fa0fc161ab4e54dd48d0",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/collection-control.test.mjs",
+      "bytes": 10078,
+      "lines": 87,
+      "sha256": "c2c236591de8751b04e89f9141ebafec3e7cc0dc6767a3ef5c20a7fc53bc47be",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/collection-control"
+      ]
+    },
+    {
+      "path": "tests/collection-overview-browser.cjs",
+      "bytes": 4938,
+      "lines": 28,
+      "sha256": "2c99e5e55944970b6800e31cff8453414beb529abf83f428f49f534d59e8bce4",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/collection-control/summary"
+      ]
+    },
+    {
+      "path": "tests/collector-concurrency-browser.cjs",
+      "bytes": 38439,
+      "lines": 274,
+      "sha256": "e2625a0810f71082eccb65fd473f1d5d31e5b6fdcd6cc847579530d5e161b80c",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/playwright.cjs",
+        "./helpers/select-environment.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:http",
+        "node:path"
+      ],
+      "exports": [
+        "authEnabled",
+        "collectorUrl"
+      ],
+      "environment": [
+        "SEMED_CONCURRENCY_OUT"
+      ],
+      "apiLiterals": [
+        "/api/collector/equipment-lock",
+        "/api/collector/equipment-save",
+        "/api/collector/inspection",
+        "/api/collector/inventory-section",
+        "/api/collector/photo-thumb",
+        "/api/collector/photo-upload",
+        "/api/collector/section-save"
+      ]
     },
     {
       "path": "tests/collector-environments-browser.cjs",
@@ -3213,6 +3982,49 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "tests/collector-performance.test.mjs",
+      "bytes": 6656,
+      "lines": 74,
+      "sha256": "98c5024a8d878a1184f2b2ba69d1e5dc7983ad1a87459565921da1973d0096fd",
+      "imports": [
+        "../server/worker.mjs",
+        "../shared/mobile-assets.mjs",
+        "../web/collector-photo-previews.js",
+        "../web/collector-request.js",
+        "./helpers/agent-client.mjs",
+        "./helpers/photo-performance.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/collector/environment-save",
+        "/api/collector/equipment-save",
+        "/api/collector/inspection?id=",
+        "/api/collector/review?id=",
+        "/api/collector/v3-start"
+      ]
+    },
+    {
+      "path": "tests/collector-photo-pipeline.test.mjs",
+      "bytes": 3038,
+      "lines": 26,
+      "sha256": "f6f35ac73db59a1b60163861cb32ced23fdfee6d230004010355f5a583fd659e",
+      "imports": [
+        "node:assert/strict",
+        "node:fs",
+        "node:test",
+        "node:vm"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/collector/photo-upload"
+      ]
     },
     {
       "path": "tests/collector-refinement-browser.cjs",
@@ -3321,6 +4133,25 @@
         "../web/collector-schema.js",
         "node:assert/strict",
         "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/collector-unit-navigation-browser.cjs",
+      "bytes": 3878,
+      "lines": 32,
+      "sha256": "f88e0140ee1c9b97b548e615c65cb3fd7eb2ea37eeb3674eabd33a3e66a839e2",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/playwright.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:http",
+        "node:path"
       ],
       "exports": [],
       "environment": [],
@@ -3821,9 +4652,9 @@
     },
     {
       "path": "tests/dispatch-road-routing-runtime.cjs",
-      "bytes": 2495,
+      "bytes": 2508,
       "lines": 26,
-      "sha256": "00042324660afed19243bcb3ae9f8f77b4aa687b38ef46c9abe514f8d888ecc3",
+      "sha256": "968783cbf40fb91c48a31575c3c6482ec6bb4d0e10785f1605ea23c88775d464",
       "imports": [
         "./server/dispatch-road-routing.mjs",
         "esbuild",
@@ -4092,6 +4923,22 @@
         "/api/root/unit-delete",
         "/api/root/unit-delete-preview?id="
       ]
+    },
+    {
+      "path": "tests/equipment-signal.test.mjs",
+      "bytes": 2563,
+      "lines": 30,
+      "sha256": "e67ecb7ec685c3d1406373b5df6163dac92a509fcf6046958968a556ddf5f0e0",
+      "imports": [
+        "../server/agentes/presence.mjs",
+        "../web/equipment-signal.js",
+        "../web/panel-status.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "tests/fixtures/d1-budget-legacy-queries.json",
@@ -4502,6 +5349,21 @@
       "apiLiterals": []
     },
     {
+      "path": "tests/helpers/unit-equipment-map.mjs",
+      "bytes": 2250,
+      "lines": 23,
+      "sha256": "3bfbca862c3077945600f547c4ce893e666b1d070f4443e4c621e0cc6ad6bc67",
+      "imports": [
+        "./collector-db.mjs",
+        "./equipment-consultation.mjs"
+      ],
+      "exports": [
+        "unitEquipmentMapFixture"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "tests/in-progress-photos.test.mjs",
       "bytes": 4395,
       "lines": 46,
@@ -4666,6 +5528,96 @@
       "apiLiterals": []
     },
     {
+      "path": "tests/mobile-app-browser.cjs",
+      "bytes": 9642,
+      "lines": 43,
+      "sha256": "f46915cb5c2bf8f441456d3efa0f7e9797ce6550e1ce1ac60c243e6fb09d60c9",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/auth-fixture.mjs",
+        "./helpers/playwright.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [
+        "ASSETS",
+        "PHOTOS"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/assign",
+        "/api/dispatch/technician",
+        "/api/operations/request-save"
+      ]
+    },
+    {
+      "path": "tests/mobile-app.test.mjs",
+      "bytes": 4225,
+      "lines": 51,
+      "sha256": "dfee0129063e082d957d21c5e00014d343e7faa7ba7f060d33e8ec8658bbb7f4",
+      "imports": [
+        "./helpers/agent-client.mjs",
+        "./helpers/auth-fixture.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/login",
+        "/api/auth/me",
+        "/api/collector/start",
+        "/api/mobile/me",
+        "/api/mobile/units",
+        "/api/root/units",
+        "/api/technician/queue"
+      ]
+    },
+    {
+      "path": "tests/mobile-safe-viewport-browser.cjs",
+      "bytes": 6329,
+      "lines": 49,
+      "sha256": "163df8fbb76208beb851b47c8e4b531e0101b70296cc8e592b90a9565b60fdcb",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/playwright.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:http",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/network-tests-browser.cjs",
+      "bytes": 3427,
+      "lines": 27,
+      "sha256": "afdc4e764fb1e04d343786785c02eff783235efd7652cc19a17ad6c92b13b7f4",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/agent-connection.mjs",
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [
+        "AGENT_NETWORK_TESTS_PROVIDER",
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/agent/v1/heartbeat"
+      ]
+    },
+    {
       "path": "tests/operations-browser.cjs",
       "bytes": 5618,
       "lines": 27,
@@ -4762,9 +5714,9 @@
     },
     {
       "path": "tests/panel-mesa-browser.cjs",
-      "bytes": 6175,
+      "bytes": 6248,
       "lines": 55,
-      "sha256": "cfe2eab2c490783b92a45704fb76def255aa6380f16681be4ee419ac18107a40",
+      "sha256": "d6f28a24c80a0690203471e6cec0a21370574844b071f1cabe56408fd3eb402f",
       "imports": [
         "./helpers/equipment-link-state.mjs",
         "./helpers/panel-browser.cjs",
@@ -4921,9 +5873,9 @@
     },
     {
       "path": "tests/panel-search-browser.cjs",
-      "bytes": 6008,
-      "lines": 24,
-      "sha256": "ff0361e27c363bead18eec4175a8bedaa13ec12a1765b4a47f0431f457c361cf",
+      "bytes": 5935,
+      "lines": 25,
+      "sha256": "fdd15cb2e30f01d99f41f9a1e11e8c2fb0b868f2becf7278bddc35ce0c1d2b39",
       "imports": [
         "./helpers/equipment-consultation.mjs",
         "./helpers/panel-browser.cjs",
@@ -4959,6 +5911,23 @@
       "apiLiterals": []
     },
     {
+      "path": "tests/panel-unit-search-browser.cjs",
+      "bytes": 6616,
+      "lines": 56,
+      "sha256": "71057b6e27135ee7ad25aa1ee3865b66360212b76e2a3f56b0adeaae5f81e937",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/inventory/search",
+        "/api/units"
+      ]
+    },
+    {
       "path": "tests/panel-usability-browser.cjs",
       "bytes": 9473,
       "lines": 52,
@@ -4991,9 +5960,9 @@
     },
     {
       "path": "tests/pending-indicators-browser.cjs",
-      "bytes": 7040,
+      "bytes": 7000,
       "lines": 43,
-      "sha256": "7de1eeba6ea805e0a524d08c2d3a4ac49e157c9996e68cfa6126fc09bc4fa67a",
+      "sha256": "2a563a0cdb819d7c85d56ae55982c3a3facdfbf4ef208778f1ff88567b5ca9ec",
       "imports": [
         "./helpers/hardware-change.mjs",
         "./helpers/panel-browser.cjs",
@@ -5449,9 +6418,9 @@
     },
     {
       "path": "tests/technical-dispatch-browser.cjs",
-      "bytes": 5618,
-      "lines": 22,
-      "sha256": "544c9fcf2fdb9fb6da9e00fd927446117081aaa5c310dbc563278c4fba264bd1",
+      "bytes": 5890,
+      "lines": 23,
+      "sha256": "9d87840bf31a2cd7947606c52f9c3868223dc7c012d6e93e803b2a80864e7237",
       "imports": [
         "./helpers/panel-browser.cjs",
         "./helpers/routing-provider.mjs",
@@ -5469,9 +6438,9 @@
     },
     {
       "path": "tests/technical-dispatch.test.mjs",
-      "bytes": 9895,
-      "lines": 64,
-      "sha256": "002cc92dfd3d0311f9868d7f62ccaee6e9134f01883fbb7f78428387ce75a144",
+      "bytes": 11160,
+      "lines": 75,
+      "sha256": "028727824983729baf23f7544b59f9c0cb5d42d8738c87748639e86959763d2a",
       "imports": [
         "../server/technical-dispatch.mjs",
         "../server/worker.mjs",
@@ -5499,7 +6468,9 @@
         "/api/technician/note",
         "/api/technician/notifications",
         "/api/technician/position",
-        "/api/technician/queue"
+        "/api/technician/queue",
+        "/api/technician/request?id=",
+        "/api/technician/request?id=invalid"
       ]
     },
     {
@@ -5554,6 +6525,77 @@
         "/api/dispatch/avatar-remove",
         "/api/dispatch/avatar?",
         "/api/dispatch/map"
+      ]
+    },
+    {
+      "path": "tests/technician-redesign-browser.cjs",
+      "bytes": 7553,
+      "lines": 68,
+      "sha256": "eae020d372966c69bf731c3349b5635227de9a3c99bc2a2683fbc40786a80522",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/technician-tracking-browser.cjs",
+      "bytes": 5720,
+      "lines": 45,
+      "sha256": "ab46516836d82ad9ab1958ca5dc4127738fcb1f5c63777ec528fb580590e5c81",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/me",
+        "/api/dispatch/assign",
+        "/api/dispatch/technician",
+        "/api/operations/request-save",
+        "/api/technician/queue",
+        "/api/technician/tracking-heartbeat",
+        "/api/technician/tracking-stop"
+      ]
+    },
+    {
+      "path": "tests/technician-tracking.test.mjs",
+      "bytes": 14003,
+      "lines": 121,
+      "sha256": "5868d9e5da96e7119f41d0664295437786d1358fcc1bfbae76d3b33b9a4a3581",
+      "imports": [
+        "../server/security.mjs",
+        "../server/technical-dispatch.mjs",
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "./helpers/routing-provider.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND",
+        "DB",
+        "ROUTING_FETCH"
+      ],
+      "apiLiterals": [
+        "/api/auth/logout",
+        "/api/dispatch/map",
+        "/api/dispatch/move",
+        "/api/dispatch/road-route?technician=",
+        "/api/dispatch/technician",
+        "/api/technician/accept",
+        "/api/technician/complete",
+        "/api/technician/pause",
+        "/api/technician/queue"
       ]
     },
     {
@@ -5645,6 +6687,24 @@
         "/api/root/units",
         "/api/units"
       ]
+    },
+    {
+      "path": "tests/unit-equipment-map.test.mjs",
+      "bytes": 5729,
+      "lines": 61,
+      "sha256": "e95af3d72bdb70b7dff7511c51cab28d9d71b1bb5848e2c62aa9f41fed9422fc",
+      "imports": [
+        "../server/agent-network-tests.mjs",
+        "../server/collector.mjs",
+        "../server/inventory-equipment.mjs",
+        "../server/unit-equipment-map.mjs",
+        "./helpers/unit-equipment-map.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "tests/unit-files.test.mjs",
@@ -5897,6 +6957,53 @@
       "apiLiterals": []
     },
     {
+      "path": "web/collection-control.html",
+      "bytes": 492,
+      "lines": 2,
+      "sha256": "e9beb276e1d17eb2864de1c12fc5064a95e53b687e2f2ce5bca4c5294cfe59ca",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/collection-control.js",
+      "bytes": 10383,
+      "lines": 37,
+      "sha256": "14632ebd53364a6f672d21a9e789e54f8eecae8d1663893a77edf315c9890a6c",
+      "imports": [
+        "./panel-shell.js"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/me",
+        "/api/collection-control"
+      ]
+    },
+    {
+      "path": "web/collection-overview.js",
+      "bytes": 3319,
+      "lines": 33,
+      "sha256": "cc8025fc9745314c4952783fb28361825697984e7064ee7ffc34e89b461fe40a",
+      "imports": [
+        "./desktop-request.js"
+      ],
+      "exports": [
+        "attachCollectionOverview",
+        "collectionHref",
+        "collectionLabels",
+        "collectionOverview",
+        "getCollectionOverview",
+        "paintCollectionOverview",
+        "refreshCollectionOverview"
+      ],
+      "environment": [],
+      "apiLiterals": [
+        "/api/collection-control/summary"
+      ]
+    },
+    {
       "path": "web/collector-account.html",
       "bytes": 1549,
       "lines": 2,
@@ -5923,10 +7030,25 @@
       ]
     },
     {
+      "path": "web/collector-app.js",
+      "bytes": 1769,
+      "lines": 22,
+      "sha256": "d633d0117c62f3477fbf12b2f322fbfa8c281ab8a714c27b2ce95f9f3903c3eb",
+      "imports": [],
+      "exports": [
+        "collectorPath",
+        "installCollectorApp",
+        "mobileHost",
+        "sessionExpired"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "web/collector-dialog.js",
-      "bytes": 1446,
-      "lines": 20,
-      "sha256": "81f59ed75abc2cd67b7df4019ceeae1cb9c44af6a013f8756074e307498900c9",
+      "bytes": 1535,
+      "lines": 21,
+      "sha256": "c18b7810fa41ea6f8766e09a1d5dd2c3644a844da09d78837ef6e284e21c9971",
       "imports": [],
       "exports": [
         "confirmCollection"
@@ -6010,10 +7132,22 @@
       "apiLiterals": []
     },
     {
+      "path": "web/collector-photo-previews.js",
+      "bytes": 738,
+      "lines": 15,
+      "sha256": "52c126be008530cf907650e187437f71a89ac0e7115b2853252301fd25b3c4ee",
+      "imports": [],
+      "exports": [
+        "createPhotoPreviews"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "web/collector-photo-viewer.js",
-      "bytes": 1299,
-      "lines": 11,
-      "sha256": "352a7c5c0d94b88fcb2db5b5dc6d86cb0a4cdb37a6726962725b842830651905",
+      "bytes": 2279,
+      "lines": 22,
+      "sha256": "73310783c94406634f18a10dca95c0bad3406248c97f34aa54afb22e1ccf3ab6",
       "imports": [],
       "exports": [
         "viewCollectorPhoto"
@@ -6033,6 +7167,18 @@
         "describeCameraError",
         "parsePairingQr",
         "scanPairingQr"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/collector-request.js",
+      "bytes": 1107,
+      "lines": 15,
+      "sha256": "51671bb1ecea2f7239a420222707a41cc0b8f55e00af5a2db85823e55bfc0294",
+      "imports": [],
+      "exports": [
+        "readCollectorJson"
       ],
       "environment": [],
       "apiLiterals": []
@@ -6130,10 +7276,11 @@
     },
     {
       "path": "web/collector-v2.js",
-      "bytes": 46027,
-      "lines": 178,
-      "sha256": "80e3c7b87c723d07d3f9a45a4b68a0200f3e841ccd5db0c3c350a25a8d2ff9af",
+      "bytes": 46495,
+      "lines": 181,
+      "sha256": "41183b5ffb601c7cb9a0f72c3f7094a22e022d1aaa7d2bbee4b6996c2d102b48",
       "imports": [
+        "./collector-app.js",
         "./collector-qr.js",
         "./collector-schema.js",
         "./collector-v2-schema.js",
@@ -6191,9 +7338,9 @@
     },
     {
       "path": "web/collector-v3.css",
-      "bytes": 10458,
-      "lines": 109,
-      "sha256": "bdf4b9066e467068381742db1c3c815be71eecc40c9c6f988a07a128946a7b2b",
+      "bytes": 21993,
+      "lines": 265,
+      "sha256": "b32de2ea6343de55e722bc16a4cf69300f0c07dadf2ef680ce2148720e1ddc4b",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -6211,15 +7358,18 @@
     },
     {
       "path": "web/collector-v3.js",
-      "bytes": 56183,
-      "lines": 276,
-      "sha256": "a45e0eb65470e1663fc86a6ef0e46deb1dd97fd99e86fef8b0259e4679a5e1fe",
+      "bytes": 92867,
+      "lines": 753,
+      "sha256": "ad6b10fab02caa371c41618fba5bbafc91c9db84470aa9885fd81d520138de8d",
       "imports": [
+        "./collector-app.js",
         "./collector-dialog.js",
         "./collector-drafts.js",
         "./collector-environments.js",
+        "./collector-photo-previews.js",
         "./collector-photo-viewer.js",
         "./collector-qr.js",
+        "./collector-request.js",
         "./collector-schema.js",
         "./collector-ui.js",
         "./collector-v3-schema.js",
@@ -6248,7 +7398,7 @@
         "/api/collector/photo-remove",
         "/api/collector/photo-thumb",
         "/api/collector/photo-upload",
-        "/api/collector/photo?id=${p.id}&size=thumb",
+        "/api/collector/photo?id=",
         "/api/collector/review?id=",
         "/api/collector/section-save",
         "/api/collector/v2-problems?inspectionId=",
@@ -6258,9 +7408,9 @@
     },
     {
       "path": "web/collector.css",
-      "bytes": 32856,
+      "bytes": 32869,
       "lines": 288,
-      "sha256": "20eb9c6bf4d6cecd8b9bc83297a0f1a6fdc5ec585c2e15e9ba4313a47b4cb5f0",
+      "sha256": "444e2610e094bb30d93ffda4351ab60ebbc43c68d7bd033291f1dd097dcc12fa",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -6278,10 +7428,11 @@
     },
     {
       "path": "web/collector.js",
-      "bytes": 55659,
-      "lines": 146,
-      "sha256": "95ab0cc56317760e49ee1c13959805c13c05547d5cdc40f5674092b261c1ec87",
+      "bytes": 56680,
+      "lines": 149,
+      "sha256": "6b7552e5323a28704b3a0d3e5200769f7a819fddd71ef2cd0e01dbc87632331f",
       "imports": [
+        "./collector-app.js",
         "./collector-errors.js",
         "./collector-navigation.js",
         "./collector-schema.js",
@@ -6310,6 +7461,7 @@
         "/api/collector/section-save",
         "/api/collector/v3-start",
         "/api/collector/verify",
+        "/api/mobile/units",
         "/api/units"
       ]
     },
@@ -6380,9 +7532,9 @@
     },
     {
       "path": "web/desktop-blocks.js",
-      "bytes": 2097,
+      "bytes": 2167,
       "lines": 34,
-      "sha256": "b5c92c8a7c4cb509b0eac85cabee5809f2568498246d470d425d0d6dea1b01fd",
+      "sha256": "9f256a80f57a61bf6953419549c6b72bb0749f83b806e96489b21189591e45d1",
       "imports": [],
       "exports": [
         "updateBlocks"
@@ -6407,9 +7559,9 @@
     },
     {
       "path": "web/desktop-demand-count.js",
-      "bytes": 4166,
+      "bytes": 4247,
       "lines": 32,
-      "sha256": "8570372649d477af764d76181fd01ef8a05a6ecfc43f19bc55a4363d1d644cfa",
+      "sha256": "19adc5e8e1cc161cba8c4471829675a4f1d57af8dfabfb4cad80b2c78c157701",
       "imports": [
         "./panel-status.js"
       ],
@@ -6435,9 +7587,9 @@
     },
     {
       "path": "web/desktop-equipment.js",
-      "bytes": 27499,
-      "lines": 100,
-      "sha256": "c5edbf7ec9f457e632ecc62d17cc0eeb9a2b790d42cae3303ca1b1fd67244b51",
+      "bytes": 30300,
+      "lines": 107,
+      "sha256": "5fcc461adc0c1c83ecaf13fae9a84477272f87074791113f262ec2c727ce3a04",
       "imports": [
         "./agent-connection.js",
         "./collector-schema.js",
@@ -6555,9 +7707,9 @@
     },
     {
       "path": "web/desktop-map.js",
-      "bytes": 21109,
-      "lines": 240,
-      "sha256": "16a3ba72c5e7c70b8a860efcd67d31d00b49ab855446d783f8de51839f3a61fd",
+      "bytes": 22091,
+      "lines": 245,
+      "sha256": "db6080a8e8d65160e18eff7d0fb0f32428c5312fba44acaa7ba97ebf409cc30f",
       "imports": [
         "./desktop-demand-count.js",
         "./desktop-icons.js",
@@ -6755,11 +7907,12 @@
     },
     {
       "path": "web/desktop.js",
-      "bytes": 53307,
-      "lines": 327,
-      "sha256": "588fe4db86f773225a10da7b05ea125b8eb61282702cb2b26e8f82209bb541f0",
+      "bytes": 55202,
+      "lines": 343,
+      "sha256": "85a6b112e6a651c21bad2b41a3b020298405dce8e5b8d66f2c572df93891cc29",
       "imports": [
         "./agent-connection.js",
+        "./collection-overview.js",
         "./desktop-agents.js",
         "./desktop-blocks.js",
         "./desktop-data.js",
@@ -6781,6 +7934,7 @@
         "./runtime-config.js",
         "./school-presence.js",
         "./spreadsheet-io.js",
+        "./unit-equipment-map.js",
         "./unit-figures.js",
         "./unit-map-palette.js",
         "./unit-names.js",
@@ -6929,6 +8083,18 @@
       ]
     },
     {
+      "path": "web/equipment-signal.js",
+      "bytes": 1422,
+      "lines": 10,
+      "sha256": "b6cc7cbfdad4c18cb8f36b58706f5834c1533c032cd519560e6072cd1996c623",
+      "imports": [],
+      "exports": [
+        "equipmentSignal"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "web/hardware-attention.js",
       "bytes": 9173,
       "lines": 33,
@@ -7011,6 +8177,69 @@
       "apiLiterals": []
     },
     {
+      "path": "web/mobile-app.css",
+      "bytes": 5132,
+      "lines": 62,
+      "sha256": "f67a88c45336159f5466cae1eb131cc5716e613b311be0581127aed3231cb01e",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/mobile-app.html",
+      "bytes": 1291,
+      "lines": 2,
+      "sha256": "05137963f4cbb13ba7ae7df41f34b325499ea7a13c04fd6d05b157c45091541c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/mobile-app.js",
+      "bytes": 8637,
+      "lines": 88,
+      "sha256": "0c1d2f1226505ed8e7b1e828883207305e3bb27d63cae6afdd156db9b03743c9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/login",
+        "/api/auth/logout",
+        "/api/auth/password",
+        "/api/mobile/me"
+      ]
+    },
+    {
+      "path": "web/network-tests.html",
+      "bytes": 408,
+      "lines": 2,
+      "sha256": "1ddb54fed9865e23373663ef6ef0ebaf34173d8d96e45d4f9ae753863fa3288c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/network-tests.js",
+      "bytes": 10009,
+      "lines": 30,
+      "sha256": "f642a39bce8441037011e29c668400c37647deec8c1a1e5f3b484dedcbf11f75",
+      "imports": [
+        "./panel-shell.js"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/auth/me",
+        "/api/root/network-tests",
+        "/api/root/network-tests/cancel",
+        "/api/root/network-tests/computers?",
+        "/api/root/network-tests/request"
+      ]
+    },
+    {
       "path": "web/operations.css",
       "bytes": 6228,
       "lines": 6,
@@ -7057,9 +8286,9 @@
     },
     {
       "path": "web/painel.css",
-      "bytes": 105900,
-      "lines": 1084,
-      "sha256": "b550f62c8c726b2643e134479c907bf4781624e97d558f7c63b3e71581266644",
+      "bytes": 122871,
+      "lines": 1180,
+      "sha256": "0c6dabd3279f2c8e1b9172fc82c649bf5f6219cd32d5170b168d6e00be780818",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -7079,10 +8308,11 @@
     },
     {
       "path": "web/panel-pulse.js",
-      "bytes": 4343,
-      "lines": 41,
-      "sha256": "1d2ea6e49f7695a2e851d283546d96885309e54924dc5d7341ef7c4280ba3b38",
+      "bytes": 4997,
+      "lines": 44,
+      "sha256": "b0d61690296f24f11084b0bcdced84f0bbaf7ca19da78dfb252b419b111c7538",
       "imports": [
+        "./collection-overview.js",
         "./desktop-demand-count.js",
         "./desktop-request.js",
         "./panel-usage.js"
@@ -7118,9 +8348,9 @@
     },
     {
       "path": "web/panel-search.js",
-      "bytes": 8232,
+      "bytes": 8228,
       "lines": 57,
-      "sha256": "58e8b0db84f00790ea572839d6a88f5f57af1a4a1241c3171fc37c2597828726",
+      "sha256": "b23fc835235dc1125081c2ae0a3fcc315c674315a9336e96b6d0931c98feb727",
       "imports": [
         "./collector-schema.js",
         "./desktop-equipment.js",
@@ -7136,14 +8366,15 @@
     },
     {
       "path": "web/panel-shell.js",
-      "bytes": 9216,
-      "lines": 51,
-      "sha256": "7c383672d6286e2b339b2a8cc098ce67aba5f6ef4be554ae411bedbc5c73ab81",
+      "bytes": 8728,
+      "lines": 53,
+      "sha256": "1beddcb9065b32de6a01dafeb55d8d5ddc63d73d7f50f6ff2b6da0c273386c1c",
       "imports": [
         "./desktop-demand-count.js",
         "./desktop-icons.js",
         "./desktop-notifications.js",
-        "./panel-pulse.js"
+        "./panel-pulse.js",
+        "./panel-unit-search.js"
       ],
       "exports": [
         "bindPanelShell",
@@ -7160,19 +8391,39 @@
     },
     {
       "path": "web/panel-status.js",
-      "bytes": 2457,
-      "lines": 36,
-      "sha256": "cd9593ee914c21b400511f459239d8eae57d6da79f1996d5706d596e73a9281e",
+      "bytes": 2954,
+      "lines": 41,
+      "sha256": "9185c81b220c7a106d86fdc1aa6efe73bb665e8dfcc8ff85e9762d5634da7da3",
       "imports": [
         "./desktop-request.js"
       ],
       "exports": [
+        "monitoringBatch",
         "refreshPanelStatus",
         "subscribePanelStatus"
       ],
       "environment": [],
       "apiLiterals": [
         "/api/inventory/panel-status?"
+      ]
+    },
+    {
+      "path": "web/panel-unit-search.js",
+      "bytes": 5325,
+      "lines": 60,
+      "sha256": "4e4d1b52f2798d62065a7718ea3fb5138d6484cd6df4e8d266a03a2784014e7a",
+      "imports": [
+        "./desktop-icons.js",
+        "./desktop-request.js",
+        "./unit-schema.js"
+      ],
+      "exports": [
+        "bindUnitSearch",
+        "unitSearchMarkup"
+      ],
+      "environment": [],
+      "apiLiterals": [
+        "/api/units"
       ]
     },
     {
@@ -7362,9 +8613,9 @@
     },
     {
       "path": "web/technician.css",
-      "bytes": 3138,
-      "lines": 3,
-      "sha256": "84d1541a92dfce2971c4be1486fa352d86a89b2fc1c2dead41000133a444fb5f",
+      "bytes": 20145,
+      "lines": 254,
+      "sha256": "0cafd004bf737dfebba5328e97983ab5e591ff56164179cc4dcbb08d5e3bc93f",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -7372,9 +8623,9 @@
     },
     {
       "path": "web/technician.html",
-      "bytes": 600,
-      "lines": 2,
-      "sha256": "e5cd98f265dae06af83a63dc7961ed51685c1194c3f80e2aed9ae335442a4faf",
+      "bytes": 3708,
+      "lines": 49,
+      "sha256": "ed38b6e493cf60ec9dccb8a8c8977552208d0f5b80c056af1d4b20cc823d041e",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -7382,10 +8633,12 @@
     },
     {
       "path": "web/technician.js",
-      "bytes": 10894,
-      "lines": 32,
-      "sha256": "da0532c785274375f0a6ab619ea2f284f95a44e00b713f79531109fe62b5d529",
-      "imports": [],
+      "bytes": 44944,
+      "lines": 644,
+      "sha256": "b0a401477d31c6410a6e92f2ed875e3f7de8aa6f8d45e41af934e6ab9c165185",
+      "imports": [
+        "./collector-app.js"
+      ],
       "exports": [],
       "environment": [],
       "apiLiterals": [
@@ -7395,10 +8648,12 @@
         "/api/auth/password",
         "/api/technician/",
         "/api/technician/active",
+        "/api/technician/notifications",
         "/api/technician/notifications-read",
         "/api/technician/position",
         "/api/technician/queue",
-        "/api/technician/queue?"
+        "/api/technician/queue?",
+        "/api/technician/request?id="
       ]
     },
     {
@@ -7420,6 +8675,26 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "web/unit-equipment-map.js",
+      "bytes": 11407,
+      "lines": 68,
+      "sha256": "92f7d9498b74854886cebc89cde3f15ac8a28570fb487d91693945844357851f",
+      "imports": [
+        "./collector-schema.js",
+        "./desktop-icons.js",
+        "./desktop-request.js",
+        "./equipment-signal.js"
+      ],
+      "exports": [
+        "createUnitEquipmentMap"
+      ],
+      "environment": [],
+      "apiLiterals": [
+        "/api/inventory/equipment?",
+        "/api/inventory/unit-equipment-map?"
+      ]
     },
     {
       "path": "web/unit-figures.js",
@@ -7532,10 +8807,11 @@
     },
     {
       "path": "web/visit.js",
-      "bytes": 21846,
-      "lines": 56,
-      "sha256": "dd8da1147f8182c17ae4f0bf4adfb4792d5b3dd7af88d6264f893d63398b2378",
+      "bytes": 22236,
+      "lines": 59,
+      "sha256": "399b7d1b8970038eec1feb155b65eb858c0f99ba0f50be70e8927e6e2f301ed3",
       "imports": [
+        "./collector-app.js",
         "./collector-schema.js",
         "./desktop-icons.js",
         "./visit-schema.js"
@@ -7558,10 +8834,1313 @@
       ]
     },
     {
-      "path": "wrangler.collector.jsonc",
-      "bytes": 709,
+      "path": "windows/agent/installer/Install.ps1",
+      "bytes": 10914,
+      "lines": 152,
+      "sha256": "22a7785b3111ec47a77bea1ca76437a432f0107ed143f71c6d1b04a631bdc474",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/installer/Recovery.ps1",
+      "bytes": 10995,
+      "lines": 174,
+      "sha256": "2ce1ccda9f6c0d6402132ee7f648538436af125e7e2da407dc7d82a987cb9b1a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/installer/Setup.nsi",
+      "bytes": 3875,
+      "lines": 83,
+      "sha256": "c4c1b9bd8fc4840da20b7581ff36e129b56ae363c1cb7788e1ba0fac8d5c6b15",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/--y__InlineArray5.cs",
+      "bytes": 219,
+      "lines": 11,
+      "sha256": "a79034e943fe5370d85124f9c674c690b139170d0171203318986cf25a2e5146",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/--z__ReadOnlyArray.cs",
+      "bytes": 2608,
+      "lines": 149,
+      "sha256": "976f0e85e04e9d8b539569a909cba800f86bdbbee3d72ab6d25d768a7c0f8ab8",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/--z__ReadOnlySingleElementList.cs",
+      "bytes": 3406,
+      "lines": 211,
+      "sha256": "3f93b0ed9114c49d34e10000b5921560c9b1919a925979834feb84086e93dd57",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Properties/AssemblyInfo.cs",
+      "bytes": 602,
+      "lines": 15,
+      "sha256": "eae5f82cc939a452dfc6566a4d18bcae98631b2034a4a4a0af3f19a12db9cfa3",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Core.csproj",
+      "bytes": 313,
+      "lines": 2,
+      "sha256": "1dfa1d9a36b49b98877db3e4317ab1afa9a4ae5b02e66620e13b4a71b0634228",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/Base64Url.cs",
+      "bytes": 1961,
+      "lines": 118,
+      "sha256": "2e6a939953072a21ebc461fbc5ed000aa472cf247fa409769a803998cf2a3862",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/EcdsaSigningKey.cs",
+      "bytes": 757,
+      "lines": 35,
+      "sha256": "6b66188dd7945c5e4d1943da51cba39230c7512c42121a4af9638b510df10cf7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/IKeyStore.cs",
+      "bytes": 188,
+      "lines": 13,
+      "sha256": "33dfb6ded19d154fa46bdc501839df9155cef4d6da459a2c2783dfe2efa3702d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/ISigningKey.cs",
+      "bytes": 179,
+      "lines": 13,
+      "sha256": "f15474aceb6c4cdbd5ba9d3fd8e09acc771f4ee5f674eb95e3b986fc35a2402f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/InsecureFileKeyStore.cs",
+      "bytes": 1307,
+      "lines": 60,
+      "sha256": "701b75460e145b2afedeae9993a618ade91b397ac4bde9567b19298e0353f244",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/PublicJwk.cs",
+      "bytes": 669,
+      "lines": 23,
+      "sha256": "17748deef4f5ab72b9af7f4b57737177aaf98ad924a4c1fbee966d8fafdcf4a0",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/RequestSigner.cs",
+      "bytes": 2125,
+      "lines": 76,
+      "sha256": "b4abcf74b0399bb917cb165bfa305aec5ed47380feaede2a6d6340fd796df50a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Crypto/SignedHeaders.cs",
+      "bytes": 117,
+      "lines": 4,
+      "sha256": "50ceaaf1b8f7b0c3e02f37365ecd2077bbce900278adc24cf7f3382de9a4aadb",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/ActivationRefusal.cs",
+      "bytes": 235,
+      "lines": 13,
+      "sha256": "b06d8d2499a93926ee968c4c95118b9882100738884e46811e7ccb65174acad5",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/ActivationReport.cs",
+      "bytes": 3132,
+      "lines": 70,
+      "sha256": "2d911394bd82344c5d79933d314c0596301022b1534084c888a35d18b54bd712",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/ActivationState.cs",
+      "bytes": 567,
+      "lines": 25,
+      "sha256": "6c402906bc82f57de80d971b8fcf1db2cdda04083c5c07e901e25898f3b4d2c8",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/AgentConfig.cs",
+      "bytes": 2213,
+      "lines": 76,
+      "sha256": "04fe66b8f0a75400639fbd5a7b4e04f82ec9c9a01e6fadd9dc109a572df4479f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/AgentEngine.Network.cs",
+      "bytes": 3708,
+      "lines": 49,
+      "sha256": "71501d79f6122086c9f41c55d2a0959c28162125e7ec919917c47aeec1f91cda",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/AgentEngine.cs",
+      "bytes": 55927,
+      "lines": 1895,
+      "sha256": "fadc989a28b4b8c5fac94a9fa9f0cee91cea60fd9bab03194d18ebe5423e1461",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/AgentState.cs",
+      "bytes": 3217,
+      "lines": 103,
+      "sha256": "2e13fb8ead2b575c26aa33ba57ef50a9205bca9f02f9dc4e83c67c8e9f60ba60",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/ApiClient.cs",
+      "bytes": 5817,
+      "lines": 184,
+      "sha256": "a108808f2c65c68e0d07ce61c293b6cb3942d4ab0d98047ea027aaeeb8c53208",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/ApiResult.cs",
+      "bytes": 965,
+      "lines": 52,
+      "sha256": "b03d60db4aa69a32adba12b1123a3ef85a2c93409c95d4c3a7f54d89a0fb913f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/EngineOptions.cs",
+      "bytes": 775,
+      "lines": 32,
+      "sha256": "a412af20e46372de4b794624b370ace74f09556199c1e875d3f6210c968468c2",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/EnrollmentJournal.cs",
+      "bytes": 370,
+      "lines": 19,
+      "sha256": "8b4c4eb9a045b8201891f81279d9fe45e020934ad7d179b999d418259ad9fb27",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/GrantFile.cs",
+      "bytes": 4275,
+      "lines": 167,
+      "sha256": "0edab891bbe588177ffa0844e60c95dc6c99218070396eb14c887226ffadf70f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/GrantFileStatus.cs",
+      "bytes": 119,
       "lines": 12,
-      "sha256": "a0dcd95bde23e60cc0ac9382abe86ce55ed38bd02b6b4d88333ccea247832c2e",
+      "sha256": "728c13cd4bf0bed46ff0c2a0448fb6868113f682afdac6dd46ddfec266ebaed4",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/NetworkMeasurement.cs",
+      "bytes": 6516,
+      "lines": 77,
+      "sha256": "e73ecd7e40aa7a97b87601ba7649e03a3a5541c2b5a0107d1f730cd1f66b1668",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/PairingTicket.cs",
+      "bytes": 258,
+      "lines": 13,
+      "sha256": "f98d133041bf5e5f106a64693a48b56fede3a9aa72eda1aa2b08b20b126acb20",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/Phase.cs",
+      "bytes": 436,
+      "lines": 19,
+      "sha256": "e1e375f4c95073300affea6cd09f5b8a8f52534192cd04f1ee0e852cf102c45a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/StatusSnapshot.cs",
+      "bytes": 1684,
+      "lines": 77,
+      "sha256": "fdd38aa45f83b73490ad6020112223698bfe5daa4ee73756d2be5b6c812ef640",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Engine/StatusView.cs",
+      "bytes": 18445,
+      "lines": 482,
+      "sha256": "9ab5f9767d916426a35fe09bce072ca1b2e5f14631e4f3f1a9c30cad7edae958",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/AccountsData.cs",
+      "bytes": 362,
+      "lines": 17,
+      "sha256": "34315590552d0799590e0f479383fb8163efd8f07b1f72ea2a74776a04ab567e",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/BaseboardData.cs",
+      "bytes": 255,
+      "lines": 13,
+      "sha256": "d3ff2f184621ad6be40d59ff615e2e903142e8f38b873b64f1c103bf9fd37ef6",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/BiosData.cs",
+      "bytes": 281,
+      "lines": 15,
+      "sha256": "218e9f89f7f645528738aaacce9917f27b1da5bd89ebf8dd39cfc8cb350474c0",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/CollectionOptions.cs",
+      "bytes": 333,
+      "lines": 9,
+      "sha256": "4855b9aea20dc68157f3b1496bf4e25fff03a6864483e993390da636c2e0adac",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/ContentHash.cs",
+      "bytes": 3695,
+      "lines": 115,
+      "sha256": "40e0a1f4a676022803f82de06b87824cdf8d494a55758f172fc8bbd955758112",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/CpuData.cs",
+      "bytes": 227,
+      "lines": 11,
+      "sha256": "46a5051d32bc0a617f6790ed868d52deba49c3c8755c0714a94860474f3488bc",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/GpuAdapterData.cs",
+      "bytes": 388,
+      "lines": 19,
+      "sha256": "6890badc721008ca3aab7c2170d51e0b1e688bc0b00408904272b1d3b64d5870",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/GpuData.cs",
+      "bytes": 183,
+      "lines": 9,
+      "sha256": "69376060f64e97ca4d25978a4a5dae9fab6d6ef77d2a29d57315936144415b18",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/IInventorySource.cs",
+      "bytes": 382,
+      "lines": 17,
+      "sha256": "d082cc2a459c4d8da66c2fad0d9e91d226e41d522b26e2156ba6f3a6595b6c01",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/Identifier.cs",
+      "bytes": 181,
+      "lines": 7,
+      "sha256": "aa5655ee2cefc42da01f2c9e76729bab00ad27ffec1a4d43f1566b1ddb2ce7dd",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/MachineSignals.cs",
+      "bytes": 112,
+      "lines": 4,
+      "sha256": "ff4e6e3a6cf450ccee334333bc16845abc3ff05b6d31ec45f2cdfb33aa91c2c7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/MemoryData.cs",
+      "bytes": 366,
+      "lines": 17,
+      "sha256": "e74bc4b77cd324aca7d8468c3dc6130a48241543f6c532837d265b82d56d212a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/MemoryModuleData.cs",
+      "bytes": 465,
+      "lines": 23,
+      "sha256": "56789a8eeff88b09bec6ea998a26522322d4c7906d5b63ebf0b8510c3f824189",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/NetworkAdapterData.cs",
+      "bytes": 647,
+      "lines": 29,
+      "sha256": "f82481d9414359d70c99cfe4fca1dd82a55176a91e5bc3f43c2e1ad2d2a2358c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/NetworkData.cs",
+      "bytes": 242,
+      "lines": 11,
+      "sha256": "82d8823d497779b94794b2cf8bd479d90731c72636a17eac8c06a72fa313e46b",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/Normalization.cs",
+      "bytes": 3913,
+      "lines": 160,
+      "sha256": "aaed9992a2b1d558d403ec066e0a7254c5d1db8ba9453d32a7f5dee0fdc4fa26",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/OsData.cs",
+      "bytes": 398,
+      "lines": 21,
+      "sha256": "5fe238705675a3c066f8e7807bd77608b2ad73af57d7a54a46597949e15ecfd9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/PhysicalDiskData.cs",
+      "bytes": 416,
+      "lines": 21,
+      "sha256": "c64137d3c440a4e28c91f2b8affb30e6fb63147e6c6f5952fa5ea2e8624fccc3",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/ProcessorData.cs",
+      "bytes": 399,
+      "lines": 21,
+      "sha256": "1553f0ca054b963d5c74ab78119b83342f3d3e21a5e1e24f0e0e3f6e1ccc356c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/Reliability.cs",
+      "bytes": 227,
+      "lines": 13,
+      "sha256": "9903d8636d7cad8830b5c9f56fba0b100b4cd8d2a4abc825152d92e74f3f76d9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/Section.cs",
+      "bytes": 459,
+      "lines": 22,
+      "sha256": "4d0925ebc85a58be03612bb2561e4ea6b70f86c0441dfb7fbdd3d4d4310fba38",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/SectionNames.cs",
+      "bytes": 518,
+      "lines": 23,
+      "sha256": "7786ba07e0fbe2e2de9d7c3c19a1384d6ee3b9c97696972f4bf4f48d968cf4d3",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/SimulatedInventorySource.cs",
+      "bytes": 7925,
+      "lines": 294,
+      "sha256": "36e4698805d726074e6f086da7a122099882c4d1cb4cfa268c86454afc481e39",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/StorageData.cs",
+      "bytes": 270,
+      "lines": 11,
+      "sha256": "aaf972ec3cb92f0f91231c3acde01b236d30b072e181399a31edddfbe46cc193",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/SystemData.cs",
+      "bytes": 752,
+      "lines": 35,
+      "sha256": "efc21db6601154c63554a569b137b0649c50c7f3f73be6f9c196ff4162d235bf",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/VirtualMachineData.cs",
+      "bytes": 254,
+      "lines": 13,
+      "sha256": "5e761ef981bd2d04a17770b106d21ac7abbdd0845e3ad0dc9b055830cf4333d5",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Inventory/VolumeData.cs",
+      "bytes": 266,
+      "lines": 15,
+      "sha256": "06db0094f24ba420198dbcd7467232fc939e615b18b8bf48276bea9f2feae26f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeCaller.cs",
+      "bytes": 322,
+      "lines": 9,
+      "sha256": "6052c2caa1ab81d28ae05759c757fca1ac305ab3479e96fdc5e1e16a461cce4c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeClient.cs",
+      "bytes": 910,
+      "lines": 24,
+      "sha256": "59da338fc941ee90e15a4ae5efc3220ae5943710997924b02fae64d31901395a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeDispatcher.cs",
+      "bytes": 3454,
+      "lines": 132,
+      "sha256": "0de03c8042fd752b84735622ca489d48911bb52efe83e098d35ef2ddba8c61fb",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipePolicy.cs",
+      "bytes": 544,
+      "lines": 23,
+      "sha256": "eb3231e228bec6aba7d2c8ba6320347439981a5ff84172795f467c3918602b0a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeProtocol.cs",
+      "bytes": 1320,
+      "lines": 51,
+      "sha256": "84d69f237b54229f8674da4561fe9efc29006dbda8f4cdb692a35144e9941aeb",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeRequest.cs",
+      "bytes": 151,
+      "lines": 9,
+      "sha256": "4787c6cd56bfcaea5f2692b9dc336006f33d23738c6b15d91a192f0ea4c8fde7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Ipc/PipeResponse.cs",
+      "bytes": 243,
+      "lines": 15,
+      "sha256": "7e3b71368f8c73ad967b7615288f214d1b5bd376c4e2fc834a8fb36766c92260",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/Ack.cs",
+      "bytes": 516,
+      "lines": 24,
+      "sha256": "b116d81874cbc654b28f16770f9269d7ebee2033b5c1805958cd6124b42da8bd",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/AgentJson.cs",
+      "bytes": 984,
+      "lines": 38,
+      "sha256": "c39856ba8e27d27f704a3d699f3ab8671b62ed315b0bb5ced91ca165f42d0043",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/AgentPolicy.cs",
+      "bytes": 1458,
+      "lines": 47,
+      "sha256": "8d989f5f56bb78dbd064ae9a51ab6831983250831555098b80fd6728dd9fba49",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ChallengeRequest.cs",
+      "bytes": 223,
+      "lines": 11,
+      "sha256": "eb36374fd20f997867d567b168869ee1b5db056c2d58bdf619bf47408b5f707c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ChallengeResponse.cs",
+      "bytes": 261,
+      "lines": 13,
+      "sha256": "09bcb233d27164f30eb546a5923ff6c98039cec8b436f37f89f737d9c281b94b",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ConfigRequest.cs",
+      "bytes": 270,
+      "lines": 13,
+      "sha256": "37c23b9bff2079f2e5993fcbbc3da235311f70593bef2237181487d6ab9dc18b",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ConfigResponse.cs",
+      "bytes": 217,
+      "lines": 11,
+      "sha256": "07600294ce53d0e169661ff82a559e9b27e328a999cfdb533334531220600077",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ConfirmDeviceRequest.cs",
+      "bytes": 272,
+      "lines": 13,
+      "sha256": "7ce94e398eaf61079694c9611de52a1df64bcc2a493e39a8e83b679ac1ddf404",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/EnrollmentRequest.cs",
+      "bytes": 504,
+      "lines": 21,
+      "sha256": "a981662270c4db3424116a87bf14721ddaf57559e33ec2fb5e4fe62f5a9e0506",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/EnrollmentResponse.cs",
+      "bytes": 466,
+      "lines": 23,
+      "sha256": "2b6b96f95d74ed0d09b34ed1215cfda97d9b21a13cf53c4a3aae98b9252e2117",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/EnrollmentSummary.cs",
+      "bytes": 458,
+      "lines": 23,
+      "sha256": "0b9c9c4633af0b404a23032faf5cef0be34c3692f9c056b72cb903208d1025c7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/ErrorEnvelope.cs",
+      "bytes": 280,
+      "lines": 15,
+      "sha256": "74f52c79968f14d8bc75180d0fb536b4148395c1cecf3f4720cba4e431d984b7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/HeartbeatHealth.cs",
+      "bytes": 257,
+      "lines": 13,
+      "sha256": "fd6608443a0a91da80f28037808cb6c030dcc049ed06d65d99430e867b41eb21",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/HeartbeatMessage.cs",
+      "bytes": 720,
+      "lines": 30,
+      "sha256": "5344996c942645a8537407a804865dd4f96314c35e853a1caa2071aee2929e3e",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/InventoryMessage.cs",
+      "bytes": 989,
+      "lines": 39,
+      "sha256": "417a1b9fb0db7509d7128d61439c3a7a414691afc522a34dbe3e277bfba53e36",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/JwkDto.cs",
+      "bytes": 226,
+      "lines": 13,
+      "sha256": "ec403d87e41ef77708968752c2f88a0ca6e2b5a5685b78c39d92b84fc63b7d46",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/LinkInfo.cs",
+      "bytes": 377,
+      "lines": 19,
+      "sha256": "56f33deec175a45e816fa9ec059d088d2a6866ef99952a27f6832dd9ff2d1206",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/PairingQrPayload.cs",
+      "bytes": 316,
+      "lines": 15,
+      "sha256": "d440a7c468a589aaaec79f887ad19530d5d134f63ee0be3cf2e3ace06c7ed208",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/PerformanceSample.cs",
+      "bytes": 253,
+      "lines": 13,
+      "sha256": "dd67efbfd7b357590679c830f847d55eb6b571fe3cf05196da72c03610bcc5b7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/Quality.cs",
+      "bytes": 327,
+      "lines": 17,
+      "sha256": "b9d53f396ba245965fea33f3d0a91119c195a8928b24266aed16a8de255bede4",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/RotateKeyRequest.cs",
+      "bytes": 394,
+      "lines": 17,
+      "sha256": "c961bbad77da5894c9ed27a62a592d5c16303a5948fc6ca022b92b068e79a1bc",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/RotateKeyResponse.cs",
+      "bytes": 207,
+      "lines": 11,
+      "sha256": "47e9e255d2df111ec2c6e36a1511dbf568e7a3b6c5bf1321d6daab386620722f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/RotateProof.cs",
+      "bytes": 194,
+      "lines": 11,
+      "sha256": "f54252f0dc2ae3f54180ebfe2ce5a1ef0f75606097df502b94a36cada158e422",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/SimpleDeviceRequest.cs",
+      "bytes": 228,
+      "lines": 11,
+      "sha256": "2781691136e10b2013a8345862b4cdbdb4440b0aa38706110dd08be2779594a7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Protocol/StatusResponse.cs",
+      "bytes": 328,
+      "lines": 17,
+      "sha256": "5d2f43500de0a84d9ef68d213b15ceb9ee1fae84632fbb6f3496ab0ce8f734bf",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Qr/QrCode.cs",
+      "bytes": 12680,
+      "lines": 602,
+      "sha256": "9e3bbb95fc01d3ba3d9fcae2badae11c305cd95d3fb6a219312303cdb05a4fc2",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/DurableQueue.cs",
+      "bytes": 12788,
+      "lines": 489,
+      "sha256": "5020f4cd2d64e3fc441534573dcd774eeba43325b02fe901259b6acf3643dcd6",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/GapRecord.cs",
+      "bytes": 703,
+      "lines": 33,
+      "sha256": "e54c46019e4e707cd45ff8d671b23216db7d72d5b297e82ca0280a11b3760a40",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/InventoryMeta.cs",
+      "bytes": 121,
+      "lines": 4,
+      "sha256": "40eab480ecd5c117714a218529cdbcf7899e871dd089f21957b54c1370e8b25c",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/LegacyGap.cs",
+      "bytes": 268,
+      "lines": 13,
+      "sha256": "b68d360f02c7e1fa92db5776a137ce009d8f05928449f52aa1ce0fc649f4d8a8",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/MessageKind.cs",
+      "bytes": 159,
+      "lines": 9,
+      "sha256": "5575e882366b59a07b52151fcbf718637b3e42265d2400c0e5869cedc464cb38",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/QueueGap.cs",
+      "bytes": 309,
+      "lines": 15,
+      "sha256": "e8f8e6482cc1cbc083a8ea52eb2c5fdd37c21cf2c4218317e60fd021e84ea9ac",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/QueueItem.cs",
+      "bytes": 882,
+      "lines": 50,
+      "sha256": "107c4b6d790c8ad649a9393bd82a2a5bff8837f558a9ed22638eb4234d783eab",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Queue/QueueStats.cs",
+      "bytes": 518,
+      "lines": 25,
+      "sha256": "41275f09d30c3a1f5891e06862c146da9f48e57cbf03a32ef9c0600b5758841f",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/AceInfo.cs",
+      "bytes": 104,
+      "lines": 4,
+      "sha256": "3ae26f304fa13ebb5cd811f0bc2d08c035a78c5d6d9329fe9d0f3eb02f67e36d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/AclPolicy.cs",
+      "bytes": 1598,
+      "lines": 73,
+      "sha256": "d6816a93d51ab02d6025f0e730e10e107ec62c805a81a0f5c9df4422b794c641",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/AtomicFile.cs",
+      "bytes": 1183,
+      "lines": 65,
+      "sha256": "d2083601c62467caeaf91c3b2cc82c3fe263ae8807666757acc44a6b1e4bb135",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/BoundedRunner.cs",
+      "bytes": 2706,
+      "lines": 137,
+      "sha256": "292c28e0c48c1ed5c58e7d8184459ad966b3b2bba20a7a59f5a89e768c3737f7",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/FileLog.cs",
+      "bytes": 1646,
+      "lines": 93,
+      "sha256": "b0d4548d9239d8c932ad59f00c6122a4222343c05c72185455711c73b6172a19",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/IClock.cs",
+      "bytes": 104,
+      "lines": 9,
+      "sha256": "7bbe8221c467225e0df4c9dd97d6128b289184ac44fe3be683703c8459299fb3",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/Iso.cs",
+      "bytes": 836,
+      "lines": 32,
+      "sha256": "08ad493eece5cc9e38f2f87faed5078d9e2c9da97d57f50d89d7e7181fb33558",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/RunResult.cs",
+      "bytes": 101,
+      "lines": 4,
+      "sha256": "30d2f2d0945a64c4c60d949484e95702b669e00c3b9cedaea63a67ef2eaa2c28",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/RunStatus.cs",
+      "bytes": 104,
+      "lines": 11,
+      "sha256": "d76f897750dce801ce6190df1a202be3944d0d067769c88a3a39329b119f9282",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/Semed.Agent.Util/SystemClock.cs",
+      "bytes": 212,
+      "lines": 11,
+      "sha256": "144c629066f1ced9cf0c8df4316bab6199ef1f5e1a0a5ffaf9ea37bfbcab5c10",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/System.Text.RegularExpressions.Generated/-RegexGenerator_g-FB3494DEA89434C47501E6B5A53F0234B4DCF1D6B3F064B63C5D4AEE45BB309E1__CodeRegex_0.cs",
+      "bytes": 2580,
+      "lines": 87,
+      "sha256": "652856aa3e3450a2f025f6682403b52a586877037c843495bc5cba5b3cb670b4",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/System.Text.RegularExpressions.Generated/-RegexGenerator_g-FB3494DEA89434C47501E6B5A53F0234B4DCF1D6B3F064B63C5D4AEE45BB309E1__SameCharRegex_1.cs",
+      "bytes": 3757,
+      "lines": 127,
+      "sha256": "3ea7d454f29b3155d3b2eee01759ed4aec69b16ccbe17b86b9ca04f1a8b81036",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/System.Text.RegularExpressions.Generated/-RegexGenerator_g-FB3494DEA89434C47501E6B5A53F0234B4DCF1D6B3F064B63C5D4AEE45BB309E1__Utilities.cs",
+      "bytes": 1448,
+      "lines": 44,
+      "sha256": "6538e67c02957d6925866efef7d52a70e830c83d5677e6fcc0b2e3ac7c4f15d2",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/src/Core/System.Text.RegularExpressions.Generated/-RegexGenerator_g-FB3494DEA89434C47501E6B5A53F0234B4DCF1D6B3F064B63C5D4AEE45BB309E1__ZerosOrFRegex_2.cs",
+      "bytes": 2955,
+      "lines": 97,
+      "sha256": "956bc07fd454700311868c7445a0caede6a8a5d0fd06014f764ad2429dc97cbb",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Installer.Tests.ps1",
+      "bytes": 3960,
+      "lines": 50,
+      "sha256": "495f88e54f35e6ec4c8112791888184508b0e29220422ff3eb6907ca08f9ebf4",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/CoreTests.cs",
+      "bytes": 14004,
+      "lines": 290,
+      "sha256": "908fd1ad658fa3e43ac3c78f01e65a2ec41f373cc7357fa914d1601f0439b58a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/agent/v1/heartbeat",
+        "/api/agent/v1/inventory"
+      ]
+    },
+    {
+      "path": "windows/agent/tests/Legacy/Lab015Tests.cs",
+      "bytes": 2280,
+      "lines": 45,
+      "sha256": "7b7322cb1d2fc23542af697d1a6686fd341da4538d97960ef048dc218731e412",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/Legacy.csproj",
+      "bytes": 409,
+      "lines": 5,
+      "sha256": "2e2762b9419c49fbf19e90e4a4483a8b92a7cb9b5886eccef45ef9d29860095d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/NetworkJournalTests.cs",
+      "bytes": 3358,
+      "lines": 49,
+      "sha256": "b320c447504e5dd27ba5c9cff064977784e3bb2b98888e15142fd1998fa17fbb",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/Program.cs",
+      "bytes": 2827,
+      "lines": 66,
+      "sha256": "670481c4f20dd170eaee6ebbc781282d16d596bde398e8f4c56f6f17951ebf47",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/Revisao011Tests.cs",
+      "bytes": 21272,
+      "lines": 387,
+      "sha256": "edf104d954935604db30f2eb5e087e4026ca2f5be64ba9fe9337e81d9c4d0f5a",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/RevisaoTests.cs",
+      "bytes": 17203,
+      "lines": 309,
+      "sha256": "000f04cf61f77f0fdb43943a527d1ea24ebd0f1728631ef67ebbdd356357847b",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Legacy/Tools.cs",
+      "bytes": 9406,
+      "lines": 162,
+      "sha256": "8e5d6b21deeeb51e111cb78071bb6f82f50cfe6abf1e5bf0d4328fcd61fee704",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Network/Network.csproj",
+      "bytes": 310,
+      "lines": 5,
+      "sha256": "b2e0287d80dc115cd49864f2b445d3b4726212cb2eec457811511115486c045d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Network/Program.cs",
+      "bytes": 4273,
+      "lines": 56,
+      "sha256": "c335d06498b887bbb27aa5f538e0079d11911b2e8f0add0a873227002632d2e8",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Recovery.Tests.ps1",
+      "bytes": 7649,
+      "lines": 97,
+      "sha256": "1a700c0009f8fc74944cc9c7a5512c8f56004752e3d331d2d719b4d0bd3b1fe9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Recovery/Program.cs",
+      "bytes": 5492,
+      "lines": 69,
+      "sha256": "641dc86de12bbd9304d7ac60ce6f1b6fa26a50ace4ca862909fbceba0a81b4e9",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "windows/agent/tests/Recovery/Recovery.csproj",
+      "bytes": 310,
+      "lines": 5,
+      "sha256": "b2e0287d80dc115cd49864f2b445d3b4726212cb2eec457811511115486c045d",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "wrangler.collector.jsonc",
+      "bytes": 753,
+      "lines": 12,
+      "sha256": "365d32b5a3f70f24d8fdcdfd9346c8c426fe4300193031d36598b73e78b97c16",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -7569,9 +10148,9 @@
     },
     {
       "path": "wrangler.jsonc",
-      "bytes": 1566,
+      "bytes": 1610,
       "lines": 22,
-      "sha256": "d8f0a97f2d46e869b892b7585bd04c51d90c9cc3488cf294176f7212dcc8d9e3",
+      "sha256": "068303590b77d98ec2657dd25f2f96817dbd3107f9234c53a4c80fb64a366347",
       "imports": [],
       "exports": [],
       "environment": [],

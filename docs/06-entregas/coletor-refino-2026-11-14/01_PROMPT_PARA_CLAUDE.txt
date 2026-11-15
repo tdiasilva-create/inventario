@@ -1,0 +1,53 @@
+PEDIDO AO CLAUDE — REFINAMENTO FUNCIONAL E VISUAL DO COLETOR SEMED
+
+Você recebeu uma cópia verificável do sistema existente e evidências do fluxo.
+Quero que você refine a área COLETA, tendo o acabamento do ATENDIMENTO TÉCNICO
+como referência. O app unificado já existe: sua tarefa não é criar atalhos.
+Quero código utilizável no projeto, navegação clara, formulários confortáveis,
+ações previsíveis, erros explicados e correções de falhas reproduzidas.
+
+1. Leia 00–09; depois AGENTS e precedência em FONTES. Leia a Base original na
+íntegra como histórico funcional, mas aplique as decisões posteriores registradas:
+V3 simplificada D057, foto opcional de computador D060, identidade D061/D062,
+ambientes por ID D074, ações/revisão D089, controle administrativo D111/D112,
+localização D114 e app único D115. Não restaure perguntas antigas removidas.
+2. Rode os testes locais, abra as telas reais do código e documente reproduções.
+Separe BUG REPRODUZIDO, RELATO A CONFIRMAR, LIMITAÇÃO CONHECIDA, PROPOSTA e
+DECISÃO NECESSÁRIA. Não alegue que todos os problemas antigos continuam ativos.
+3. Apresente diagnóstico por tela e uma proposta curta de navegação, hierarquia
+de ações e estados. Use as decisões já aprovadas; destaque novas decisões reais.
+4. Implemente melhorias de UX e correções que preservem as regras. Evite uma
+reescrita de framework sem necessidade demonstrada. Pode extrair componentes
+e responsabilidades para reduzir complexidade, mantendo o comportamento testado.
+5. Preserve perguntas/opções/obrigatoriedade e IDs de dados nesta rodada. Se
+achar necessário retirar ou acrescentar campo, concluir automaticamente,
+ampliar busca, criar offline ou mudar permissões, proponha SEPARADAMENTE e
+aguarde decisão; não embuta isso no visual como se já estivesse aprovado.
+6. Trabalhe nos dois caminhos: coletor navegador e Coleta dentro do APK /app.
+Considere cabeçalho do shell + cabeçalho da coleta + rodapé + teclado. A nova
+interface não pode funcionar só numa página solta com altura maior que a real.
+7. Preserve a área técnica aprovada, GPS em segundo plano e sua credencial.
+Não altere LocationService/TrackingStore, package ou assinatura para melhorar CSS.
+8. Reproduza resposta perdida, erro de validação, sessão expirada, concorrência,
+foto em envio/erro, QR vencido e lista longa. Nenhum mock deve fingir salvamento.
+9. Entregue fontes alteradas + diff contra esta base, relatório de alterações,
+testes executados com resultados brutos, screenshots antes/depois e roteiro
+de homologação física. Devolva dúvidas de negócio enumeradas ao responsável.
+10. Não publique e não gere APK de produção. O responsável devolverá a entrega
+para revisão, integração, testes e assinatura pelo mantenedor original.
+
+RESULTADO DESEJADO
+- Técnico/operador entende onde está e o que falta sem ler vários avisos.
+- Controles compactos, toque confortável, campo/erro/ação visíveis com teclado.
+- A ação principal de cada tela é óbvia e recebe feedback imediato.
+- Nenhum botão aparenta funcionar enquanto seu clique é silenciosamente ignorado.
+- Voltar, retomar, salvar e concluir não causam perda ou duplicação.
+- Fotos e QR são parte da ficha e mantêm o vínculo correto.
+- Conclusão manual explica cada impedimento e abre exatamente o registro faltante.
+- Desempenho medido antes/depois; não criar polling ou consultas por tecla.
+
+CRITÉRIO DE ACEITE DA DEVOLUTIVA
+Não aceito somente HTML demonstrativo, screenshots, recomendações genéricas,
+respostas de API falsas ou lista de testes sem execução. Uma limitação sem
+solução deve ser declarada. Uma regra pendente não deve ser decidida por você.
+Use arquivo TXT para o relatório e instruções de integração, além dos fontes.

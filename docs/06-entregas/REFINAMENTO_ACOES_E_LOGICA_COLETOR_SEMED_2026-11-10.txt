@@ -1,0 +1,1089 @@
+﻿SEMED — GUIA DE AÇÕES, ESTADOS E REFINAMENTO DO COLETOR
+Referência de trabalho: 10/11/2026 — Paço do Lumiar/MA
+Destinatário: responsável e desenvolvedor que irão refinar a experiência do coletor.
+
+======================================================================
+01. FINALIDADE E LIMITES DESTE DOCUMENTO
+======================================================================
+
+Este arquivo explica COMO O COLETOR ATUAL FUNCIONA e propõe melhorias de
+ações, navegação e mensagens. Não é um novo questionário aprovado e não
+autoriza remover validações, mudar permissões ou substituir os dados.
+
+Identificação usada ao longo do texto:
+  ATUAL: comportamento encontrado no código ou observado no ambiente real.
+  OBSERVADO: situação efetivamente acompanhada na sessão do responsável.
+  PROPOSTA: recomendação para a próxima implementação; ainda não implantada.
+  DECISÃO: mudança de regra que precisa ser definida pelo responsável.
+
+Coletor real:
+https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Painel que recebe os dados:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/
+
+Repositório local de referência:
+C:\Users\SIGAE\Documents\Codex\INVENTARIO
+
+Commit local consultado: c5e893f.
+Versão ativa do Worker coletor conferida em leitura nesta preparação:
+274ecd9b-002e-4f79-a4b9-325fc26fece1 — 100% do tráfego.
+Essa versão foi publicada em 09/11/2026. O commit geral do repositório é
+posterior, pois também contém mudanças exclusivas do painel desktop.
+Não interpretar o hash do commit como o hash de todos os arquivos servidos.
+
+Nesta entrega foi produzido um documento. Não houve nova implantação,
+mudança de questionário, migração, teste com dados fictícios em produção
+ou remoção de registros. O atendimento anterior à EMI ALANA LUDMILA é
+descrito separadamente como evidência real, autorizada pelo responsável.
+
+Não acompanha senhas, tokens, cookies, credenciais Google/Cloudflare,
+conteúdo de QR válido, banco de dados ou fotografias das unidades.
+
+======================================================================
+02. O QUE DEVE SER PRESERVADO
+======================================================================
+
+1) O coletor serve para coletar/atualizar informações; o painel desktop
+   serve para consultar, analisar, acompanhar e administrar.
+2) O operador escolhe uma unidade oficial já cadastrada. Não cadastra
+   uma nova escola dentro do coletor.
+3) A unidade não pertence permanentemente a um operador. Outros usuários
+   autorizados podem continuar a coleta, preservando autores e histórico.
+4) Equipamento, ambiente, visita, foto e vínculo do agente têm identidades
+   distintas. Nome de ambiente ou hostname não substituem seus IDs.
+5) Salvar uma ficha não conclui o assunto. Concluir um assunto não conclui
+   a visita. Ler um QR não salva automaticamente uma ficha completa.
+6) Conclusão e reabertura de assuntos são ações explícitas. A conclusão
+   da visita exige revisão válida e confirmação aceita pelo servidor.
+7) Rascunhos recebidos podem aparecer no desktop como PARCIAL; os dados
+   oficiais publicados continuam com seu critério próprio.
+8) Fotos são privadas, vinculadas ao contexto correto. Não colocar link
+   público do Drive, tokens Google ou credenciais na interface.
+9) O armazenamento atual usa Workers + D1 + Drive privado. Miniaturas
+   derivadas podem ficar no D1 pela decisão D-072; originais não.
+10) Não prometer offline durável: respostas pendentes e prévias vivem
+    na memória da aba. Fechar/recarregar pode perder o que não foi recebido.
+11) Não restaurar perguntas antigas por copiar o catálogo original ou V2.
+    Decisões posteriores simplificaram o questionário atual.
+12) Não mostrar número de versão ao operador nem seletor de questionários.
+13) Manter os quatro perfis. Root/admin/operador têm acesso de coleta;
+    visualizador não ganha permissão de editar pelo novo layout.
+14) Preservar a identidade atual: branco, preto, vermelho, laranja e
+    pêssego; fontes locais Chakra Petch, Barlow e JetBrains Mono.
+15) Não introduzir porcentagem geral de conclusão da unidade. Uma visita
+    concluída não prova que todo o inventário físico foi levantado.
+
+Decisões relevantes: D-045, D-046, D-048, D-057, D-059, D-060, D-061,
+D-062, D-068, D-072, D-074, D-075, D-076 e D-078.
+D-074 supera a digitação livre de ambiente descrita inicialmente em D-057.
+D-060 acrescenta foto OPCIONAL do computador à versão simplificada.
+
+======================================================================
+03. ARQUITETURA E PONTO CORRETO PARA ALTERAR
+======================================================================
+
+ATUAL
+- Frontend: HTML, CSS e JavaScript em módulos, sem React/Vue no coletor.
+- Formulários gerados a partir de definições de campos.
+- Comunicação por fetch com APIs autenticadas do Worker.
+- Persistência em D1; objetos fotográficos no provedor privado.
+- A entrada / utiliza collector.js para listar unidades e direcionar
+  para o questionário atual em /coleta-v3.
+- O fluxo atual usa collector-v3.js e collector-v3-schema.js.
+  collector.js e collector-v2.js também contêm telas antigas: NÃO copiar
+  seus botões/validações para a versão atual sem conferir a precedência.
+- O fluxo atual apresenta formulários por assunto. A expressão antiga
+  "uma pergunta por tela" não descreve integralmente a interface atual.
+- A URL conserva visita, tela, assunto e etapa. Não conserva as respostas.
+  Uma ficha aberta é representada na URL como lista de inventário; o ID
+  da ficha em edição não é restaurado automaticamente pela URL atual.
+
+Arquivos centrais:
+  web/collector-v3.js            telas, ações, fila de fotos, QR e revisão
+  web/collector-v3-schema.js     perguntas e validações atuais
+  web/collector-v2-schema.js     definições compartilhadas importadas pela V3
+  web/collector-schema.js        utilitários de campos e validação
+  web/collector-ui.js            atualização do DOM, foco, teclado e erros
+  web/collector-drafts.js        fila de respostas por visita/assunto
+  web/collector-environments.js  seletor de ambientes da unidade
+  web/environment-editor.js     edição versionada do nome do ambiente
+  web/collector-qr.js            leitura e interpretação local do QR
+  web/photo-prepare.js           preparação da imagem e da miniatura
+  web/collector-photo-viewer.js  ampliação da fotografia
+  web/collector-unit-list.js     classificação/filtro da lista de unidades
+  web/collector-login.js         acesso
+  web/collector-account.js       conta, senha e sessões
+  web/collector-v3.css           estilo do fluxo atual
+  web/collector.css             estilos compartilhados/entrada
+  server/collector.mjs           APIs, acesso, gravação e conclusão
+  server/collector-v3.mjs        criação, ambientes e revisão atuais
+  server/collector-v2.mjs        evidências/históricos compartilhados
+  server/collector-access.mjs    continuidade entre operadores
+  server/agentes/                protocolo e persistência dos agentes
+
+PROPOSTA
+Refinar a aplicação existente por partes. Não reescrever tudo em outro
+framework apenas para reduzir botões ou melhorar mensagens. A linguagem
+do frontend, isoladamente, não explica a latência observada.
+
+======================================================================
+04. MAPA DO PERCURSO E DAS AÇÕES
+======================================================================
+
+LOGIN
+  Entrar -> autenticar -> lista de unidades.
+  Primeiro acesso/reset obrigatório -> definir senha pelo fluxo da conta.
+  Uma nova sessão não significa que a senha deve ser definida novamente.
+
+LISTA DE UNIDADES
+  Lista aparece sem exigir pesquisa.
+  Busca -> filtra unidades; não cria cadastro nem altera respostas.
+  Pendentes / Com inventário -> alternam o conjunto exibido.
+  Selecionar unidade -> inicia ou retoma a visita atual.
+  Rascunho de versão antiga -> pede confirmação para preservá-lo e iniciar
+  o fluxo atual. Não apagar nem converter silenciosamente o histórico.
+
+FACHADA
+  Câmera ou Galeria -> preparar imagem -> enviar automaticamente.
+  Continuar · acompanhante -> abre Acompanhante.
+  Retorno ao topo -> categorias; é possível navegar livremente.
+  A exigência da fachada é conferida na revisão, não representa uma
+  proibição de abrir todos os outros assuntos antes de fotografá-la.
+
+CATEGORIAS ATUAIS
+  A: Acompanhante
+  C: Internet
+  D: Redes Wi-Fi
+  B: Ambientes
+  F: Computadores
+  G: Impressoras
+  O: Outros equipamentos
+  H: Problemas
+  Fachada é uma entrada própria; não é uma categoria de equipamentos.
+
+ASSUNTOS DE PERGUNTAS: A/C/D/H
+  Digitar/selecionar -> altera a memória da aba e agenda salvamento.
+  Salvar rascunho -> aguarda o envio das respostas pendentes.
+  Adicionar registro -> cria uma linha de link/rede/problema no assunto.
+  Remover este registro -> pede confirmação; gravação mantém histórico.
+  Concluir assunto -> salva e valida no servidor; sucesso volta às categorias.
+
+AMBIENTES
+  Adicionar ambiente -> grava no catálogo da unidade, com ID permanente.
+  Atualizar ambientes -> consulta o catálogo atual.
+  Editar nome -> diálogo próprio; salva no mesmo ID, com versão/histórico.
+  Câmera/Galeria -> foto ligada ao ambiente, opcional.
+  Concluir ambientes -> marca o assunto manualmente.
+
+LISTA DE COMPUTADORES/IMPRESSORAS/OUTROS
+  Adicionar -> ficha nova com ID próprio.
+  Buscar/Enter -> pesquisa no servidor; Limpar busca retira o filtro.
+  Editar -> solicita trava temporária e carrega a ficha existente.
+  Mais equipamentos -> busca a próxima página; o endpoint pagina em 50.
+  Concluir assunto -> valida as pendências desse grupo e marca conclusão.
+
+FICHA DE EQUIPAMENTO
+  Selecionar ambiente -> consulta os ambientes da própria unidade.
+  Cadastrar e selecionar -> cria/reutiliza ambiente confirmado pelo servidor.
+  Ler QR -> identifica o computador, mas não conclui o cadastro.
+  Vincular este computador -> associa o agente à ficha/localização.
+  Cadastrar sem agente -> modo manual, com motivo obrigatório.
+  Câmera/Galeria -> envio automático vinculado à ficha.
+  Salvar equipamento -> validação completa e gravação, depois volta à lista.
+  Voltar à lista / categorias -> NÃO equivale a Salvar equipamento.
+
+REVISÃO
+  Revisar visita -> consulta as pendências no servidor e a revisão atual.
+  Corrigir -> hoje abre o assunto, nem sempre a ficha exata.
+  Confirmar conclusão -> quando liberado, pede confirmação e envia a revisão.
+  Sucesso confirmado -> visita concluída; outra alteração exige nova visita.
+
+======================================================================
+05. SALVAMENTO: A DISTINÇÃO MAIS IMPORTANTE
+======================================================================
+
+Há quatro níveis independentes:
+
+I. Texto digitado nesta aba
+   Ainda pode não ter chegado ao servidor. Não é prova de persistência.
+
+II. Resposta/ficha recebida no servidor
+   É recuperável por outra sessão, conforme acesso e contexto.
+   Pode continuar como rascunho. Pode aparecer como PARCIAL no desktop.
+
+III. Assunto concluído
+   O usuário executou a ação de conclusão daquele assunto e o servidor
+   aceitou. Abrir para editar exige confirmação de reabertura.
+
+IV. Visita concluída
+   A revisão foi aceita, a pessoa confirmou e o servidor publicou os
+   registros elegíveis. Não é sinônimo de inventário total da unidade.
+
+ATUAL — respostas dos assuntos
+Digitação/seleção agenda envio após aproximadamente 600 ms sem nova edição.
+A fila separa visita + assunto, preserva a versão e envia sequencialmente.
+Se o texto mudar durante um envio, a alteração mais nova continua na fila.
+Resultado desconhecido pode ser reconciliado lendo o registro do servidor.
+O salvamento automático NÃO conclui o assunto.
+
+ATUAL — ficha do equipamento
+Não utiliza o mesmo autosave de cada campo. Alterar posição, patrimônio,
+funcionamento etc. deixa mudanças na aba até Salvar equipamento.
+QR e envio inicial de foto podem gravar um rascunho mínimo com draft=true.
+Vincular o agente ou terminar o upload NÃO remove essa marca.
+Salvar equipamento com validação completa remove a marca de rascunho.
+
+ATUAL — saída da ficha
+O retorno libera a trava e pode manter a ficha na memória para Retomar ficha
+em preenchimento. Isso não garante preservação após recarregar/fechar a aba.
+Existe aviso de saída para alterações/prévias pendentes. Não usá-lo como
+substituto de salvamento confirmado ou como garantia de proteção offline.
+
+PROPOSTA — vocabulário de estados por ficha
+  "Alterações não enviadas"
+  "Salvando…"
+  "Rascunho recebido — falta finalizar ficha"
+  "Ficha salva — validada nesta visita"
+  "Envio não confirmado — verificar/tentar novamente"
+
+Exibir separadamente "Agente vinculado" e "Foto recebida". Uma etiqueta
+não pode substituir a outra. O cabeçalho global não basta para representar
+o estado de todos os itens: hoje pode descrever apenas a última operação.
+
+Não transformar automaticamente draft=true em ficha concluída somente
+porque os campos parecem preenchidos. É necessário passar pelo endpoint
+normal de gravação, manter versão, autoria, validação e confirmação.
+
+======================================================================
+06. CASO REAL QUE MOTIVOU ESTE REFINAMENTO
+======================================================================
+
+OBSERVADO — EMI ALANA LUDMILA, visita acompanhada nesta conversa.
+A revisão bloqueava a conclusão e mostrava somente:
+"Complete e salve as fichas iniciadas nesta visita."
+
+A lista apresentava 15 computadores e seus vínculos, mas não destacava
+quais fichas ainda eram rascunhos. Uma consulta somente leitura identificou:
+  LAB-ALANA / 2 bancada Pc 4       -> draft=true, agente vinculado.
+  LAB-ALANA / BANCADA 2 / PC6      -> draft=true, agente vinculado.
+
+Os campos avaliados pela validação completa não apresentaram pendências.
+Isso não prova a sequência exata de cliques que originou os rascunhos.
+Prova que o estado de rascunho persistia, apesar dos dados já preenchidos.
+
+Com autorização do responsável, foi executado no navegador:
+  Editar cada ficha -> Salvar equipamento -> Concluir assunto Computadores
+  -> Revisar visita.
+
+Resultado observado: Computadores passou a Concluído; servidor validou
+os requisitos e habilitou Confirmar conclusão. O último clique de concluir
+a visita não foi executado nesse atendimento. Não se afirma aqui o estado
+posterior da visita, que pode ter sido alterado pelo responsável.
+
+CAUSA DA FALTA DE CLAREZA NO CÓDIGO
+reviewV3 gera errors por assunto e details['draft:'+ID] por equipamento.
+A tela review() renderiza errors, mas não transforma esses details em uma
+lista identificada com ambiente, posição e acesso direto ao equipamento.
+inventory() mostra funcionamento/vínculo, mas não mostra a marca draft.
+O botão Corrigir abre o grupo inteiro. Além disso, a mensagem do rascunho
+pode substituir a mensagem de que o próprio assunto precisa ser concluído.
+
+PROPOSTA PRIORITÁRIA
+Exibir algo como:
+  "2 fichas aguardam finalização"
+  "LAB-ALANA · 2 bancada Pc 4 — campos preenchidos; falta salvar a ficha"
+  [Abrir ficha]
+  "LAB-ALANA · BANCADA 2 / PC6 — campos preenchidos; falta salvar a ficha"
+  [Abrir ficha]
+
+O texto "campos preenchidos" só pode ser usado após validação atual do
+servidor. Se faltarem respostas, listar os campos concretos em seu lugar.
+
+Após salvar, retornar ao contexto de revisão e atualizar as pendências.
+Quando só faltar a ação manual do assunto, mostrar isso expressamente.
+Não resolver o problema apenas habilitando o botão final por CSS/JavaScript.
+
+======================================================================
+07. O QUE CADA ASSUNTO EXIGE HOJE
+======================================================================
+
+Este é um resumo operacional das condições, não uma autorização para
+alterar perguntas. O catálogo executável está em collector-v3-schema.js,
+com definições compartilhadas importadas de collector-v2-schema.js.
+
+A — ACOMPANHANTE
+Nome e função aparecem diretamente e são opcionais. É possível concluir
+o assunto sem inventar um acompanhante. Não restaurar telefone ou uma
+pergunta preliminar de presença do acompanhante.
+
+C — INTERNET
+Pergunta se existe internet: Sim, Não ou Não foi possível verificar.
+Se Sim, pergunta a quantidade de links e abre fichas de conexão.
+Cada ficha usa provedor, tipo, velocidade contratada, quedas, frequência
+quando aplicável, qualidade, satisfação e problemas observados.
+Os campos mantêm as condições do catálogo; problemas é campo opcional.
+Para 1 ou 2 links, a quantidade de fichas deve corresponder à resposta;
+para 3 ou mais, devem existir pelo menos três fichas.
+Velocidade aceita número não negativo ou "Não soube informar".
+Não depende de ambientes previamente cadastrados para concluir.
+
+D — REDES WI-FI
+Lista de redes: nome/SSID e observações. Uma linha criada precisa de SSID.
+Não há campo atual para senha de rede. Não orientar a colocar senhas nas
+observações: isso não cria armazenamento protegido de credenciais.
+Ausência de linhas não equivale a uma declaração universal de ausência
+de Wi-Fi; o significado de novos estados deve ser aprovado antes.
+
+B — AMBIENTES
+Cadastro e seleção de ambientes da unidade. Nome de até 180 caracteres.
+Foto opcional. O código não exige quantidade mínima para concluir B.
+Entretanto, computadores e impressoras precisam de ambiente selecionado
+para salvar suas fichas. A dependência deve ser explicada naquele campo.
+Não bloquear Internet/Wi-Fi por falta de B.
+
+F — COMPUTADORES
+Uma ficha individual por computador, sem teto artificial por escola.
+Desktop/Notebook é opcional; a ausência dessa escolha não impede que o
+registro seja tratado como computador.
+Exige modo de cadastro, ambiente, posição, situação do patrimônio e
+funcionamento. A posição aceita até 64 caracteres.
+Modo Manual exige motivo; modo Agente exige vínculo válido para concluir
+a coleta. A mera leitura do QR ainda não é esse vínculo.
+Motivos manuais atuais: Não liga; Windows não inicia; Instalação falhou;
+Sem permissão; Sistema incompatível; Outro.
+Situações de patrimônio: Possui patrimônio; Sem patrimônio; Etiqueta
+ilegível; Não identificado. Não perguntar número de patrimônio.
+Se funciona parcialmente ou não funciona, a descrição de problemas é
+obrigatória. Origem do equipamento é opcional.
+AnyDesk e RustDesk são opcionais e aceitam somente dígitos. Guardar como
+texto para preservar zeros iniciais; não são senhas nem autorização para
+abrir uma sessão remota.
+Fotos do computador são opcionais, inclusive quando existe agente.
+
+G — IMPRESSORAS
+Abre diretamente a lista com Adicionar impressora.
+Ambiente e funcionamento são obrigatórios. Marca, modelo, descrição de
+problemas e informações adicionais de origem, aquisição, suprimentos e
+conexão seguem as opções/condições do catálogo atual.
+Endereço IP aparece conforme o tipo de conexão, sem torná-lo obrigatório.
+A fotografia inicial da impressora é exigida na revisão. Uma fotografia
+histórica válida pode atender a uma revisita; não exigir outra à força.
+
+O — OUTROS EQUIPAMENTOS
+Ficha individual simplificada; descrição do tipo e foto opcionais.
+Não herdar automaticamente as obrigatoriedades de computador/impressora.
+Preservar os registros antigos e a compatibilidade de leitura.
+
+H — PROBLEMAS
+Resume problemas já relatados em Internet, Wi-Fi e equipamentos.
+Aceita problemas adicionais; cada linha criada exige tipo e descrição.
+Fotografia opcional. Não pedir novamente o mesmo problema já recolhido.
+O endpoint atual do resumo limita a consulta aos primeiros 100
+equipamentos com problemas e informa quando há mais. Isso deve ficar
+visível; não apresentar uma consulta limitada como se fosse toda a rede.
+
+PROPOSTA
+Usar marcação de obrigatoriedade apenas quando a condição está ativa.
+Ao tentar salvar/concluir, informar qual campo falta, em qual registro,
+e levar ao campo preservando o que já foi digitado.
+Não confundir "opcional" com "qualquer valor é válido": identificadores
+remotos preenchidos, por exemplo, continuam sujeitos à validação numérica.
+
+======================================================================
+08. COMPUTADOR, AGENTE E QR: TRÊS AÇÕES DIFERENTES
+======================================================================
+
+ATUAL — caminho com agente
+1. Abrir Adicionar computador.
+2. Ler QR pela câmera ou selecionar a imagem do QR, quando disponível.
+3. Interpretar o QR localmente e consultar sua prévia no servidor.
+4. Mostrar os dados do computador retornados pela API.
+5. Selecionar ambiente e informar posição na unidade correta.
+6. Acionar Vincular este computador.
+7. Completar os campos restantes e acionar Salvar equipamento.
+8. Concluir o assunto quando seus itens estiverem tratados.
+
+Ler QR = identificar uma proposta de vínculo.
+Vincular = servidor aceitar a associação agente/ficha/unidade/localização.
+Salvar equipamento = servidor validar a ficha completa e retirar draft.
+
+O vínculo não deve escolher a escola por texto contido numa fotografia.
+A unidade vem da visita autenticada; o servidor valida acesso e contexto.
+Não exigir conferência de código visual adicional: a decisão atual manda
+mostrar os dados e permitir o vínculo sem essa etapa extra.
+
+O QR usa o contrato semed.agent.pairing, versão 1, com identificador da
+instalação, código temporário e expiração. Nunca registrar um QR válido
+em documentação, telemetria de frontend ou mensagem pública de erro.
+Não navegar para uma URL arbitrária obtida pela leitura do código.
+
+O leitor usa os recursos disponíveis no navegador e alternativa local.
+A imagem usada para ler QR não é anexada como fotografia do equipamento.
+Fechar/cancelar o leitor deve encerrar o uso da câmera, inclusive se a
+permissão for concedida com atraso.
+
+REPETIÇÃO SEGURA
+O comando de vínculo possui request_id e consulta de recibo. Se a resposta
+se perder, consultar o resultado antes de criar outra tentativa. Repetir
+o mesmo comando deve reutilizar sua identidade, evitando vínculo duplo.
+O comando pendente atual vive na memória da aba: não é fila offline
+durável e não há promessa de recuperação após fechar o navegador.
+
+Se QR expirou, já foi consumido ou não é reconhecido, mostrar o motivo
+e orientar obter um novo QR. Instalação revogada não pode ser reativada
+pela simples alteração visual do formulário.
+
+ATUAL — caminho manual
+Selecionar Cadastrar sem agente, escolher motivo e preencher localização
+e demais campos obrigatórios. O cadastro permanece identificado como
+manual. Não fabricar informações de CPU/memória para aparentar telemetria.
+
+PROPOSTA DE APRESENTAÇÃO
+Exibir os estados junto da própria ficha:
+  "Computador identificado" -> "Agente vinculado" -> "Ficha salva".
+Usar textos curtos explicando o próximo passo, sem porcentagem geral.
+Após o vínculo: "Agente vinculado. Falta salvar os dados desta ficha".
+Após o salvamento completo: "Ficha salva. Você pode adicionar outro item".
+O estado deve vir da resposta confirmada da API, nunca só de um clique.
+
+DECISÃO
+Unificar Vincular + Salvar em uma única ação seria mudança de fluxo e
+exigiria definir falhas parciais e confirmação. Não implementar isso
+implicitamente neste refinamento; primeiro tornar os estados claros.
+
+======================================================================
+09. AMBIENTES COMPARTILHADOS ENTRE OPERADORES
+======================================================================
+
+ATUAL
+- O seletor consulta ambientes da mesma unidade ao abrir/atualizar.
+- Selecionar conserva o ID; o nome é a apresentação desse ambiente.
+- Cadastrar novo é uma ação explícita, separada de pesquisar.
+- O servidor pode reutilizar nome equivalente após normalização; não
+  unifica automaticamente nomes apenas parecidos ou ambientes distintos.
+- Um ambiente criado por outro operador é recuperado por nova consulta.
+  Não existe atualização colaborativa instantânea por WebSocket nesse
+  seletor; o botão Atualizar tem função real.
+- Renomear mantém o ID, exige controle de versão e registra histórico.
+- Não há botão de exclusão de ambiente no fluxo atual do coletor.
+- O seletor pode cadastrar ambiente para uma ficha mesmo com B concluído;
+  a edição de nome passa pela regra de reabertura de B. Essa diferença
+  merece mensagem clara, não uma mudança silenciosa de regra.
+
+PROPOSTA
+Mostrar nome, seleção atual e ação "Não encontrou? Cadastrar ambiente".
+Não abrir teclado automaticamente ao entrar no seletor; deixar pesquisar
+como opção. Atualizar sem perder a ficha, a posição, o QR ou as prévias.
+Se outro operador renomeou um ambiente, atualizar seu rótulo conservando
+o ID, sem criar outro ambiente apenas para acompanhar o texto antigo.
+Colisão de nomes/versões precisa de mensagem e ação de recuperação.
+
+Um computador não deve mudar de unidade porque um ambiente tem nome igual
+em outra escola. A validação do vínculo pertence ao servidor.
+
+======================================================================
+10. FOTOGRAFIAS: CAPTURA, ENVIO E CONFIRMAÇÃO
+======================================================================
+
+ATUAL
+Cada fotografia tem alvo: fachada/unidade, ambiente, equipamento ou
+ocorrência. Não criar uma categoria genérica que perca essa relação.
+
+Fluxo:
+  Câmera/Galeria -> prévia local -> preparação -> envio automático
+  -> confirmação ready -> exibição autenticada e miniatura.
+
+Se a rede falhar, a prévia pode permanecer na aba com Tentar envio
+novamente. Prévia visível não significa arquivo recebido pelo Drive.
+Não exigir um botão Enviar antes da primeira tentativa automática.
+
+Limites técnicos encontrados:
+- Até cinco fotos por registro nesta visita; histórico preservado.
+- Entrada aceita formatos de imagem suportados pelo preparador, incluindo
+  JPEG, PNG, WebP e tentativa de leitura de HEIC/HEIF conforme navegador.
+- Arquivo de entrada até 30 MB; imagem conhecida até 50 megapixels.
+- Foto é redimensionada/reencodada em JPEG, até 1600 px e 3 MB.
+- Miniatura produzida no navegador: até 320 px e 30 KB. A regra D-072
+  permite no D1 apenas derivada JPEG até 320 x 320 px e 64 KB.
+- Há proteção de memória para o conjunto de prévias na aba.
+- Compatibilidade real de câmera/HEIC depende de teste no aparelho.
+
+O histórico de fotos não é apagado ao mudar o nome de um ambiente ou
+salvar novamente o equipamento. ID e alvo devem permanecer iguais.
+Uma ficha nova pode ser salva primeiro como rascunho para receber foto;
+depois ainda precisa de Salvar equipamento com validação completa.
+
+Falha de miniatura não significa perda da foto completa já confirmada.
+Mostrar "Foto recebida; miniatura pendente" e permitir fallback para a
+foto original autenticada. Não repetir o original sem necessidade.
+
+Remover prévia local é diferente de remover fotografia já recebida.
+A segunda ação passa pelo servidor e pede confirmação no fluxo atual.
+Fotografias históricas são identificadas e não recebem a mesma ação de
+remoção da foto da visita aberta.
+
+EXIGÊNCIAS ATUAIS RELEVANTES
+- Fachada: exigida na revisão; evidência histórica válida pode atender.
+- Impressora: fotografia inicial exigida; histórico pode atender revisita.
+- Computador, ambiente, outros e problemas adicionais: fotos opcionais
+  no questionário atual. Não copiar obrigações de formulários superados.
+
+PROPOSTA
+Cada miniatura deve indicar: preparando, enviando, recebida ou falhou.
+Falha deve ter ação por foto e manter contexto/legenda/alvo. Mostrar
+progresso por arquivo quando mensurável; não inventar percentual.
+Ao sair, explicar que prévias não enviadas podem ser perdidas.
+A revisão também deve considerar pendências locais de envio. O servidor
+não sabe que existe uma imagem apenas selecionada na memória do celular.
+Não permitir que um rodapé esconda câmera, retorno ou mensagem de falha.
+
+======================================================================
+11. EDIÇÃO SIMULTÂNEA, TRAVAS E CONFLITOS
+======================================================================
+
+ATUAL
+Vários operadores podem colaborar na unidade, sem dono permanente da
+visita. Isso não autoriza sobrescrever silenciosamente a mesma ficha.
+
+Respostas usam versão por assunto. Equipamentos usam versão e uma trava
+temporária solicitada ao editar. O prazo de trava encontrado é de três
+minutos; ela pode expirar durante um preenchimento demorado.
+Não foi identificado um temporizador geral de renovação contínua na tela
+V3. Alguns caminhos do QR tratam renovação quando a API rejeita a trava.
+
+Retomar ficha verifica se outra sessão alterou a versão. O usuário deve
+ser informado e suas alterações locais preservadas para decidir o que
+fazer. Não resolver conflito forçando a versão que acabou de chegar.
+
+Resposta HTTP perdida é diferente de rejeição confirmada:
+  REJEIÇÃO: servidor informou que não aceitou.
+  DESCONHECIDO: a gravação pode ter ocorrido, mas faltou a resposta.
+  CONFIRMADO: há resposta/recibo que comprova a gravação.
+
+O cliente atual usa timeout de aproximadamente 30 segundos. Não tratar
+o timeout como prova de que nada foi salvo nem recomeçar com outro ID.
+Cada operação precisa conservar a estratégia de idempotência prevista
+em sua API; não pressupor que todos os endpoints usam o mesmo recibo.
+
+PROPOSTA
+- Explicitar trava expirada e permitir recuperar edição com validação de
+  versão. Renovação automática, se adotada, deve ter teste de concorrência.
+- Mostrar conflito com resumo "sua edição / versão no servidor" e ações
+  claras, sem expor dados de outras unidades.
+- Diferenciar sessão expirada, falta de permissão, conflito, validação,
+  timeout e indisponibilidade de fotos.
+- Não pedir nova definição de senha por um erro genérico de rede/sessão.
+- Se houver necessidade de login, avisar o que está só na memória antes
+  de navegar; nunca colocar respostas, senhas ou tokens na URL.
+
+======================================================================
+12. NAVEGAÇÃO, TECLADO, BUSCA E DESEMPENHO
+======================================================================
+
+ATUAL — recursos que já existem e não devem ser perdidos
+- Retorno às categorias e retorno à lista de equipamentos.
+- Retomada da ficha mantida em memória, enquanto a aba continua aberta.
+- Preservação de foco/cursor ao atualizar elementos da mesma tela.
+- Ajustes para visualViewport e teclado em telas pequenas.
+- Ação para fechar teclado; Enter avança entre campos quando aplicável.
+- Enter da busca executa a pesquisa; textarea conserva quebra de linha.
+- Campo inválido recebe foco e tentativa de posicionamento visível.
+- Fotos ampliáveis, miniaturas e controle de reabertura de assunto.
+
+Esses mecanismos existem no código. Isso não equivale a homologar todos
+os teclados, versões de navegador, aparelhos e condições de rede.
+
+ATUAL — limites da busca/lista
+A busca de equipamentos usa texto indexado pelo servidor. A composição
+atual desse índice inclui categoria, patrimônio legado, série, marca,
+modelo e descrição de outros equipamentos. Não inclui sistematicamente
+hostname, posição, ambiente, AnyDesk e RustDesk nessa rota do coletor.
+Não prometer busca por esses dados só porque aparecem no cartão.
+A busca do painel desktop é outra funcionalidade.
+
+O endpoint pagina em 50 itens. Isso não limita a unidade a 50 máquinas.
+O botão Mais equipamentos consulta a página seguinte e substitui a lista
+atual; o fluxo atual não oferece uma paginação completa com Anterior.
+O resumo de problemas também tem seu próprio limite de consulta.
+
+PROPOSTAS DE NAVEGAÇÃO
+1. Cabeçalho compacto com unidade e assunto, sem repetir títulos enormes.
+2. Uma ação principal por contexto: Salvar ficha, Concluir assunto ou
+   Confirmar visita. Ações de níveis diferentes não devem parecer iguais.
+3. Retorno sempre alcançável. Antes de abandonar dados só locais, oferecer
+   opções coerentes com a validação: continuar editando, guardar rascunho
+   quando a API permitir, ou descartar explicitamente a edição local.
+4. Não confundir descartar a edição local com apagar uma ficha já gravada.
+5. Preservar filtro, página e posição de rolagem ao voltar de uma ficha.
+6. Ao vir da revisão, retornar à revisão após corrigir, mantendo também
+   a possibilidade de ir para categorias.
+7. Evitar modal dentro de modal e cadeias de confirmações para navegação
+   simples. Manter confirmação para reabertura, remoção e conclusão final.
+
+PROPOSTAS DE TECLADO E ACESSIBILIDADE
+- Botões visualmente menores, mas com área de toque recomendada de pelo
+  menos 44 x 44 pixels CSS. Reduzir enfeite/espaçamento, não a precisão.
+- Evitar rodapé fixo grande sobre o campo ativo quando o teclado abre.
+- Não fechar teclado nem perder cursor a cada resposta de autosave.
+- Evitar foco automático em busca ao abrir lista ou seletor de ambiente.
+- Usar inputmode numérico para IDs remotos, sem converter o dado em número.
+- Rótulos visíveis, mensagens associadas ao campo e foco no primeiro erro.
+- Estado não deve depender só de cor. Identificar recebido/pendente/erro
+  também por texto e ícone acessível.
+- Respeitar redução de movimento. Testar zoom, paisagem e fontes ampliadas.
+- Ao fechar modal, devolver o foco à ação que o abriu.
+
+PROPOSTAS DE DESEMPENHO
+- Medir separadamente: resposta da API, renderização, preparação da foto
+  e tempo até a tela responder. Não atribuir tudo ao banco sem medição.
+- Não fazer consulta completa da visita a cada caractere digitado.
+- Atualizar só as áreas afetadas depois de salvar, sem apagar validação,
+  seleção, cursor ou rolagem de outros campos.
+- Reutilizar catálogo de ambientes com invalidação explícita; Atualizar
+  continua necessário para alterações feitas por outra pessoa.
+- Mostrar carregamento na área dependente, preservando navegação segura.
+- Impedir duplo envio de uma ação em andamento, sem bloquear toda a tela
+  indefinidamente após um erro.
+- Expandir busca no servidor se o campo prometer hostname/ambiente/posição.
+  Usar paginação, sem baixar todo o inventário para filtrar no celular.
+- Tratar resposta antiga de busca concorrente para não substituir um
+  resultado novo por outro de uma pesquisa anterior.
+
+Metas devem ser medidas em aparelhos reais e rede definida. Não prometer
+um número de milissegundos a partir de teste local sem latência.
+
+======================================================================
+13. REVISÃO E CONCLUSÃO: COMO TORNAR O BLOQUEIO EXPLICÁVEL
+======================================================================
+
+ATUAL
+O servidor confere estados dos oito assuntos, respostas exigidas, fachada,
+fichas em rascunho, vínculos pendentes de agente e fotografias iniciais
+de impressoras no escopo da visita.
+
+A revisão de equipamentos considera fichas iniciadas nesta visita ou
+registradas como conferidas nela; não confundir esse escopo com todos
+os equipamentos históricos da unidade.
+
+Hoje a resposta contém errors e details. Há detalhes identificados por
+draft:ID ou agent:ID, mas a tela de revisão consome sobretudo errors.
+Vários problemas do mesmo grupo podem substituir a mensagem anterior.
+Uma mensagem genérica acaba escondendo qual equipamento precisa de ação.
+O botão Corrigir de fotografia de impressora abre a lista de impressoras,
+sem necessariamente abrir a ficha responsável pelo bloqueio.
+
+A revisão atual não recalcula integralmente todos os campos de cada
+equipamento; eles são validados ao salvar. Portanto, draft=true sozinho
+não informa se faltam respostas ou apenas o salvamento completo.
+
+Ao concluir, o cliente envia a revisão recebida e confirmação explícita.
+O servidor revalida, detecta alterações concorrentes e só então conclui
+e publica os registros elegíveis. Uma revisão desatualizada exige nova
+conferência. Não ignorar o conflito para habilitar a conclusão.
+
+Na revisita, o sistema reutiliza respostas da visita anterior concluída
+e pode iniciar os assuntos, exceto acompanhante, já como Concluído.
+Os itens e as fotos históricas permanecem. Não presumir que todas as
+categorias começam vazias em toda visita.
+
+PROPOSTA DE RETORNO ESTRUTURADO — AINDA NÃO IMPLEMENTADO
+Acrescentar coleção de pendências, mantendo compatibilidade com clientes
+que ainda usam errors/details. Cada pendência deve carregar, por exemplo:
+  código estável do motivo;
+  assunto;
+  tipo e ID da entidade;
+  nome/posição/ambiente disponíveis para apresentação;
+  campos faltantes, quando aplicável;
+  mensagem curta;
+  ação sugerida e destino de correção;
+  revisão/versão necessária para não usar diagnóstico desatualizado.
+
+Exemplos de motivos propostos, não novos contratos existentes:
+  FICHA_EM_RASCUNHO; CAMPO_OBRIGATORIO; VINCULO_AGENTE_PENDENTE;
+  FOTO_OBRIGATORIA_PENDENTE; ASSUNTO_NAO_CONCLUIDO.
+
+O ID deve ser usado para abrir a entidade correta, não o texto do nome.
+A abertura direta deve revalidar acesso e adquirir trava quando editar.
+Não expor tokens, senha, QR, respostas sensíveis ou dados de outra unidade
+na URL, nas mensagens ou em logs do navegador.
+
+PROPOSTA DE TELA
+Título: "Faltam 2 ações para concluir esta visita".
+Lista de ações concretas, agrupada por assunto, com identificação da ficha.
+Esse número é de pendências, não porcentagem de inventário da escola.
+Separar bloqueio, aviso e informação; somente bloqueio impede confirmar.
+Mostrar "Abrir ficha", "Enviar foto" ou "Concluir assunto" conforme causa.
+Depois da correção, atualizar diagnóstico e explicar o que ainda falta.
+
+Não concluir silenciosamente o assunto quando a última ficha for salva.
+Não inventar um preenchimento para fazer a revisão passar.
+Não remover draft via SQL ou relaxar validação para esconder o problema.
+
+======================================================================
+14. MAPA DAS OPERAÇÕES E RESPONSABILIDADES TÉCNICAS
+======================================================================
+
+Contratos encontrados no frontend atual; conferir payloads no código
+antes de alterá-los. Não são endpoints anônimos nem instrução para
+executar gravações em produção por fora da aplicação.
+
+SESSÃO E ABERTURA
+GET  /api/auth/me
+  Recupera usuário, perfil e contexto de autenticação.
+GET  /api/collector/capabilities
+  Informa capacidades reais, incluindo disponibilidade de fotografias.
+POST /api/collector/v3-start
+  Inicia/retoma visita da unidade; preservação explícita de rascunho antigo.
+GET  /api/collector/inspection?id=...
+  Recarrega visita, assuntos, ambientes e evidências autorizadas.
+
+ASSUNTOS
+POST /api/collector/section-save
+  Respostas, versão, conclusão/reabertura conforme ação.
+POST /api/collector/inventory-section
+  Estado manual dos assuntos de inventário.
+
+AMBIENTES
+GET  /api/collector/environments?inspectionId=...
+POST /api/collector/environment-save
+POST /api/collector/environment-rename
+  Seleção da mesma unidade; criação explícita; renomeação com versão.
+
+EQUIPAMENTOS
+GET  /api/collector/equipment-list?... 
+POST /api/collector/equipment-lock
+POST /api/collector/equipment-unlock
+POST /api/collector/equipment-save
+  Lista paginada; trava; rascunho ou salvamento completo conforme contrato.
+
+AGENTE
+POST /api/agent/v1/pairings/preview
+POST /api/agent/v1/pairings/claim
+GET  /api/agent/v1/pairings/claim-status?request_id=...
+  Prévia, vínculo e reconciliação de resposta desconhecida.
+Também existem caminhos de localização e conferência usados por versões
+anteriores. A presença de um handler no arquivo não prova que existe um
+botão atual na tela. Não reintroduzir etapas superadas por essa razão.
+
+FOTOS
+POST /api/collector/photo-upload
+POST /api/collector/photo-thumb
+GET  /api/collector/photo?id=...&size=thumb
+POST /api/collector/photo-remove
+  Upload binário com contexto, confirmação, derivada, leitura e remoção.
+
+REVISÃO
+GET  /api/collector/v2-problems?inspectionId=...
+  Resumo compartilhado de problemas, também usado pelo fluxo atual.
+GET  /api/collector/review?id=...
+POST /api/collector/finish
+  Diagnóstico/revisão e conclusão confirmada com controle de concorrência.
+
+Todo refinamento precisa conservar autenticação, autorização, CSRF,
+validação no servidor e tratamento de erro. Mudar somente a aparência
+do botão não muda as condições que o servidor exige.
+
+======================================================================
+15. PLANO SUGERIDO PARA O REFINAMENTO
+======================================================================
+
+As etapas abaixo são PROPOSTAS, não implantação desta entrega.
+
+P0 — CONCLUSÃO COM MOTIVO CLARO
+Arquivos prováveis: server/collector-v3.mjs, web/collector-v3.js,
+web/collector-v3.css e testes correspondentes.
+Entregar pendências por ficha, rótulo de rascunho na lista, abertura do
+item exato e retorno à revisão. Preservar confirmação manual.
+Aceite: reproduzir duas fichas preenchidas, com agente e draft=true;
+identificar ambas sem inspecionar banco e liberá-las ao salvar corretamente.
+
+P1 — SALVAMENTO E RETORNO COERENTES
+Arquivos prováveis: collector-v3.js, collector-drafts.js, collector-ui.js.
+Diferenciar mudanças locais, rascunho recebido, ficha completa e assunto
+concluído. Melhorar saída/retomada sem perda e conflito de trava/versão.
+Aceite: voltar, retomar, falhar rede e recuperar sem duplicar ou sobrescrever
+o que outro operador salvou. Sem mensagem de sucesso antes da confirmação.
+
+P1 — FOTOS E QR NO CONTEXTO DA FICHA
+Expor progresso e falha por foto; explicar o próximo passo após vincular
+agente; preservar contrato de recibos e fotos opcionais de computadores.
+Aceite: foto/QR com falha antes e depois do recebimento; repetição segura.
+
+P2 — BUSCA, PAGINAÇÃO E DENSIDADE VISUAL
+Reduzir repetição de títulos, rever botões/rodapé, melhorar busca e navegação
+entre páginas. Novos filtros devem usar dados reais da API.
+Aceite: achar item fora da primeira página; editar e retornar ao mesmo
+contexto; digitar com teclado aberto sem ocultar campo/erro/ação principal.
+
+P2 — DESEMPENHO E ACESSIBILIDADE
+Medir requisições e renderizações; atualizar somente trechos necessários.
+Aceite: manter foco/cursor/rolagem e responder a ações sem carregamento
+indefinido, inclusive com latência, sessão expirada e retorno inválido.
+
+Não usar essa ordem como autorização para alterar o questionário ou
+publicar. O responsável receberá a proposta/código e decidirá a implantação.
+
+DECISÕES AINDA NECESSÁRIAS SE FOREM PROPOSTAS
+1. Autosave completo de equipamento ou manutenção de Salvar equipamento?
+   Hoje é salvamento explícito. Não trocar sem definir estado incompleto,
+   frequência, concorrência e impacto em fotos/QR.
+2. Nova declaração explícita "não há computadores/impressoras/ambientes"?
+   Isso altera o questionário e a interpretação de ausência de registros.
+3. Recuperação durável offline? Exige projeto próprio de proteção local,
+   sincronização, expiração, conflitos e testes em celulares.
+4. Exclusão de fichas pelo operador? Não está aprovada por este documento.
+   A exclusão autorizada atual é gestão root no desktop com preservação.
+5. Ações em lote, como concluir várias fichas? Não adicionar como atalho
+   para ignorar campos, vínculo, fotos ou autoria.
+6. Mudar ordem, remover perguntas ou concluir assunto automaticamente?
+   São decisões de produto, separadas da clareza de mensagens e botões.
+
+======================================================================
+16. ROTEIRO DE ACEITE PARA QUEM REFINAR O CÓDIGO
+======================================================================
+
+Estes são testes A EXECUTAR após a implementação futura. Não são um
+relatório de testes aprovados nesta entrega documental.
+Criar dados sintéticos identificados em banco local/de teste. Não usar
+escolas oficiais para simular exclusões, duplicações e conflitos.
+
+T01 — LISTA E PERMISSÃO
+Entrar como operador: ver unidades autorizadas sem precisar pesquisar.
+Obra indisponível para coleta; visualizador não consegue gravar pela API.
+Usuário não deve acessar dados de outra unidade manipulando um ID.
+
+T02 — ASSUNTO SEM ALTERAÇÃO
+Abrir e sair de assunto pendente, sem editar: não criar histórico de
+resposta nem concluir nada. Assunto concluído pede confirmação antes de
+reabrir; cancelar mantém seu estado.
+
+T03 — AUTOSAVE E TEXTO NOVO
+Digitar, deixar iniciar envio e continuar digitando. A versão mais nova
+deve chegar ao servidor, sem retornar ao texto anterior por renderização.
+Não perder cursor, seleção ou foco.
+
+T04 — ERRO DE SALVAMENTO
+Interromper rede antes de enviar. Mostrar mudanças não enviadas e manter
+conteúdo da aba. Restabelecer e tentar novamente; conferir o resultado
+no servidor, não apenas uma mensagem visual.
+
+T05 — FICHA COMPLETA AINDA EM RASCUNHO
+Reproduzir localmente o caso da EMI ALANA LUDMILA: duas fichas com dados
+válidos e agente vinculado, mas draft=true. Revisão deve nomear ambas,
+permitir abrir cada uma e informar que falta finalizar o salvamento.
+Salvar retira rascunho; ainda é necessária a ação manual do assunto.
+
+T06 — CAMPO OBRIGATÓRIO AUSENTE
+Deixar posição vazia e tentar salvar. Mostrar erro junto da posição e
+identificar o equipamento. Não dizer apenas "Ficha incompleta" nem
+permitir conclusão por alterar o estado no frontend.
+
+T07 — MÚLTIPLAS CAUSAS NA MESMA FICHA
+Ficha em rascunho e vínculo de agente pendente. Exibir as duas causas,
+sem uma sobrescrever a outra. Corrigir uma não elimina a restante.
+
+T08 — MODO MANUAL
+Cadastrar sem agente com motivo e dados válidos. Aceitar sem exigir QR.
+Ausência do motivo deve ser explicada. Não classificar como agente ativo.
+
+T09 — CAMPOS OPCIONAIS
+Salvar computador sem AnyDesk, RustDesk e foto. Deve aceitar.
+Preencher ID remoto com letras: deve rejeitar explicando o formato.
+Salvar identificador com zero inicial: deve preservá-lo.
+
+T10 — AMBIENTE COMPARTILHADO
+Operador A cria ambiente. Operador B atualiza a lista, seleciona o mesmo
+ID e salva equipamento. Não criar cópia do ambiente por variação de texto.
+Ambientes realmente diferentes não podem ser fundidos automaticamente.
+
+T11 — RENOMEAÇÃO
+Renomear ambiente mantendo ID. Conferir equipamento, fotos e histórico.
+Simular edição concorrente: não sobrescrever sem informar conflito.
+
+T12 — TRAVA DE EQUIPAMENTO
+Dois operadores tentam editar a mesma ficha. A interface deve explicar
+a impossibilidade temporária, sem travar outros equipamentos da unidade.
+Deixar edição superar o prazo da trava; recuperar preservando respostas
+locais e revalidando a versão.
+
+T13 — QR REAL E FALHAS DE RESPOSTA
+Testar QR válido, inválido, expirado e já consumido. Testar câmera negada
+e imagem de QR como alternativa. Simular perda de resposta antes/depois
+do vínculo: consultar recibo e não gerar segundo vínculo.
+Fechar leitor e verificar que a câmera foi liberada.
+
+T14 — VÍNCULO NÃO É FICHA FINALIZADA
+Ler e vincular QR, depois sair sem Salvar equipamento. Deve ficar claro
+que o agente está vinculado e que a ficha continua pendente de salvar.
+Ao retomar, preservar o mesmo ID e o vínculo existente.
+
+T15 — FOTO AUTOMÁTICA
+Selecionar foto em registro novo: enviar automaticamente no contexto
+correto. Conferir ready no servidor. Não exigir clique Enviar inicial.
+Simular falha e repetição: não duplicar fotografia pelo reenvio.
+
+T16 — FOTO E MINIATURA
+Receber foto completa e falhar miniatura. Mostrar foto recebida e permitir
+fallback. Testar limite de cinco, arquivo grande e formato não decodificável.
+Não perder fotos históricas ao editar nome/posição de equipamento.
+
+T17 — EVIDÊNCIA OBRIGATÓRIA
+Fachada ausente ou impressora inicial sem foto: revisão aponta o alvo.
+Computador sem foto opcional não bloqueia. Foto histórica válida na
+revisita deve seguir a regra atual de reaproveitamento.
+
+T18 — VOLTAR E RETOMAR
+Editar ficha, voltar, retomar e abrir revisão. Informar o que está apenas
+na aba; não perder dados silenciosamente nem tratar retorno como conclusão.
+Se veio por Corrigir, oferecer retorno à revisão com diagnóstico atualizado.
+
+T19 — LISTA GRANDE
+Gerar mais de 200 fichas localmente. Achar item após a primeira página,
+editar e retornar preservando pesquisa/página/rolagem.
+Não chamar limite de página de limite de cadastro da unidade.
+Resumo limitado de problemas deve avisar que não mostra todos.
+
+T20 — CONCLUSÃO CONCORRENTE
+Abrir revisão válida e, em outra sessão, alterar dados. Confirmar com
+revisão antiga deve exigir atualização. Repetir pedido já confirmado não
+deve duplicar publicação. Verificar parcial versus publicado no desktop.
+
+T21 — REVISITA E HISTÓRICO
+Depois de visita concluída, iniciar outra. Preservar equipamentos, fotos,
+autores e respostas reaproveitadas conforme regra atual. Não editar
+retroativamente o retrato histórico da visita anterior.
+
+T22 — CELULAR E TECLADO
+Chrome Android real; Safari iPhone real quando disponível. Testar teclado
+aberto, paisagem, retorno do navegador, bloqueio de tela e retomada.
+Campo/erro visíveis, botão principal alcançável, sem saltos de cursor.
+Emulação desktop não substitui câmera e teclado do celular real.
+
+T23 — SESSÃO E ERROS HTTP
+Sessão expirada, permissão negada, 409 de versão, validação recusada,
+timeout e resposta inesperada devem ter mensagens e caminhos distintos.
+Nenhum estado pode ficar em "Consultando..." indefinidamente.
+
+T24 — REGRESSÃO DE PRESERVAÇÃO
+Comparar antes/depois: IDs, vínculos ativos, unidade, ambiente, fotos,
+histórico, permissões e contagens. Navegação/estilo não deve alterar dados.
+Confirmar que a versão técnica do questionário não aparece ao usuário.
+
+REGISTRO SUGERIDO PARA CADA TESTE
+  ID do teste:
+  Data/versão implantada ou commit local:
+  Ambiente de teste:
+  Aparelho/navegador/rede:
+  Perfil utilizado (sem senha):
+  Estado inicial e ações:
+  Resultado esperado:
+  Resultado observado:
+  Evidência visual e resultado da API, sem credenciais:
+  Aprovado / falhou / não testado:
+  Pendência e impacto:
+
+======================================================================
+17. ORIENTAÇÃO PRONTA PARA O DESENVOLVEDOR RESPONSÁVEL
+======================================================================
+
+OBJETIVO
+Refinar a experiência do coletor SEMED existente para que o operador
+saiba sempre onde está, o que foi recebido, o que ainda falta e como
+corrigir um impedimento. Preservar perguntas e regras já aprovadas.
+
+ANTES DE PROGRAMAR
+1. Ler AGENTS.md, 00_LEIA_ANTES_DE_TUDO.md, regras de precedência e decisões
+   atuais. Cumprir a leitura integral da Base original e demais documentos
+   mobile exigida pelo repositório antes de alterar a coleta.
+2. Comparar decisões posteriores com o catálogo executável atual. A Base
+   original é fonte histórica preservada, não motivo para restaurar
+   perguntas ou fluxos que o responsável já substituiu.
+3. Confirmar a versão do código em trabalho e do Worker. Este TXT é um
+   retrato de 10/11/2026, não garantia de que o projeto nunca mudou depois.
+4. Reproduzir localmente o bloqueio das fichas em rascunho e registrar a
+   evidência antes da correção. Não testar exclusões reais em produção.
+
+ESCOPO PROPOSTO
+Começar pela revisão explicável e pelas ações de retorno/salvamento.
+Manter identidade visual e componentes funcionais. Não fazer somente
+um mockup estático que simule sucesso de banco, foto ou QR.
+
+PRESERVAÇÃO
+Não trocar IDs, não duplicar equipamentos para corrigir apresentação,
+não apagar fotos, não desvincular agentes e não remover dados antigos.
+Não alterar o instalador/protocolo do agente como parte de um ajuste de
+frontend. Não alterar a gestão desktop para compensar falha de navegação
+do coletor. Se o diagnóstico exige novo dado da API, evoluir o contrato
+com compatibilidade e validação no servidor.
+
+FORMA DE ENTREGA
+- Relação dos arquivos alterados e motivo de cada alteração.
+- Descrição antes/depois dos comportamentos, com limites conhecidos.
+- Código-fonte revisável e instruções de build/teste reproduzíveis.
+- Testes de regra no servidor e testes de navegador para os fluxos novos.
+- Screenshots reais das telas relevantes, incluindo erro e recuperação.
+- Resultado de celular real separado de simulação/emulação.
+- Documentação e rastreabilidade atualizadas quando a mudança for aprovada.
+- Migração, se necessária, aditiva e justificada; não presumir que um
+  ajuste de mensagens exige migração de banco.
+- Plano de publicação/retorno que preserve dados e contratos existentes.
+
+NÃO CONSIDERAR CONCLUÍDO SE
+O usuário ainda precisar inspecionar o banco para descobrir qual ficha
+impede terminar; se um botão disser salvo sem confirmação; se sair da
+tela perder respostas silenciosamente; se o novo layout quebrar câmera,
+QR, seleção de ambiente ou edição simultânea; ou se só houver teste feliz.
+
+Não fornecer segredos no pacote de código ou no relatório. Testes que
+precisam autenticação devem usar variáveis/configuração apropriadas e
+dados controlados, nunca senha embutida no frontend.
+
+======================================================================
+18. FONTES E PONTOS PARA REVISÃO NO REPOSITÓRIO
+======================================================================
+
+A descrição operacional foi conferida principalmente nos módulos listados
+na seção 03, nos fluxos de API da seção 14 e no caso real da seção 06.
+Não foi baseada exclusivamente em imagens ou na descrição de um mockup.
+
+Governança a consultar e preservar:
+  AGENTS.md
+  00_LEIA_ANTES_DE_TUDO.md
+  docs/00-governanca/REGRAS_DE_PRECEDENCIA.md
+  docs/00-governanca/DECISOES.md
+  docs/00-governanca/PENDENCIAS.md
+  docs/00-governanca/CONFLITOS_DOCUMENTAIS.md
+  docs/00-governanca/RASTREABILIDADE.md
+
+Referências de implementação/qualidade consultadas:
+  docs/05-qualidade/PUBLICACAO_V3_2026-11-05.md
+  docs/05-qualidade/UX_COLETOR_PUBLICACAO_2026-11-05.md
+  docs/05-qualidade/AMBIENTES_COMPARTILHADOS_2026-11-09.md
+  docs/05-qualidade/EDICAO_AMBIENTES_2026-11-09.md
+
+Testes existentes localizados para ampliar, conforme a alteração:
+  tests/collector-v3.test.mjs
+  tests/collector-v3-browser.cjs
+  tests/collector-ux-browser.cjs
+  tests/collector-review-fixes.test.mjs
+  tests/collector-environments.test.mjs
+  tests/collector-environments-browser.cjs
+  tests/environment-rename.test.mjs
+  tests/environment-rename-browser.cjs
+  tests/collector-v2-qr-lost-response-browser.cjs
+  tests/collector-evidence-browser.cjs
+  tests/photo-storage.test.mjs
+  tests/photo-thumbnails.test.mjs
+  tests/photo-performance-browser.cjs
+
+O nome V2 em um teste não significa que ele cobre sozinho o fluxo atual.
+Conferir qual módulo/versão ele exercita e acrescentar os cenários V3.
+Localizar um teste não significa tê-lo executado nesta entrega.
+
+RESUMO DO QUE ESTE ARQUIVO ENTREGA
+Mapa do funcionamento atual, separação de estados, diagnóstico do caso
+observado, propostas de refinamento, decisões pendentes e roteiro de
+aceite. As propostas não foram implementadas por este documento.
+
+FIM DO DOCUMENTO

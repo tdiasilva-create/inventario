@@ -1,1 +1,61 @@
-*{box-sizing:border-box}html,body{height:100%;margin:0}body{font:16px Barlow,Arial,sans-serif;color:#16191d;background:#f3f4f5;display:flex;flex-direction:column}button,input{font:inherit}button{min-height:44px;border:1px solid #d9dde1;border-radius:8px;background:white;color:#16191d;padding:8px 12px;cursor:pointer}button:disabled{opacity:.55}button:focus-visible,input:focus-visible{outline:3px solid #ff4b1e;outline-offset:2px}[hidden]{display:none!important}header{display:flex;align-items:center;gap:12px;padding:6px 12px;background:#16191d;color:white;border-top:3px solid #ff4b1e;flex-shrink:0;min-height:54px}header strong{font-family:'Chakra Petch',sans-serif;letter-spacing:.08em}#account{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}header button{background:none;color:white;border-color:#70757c;min-height:36px;font-size:14px}nav{display:flex;gap:6px;padding:6px 10px;background:white;border-bottom:1px solid #d9dde1;flex-shrink:0}nav button{flex:1;max-width:260px;font-size:14px;font-weight:600}nav button[aria-pressed=true]{background:#16191d;color:white;border-color:#16191d;box-shadow:inset 0 -3px #ff4b1e}#tracking{background:#fff1e9;font-size:12px;padding:4px 12px;margin:0;flex-shrink:0}#message{margin:0;padding:0 16px;font-size:14px;color:#a60020}#message:not(:empty){padding:10px 16px}#welcome{overflow:auto;flex:1;padding:24px 20px}#welcome:empty{display:none}#welcome>section{max-width:440px;margin:0 auto}h1,h2{font-family:'Chakra Petch',sans-serif}h1{font-size:26px;margin:10px 0}p{line-height:1.5}.access{background:white;border:1px solid #d9dde1;border-top:3px solid #ff4b1e;border-radius:12px;padding:22px}label{display:block;font-size:14px;margin:16px 0}input{display:block;width:100%;min-height:48px;border:1px solid #c7cbd0;border-radius:8px;padding:10px;margin-top:7px;font-size:16px}.primary{background:#16191d;color:white;width:100%;font-weight:600}.area-card{display:block;width:100%;text-align:left;margin:12px 0;padding:18px;border-left:4px solid #ff4b1e}.area-card strong{display:block;font-family:'Chakra Petch',sans-serif;font-size:20px}.area-card span{display:block;font-size:14px;margin-top:6px;color:#60666d}#areas{flex:1;min-height:0;position:relative}iframe{border:0;width:100%;height:100%;display:block;background:white}dialog{max-width:440px;width:calc(100% - 32px);border:1px solid #d9dde1;border-radius:16px;padding:20px}dialog::backdrop{background:#16191d88}dialog div{display:flex;gap:10px}dialog button{flex:1}#confirm-exit{background:#16191d;color:white}@media(max-height:420px){header{min-height:42px}#tracking{display:none}#welcome{padding:12px}nav{padding:3px 8px}nav button{min-height:38px}}
+/* mobile-app.css — shell do app unificado (D-115). Refinamento de 14/11/2026: uma barra só (marca · áreas · sair),
+   sem segunda linha de abas; GPS vira um selo; a área ocupa todo o resto. IDs e seletores dos testes preservados. */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:16px var(--font-sans,Barlow,Arial,sans-serif);color:#16191d;background:#f3f4f5;display:flex;flex-direction:column;color-scheme:light;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}
+button{min-height:44px;border:1px solid #d9dde1;border-radius:8px;background:white;color:#16191d;padding:8px 12px;cursor:pointer}
+button:disabled{opacity:.55}
+button:focus-visible,input:focus-visible{outline:3px solid #ff4b1e;outline-offset:2px}
+[hidden]{display:none!important}
+::selection{background:#ffece7;color:#16191d}
+
+/* barra única */
+header{display:flex;align-items:center;gap:8px;min-height:52px;padding:4px 8px 4px 12px;padding-top:calc(4px + env(safe-area-inset-top));background:#16191d;color:white;border-top:3px solid #ff4b1e;flex-shrink:0}
+header strong{font-family:var(--font-display,'Chakra Petch',sans-serif);font-size:15px;letter-spacing:.1em;flex-shrink:0}
+header nav{display:flex;flex:1;justify-content:flex-start;gap:0;padding:0;background:transparent;border:0;min-width:0}
+header nav button{flex:1 1 0;max-width:150px;min-width:0;min-height:44px;padding:4px 8px;border:1px solid #4a4f56;border-radius:0;background:transparent;color:#d9dde1;font:600 13px var(--font-display,'Chakra Petch',sans-serif);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header nav button:first-child{border-radius:8px 0 0 8px}
+header nav button:last-child{border-radius:0 8px 8px 0;margin-left:-1px}
+header nav button[aria-pressed=true]{background:white;color:#16191d;border-color:white;box-shadow:inset 0 -3px #ff4b1e}
+header nav button:focus-visible{outline-offset:-3px;position:relative;z-index:1}
+#tracking{display:inline-flex;align-items:center;gap:5px;margin:0;padding:3px 8px;border-radius:999px;background:#ffece7;color:#9b2e0e;font:600 10px var(--font-display,'Chakra Petch',sans-serif);letter-spacing:.1em;flex-shrink:0}
+#tracking .dot{width:7px;height:7px;border-radius:50%;background:#0b7a4b}
+#account{display:none;font-size:13px;color:#d9dde1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+header #logout{background:none;color:white;border-color:#70757c;min-height:44px;padding:4px 10px;font-size:13px;flex-shrink:0}
+@media(max-width:400px){header nav button{font-size:12px;letter-spacing:.02em}}
+@media(min-width:600px){#account{display:block;margin-left:auto}header nav{flex:0 1 auto}header nav button{flex:0 0 150px}}
+
+/* mensagens e telas de acesso */
+#message{margin:0;padding:0 16px;font-size:14px;color:#a60020;flex-shrink:0}
+#message:not(:empty){padding:8px 16px;background:#fde8ea;border-bottom:1px solid #f2b3bb}
+#welcome{overflow:auto;flex:1;padding:20px 16px 28px}
+#welcome:empty{display:none}
+#welcome>section{max-width:440px;margin:0 auto}
+h1,h2{font-family:var(--font-display,'Chakra Petch',sans-serif);text-transform:uppercase;letter-spacing:.02em}
+h1{font-size:24px;margin:6px 0 10px;line-height:1.1}
+p{line-height:1.5}
+.access{background:white;border:1px solid #d9dde1;border-top:3px solid #ff4b1e;border-radius:12px;padding:20px}
+.access p{color:#5d6368;margin:0 0 6px}
+label{display:block;font:600 11px var(--font-display,'Chakra Petch',sans-serif);letter-spacing:.12em;text-transform:uppercase;margin:16px 0}
+input{display:block;width:100%;min-height:48px;border:1px solid #c7cbd0;border-radius:8px;padding:10px 12px;margin-top:7px;font:500 16px var(--font-sans,Barlow,sans-serif);letter-spacing:0;text-transform:none;caret-color:#d70825}
+.primary{background:#16191d;color:white;width:100%;min-height:50px;font:600 14px var(--font-display,'Chakra Petch',sans-serif);letter-spacing:.08em;text-transform:uppercase;border-color:#16191d}
+.area-card{display:block;width:100%;text-align:left;margin:12px 0;padding:16px 16px 16px 14px;border-left:4px solid #ff4b1e;border-radius:12px}
+.area-card strong{display:block;font-family:var(--font-display,'Chakra Petch',sans-serif);font-size:18px;text-transform:uppercase;letter-spacing:.03em}
+.area-card span{display:block;font-size:14px;margin-top:6px;color:#5d6368;line-height:1.4}
+
+/* áreas (iframes) */
+#areas{flex:1;min-height:0;position:relative}
+iframe{border:0;width:100%;height:100%;display:block;background:#f3f4f5}
+
+/* confirmação de saída */
+dialog{max-width:440px;width:calc(100% - 32px);border:1px solid #d9dde1;border-top:4px solid #ff4b1e;border-radius:14px;padding:20px;color:#16191d}
+dialog::backdrop{background:#16191d88}
+dialog h2{font-size:18px;margin:0 0 10px}
+dialog p{color:#5d6368;margin:0 0 6px}
+dialog div{display:flex;gap:10px;margin-top:16px}
+dialog button{flex:1;min-height:48px;font-weight:600}
+#confirm-exit{background:#16191d;color:white;border-color:#16191d}
+
+/* alturas baixas (paisagem) */
+@media(max-height:420px){header{min-height:48px;padding-block:2px}header nav button,header #logout{min-height:40px}#welcome{padding:12px}}
