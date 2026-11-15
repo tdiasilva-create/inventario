@@ -4,6 +4,8 @@ const sharedReads=new Map();
 const validatedResults=new Map();
 let validationEpoch=0;
 let quotaBlock=null;
+let sessionExpired=false;
+const expiredMessage='Sua sessão expirou. Entre novamente no painel.';
 let initialIdentity;
 // Bootstrap identity only; permissions and every API request remain validated on the server.
 export const initialPanelIdentity=()=>initialIdentity??=(readPanelJson('/api/auth/me').catch(e=>{initialIdentity=null;throw e;}));
@@ -17,12 +19,16 @@ export function sharedPanelJson(url){
 }
 export async function readPanelJson(url,{timeoutMs=15000,signal}={}){
  try{
+  // A definitive 401 ends reads for this document. Login reloads the document;
+  // this helper is not used by collection or the native tracking capability.
+  if(sessionExpired)throw Error(expiredMessage);
   if(quotaBlock&&Date.now()<quotaBlock.retryAt)throw Error(quotaBlock.message);
   quotaBlock=null;
   const timeout=AbortSignal.timeout(timeoutMs);
   const eligible=/^\/api\/inventory\/results(?:\?|$)/.test(url),cached=eligible?validatedResults.get(url):null,epoch=validationEpoch;
   const response=await fetch(url,{signal:signal?AbortSignal.any([signal,timeout]):timeout,cache:'no-store',...(cached?{headers:{'If-None-Match':cached.etag}}:{})});
-  if(response.status===401||response.status===403){validatedResults.clear();validationEpoch++;throw Error(response.status===401?'Sua sessão expirou. Entre novamente no painel.':'Sua conta não tem permissão para esta consulta.');}
+  if(response.status===401||response.status===403){validatedResults.clear();validationEpoch++;if(response.status===401)sessionExpired=true;throw Error(response.status===401?expiredMessage:'Sua conta não tem permissão para esta consulta.');}
+  if(sessionExpired)throw Error(expiredMessage);
   if(response.status===304){
    if(!cached||epoch!==validationEpoch||response.headers.get('ETag')!==cached.etag)throw Error('Não foi possível revalidar os resultados. Atualize a página.');
    return structuredClone(cached.data);

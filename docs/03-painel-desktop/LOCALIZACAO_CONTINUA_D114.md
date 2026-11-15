@@ -61,3 +61,6 @@ APK 1.0.0/1.0.1 e navegador preservam o acompanhamento por atendimento; não pod
 Aplicar 0033 antes do Worker e publicar APK/HTML/JavaScript compatíveis na mesma entrega. Não publicar o coletor nem alterar plano. Conferir projeção de contagens no banco e limites de acesso; não usar demandas/posições fictícias no banco oficial. Registro de execução: `docs/05-qualidade/LOCALIZACAO_D114_2026-11-13.md`.
 
 Rollback de código conserva migração/dados. O Worker anterior não atende a nova credencial: novo APK deixa de atualizar localização e mostra falha, sem posicionamento fictício. Para retomar a versão antiga, voltar também à distribuição compatível e reabrir/aceitar atendimento conforme a versão. Não apagar histórico nem restaurar dump sobre novas gravações.
+
+## Correção D123 (15/11/2026)
+A revogação administrativa agora encerra explicitamente o acompanhamento do usuário mesmo se a sessão de origem já expirou ou foi limpa. Revogar uma sessão própria também alcança sua capacidade remanescente; o escopo continua limitado ao mesmo usuário/sessão. Expiração natural segue permitindo somente localização. O APK, duração do acompanhamento, permissões e intervalos permanecem iguais. Ver [D123](../04-dados-apis/PERMISSOES_E_ORCAMENTO_D123.md).

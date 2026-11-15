@@ -1,0 +1,49 @@
+SEMED — CORREÇÕES DE PERMISSÕES E CONSUMO DO D1
+Publicado em 15/11/2026 às 16:40/16:41 (Fortaleza).
+
+Painel para conferir:
+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/panorama
+
+O QUE FOI CORRIGIDO
+1. A revogação administrativa encerra a localização autorizada do técnico mesmo se o login original já expirou. Expiração natural continua permitindo localização durante a fila, como combinado.
+2. Visualizadores não podem consultar prévias/catálogos de pareamento nem consumir tentativas de QR. Papéis autorizados mantidos.
+3. Resumos de hardware e totais de demandas evitam varrer repetidamente todo o histórico. Alertas, decisões, demandas e histórico preservados.
+4. Heartbeats deixam de gravar uma cópia redundante. Presença, IP/provedor, hardware, validação de assinatura e proteção contra repetição continuam.
+5. Painel interrompe novas leituras após sessão expirada até o usuário entrar/recarregar. Coleta e localização nativa permanecem independentes.
+
+MEDIÇÕES
+No D1 real, mesmas respostas antes/depois:
+- Resumo de hardware: 29 -> 2 linhas lidas (-93,1%).
+- Demandas abertas: 74 -> 15 (-79,7%).
+- Todas as demandas: 120 -> 38 (-68,3%).
+- Demandas concluídas: 101 -> 52 (-48,5%).
+No ensaio local com heartbeat assinado: 12 -> 8 linhas escritas (-33,3%).
+Não são percentuais de economia da conta inteira nem de um dia completo.
+
+VALIDAÇÃO
+331 testes automatizados; regressões em navegador de alertas, localização, rotas, filtros, cache e sessão; 78 verificações HTTP em produção. Backup privado restaurado localmente e migração ensaiada preservando as 97 tabelas preexistentes. Projeções conferidas contra os registros reais, sem divergências.
+Panorama e Central conferidos como root: 7 pendentes, 23 concluídas, 0 hardware aguardando parecer. Cinco agentes atualizaram presença após o deploy, sem novas cópias redundantes.
+Nenhum cadastro, senha, demanda ou vínculo real foi alterado durante a conferência.
+
+COMO CONFERIR
+1. Recarregue o painel e abra Panorama. Confira mapa, indicadores e medidor D1.
+2. Abra Central de demandas; alterne Todas as pendentes e Concluída. A situação dos registros não muda ao filtrar.
+3. Abra o sino para consultar alertas; não aceite/encaminhe somente para teste.
+4. Com atendimento real autorizado em curso, confira a posição/rota do técnico. Nenhum técnico estava com posição recente no momento desta conferência; testes locais cobriram continuidade/revogação.
+5. Após um dia representativo, observe leituras E gravações no medidor. Consumo acumulado não diminui retroativamente.
+
+NÃO É NECESSÁRIO ATUALIZAR O APK OU REINSTALAR AGENTES.
+Plano gratuito, intervalos de comunicação, localização e alertas foram mantidos.
+
+LIMITE QUE AINDA EXIGE ACOMPANHAMENTO
+A capacidade de 101–300 computadores no gratuito não está garantida. Com 300 máquinas ligadas por oito horas, a estimativa isolada de heartbeat ainda é 230.400 escritas, acima das 100 mil/dia gratuitas, antes dos outros fluxos. Intervalos, retenção de segurança e arquitetura não foram alterados sem decisão. As demais decisões pendentes da auditoria continuam para depois.
+Fonte da cota: https://developers.cloudflare.com/d1/platform/pricing/
+
+REGISTRO TÉCNICO
+Migração 0035_audit_read_budget.sql.
+Painel: 18d3d61f-95a5-4d2e-be68-91d5cc9db168 (100%).
+Coletor: d6c93492-67d6-4c3c-9981-ca36e40412dc (100%).
+APK 1.0.4 preservado, hash remoto conferido.
+Branch: codex/correcoes-permissoes-d1-2026-11-15.
+Contrato: docs/04-dados-apis/PERMISSOES_E_ORCAMENTO_D123.md.
+Testes, métricas e reversão: docs/05-qualidade/PERMISSOES_D1_D123_2026-11-15.md.

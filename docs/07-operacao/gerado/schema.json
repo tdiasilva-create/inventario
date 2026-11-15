@@ -136,6 +136,10 @@
     {
       "file": "0034_agent_network_tests.sql",
       "sha256": "162638468096bc49f7e4fd56245a05d1fad619fad9bb84816a322049f0777b04"
+    },
+    {
+      "file": "0035_audit_read_budget.sql",
+      "sha256": "2fa8016c3e89e014fdd403db66591b14a54cdf24a3df2438a78ad63ef4aaa079"
     }
   ],
   "tables": [
@@ -5187,6 +5191,85 @@
       ]
     },
     {
+      "name": "panel_hardware_active",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "notification_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "detected_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "state",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "agent_notifications",
+          "from": "notification_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "CASCADE",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
+      "name": "panel_hardware_counts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "unit_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "pending",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "demands",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "panel_read_versions",
       "columns": [
         {
@@ -5522,6 +5605,36 @@
         {
           "cid": 6,
           "name": "created_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
+      "name": "service_request_counts",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "scope",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "status",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 2
+        },
+        {
+          "cid": 2,
+          "name": "total",
           "type": "INTEGER",
           "notnull": 1,
           "dflt_value": null,
@@ -7407,6 +7520,18 @@
     },
     {
       "type": "index",
+      "name": "panel_hardware_pending",
+      "tbl_name": "panel_hardware_active",
+      "sql": "CREATE INDEX panel_hardware_pending ON panel_hardware_active(detected_at DESC,notification_id DESC) WHERE state='pending'"
+    },
+    {
+      "type": "index",
+      "name": "panel_hardware_unit",
+      "tbl_name": "panel_hardware_active",
+      "sql": "CREATE INDEX panel_hardware_unit ON panel_hardware_active(unit_id)"
+    },
+    {
+      "type": "index",
       "name": "progress_equipment_page",
       "tbl_name": "equipments",
       "sql": "CREATE INDEX progress_equipment_page ON equipments(inspection_id,updated_at DESC,id DESC)"
@@ -7434,6 +7559,30 @@
       "name": "service_events_history",
       "tbl_name": "service_request_events",
       "sql": "CREATE INDEX service_events_history ON service_request_events(request_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "service_request_all_order",
+      "tbl_name": "service_requests",
+      "sql": "CREATE INDEX service_request_all_order ON service_requests(updated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "service_request_pending_order",
+      "tbl_name": "service_requests",
+      "sql": "CREATE INDEX service_request_pending_order ON service_requests(updated_at DESC,id DESC) WHERE status!='Concluída'"
+    },
+    {
+      "type": "index",
+      "name": "service_request_unit_order",
+      "tbl_name": "service_requests",
+      "sql": "CREATE INDEX service_request_unit_order ON service_requests(unit_id,updated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "service_request_unit_pending_order",
+      "tbl_name": "service_requests",
+      "sql": "CREATE INDEX service_request_unit_pending_order ON service_requests(unit_id,updated_at DESC,id DESC) WHERE status!='Concluída'"
     },
     {
       "type": "index",
@@ -7911,6 +8060,18 @@
     },
     {
       "type": "table",
+      "name": "panel_hardware_active",
+      "tbl_name": "panel_hardware_active",
+      "sql": "CREATE TABLE panel_hardware_active (\r\n notification_id TEXT PRIMARY KEY REFERENCES agent_notifications(id) ON DELETE CASCADE,\r\n unit_id TEXT NOT NULL,detected_at INTEGER NOT NULL,\r\n state TEXT NOT NULL CHECK(state IN ('pending','demand'))\r\n)"
+    },
+    {
+      "type": "table",
+      "name": "panel_hardware_counts",
+      "tbl_name": "panel_hardware_counts",
+      "sql": "CREATE TABLE panel_hardware_counts (\r\n unit_id TEXT PRIMARY KEY,pending INTEGER NOT NULL CHECK(pending>=0),demands INTEGER NOT NULL CHECK(demands>=0)\r\n)"
+    },
+    {
+      "type": "table",
       "name": "panel_read_versions",
       "tbl_name": "panel_read_versions",
       "sql": "CREATE TABLE panel_read_versions (\n name TEXT PRIMARY KEY CHECK(name IN ('results','fleet')),\n epoch TEXT NOT NULL,\n revision INTEGER NOT NULL DEFAULT 0\n) WITHOUT ROWID"
@@ -7956,6 +8117,12 @@
       "name": "root_deletions",
       "tbl_name": "root_deletions",
       "sql": "CREATE TABLE root_deletions(id TEXT PRIMARY KEY,unit_id TEXT NOT NULL,actor_id TEXT NOT NULL,unit_json TEXT NOT NULL,impact_json TEXT NOT NULL,reason TEXT NOT NULL,created_at INTEGER NOT NULL)"
+    },
+    {
+      "type": "table",
+      "name": "service_request_counts",
+      "tbl_name": "service_request_counts",
+      "sql": "CREATE TABLE service_request_counts (\r\n scope TEXT NOT NULL,status TEXT NOT NULL,total INTEGER NOT NULL CHECK(total>=0),\r\n PRIMARY KEY(scope,status)\r\n)"
     },
     {
       "type": "table",
@@ -8433,6 +8600,102 @@
     },
     {
       "type": "trigger",
+      "name": "panel_hardware_count_delete",
+      "tbl_name": "panel_hardware_active",
+      "sql": "CREATE TRIGGER panel_hardware_count_delete AFTER DELETE ON panel_hardware_active BEGIN\r\n UPDATE panel_hardware_counts SET pending=pending-(OLD.state='pending'),demands=demands-(OLD.state='demand') WHERE unit_id=OLD.unit_id;\r\n DELETE FROM panel_hardware_counts WHERE unit_id=OLD.unit_id AND pending=0 AND demands=0;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_count_insert",
+      "tbl_name": "panel_hardware_active",
+      "sql": "CREATE TRIGGER panel_hardware_count_insert AFTER INSERT ON panel_hardware_active BEGIN\r\n INSERT INTO panel_hardware_counts VALUES(NEW.unit_id,NEW.state='pending',NEW.state='demand')\r\n ON CONFLICT(unit_id) DO UPDATE SET pending=pending+excluded.pending,demands=demands+excluded.demands;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_equipment_move",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_hardware_equipment_move AFTER UPDATE OF unit_id ON equipments WHEN OLD.unit_id IS NOT NEW.unit_id BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=NEW.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=NEW.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_equipments_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_hardware_equipments_delete AFTER DELETE ON equipments  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=OLD.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=OLD.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_equipments_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER panel_hardware_equipments_insert AFTER INSERT ON equipments  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=NEW.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT id FROM agent_notifications WHERE equipment_id=NEW.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_notification_delete",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE TRIGGER panel_hardware_notification_delete AFTER DELETE ON agent_notifications BEGIN DELETE FROM panel_hardware_active WHERE notification_id=OLD.id; END"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_notification_insert",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE TRIGGER panel_hardware_notification_insert AFTER INSERT ON agent_notifications  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id=NEW.id;\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id=NEW.id;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_notification_update",
+      "tbl_name": "agent_notifications",
+      "sql": "CREATE TRIGGER panel_hardware_notification_update AFTER UPDATE OF kind,unit_id,equipment_id,detected_at ON agent_notifications  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id=OLD.id OR notification_id=NEW.id;\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id=OLD.id OR notification_id=NEW.id;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_request_delete",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER panel_hardware_request_delete AFTER DELETE ON service_requests  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=OLD.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=OLD.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_request_insert",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER panel_hardware_request_insert AFTER INSERT ON service_requests  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=NEW.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=NEW.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_request_update",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER panel_hardware_request_update AFTER UPDATE OF status ON service_requests WHEN OLD.status IS NOT NEW.status BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=NEW.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=NEW.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_review_delete",
+      "tbl_name": "agent_hardware_reviews",
+      "sql": "CREATE TRIGGER panel_hardware_review_delete AFTER DELETE ON agent_hardware_reviews  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id=OLD.notification_id;\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id=OLD.notification_id;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_review_insert",
+      "tbl_name": "agent_hardware_reviews",
+      "sql": "CREATE TRIGGER panel_hardware_review_insert AFTER INSERT ON agent_hardware_reviews  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id=NEW.notification_id;\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id=NEW.notification_id;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_review_update",
+      "tbl_name": "agent_hardware_reviews",
+      "sql": "CREATE TRIGGER panel_hardware_review_update AFTER UPDATE OF notification_id,decision,request_id ON agent_hardware_reviews  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (OLD.notification_id,NEW.notification_id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (OLD.notification_id,NEW.notification_id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_units_delete",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_hardware_units_delete AFTER DELETE ON units  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT id FROM agent_notifications WHERE unit_id=OLD.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT id FROM agent_notifications WHERE unit_id=OLD.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "panel_hardware_units_insert",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER panel_hardware_units_insert AFTER INSERT ON units  BEGIN\r\n DELETE FROM panel_hardware_active WHERE notification_id IN (SELECT id FROM agent_notifications WHERE unit_id=NEW.id);\r\n INSERT INTO panel_hardware_active SELECT * FROM panel_hardware_source WHERE notification_id IN (SELECT id FROM agent_notifications WHERE unit_id=NEW.id);\r\nEND"
+    },
+    {
+      "type": "trigger",
       "name": "panel_revision_agent_devices_delete",
       "tbl_name": "agent_devices",
       "sql": "CREATE TRIGGER panel_revision_agent_devices_delete AFTER DELETE ON agent_devices BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('fleet');\nEND"
@@ -8654,6 +8917,24 @@
       "sql": "CREATE TRIGGER published_equipment_update AFTER UPDATE OF published_json ON equipments WHEN NEW.published_json IS NOT OLD.published_json BEGIN\n UPDATE published_equipment_counts SET records=records-1,items=items-CAST(COALESCE(json_extract(OLD.published_json,'$.quantity'),1) AS INTEGER) WHERE unit_id=OLD.unit_id AND category=json_extract(OLD.published_json,'$.category') AND OLD.published_json IS NOT NULL;\n INSERT INTO published_equipment_counts(unit_id,category,records,items) SELECT NEW.unit_id,json_extract(NEW.published_json,'$.category'),1,CAST(COALESCE(json_extract(NEW.published_json,'$.quantity'),1) AS INTEGER) WHERE NEW.published_json IS NOT NULL ON CONFLICT(unit_id,category) DO UPDATE SET records=records+1,items=items+excluded.items;\nEND"
     },
     {
+      "type": "trigger",
+      "name": "service_request_count_delete",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER service_request_count_delete AFTER DELETE ON service_requests BEGIN\r\n UPDATE service_request_counts SET total=total-1 WHERE scope IN ('',OLD.unit_id) AND status=OLD.status;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "service_request_count_insert",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER service_request_count_insert AFTER INSERT ON service_requests BEGIN\r\n INSERT INTO service_request_counts VALUES('',NEW.status,1),(NEW.unit_id,NEW.status,1)\r\n ON CONFLICT(scope,status) DO UPDATE SET total=total+1;\r\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "service_request_count_update",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER service_request_count_update AFTER UPDATE OF status,unit_id ON service_requests\r\n WHEN OLD.status IS NOT NEW.status OR OLD.unit_id IS NOT NEW.unit_id BEGIN\r\n UPDATE service_request_counts SET total=total-1 WHERE scope IN ('',OLD.unit_id) AND status=OLD.status;\r\n INSERT INTO service_request_counts VALUES('',NEW.status,1),(NEW.unit_id,NEW.status,1)\r\n ON CONFLICT(scope,status) DO UPDATE SET total=total+1;\r\nEND"
+    },
+    {
       "type": "view",
       "name": "inventory_equipment_all",
       "tbl_name": "inventory_equipment_all",
@@ -8664,6 +8945,12 @@
       "name": "panel_collection_state_source",
       "tbl_name": "panel_collection_state_source",
       "sql": "CREATE VIEW panel_collection_state_source AS\n SELECT u.id AS unit_id,\n CASE WHEN u.active!=1 OR COALESCE(u.unit_type,'') IN ('Escola conveniada','Obra em andamento') THEN NULL\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='open') THEN 'in_progress'\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='completed') THEN NULL\n WHEN EXISTS(SELECT 1 FROM inspections i WHERE i.unit_id=u.id AND i.state='paused') THEN 'preserved'\n ELSE 'not_started' END AS state\n FROM units u"
+    },
+    {
+      "type": "view",
+      "name": "panel_hardware_source",
+      "tbl_name": "panel_hardware_source",
+      "sql": "CREATE VIEW panel_hardware_source AS\r\n SELECT n.id AS notification_id,n.unit_id,n.detected_at,\r\n CASE WHEN hr.notification_id IS NULL THEN 'pending' ELSE 'demand' END AS state\r\n FROM agent_notifications n\r\n JOIN units u ON u.id=n.unit_id\r\n JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id\r\n LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id\r\n LEFT JOIN service_requests sr ON sr.id=hr.request_id\r\n WHERE n.kind='hardware_change'\r\n AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'))"
     }
   ]
 }

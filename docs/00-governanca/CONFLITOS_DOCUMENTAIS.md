@@ -175,3 +175,6 @@ D121 — 15/11/2026: pedido posterior explícito substitui unidade no topo/colun
 
 ## D122 — superação parcial da busca global D084
 O pedido de 15/11/2026 retira equipamentos da busca principal e exige sugestões durante digitação. Substitui o comportamento do cabeçalho D084; a rota antiga continua compatível com URLs salvas, sem ser chamada pelo novo campo. O mapa ampliado D091 agora inclui a busca dentro da área acessível; foco/câmera/retorno preservados. Nenhuma mudança no questionário, catálogo oficial ou dados de agentes.
+
+## D-123 — expiração versus revogação; heartbeat versus histórico
+D114 permite localização após expiração NATURAL. Isso não permite manter rastreamento após revogação explícita administrativa: D123 corrige essa lacuna mesmo quando a sessão antiga já saiu da tabela. Desabilitar cópias redundantes em agent_heartbeats usa configuração existente; não remove o snapshot histórico de hardware nem a segurança de recibos/nonces. Medida de menor custo não equivale a homologação da frota de 300 agentes no plano gratuito. Decisões de frequência/retensão e demais lacunas não foram tomadas nesta correção.

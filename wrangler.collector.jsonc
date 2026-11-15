@@ -5,7 +5,7 @@
  "compatibility_date":"2026-10-27",
  "main":"server/worker.mjs",
  "workers_dev":true,"preview_urls":false,
- "vars":{"APP_KIND":"collector","PHOTO_STORAGE_PROVIDER":"google-drive","GOOGLE_LOGIN_HINT":"admin@pacodolumiar.edu.ma.gov.br","AGENTES_EXIGIR_AUTORIZACAO":"nao","AGENT_NETWORK_TESTS_PROVIDER":"cloudflare"},
+ "vars":{"APP_KIND":"collector","PHOTO_STORAGE_PROVIDER":"google-drive","GOOGLE_LOGIN_HINT":"admin@pacodolumiar.edu.ma.gov.br","AGENTES_EXIGIR_AUTORIZACAO":"nao","AGENTES_GUARDAR_HEARTBEATS":"0","AGENT_NETWORK_TESTS_PROVIDER":"cloudflare"},
  "assets":{"directory":"./dist/coletor","binding":"ASSETS","run_worker_first":true,"html_handling":"none","not_found_handling":"none"},
  "d1_databases":[{"binding":"DB","database_name":"semed-inventario-auth","database_id":"acb9a3dc-f667-44cf-a4f3-127641860f3e","migrations_dir":"migrations"}]
 }

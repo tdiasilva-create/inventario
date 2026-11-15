@@ -48,6 +48,9 @@ function app(env,user,opts={}){
 export async function handleAgentMachine(request,url,env,opts){if(!isMachineRoute(url.pathname,request.method))return null;return app(env,null,opts).fetch(request);}
 /** Rotas humanas (após sessão + CSRF do Worker). Devolve null quando a rota não é do módulo. */
 export async function handleAgentHuman(request,url,user,env,opts){if(!isHumanRoute(url.pathname,request.method))return null;
+ // Pairing is collection, including preview (which consumes code attempts).
+ // Refuse before reaching the core, without disclosing a machine or touching attempts.
+ if(url.pathname.startsWith(`${AGENT}/pairings/`)&&!['operador','admin','root'].includes(user?.role))return Response.json({code:'FORBIDDEN',message:'Perfil sem permissão de coleta.'},{status:403,headers:{'cache-control':'no-store'}});
  if(RECEIPT_ROUTES[url.pathname]){
   const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
   if(!['operador','admin','root'].includes(user?.role))return json({code:'FORBIDDEN',message:'Perfil sem permissão.'},403);

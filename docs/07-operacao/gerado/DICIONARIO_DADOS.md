@@ -36,6 +36,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0032_collection_control.sql`
 - `0033_technician_tracking.sql`
 - `0034_agent_network_tests.sql`
+- `0035_audit_read_budget.sql`
 
 ## agent_audit_log
 
@@ -980,6 +981,25 @@ Referências: `equipment_id` → `equipments.id` (delete: NO ACTION).
 
 Referências: `unit_id` → `units.id` (delete: CASCADE).
 
+## panel_hardware_active
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| notification_id | TEXT | não | 1 | — |
+| unit_id | TEXT | sim |  | — |
+| detected_at | INTEGER | sim |  | — |
+| state | TEXT | sim |  | — |
+
+Referências: `notification_id` → `agent_notifications.id` (delete: CASCADE).
+
+## panel_hardware_counts
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| unit_id | TEXT | não | 1 | — |
+| pending | INTEGER | sim |  | — |
+| demands | INTEGER | sim |  | — |
+
 ## panel_read_versions
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1056,6 +1076,14 @@ Referências: `unit_id` → `units.id` (delete: CASCADE).
 | impact_json | TEXT | sim |  | — |
 | reason | TEXT | sim |  | — |
 | created_at | INTEGER | sim |  | — |
+
+## service_request_counts
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| scope | TEXT | sim | 1 | — |
+| status | TEXT | sim | 2 | — |
+| total | INTEGER | sim |  | — |
 
 ## service_request_events
 
@@ -1379,6 +1407,22 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `panel_collection_visit_delete` (trigger, inspections)
 - `panel_collection_visit_insert` (trigger, inspections)
 - `panel_collection_visit_update` (trigger, inspections)
+- `panel_hardware_count_delete` (trigger, panel_hardware_active)
+- `panel_hardware_count_insert` (trigger, panel_hardware_active)
+- `panel_hardware_equipment_move` (trigger, equipments)
+- `panel_hardware_equipments_delete` (trigger, equipments)
+- `panel_hardware_equipments_insert` (trigger, equipments)
+- `panel_hardware_notification_delete` (trigger, agent_notifications)
+- `panel_hardware_notification_insert` (trigger, agent_notifications)
+- `panel_hardware_notification_update` (trigger, agent_notifications)
+- `panel_hardware_request_delete` (trigger, service_requests)
+- `panel_hardware_request_insert` (trigger, service_requests)
+- `panel_hardware_request_update` (trigger, service_requests)
+- `panel_hardware_review_delete` (trigger, agent_hardware_reviews)
+- `panel_hardware_review_insert` (trigger, agent_hardware_reviews)
+- `panel_hardware_review_update` (trigger, agent_hardware_reviews)
+- `panel_hardware_units_delete` (trigger, units)
+- `panel_hardware_units_insert` (trigger, units)
 - `panel_revision_agent_devices_delete` (trigger, agent_devices)
 - `panel_revision_agent_devices_insert` (trigger, agent_devices)
 - `panel_revision_agent_devices_update` (trigger, agent_devices)
@@ -1416,5 +1460,9 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `progress_equipment_update` (trigger, equipments)
 - `provider_reports_immutable` (trigger, provider_reports)
 - `published_equipment_update` (trigger, equipments)
+- `service_request_count_delete` (trigger, service_requests)
+- `service_request_count_insert` (trigger, service_requests)
+- `service_request_count_update` (trigger, service_requests)
 - `inventory_equipment_all` (view, inventory_equipment_all)
 - `panel_collection_state_source` (view, panel_collection_state_source)
+- `panel_hardware_source` (view, panel_hardware_source)

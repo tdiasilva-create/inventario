@@ -1,6 +1,6 @@
 # Índice do código e referências de API
 
-Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
+Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
 
 ## server
 
@@ -11,7 +11,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/agent-network-tests.mjs](../../../server/agent-network-tests.mjs) | 113 | 13747 |
 | [server/agentes/catalogo.mjs](../../../server/agentes/catalogo.mjs) | 79 | 11157 |
 | [server/agentes/connection.mjs](../../../server/agentes/connection.mjs) | 18 | 1287 |
-| [server/agentes/index.mjs](../../../server/agentes/index.mjs) | 84 | 10665 |
+| [server/agentes/index.mjs](../../../server/agentes/index.mjs) | 87 | 11066 |
 | [server/agentes/nucleo/catalogo.mjs](../../../server/agentes/nucleo/catalogo.mjs) | 86 | 6725 |
 | [server/agentes/nucleo/crypto.mjs](../../../server/agentes/nucleo/crypto.mjs) | 116 | 4681 |
 | [server/agentes/nucleo/d1-store.mjs](../../../server/agentes/nucleo/d1-store.mjs) | 461 | 37485 |
@@ -35,7 +35,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/equipment-link-state.mjs](../../../server/equipment-link-state.mjs) | 9 | 585 |
 | [server/equipment-names.mjs](../../../server/equipment-names.mjs) | 41 | 4231 |
 | [server/google-auth.mjs](../../../server/google-auth.mjs) | 82 | 12399 |
-| [server/hardware-review.mjs](../../../server/hardware-review.mjs) | 65 | 8518 |
+| [server/hardware-review.mjs](../../../server/hardware-review.mjs) | 64 | 8067 |
 | [server/import-units.mjs](../../../server/import-units.mjs) | 24 | 3951 |
 | [server/in-progress-photos.mjs](../../../server/in-progress-photos.mjs) | 56 | 4685 |
 | [server/in-progress.mjs](../../../server/in-progress.mjs) | 48 | 6332 |
@@ -57,7 +57,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/provider-report.mjs](../../../server/provider-report.mjs) | 43 | 2900 |
 | [server/request-timing.mjs](../../../server/request-timing.mjs) | 50 | 3434 |
 | [server/security.mjs](../../../server/security.mjs) | 10 | 1223 |
-| [server/service-desk.mjs](../../../server/service-desk.mjs) | 149 | 19243 |
+| [server/service-desk.mjs](../../../server/service-desk.mjs) | 151 | 19595 |
 | [server/technical-dispatch.mjs](../../../server/technical-dispatch.mjs) | 181 | 19913 |
 | [server/technician-avatars.mjs](../../../server/technician-avatars.mjs) | 99 | 9246 |
 | [server/technician-tracking.mjs](../../../server/technician-tracking.mjs) | 50 | 4077 |
@@ -67,7 +67,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/unit-validation.mjs](../../../server/unit-validation.mjs) | 3 | 104 |
 | [server/units.mjs](../../../server/units.mjs) | 48 | 6667 |
 | [server/visit-routes.mjs](../../../server/visit-routes.mjs) | 44 | 6130 |
-| [server/worker.mjs](../../../server/worker.mjs) | 202 | 30718 |
+| [server/worker.mjs](../../../server/worker.mjs) | 202 | 31043 |
 
 ## web
 
@@ -135,7 +135,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/desktop-progress-photos.css](../../../web/desktop-progress-photos.css) | 4 | 1613 |
 | [web/desktop-progress-photos.js](../../../web/desktop-progress-photos.js) | 42 | 5292 |
 | [web/desktop-progress.js](../../../web/desktop-progress.js) | 60 | 12709 |
-| [web/desktop-request.js](../../../web/desktop-request.js) | 48 | 3002 |
+| [web/desktop-request.js](../../../web/desktop-request.js) | 54 | 3366 |
 | [web/desktop-results.js](../../../web/desktop-results.js) | 29 | 7408 |
 | [web/desktop-theme.css](../../../web/desktop-theme.css) | 93 | 19405 |
 | [web/desktop-thumbnails.js](../../../web/desktop-thumbnails.js) | 21 | 3278 |
@@ -245,6 +245,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [migrations/0032_collection_control.sql](../../../migrations/0032_collection_control.sql) | 77 | 8926 |
 | [migrations/0033_technician_tracking.sql](../../../migrations/0033_technician_tracking.sql) | 88 | 5764 |
 | [migrations/0034_agent_network_tests.sql](../../../migrations/0034_agent_network_tests.sql) | 27 | 1111 |
+| [migrations/0035_audit_read_budget.sql](../../../migrations/0035_audit_read_budget.sql) | 111 | 8622 |
 
 ## android
 
@@ -437,6 +438,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [scripts/gerar-proposta-ux-coletor.mjs](../../../scripts/gerar-proposta-ux-coletor.mjs) | 19 | 9115 |
 | [scripts/import-map-examples.mjs](../../../scripts/import-map-examples.mjs) | 22 | 2534 |
 | [scripts/lib/csv.mjs](../../../scripts/lib/csv.mjs) | 16 | 903 |
+| [scripts/measure-audit-budget.mjs](../../../scripts/measure-audit-budget.mjs) | 76 | 7275 |
 | [scripts/measure-d1-budget-local.mjs](../../../scripts/measure-d1-budget-local.mjs) | 92 | 9484 |
 | [scripts/measure-panel-read-cache.mjs](../../../scripts/measure-panel-read-cache.mjs) | 53 | 5830 |
 | [scripts/measure-panel-sql.mjs](../../../scripts/measure-panel-sql.mjs) | 27 | 3025 |
@@ -514,6 +516,8 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/agentes.test.mjs](../../../tests/agentes.test.mjs) | 163 | 20363 |
 | [tests/android/MobilePolicyTest.java](../../../tests/android/MobilePolicyTest.java) | 13 | 992 |
 | [tests/android/TrackingPolicyTest.java](../../../tests/android/TrackingPolicyTest.java) | 16 | 1089 |
+| [tests/audit-permissions-budget.test.mjs](../../../tests/audit-permissions-budget.test.mjs) | 110 | 10836 |
+| [tests/audit-session-budget-browser.cjs](../../../tests/audit-session-budget-browser.cjs) | 25 | 1855 |
 | [tests/auth-flow-browser.cjs](../../../tests/auth-flow-browser.cjs) | 58 | 10656 |
 | [tests/auth-flow.test.mjs](../../../tests/auth-flow.test.mjs) | 99 | 9743 |
 | [tests/browser.cjs](../../../tests/browser.cjs) | 96 | 7995 |
@@ -609,7 +613,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/network-tests-browser.cjs](../../../tests/network-tests-browser.cjs) | 27 | 3427 |
 | [tests/operations-browser.cjs](../../../tests/operations-browser.cjs) | 27 | 5618 |
 | [tests/operations-network-browser.cjs](../../../tests/operations-network-browser.cjs) | 37 | 6124 |
-| [tests/panel-async-browser.cjs](../../../tests/panel-async-browser.cjs) | 91 | 10270 |
+| [tests/panel-async-browser.cjs](../../../tests/panel-async-browser.cjs) | 93 | 10515 |
 | [tests/panel-blocks-browser.cjs](../../../tests/panel-blocks-browser.cjs) | 54 | 10811 |
 | [tests/panel-blocks.test.mjs](../../../tests/panel-blocks.test.mjs) | 27 | 2051 |
 | [tests/panel-mesa-browser.cjs](../../../tests/panel-mesa-browser.cjs) | 55 | 6248 |
@@ -618,7 +622,7 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/panel-performance-round2-browser.cjs](../../../tests/panel-performance-round2-browser.cjs) | 69 | 6447 |
 | [tests/panel-performance-round2.test.mjs](../../../tests/panel-performance-round2.test.mjs) | 42 | 3936 |
 | [tests/panel-performance.test.mjs](../../../tests/panel-performance.test.mjs) | 59 | 4806 |
-| [tests/panel-read-cache-browser.cjs](../../../tests/panel-read-cache-browser.cjs) | 44 | 4004 |
+| [tests/panel-read-cache-browser.cjs](../../../tests/panel-read-cache-browser.cjs) | 47 | 4315 |
 | [tests/panel-read-cache.test.mjs](../../../tests/panel-read-cache.test.mjs) | 144 | 12464 |
 | [tests/panel-search-browser.cjs](../../../tests/panel-search-browser.cjs) | 25 | 5935 |
 | [tests/panel-search.test.mjs](../../../tests/panel-search.test.mjs) | 47 | 6817 |
@@ -668,11 +672,11 @@ Gerado por `pnpm docs:code`. 624 arquivos de texto. Hashes/bytes usam UTF-8 com 
 
 | Arquivo | Linhas | Bytes |
 |---|---:|---:|
-| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 157 | 4361 |
+| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 165 | 4577 |
 | [package.json](../../../package.json) | 91 | 7397 |
 | [pnpm-lock.yaml](../../../pnpm-lock.yaml) | 2982 | 93879 |
-| [wrangler.collector.jsonc](../../../wrangler.collector.jsonc) | 12 | 753 |
-| [wrangler.jsonc](../../../wrangler.jsonc) | 22 | 1610 |
+| [wrangler.collector.jsonc](../../../wrangler.collector.jsonc) | 12 | 786 |
+| [wrangler.jsonc](../../../wrangler.jsonc) | 22 | 1643 |
 | [wrangler.validation.jsonc](../../../wrangler.validation.jsonc) | 30 | 986 |
 | [wrangler.validation.painel.jsonc](../../../wrangler.validation.painel.jsonc) | 21 | 1497 |
 

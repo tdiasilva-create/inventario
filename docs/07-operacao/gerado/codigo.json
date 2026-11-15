@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4361,
-      "lines": 157,
-      "sha256": "8bb434b7a3d2e5550430a7ee6c0ef4b545edd7b2305686944e5ae131e3090af8",
+      "bytes": 4577,
+      "lines": 165,
+      "sha256": "7dae1ea870ec2c88fb78b7638e9a559613deb9a332f7bce083c88ae95ac44e90",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -520,6 +520,16 @@
       "apiLiterals": []
     },
     {
+      "path": "migrations/0035_audit_read_budget.sql",
+      "bytes": 8622,
+      "lines": 111,
+      "sha256": "4454b2f08eebf4cb1bbb481b0dc57a8e1c60664670cde031886a22453a3723d8",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "package.json",
       "bytes": 7397,
       "lines": 91,
@@ -875,7 +885,7 @@
       "path": "scripts/export-operation-manual.mjs",
       "bytes": 2424,
       "lines": 37,
-      "sha256": "8f4127e042ec9a861dd67b68daa07269b38f69819c9e2b0973df202b7f65164b",
+      "sha256": "591d2a248f66bbbf6acfc32d17132daa5e35ca433bdba3a4aa0e868a832cda0c",
       "imports": [
         "node:fs/promises"
       ],
@@ -966,6 +976,37 @@
       ],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "scripts/measure-audit-budget.mjs",
+      "bytes": 7275,
+      "lines": 76,
+      "sha256": "7dbf3f664e599346d8bc07a87068e028149356620d599e919a8709574adac59c",
+      "imports": [
+        "+q+pathToFileURL(path.resolve(path.dirname(file),p)).href+q);return import(",
+        "../server/hardware-review.mjs",
+        "../server/request-timing.mjs",
+        "../server/service-desk.mjs",
+        "../server/worker.mjs",
+        "../tests/helpers/agent-client.mjs",
+        "../tests/helpers/agent-connection.mjs",
+        "../tests/helpers/collector-db.mjs",
+        "node:assert/strict",
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:module",
+        "node:path",
+        "node:sqlite",
+        "node:url"
+      ],
+      "exports": [],
+      "environment": [
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/agent/v1/heartbeat"
+      ]
     },
     {
       "path": "scripts/measure-d1-budget-local.mjs",
@@ -2218,9 +2259,9 @@
     },
     {
       "path": "server/agentes/index.mjs",
-      "bytes": 10665,
-      "lines": 84,
-      "sha256": "18dfd51533e59ab58c9a36bba38b21bc5135526dbabcded4db211b24504fbe1e",
+      "bytes": 11066,
+      "lines": 87,
+      "sha256": "41abdfab25dade57941860f88f79db57c061d7a4bff13db274c188c04835f9b7",
       "imports": [
         "../agent-network-tests.mjs",
         "./catalogo.mjs",
@@ -2776,9 +2817,9 @@
     },
     {
       "path": "server/hardware-review.mjs",
-      "bytes": 8518,
-      "lines": 65,
-      "sha256": "b93f2c357db34f03155bcca71b85a857968a89f26cb05770ed9c444cc626fa0e",
+      "bytes": 8067,
+      "lines": 64,
+      "sha256": "fb0cc2894a77f902ef37bbee6c353decd25b5cd1c11464fb27ad424c433cc2c3",
       "imports": [],
       "exports": [
         "hardwareReviewRoutes",
@@ -3235,9 +3276,9 @@
     },
     {
       "path": "server/service-desk.mjs",
-      "bytes": 19243,
-      "lines": 149,
-      "sha256": "8effdeaeb7934d44e3dd97aef4635a24957b6702ec76726adb5d24d96db01dab",
+      "bytes": 19595,
+      "lines": 151,
+      "sha256": "267a49a6fd916bf05da30eb2fd6999ac6a7f39f6c923ebba32330178194ccaa5",
       "imports": [
         "./agentes/presence.mjs",
         "./equipment-link-state.mjs",
@@ -3454,9 +3495,9 @@
     },
     {
       "path": "server/worker.mjs",
-      "bytes": 30718,
+      "bytes": 31043,
       "lines": 202,
-      "sha256": "c141b5c169beb243458e366a804e996ba393cc8b7ed55cf65e7cabf3f9468b15",
+      "sha256": "d61807fae5baeda661b31849752f0cfcc19f6392ceab7b4a8d3aedfb666341b1",
       "imports": [
         "../shared/mobile-assets.mjs",
         "./agent-monitoring.mjs",
@@ -3735,6 +3776,55 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "tests/audit-permissions-budget.test.mjs",
+      "bytes": 10836,
+      "lines": 110,
+      "sha256": "230427f1a9a1a090efa8945792dabcd5f670f223d88d7f38eebc64dc05e7c0ba",
+      "imports": [
+        "../server/agentes/index.mjs",
+        "../server/hardware-review.mjs",
+        "../server/security.mjs",
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "./helpers/hardware-change.mjs",
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/admin/revoke",
+        "/api/auth/revoke",
+        "/api/inventory/hardware-review",
+        "/api/operations/requests?",
+        "/api/technician/accept",
+        "/api/technician/queue"
+      ]
+    },
+    {
+      "path": "tests/audit-session-budget-browser.cjs",
+      "bytes": 1855,
+      "lines": 25,
+      "sha256": "ecb70303e482cb04ef4b37bda84a257ee60c0ff0490ebb50bcc742ed77449c34",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "/test-client.js",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/",
+        "/api/auth/me",
+        "/api/test-forbidden"
+      ]
     },
     {
       "path": "tests/auth-flow-browser.cjs",
@@ -5654,9 +5744,9 @@
     },
     {
       "path": "tests/panel-async-browser.cjs",
-      "bytes": 10270,
-      "lines": 91,
-      "sha256": "d8bf09ed32b1aba6cb8242ca3b3bbb9543053c1b6bdbd4ae295a5a5f48d3b59a",
+      "bytes": 10515,
+      "lines": 93,
+      "sha256": "c604d1b17617e3483d8b735dce621645c2179eea3ae4181c47ac917f34604df4",
       "imports": [
         "./helpers/hardware-change.mjs",
         "./helpers/panel-browser.cjs",
@@ -5832,9 +5922,9 @@
     },
     {
       "path": "tests/panel-read-cache-browser.cjs",
-      "bytes": 4004,
-      "lines": 44,
-      "sha256": "7d12a97b3f74a082f6205d79757abebda1b787c8213870c4c01db46da6ff6c9a",
+      "bytes": 4315,
+      "lines": 47,
+      "sha256": "9fa5d19a21a9cf5111db1cb3bee022b43580c21470f7fb6841529dafcfd82c78",
       "imports": [
         "./helpers/equipment-consultation.mjs",
         "./helpers/panel-browser.cjs",
@@ -7834,9 +7924,9 @@
     },
     {
       "path": "web/desktop-request.js",
-      "bytes": 3002,
-      "lines": 48,
-      "sha256": "5c557bef6e973c0b952c1f9a7615bf65af6d77d841981492708d70fd100ccba5",
+      "bytes": 3366,
+      "lines": 54,
+      "sha256": "a4bb8f276f9d777390a643447e4a61fe7e55fe20140ffb74fd28e08c590b0927",
       "imports": [],
       "exports": [
         "initialPanelIdentity",
@@ -10138,9 +10228,9 @@
     },
     {
       "path": "wrangler.collector.jsonc",
-      "bytes": 753,
+      "bytes": 786,
       "lines": 12,
-      "sha256": "365d32b5a3f70f24d8fdcdfd9346c8c426fe4300193031d36598b73e78b97c16",
+      "sha256": "8da54ca95d7ccb9f09707c678ebe6289c56e23fa3fd54a2050d54bfdfdbc43de",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -10148,9 +10238,9 @@
     },
     {
       "path": "wrangler.jsonc",
-      "bytes": 1610,
+      "bytes": 1643,
       "lines": 22,
-      "sha256": "068303590b77d98ec2657dd25f2f96817dbd3107f9234c53a4c80fb64a366347",
+      "sha256": "79b989c290cf800f9c682c9604fd704a3f8c048cf54c825d7d845d3d505446da",
       "imports": [],
       "exports": [],
       "environment": [],

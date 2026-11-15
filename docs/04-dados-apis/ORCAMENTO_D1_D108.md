@@ -90,3 +90,6 @@ nem apagar tabelas por rotina. A correção de uma projeção divergente exige
 investigação e reconstrução transacional a partir dos registros canônicos.
 
 Validação: [registro D108](../05-qualidade/REDUCAO_D1_2026-11-12.md).
+
+## Complemento D123 — 15/11/2026
+Projeções de hardware/demandas e configuração sem cópia redundante de heartbeat reduzem custo adicional, sem mudar D108/D110 nem desligar alertas/localização. Comparação reproduzível, custo de escrita dos índices e limite para 101–300 agentes em [PERMISSOES_E_ORCAMENTO_D123.md](PERMISSOES_E_ORCAMENTO_D123.md). Produção e números finais no [registro de qualidade](../05-qualidade/PERMISSOES_D1_D123_2026-11-15.md).

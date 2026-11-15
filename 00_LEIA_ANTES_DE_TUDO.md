@@ -1,4 +1,6 @@
-**Consolidação para auditoria (15/11/2026):** código até D122 e 34 migrações na branch `codex/auditoria-completa-2026-11-15`. Começar pelo [estado vigente](docs/07-operacao/13_ESTADO_ATUAL_D122.md) e [pedido integral ao Claude](docs/08-auditoria/2026-11-15/00_PEDIDO_AO_CLAUDE.txt). Os registros datados abaixo são históricos; esta consolidação não altera funcionalidades nem publica Workers.
+**D123 publicado (15/11/2026, 16:40/16:41 Fortaleza):** correções de permissões e consumo nos dois Workers, 35 migrações; 331 testes e comparação real de consumo aprovados. Gratuito, GPS, alertas e binários preservados. [Estado vigente](docs/07-operacao/14_ESTADO_ATUAL_D123.md), [evidências e limites de capacidade](docs/05-qualidade/PERMISSOES_D1_D123_2026-11-15.md).
+
+**Consolidação para auditoria (15/11/2026):** código até D122 e 34 migrações na branch `codex/auditoria-completa-2026-11-15`. Referência histórica: [estado D122](docs/07-operacao/13_ESTADO_ATUAL_D122.md) e [pedido integral ao Claude](docs/08-auditoria/2026-11-15/00_PEDIDO_AO_CLAUDE.txt). Essa consolidação anterior não publicou Workers.
 
 **D-122 publicado (15/11/2026, 11:42 Fortaleza):** busca principal somente de unidades, sugestões locais enquanto digita e campo preservado no mapa ampliado. Selecionar mantém o mapa e focaliza a unidade. Painel 582b5ec9-993b-45fe-87b6-d88d9f516440, 100%; sem migração/coletor/APK. [Conferência e limites](docs/05-qualidade/BUSCA_UNIDADES_2026-11-15.md).
 

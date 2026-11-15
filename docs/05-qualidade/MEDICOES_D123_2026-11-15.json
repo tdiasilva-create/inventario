@@ -1,0 +1,133 @@
+{
+  "local": {
+    "at": "2026-11-15T19:34:43.853Z",
+    "runtime": "LOCAL workerd, private database copy; no production writes",
+    "backup": {
+      "bytes": 16686329,
+      "sha256": "37c232db4ddb36fbbcbb4ccf0d6f183a0ba6d94a8f590727c1ae0ed940089f46",
+      "unchangedTables": 97,
+      "foreignKeyIssues": 0
+    },
+    "queries": [
+      {
+        "name": "hardware.summary",
+        "before": {
+          "d1_calls": 2,
+          "d1_rows_read": 29,
+          "d1_rows_written": 0
+        },
+        "after": {
+          "d1_calls": 2,
+          "d1_rows_read": 2,
+          "d1_rows_written": 0
+        },
+        "equivalent": true
+      },
+      {
+        "name": "demands.pending",
+        "before": {
+          "d1_calls": 1,
+          "d1_rows_read": 74,
+          "d1_rows_written": 0
+        },
+        "after": {
+          "d1_calls": 1,
+          "d1_rows_read": 15,
+          "d1_rows_written": 0
+        },
+        "equivalent": true
+      },
+      {
+        "name": "demands.all",
+        "before": {
+          "d1_calls": 1,
+          "d1_rows_read": 120,
+          "d1_rows_written": 0
+        },
+        "after": {
+          "d1_calls": 1,
+          "d1_rows_read": 38,
+          "d1_rows_written": 0
+        },
+        "equivalent": true
+      },
+      {
+        "name": "demands.Concluída",
+        "before": {
+          "d1_calls": 1,
+          "d1_rows_read": 101,
+          "d1_rows_written": 0
+        },
+        "after": {
+          "d1_calls": 1,
+          "d1_rows_read": 52,
+          "d1_rows_written": 0
+        },
+        "equivalent": true
+      }
+    ],
+    "heartbeat": [
+      {
+        "keep": "20",
+        "d1_calls": 13,
+        "d1_rows_read": 13,
+        "d1_rows_written": 12
+      },
+      {
+        "keep": "0",
+        "d1_calls": 12,
+        "d1_rows_read": 12,
+        "d1_rows_written": 8
+      }
+    ],
+    "security": {
+      "receiptReplay": true,
+      "modifiedBodyRejected": true,
+      "nonceReplayRejected": true
+    },
+    "notice": "Per-operation measurements, not full-day account usage or capacity certification."
+  },
+  "production": {
+    "at": "2026-11-15T19:40:54.969Z",
+    "source": "Cloudflare D1 remote meta.rows_read, actual records; SQL read only",
+    "queries": [
+      {
+        "name": "hardware.summary",
+        "before": 29,
+        "after": 2,
+        "equivalent": true
+      },
+      {
+        "name": "demands.pending",
+        "before": 74,
+        "after": 15,
+        "equivalent": true
+      },
+      {
+        "name": "demands.all",
+        "before": 120,
+        "after": 38,
+        "equivalent": true
+      },
+      {
+        "name": "demands.closed",
+        "before": 101,
+        "after": 52,
+        "equivalent": true
+      }
+    ],
+    "projectionChecks": [
+      {
+        "hardware_difference": 0,
+        "hardware_counts_difference": 0
+      },
+      {
+        "demand_counts_difference": 0
+      },
+      {
+        "name": "0035_audit_read_budget.sql"
+      }
+    ],
+    "noOfficialRecordsWritten": true
+  }
+}

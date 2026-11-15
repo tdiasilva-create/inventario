@@ -60,7 +60,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
  const db=env.DB,s=url.searchParams,unitId=s.get('unitId')||'',offset=Number(s.get('offset')||0),q=(s.get('q')||'').trim();
  if(!Number.isSafeInteger(offset)||offset<0||q.length>120||unitId&&!uuid(unitId))return fail('Filtros inválidos.');
  if(path==='/api/operations/queue-summary'&&request.method==='GET'){
-  const summary=(await db.prepare('SELECT status,COUNT(*) AS total FROM service_requests GROUP BY status').all()).results;
+  const summary=(await db.prepare("SELECT status,total FROM service_request_counts WHERE scope='' AND total>0 ORDER BY status").all()).results;
   return json({pending:summary.filter(r=>r.status!=='Concluída').reduce((n,r)=>n+r.total,0),summary});
  }
  if(path==='/api/operations/units'&&request.method==='GET'){
@@ -120,7 +120,9 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   const status=s.get('status')||'pending';if(!['pending','all',...states].includes(status))return fail('Situação inválida.');
   const clauses=[],args=[];if(unitId){clauses.push('unit_id=?');args.push(unitId);}if(status==='pending')clauses.push("status!='Concluída'");else if(status!=='all'){clauses.push('status=?');args.push(status);}if(q){clauses.push("instr(lower(context_json||' '||description||' '||responsible||' '||number),lower(?))>0");args.push(q);}
   const where=clauses.length?' WHERE '+clauses.join(' AND '):'';
-  const [count,page,summary]=await db.batch([db.prepare('SELECT COUNT(*) AS total FROM service_requests'+where).bind(...args),db.prepare('SELECT * FROM service_requests'+where+' ORDER BY updated_at DESC,id DESC LIMIT 50 OFFSET ?').bind(...args,offset),db.prepare('SELECT status,COUNT(*) AS total FROM service_requests'+(unitId?' WHERE unit_id=?':'')+' GROUP BY status').bind(...(unitId?[unitId]:[]))]);
+  // Search still counts matching rows; ordinary polling reads a bounded projection.
+  const countQuery=q?db.prepare('SELECT COUNT(*) AS total FROM service_requests'+where).bind(...args):db.prepare("SELECT COALESCE(SUM(total),0) AS total FROM service_request_counts WHERE scope=?"+(status==='pending'?" AND status!='Concluída'":status==='all'?'':' AND status=?')).bind(unitId,...(!['pending','all'].includes(status)?[status]:[]));
+  const [count,page,summary]=await db.batch([countQuery,db.prepare('SELECT * FROM service_requests'+where+' ORDER BY updated_at DESC,id DESC LIMIT 50 OFFSET ?').bind(...args,offset),db.prepare('SELECT status,total FROM service_request_counts WHERE scope=? AND total>0 ORDER BY status').bind(unitId)]);
   return json({items:page.results.map(r=>({...r,context:JSON.parse(r.context_json)})),total:count.results[0].total,summary:summary.results,offset,nextOffset:offset+page.results.length<count.results[0].total?offset+50:null});
  }
  if(path==='/api/operations/request-save'&&request.method==='POST'){

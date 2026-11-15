@@ -17,10 +17,9 @@ export function notificationItem(row){
 }
 export async function hardwareSummary(db){
  // Resumo independente da página/filtro de notificações e da marcação individual de leitura.
- const base=`FROM agent_notifications n JOIN units u ON u.id=n.unit_id JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id LEFT JOIN service_requests sr ON sr.id=hr.request_id WHERE n.kind='hardware_change'`;
  const [units,pending]=await Promise.all([
-  db.prepare(`SELECT n.unit_id,SUM(hr.notification_id IS NULL) AS pending,SUM(hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída') AS demands ${base} GROUP BY n.unit_id HAVING SUM(hr.notification_id IS NULL)+SUM(CASE WHEN hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída' THEN 1 ELSE 0 END)>0`).all(),
-  db.prepare(`SELECT n.id ${base} AND hr.notification_id IS NULL ORDER BY n.detected_at DESC,n.id DESC LIMIT 25`).all()
+  db.prepare('SELECT unit_id,pending,demands FROM panel_hardware_counts WHERE pending+demands>0 ORDER BY unit_id').all(),
+  db.prepare("SELECT notification_id AS id FROM panel_hardware_active WHERE state='pending' ORDER BY detected_at DESC,notification_id DESC LIMIT 25").all()
  ]);
  return {units:units.results.map(u=>({...u,pending:Number(u.pending)||0,demands:Number(u.demands)||0})),pending_ids:pending.results.map(n=>n.id),pending:units.results.reduce((n,u)=>n+Number(u.pending||0),0)};
 }
