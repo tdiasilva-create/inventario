@@ -1,6 +1,6 @@
 # D124 — integridade da coleta e fotografias, 16/11/2026
 
-Status: implementação aprovada nos testes locais; publicação autorizada explicitamente pelo responsável nesta sessão. A seção de publicação abaixo será preenchida após a implantação.
+Status: publicado nos dois Workers em 16/11/2026, após autorização explícita; verificações locais, HTTP e conferência autenticada concluídas. Limites e itens residuais permanecem registrados abaixo.
 
 ## Escopo, fontes e aceite
 
@@ -57,4 +57,17 @@ Retenção e limpeza de pendentes/órfãos; envio tardio em visita legada conclu
 
 ## Publicação e resultado final
 
-A preencher após deploy e conferência pública/autenticada. Sem migração, APK 1.0.4 mantido.
+Commit funcional: `61b6f3e`, branch `codex/correcoes-coleta-fotos-2026-11-16`.
+
+| Destino | Versão ativa (100%) | Horário Fortaleza, 16/11/2026 |
+| --- | --- | --- |
+| Painel | `f5bd0e31-d36d-4026-b086-cae6e4dd9425` | 05:51:08 |
+| Coletor | `2a7e6a3f-4b5c-4f2e-bee0-5aa2d75ead8b` | 05:51:45 |
+
+343/343 testes gerais aprovados; 22 cenários de concorrência, quatro cenários novos de navegador e regressões de coleta V3, miniaturas e app unificado aprovados. Build e dry-run dos dois Workers aprovados. Após publicação: 78 verificações HTTP aprovadas (51 painel, sete limites de localização, 14 app/APK, seis coletor), sem gravar registros oficiais. A primeira gravação local do resultado do coletor encontrou a pasta de evidências ainda não criada; repetição concluída com seis aprovações. Não foi falha do serviço publicado.
+
+Conferência autenticada como root: Configurações mostrou Drive conectado e os controles de gerar/recriar miniaturas; /app abriu a Coleta e carregou a lista de unidades. A conta root observada oferece Coleta conforme sua habilitação, sem conceder capacidade técnica nova. Nenhuma visita foi iniciada, resposta alterada ou miniatura real recriada durante esta conferência. Os cenários de escrita, concorrência, falha e recuperação foram exercitados no ambiente isolado. Homologação física no celular continua distinta dessa verificação.
+
+Sem migração; 35 migrações existentes preservadas. APK 1.0.4 mantido, SHA-256 remoto `f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5`. Para receber o código web atualizado, terminar os envios em andamento e reabrir o aplicativo; não desinstalar ou limpar seus dados. Permissões, localização D114/D115, alertas e plano gratuito mantidos.
+
+Evidências: [resultados locais](../../evidencias/coleta-fotos-d124-2026-11-16/testes.json), [HTTP painel](../../evidencias/coleta-fotos-d124-2026-11-16/producao/release.json), [limites de localização](../../evidencias/coleta-fotos-d124-2026-11-16/producao/tracking-boundaries.json), [app/APK](../../evidencias/coleta-fotos-d124-2026-11-16/producao/mobile-release.json), [coletor](../../evidencias/coleta-fotos-d124-2026-11-16/producao/collector.json).

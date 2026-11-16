@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "at": "2026-11-16T08:53:53.941Z",
+  "checks": [
+    {
+      "route": "tracking-heartbeat",
+      "method": "GET",
+      "foreignOrigin": false,
+      "status": 405
+    },
+    {
+      "route": "tracking-heartbeat",
+      "method": "POST",
+      "foreignOrigin": false,
+      "status": 401
+    },
+    {
+      "route": "tracking-heartbeat",
+      "method": "POST",
+      "foreignOrigin": true,
+      "status": 403
+    },
+    {
+      "route": "tracking-stop",
+      "method": "GET",
+      "foreignOrigin": false,
+      "status": 405
+    },
+    {
+      "route": "tracking-stop",
+      "method": "POST",
+      "foreignOrigin": false,
+      "status": 401
+    },
+    {
+      "route": "tracking-stop",
+      "method": "POST",
+      "foreignOrigin": true,
+      "status": 403
+    },
+    {
+      "route": "apk",
+      "method": "HEAD",
+      "status": 200,
+      "filename": "SEMED-Tecnico.apk"
+    }
+  ]
+}

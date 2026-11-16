@@ -2,6 +2,8 @@
 
 Após devolutiva e autorização do responsável, correções D123 de permissões/consumo foram publicadas. Ver [escopo implementado](../04-dados-apis/PERMISSOES_E_ORCAMENTO_D123.md) e [verificação](../05-qualidade/PERMISSOES_D1_D123_2026-11-15.md). Demais achados/decisões não são considerados encerrados. Os itens abaixo preservam o pedido original e sua base.
 
+Em 16/11/2026, D124 publicou correções de coleta/fotos: [achados tratados, testes e pendências residuais](../05-qualidade/COLETA_FOTOS_D124_2026-11-16.md), [estado atual](../07-operacao/15_ESTADO_ATUAL_D124.md). A base D122 do pacote original permanece histórica; a auditoria integral continua aberta.
+
 O pedido atual é a auditoria integral pelo Claude. Use a branch `codex/auditoria-completa-2026-11-15` e o commit registrado no manifesto do pacote. A preparação consolida código recente e documentação; não é auditoria independente concluída nem implantação nova.
 
 1. [Pedido completo ao Claude em TXT](2026-11-15/00_PEDIDO_AO_CLAUDE.txt).

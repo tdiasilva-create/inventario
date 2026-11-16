@@ -702,3 +702,5 @@ Pedido autorizado após devolutiva → AUD-005/AUD-006/AUD-002/AUD-003/AUD-020/A
 
 ## D-124 — coleta/fotos, 16/11/2026
 Pedido autorizado → AUD010/011/012/014/015/016/037/038/039/040/041/042 e mitigação 043/044(a) → server/collector*, collection-equality, photo-storage, photo-thumbnails, mobile-app; web/collector*, photo-prepare, desktop-inventory/progress-photos/thumbnails → tests/collection-photos-d124.test.mjs e collection-photos-d124-browser.cjs, regressões gerais/mobile/miniaturas/concorrência → [qualidade D124](../05-qualidade/COLETA_FOTOS_D124_2026-11-16.md). Base original, fotos completas, permissões e GPS preservados; decisões restantes documentadas sem implementação presumida.
+
+D124 publicado em 16/11/2026 às 05:51 Fortaleza: painel `f5bd0e31-d36d-4026-b086-cae6e4dd9425`, coletor `2a7e6a3f-4b5c-4f2e-bee0-5aa2d75ead8b`, ambos 100%. 343 testes gerais, cenários de navegador e 78 verificações HTTP aprovados; integração Drive e entrada da Coleta conferidas como root sem alterar cadastros. Backup validado em restauração isolada, sem migração/APK/EXE novo. Decisões e pendências técnicas residuais continuam no registro de qualidade.

@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência atual: **15/11/2026, até D123**. São **35 migrações**, 99 tabelas de aplicação, 72 índices explícitos, três views e 120 triggers, derivados em SQLite vazio. [Estado consolidado e versões](14_ESTADO_ATUAL_D123.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123 já foi publicado; a preparação anterior de auditoria é histórica.
+Referência atual: **16/11/2026, até D124**. São **35 migrações**, 99 tabelas de aplicação, 72 índices explícitos, três views e 120 triggers, derivados em SQLite vazio. [Estado consolidado e versões](15_ESTADO_ATUAL_D124.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123 e D124 já foram publicados; a preparação anterior de auditoria é histórica.
 
 | Guia | Uso |
 |---|---|
@@ -17,6 +17,8 @@ Referência atual: **15/11/2026, até D123**. São **35 migrações**, 99 tabela
 | [11 · Estado D-110](11_ESTADO_ATUAL_D110.md) | Versões, serviços, rotinas e materiais de transferência |
 | [12 · Mapa do código](12_MAPA_CODIGO_E_FLUXOS.md) | Módulos, contratos, fluxos e dependências de plataforma |
 | [13 · Estado até D122](13_ESTADO_ATUAL_D122.md) | Versões, evolução recente e limites para a auditoria |
+| [14 · Estado D123](14_ESTADO_ATUAL_D123.md) | Permissões e consumo após auditoria |
+| [15 · Estado D124](15_ESTADO_ATUAL_D124.md) | Coleta, fotos, publicação e pendências preservadas |
 | [Índice estático do código](gerado/CODIGO_E_ROTAS.md) / [JSON](gerado/codigo.json) | Arquivos, hashes, imports, variáveis e referências de API |
 | [Checklist TXT](TRANSFERENCIA_E_MIGRACAO.txt) | Transferência para outra equipe |
 | [Dicionário físico](gerado/DICIONARIO_DADOS.md) / [JSON](gerado/schema.json) | Esquema completo sem dados reais |

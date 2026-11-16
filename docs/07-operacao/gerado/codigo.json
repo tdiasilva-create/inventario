@@ -885,7 +885,7 @@
       "path": "scripts/export-operation-manual.mjs",
       "bytes": 2424,
       "lines": 37,
-      "sha256": "591d2a248f66bbbf6acfc32d17132daa5e35ca433bdba3a4aa0e868a832cda0c",
+      "sha256": "871e9d6d56a1980049894d4a4a2f396a6c390bdb6d80f62d7d0d8c73d5e3c882",
       "imports": [
         "node:fs/promises"
       ],
