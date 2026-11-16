@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "at": "2026-11-16T20:01:26.215Z",
+  "checks": [
+    {
+      "path": "/login",
+      "status": 200
+    },
+    {
+      "path": "/panorama",
+      "status": 302
+    },
+    {
+      "path": "/demandas",
+      "status": 302
+    },
+    {
+      "path": "/app",
+      "status": 200
+    },
+    {
+      "path": "/api/operations/requests",
+      "status": 401
+    },
+    {
+      "path": "/api/operations/request-delete-preview?id=00000000-0000-4000-8000-000000000001",
+      "status": 401
+    },
+    {
+      "path": "/api/inventory/pending-summary",
+      "status": 401
+    },
+    {
+      "path": "/api/dispatch/map",
+      "status": 401
+    },
+    {
+      "path": "/api/technician/queue",
+      "status": 401
+    },
+    {
+      "path": "tracking-heartbeat",
+      "method": "GET",
+      "status": 405
+    },
+    {
+      "path": "tracking-heartbeat",
+      "method": "POST",
+      "status": 401
+    },
+    {
+      "path": "tracking-heartbeat",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "path": "tracking-stop",
+      "method": "GET",
+      "status": 405
+    },
+    {
+      "path": "tracking-stop",
+      "method": "POST",
+      "status": 401
+    },
+    {
+      "path": "tracking-stop",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "path": "request-delete",
+      "method": "POST",
+      "status": 401
+    }
+  ],
+  "apk": {
+    "version": "1.0.4",
+    "sha256": "f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5"
+  },
+  "productionWrites": false
+}
