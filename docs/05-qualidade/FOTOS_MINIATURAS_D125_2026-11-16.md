@@ -1,6 +1,6 @@
 # D125 — fotos e miniaturas, 16/11/2026
 
-Status: implementação e testes locais concluídos; implantação em preparação. Publicação autorizada na continuidade das correções de coleta/fotos e da escolha do item 6 pelo responsável. Atualizar as versões ao concluir.
+Status: publicado nos dois Workers em 16/11/2026, após autorização na continuidade das correções de coleta/fotos e da escolha do item 6. Testes locais/HTTP aprovados; conferência visual autenticada aguarda renovação da sessão root.
 
 ## Escopo e aceite
 
@@ -39,3 +39,16 @@ Backup prévio privado: 17.260.086 bytes, SHA-256 `a81e068baeffccbf5307cbd56c94d
 Versões anteriores: painel `f5bd0e31-d36d-4026-b086-cae6e4dd9425`; coletor `2a7e6a3f-4b5c-4f2e-bee0-5aa2d75ead8b`. Reverter código mantendo 0036 é compatível. Não restaurar dump sobre dados recentes. Não houve limpeza, manutenção de fotos reais ou alteração de classificações durante os testes.
 
 AUD043 residual de decodificação e AUD044(b/c) são o escopo desta entrega. Não comprova derivação visual contra o original nem revalida todo o acervo antigo. Fallback/reparo D124 preservados. A auditoria completa permanece aberta nos demais itens.
+
+## Publicação e conferência
+
+Commit funcional `5cabf68`, branch `codex/fotos-miniaturas-d125-2026-11-16`. Migração 0036 aplicada: 36 migrações, três índices de fotos e 15 triggers de revisão verificados remotamente, singleton presente. Operação aditiva, sem limpeza de registros.
+
+| Worker | Versão ativa (100%) | Fortaleza |
+| --- | --- | --- |
+| Painel | `7bc28e12-21fb-4ccd-afa4-a74b78b5c18b` | 16/11/2026 06:45:39 |
+| Coletor | `a1ff9077-58ac-4799-b733-5d88605c58da` | 16/11/2026 06:46:01 |
+
+Wrangler informou inicialização de 7 ms no painel e 6 ms no coletor; isso não mede CPU de todos os requests. 84 verificações HTTP públicas passaram (51 painel, 14 mobile, sete limites de tracking, seis coletor e seis limites de fotos). Requests anônimos continuam negados. A sonda inicial de POST de miniatura esperava 401, mas foi corretamente barrada antes por origem/conteúdo com 403; expectativa corrigida conforme contrato, sem alteração de produto. Um relatório local inicialmente não foi salvo porque sua pasta ainda não existia; a sonda foi repetida e o artefato salvo.
+
+APK continua 1.0.4, hash remoto `f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5`. Não reinstalar nem apagar dados. Dados/perfis/localização/alertas preservados. A aba real abriu o login após recarregar; não apresentar a conferência visual anterior ao deploy como prova desta versão. Pedido de renovação da sessão enviado; nenhum upload/reparo/exclusão real usado como teste.

@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "at": "2026-11-16T09:46:33.471Z",
+  "base": "https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev",
+  "version": "1.0.4",
+  "apkSha256": "f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5",
+  "checks": [
+    {
+      "path": "/app",
+      "status": 200
+    },
+    {
+      "path": "/mobile-app.js",
+      "status": 200
+    },
+    {
+      "path": "/mobile-app.css",
+      "status": 200
+    },
+    {
+      "path": "/collector-app.js",
+      "status": 200
+    },
+    {
+      "path": "/api/mobile/me",
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/units",
+      "status": 401
+    },
+    {
+      "path": "/api/collector/capabilities",
+      "status": 401
+    },
+    {
+      "path": "/app/coleta",
+      "status": 302
+    },
+    {
+      "path": "/app/coleta/v3",
+      "status": 302
+    },
+    {
+      "path": "/app/coleta/v2",
+      "status": 302
+    },
+    {
+      "path": "/app/coleta/visita",
+      "status": 302
+    },
+    {
+      "path": "/collector-v3.js",
+      "status": 302
+    },
+    {
+      "path": "/tecnico?app=1",
+      "status": 200
+    },
+    {
+      "path": "/tecnico/SEMED-Tecnico.apk",
+      "status": 200
+    }
+  ],
+  "noOfficialRecordsWritten": true
+}

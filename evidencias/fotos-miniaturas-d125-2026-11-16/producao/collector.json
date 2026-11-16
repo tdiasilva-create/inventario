@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-16T09:47:00.681Z",
+  "checks": [
+    {
+      "path": "/login",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/me",
+      "status": 401
+    },
+    {
+      "path": "/api/agent/v1/pairings/catalog",
+      "status": 401
+    },
+    {
+      "path": "/api/agent/v1/pairings/claim-status",
+      "status": 401
+    },
+    {
+      "path": "/api/admin/users",
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/units",
+      "status": 401
+    }
+  ],
+  "noOfficialRecordsWritten": true
+}

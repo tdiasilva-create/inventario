@@ -1,0 +1,27 @@
+{
+  "general": {
+    "tests": 349,
+    "passed": 349,
+    "failed": 0
+  },
+  "workerdBundle": {
+    "panel": 5,
+    "collector": 5,
+    "passed": true
+  },
+  "publicHttp": {
+    "panel": 51,
+    "mobile": 14,
+    "tracking": 7,
+    "collector": 6,
+    "photos": 6,
+    "total": 84
+  },
+  "migration": {
+    "count": 36,
+    "photoIndexes": 3,
+    "revisionTriggers": 15
+  },
+  "authenticatedProduction": "pending: session expired",
+  "planGpsAlertsPermissions": "unchanged"
+}

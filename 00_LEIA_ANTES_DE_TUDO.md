@@ -1,3 +1,5 @@
+**D-125 publicado (16/11/2026):** validação integral do corpo JPEG, galeria indexada e contagens por revisão; 36 migrações. Originais, permissões, GPS, alertas, gratuito e APK 1.0.4 preservados. [Estado/versões](docs/07-operacao/16_ESTADO_ATUAL_D125.md) e [testes, medidas e limites](docs/05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md). Conferência visual autenticada aguarda renovação da sessão root; a auditoria completa permanece aberta.
+
 **D123 publicado (15/11/2026, 16:40/16:41 Fortaleza):** correções de permissões e consumo nos dois Workers, 35 migrações; 331 testes e comparação real de consumo aprovados. Gratuito, GPS, alertas e binários preservados. [Estado vigente](docs/07-operacao/14_ESTADO_ATUAL_D123.md), [evidências e limites de capacidade](docs/05-qualidade/PERMISSOES_D1_D123_2026-11-15.md).
 
 **Consolidação para auditoria (15/11/2026):** código até D122 e 34 migrações na branch `codex/auditoria-completa-2026-11-15`. Referência histórica: [estado D122](docs/07-operacao/13_ESTADO_ATUAL_D122.md) e [pedido integral ao Claude](docs/08-auditoria/2026-11-15/00_PEDIDO_AO_CLAUDE.txt). Essa consolidação anterior não publicou Workers.

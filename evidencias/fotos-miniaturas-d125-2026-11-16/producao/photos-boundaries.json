@@ -1,0 +1,43 @@
+{
+  "at": "2026-11-16T09:47:12.808Z",
+  "checks": [
+    {
+      "host": "painel-semed-paco",
+      "path": "/api/inventory/photos",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "host": "painel-semed-paco",
+      "path": "/api/root/photo-thumbnails",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "host": "painel-semed-paco",
+      "path": "/api/collector/photo-thumb",
+      "method": "POST",
+      "status": 403
+    },
+    {
+      "host": "inventario-semed-lumiar",
+      "path": "/api/inventory/photos",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "host": "inventario-semed-lumiar",
+      "path": "/api/root/photo-thumbnails",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "host": "inventario-semed-lumiar",
+      "path": "/api/collector/photo-thumb",
+      "method": "POST",
+      "status": 403
+    }
+  ],
+  "noOfficialRecordsWritten": true,
+  "note": "Unauthenticated GET=401; POST without Origin is refused by CSRF/origin guard=403."
+}
