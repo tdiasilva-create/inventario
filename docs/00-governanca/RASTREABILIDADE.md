@@ -707,3 +707,7 @@ D124 publicado em 16/11/2026 às 05:51 Fortaleza: painel `f5bd0e31-d36d-4026-b08
 
 ## D-125 — validação e orçamento de fotos
 Pedido item 6 / AUD043–044 → server/jpeg-thumbnail.mjs e adaptadores WASM, photo-gallery-cache.mjs, photo-gallery.mjs, photo-thumbnails.mjs → migração 0036 e aliases Wrangler → tests/photo-integrity-budget-d125.test.mjs, photo-wasm-runtime.cjs, scripts/measure-photo-budget-d125.mjs e navegador de miniaturas. 349 testes passaram. [Contrato](../04-dados-apis/FOTOS_E_MINIATURAS_D125.md), [qualidade, comparações e versões](../05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md). Dados originais, permissões e D114 preservados; decisões pendentes fora do escopo.
+
+
+## D126 — demandas
+Pedido de 16/11/2026 → aceite sinalizado e exclusão só root → migração 0037, server/demand-deletion.mjs, pending-indicators, service-desk, technical-dispatch, dispatch-road-routing, hardware-review, management-views; web/operations.js, desktop-map.js, painel.css, legenda/alertas → tests/demand-activity-deletion.test.mjs e demand-activity-deletion-browser.cjs → [aceite/publicação](../05-qualidade/DEMANDAS_D126_2026-11-16.md). Preservar histórico, GPS quando resta fila, gratuito, fotos e coleta.

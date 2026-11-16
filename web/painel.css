@@ -953,6 +953,9 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .hardware-map-notice[data-state=demand]{color:#006D77}
 .hardware-map-notice[data-state=demand] .hardware-map-halo{visibility:hidden;animation:none}
 .demand-map-notice{background:transparent;border:0;color:#006D77;cursor:pointer}
+.demand-map-notice[data-attending=true]{color:#2563EB}
+.demand-map-notice[data-attending=true]::before{opacity:.9;border-width:3px}
+.demand-map-key.attending{border-color:#2563EB;border-width:3px}
 .demand-map-notice::before,.demand-map-ring{content:"";box-sizing:border-box;position:absolute;inset:5px;border:2px solid currentColor;border-radius:50%;pointer-events:none;box-shadow:0 0 0 1px #ffffffb3,inset 0 0 0 1px #ffffff80}
 .demand-map-notice::before{opacity:.45}
 .demand-map-ring{animation:demand-map-pulse 3s ease-out infinite}

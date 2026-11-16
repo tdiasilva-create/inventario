@@ -169,3 +169,7 @@ Responsável autorizou implementar/testar/publicar preservando dados, permissõe
 
 ## D-125 — fotos e miniaturas, 16/11/2026
 Responsável escolheu iniciar o item 6, em continuidade à autorização de correções/publicação da coleta e fotos. JPEG é integralmente decodificado no servidor, com envelope limitado, sem afirmar correspondência visual com o original. Galeria usa índices/cursor composto e contagens por revisão transacional; manutenção root inclui hash NULL divergente e índice parcial. Migração aditiva 0036, dados e índices anteriores preservados. Nenhuma mudança de plano, GPS, alertas, permissões ou APK/EXE. Contrato: docs/04-dados-apis/FOTOS_E_MINIATURAS_D125.md; estado de implantação e limites: docs/05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md.
+
+
+## D-126 — sinalização de atendimento e exclusão root, 16/11/2026
+Responsável autorizou implementação, testes e publicação. Aceite confirmado muda o anel externo da unidade para azul; inclui deslocamento e execução, sem inferir chegada pelo GPS. Root pode excluir pela listagem com prévia, motivo, confirmação e conflito de versão/revisão. Ficha/eventos/pareceres permanecem em arquivo consultável pelo root; não é conclusão. Migração 0037 e Worker do painel. Retirada atômica da fila/contadores/rotas; GPS D114 continua se restarem demandas, encerra somente ao zerar. Mesma frequência, gratuito, APK e coletor preservados. Contrato: docs/03-painel-desktop/ATENDIMENTO_E_EXCLUSAO_D126.md; estado efetivo: docs/05-qualidade/DEMANDAS_D126_2026-11-16.md.

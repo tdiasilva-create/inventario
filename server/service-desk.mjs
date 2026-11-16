@@ -1,6 +1,7 @@
 import {presenceState,presenceThreshold} from './agentes/presence.mjs';
 import {equipmentLinkStateSql,linkFilterValues} from './equipment-link-state.mjs';
 import {readFleetStatic} from './panel-read-cache.mjs';
+import {demandDeletionRoutes} from './demand-deletion.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const states=['Aberta','Em atendimento','Aguardando material','Visita agendada','Concluída'];
 const kinds=['Manutenção','Reposição de insumo','Visita técnica','Outro'];
@@ -20,7 +21,7 @@ const columns=`e.id,e.unit_id,e.environment_id,e.position_label,e.category,n.nam
  COALESCE(room.name,json_extract(e.data_json,'$.environmentName'),'Ambiente não informado') AS environment_name,
  COALESCE(json_extract(si.sections_json,'$.system.data.hostname'),json_extract(en.summary_json,'$.hostname')) AS hostname,
  l.device_id,d.state AS device_state,p.data_json AS presence_json,
- (SELECT COUNT(*) FROM service_requests sr WHERE sr.equipment_id=e.id AND sr.status!='Concluída') AS demands`;
+ (SELECT COUNT(*) FROM service_requests_active sr WHERE sr.equipment_id=e.id AND sr.status!='Concluída') AS demands`;
 function item(row,env,now=Date.now()){const p=JSON.parse(row.presence_json||'{}');const {presence_json,device_state,...rest}=row;return {...rest,partial:!!row.partial,presence_state:row.device_id?presenceState({state:device_state},p,now,presenceThreshold(env)):'unlinked',last_contact_at:p.last_live_contact_at||null};}
 export const presenceGroup=st=>['communicating','communicating_with_failure'].includes(st)?'online':st==='no_recent_communication'?'lost':st==='unlinked'?'unlinked':'other';
 // An active link is unique by equipment (0014); no sorted correlated subquery.
@@ -50,12 +51,13 @@ export const networkPresenceSql=`SELECT e.id,e.unit_id,l.device_id,d.state AS de
  ORDER BY u.name COLLATE NOCASE,environment_name,e.position_label,e.id`;
 export {computerWhere as computerWhereSql,joins as computerJoins,columns as computerColumns,item as computerItem};
 function text(value,max=200){return typeof value==='string'&&value.trim().length<=max?value.trim():null;}
-async function result(db,id){const r=await db.prepare('SELECT * FROM service_requests WHERE id=?').bind(id).first();return r?{...r,context:JSON.parse(r.context_json)}:null;}
+async function result(db,id){const r=await db.prepare('SELECT r.*,d.deleted_at,d.actor_name AS deleted_by_name,d.reason AS deleted_reason FROM service_requests r LEFT JOIN service_request_deletions d ON d.request_id=r.id WHERE r.id=?').bind(id).first();return r?{...r,context:JSON.parse(r.context_json)}:null;}
 function dateValid(v){return !v||/^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v+'T12:00:00Z'))&&new Date(v+'T12:00:00Z').toISOString().slice(0,10)===v;}
 export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
  const path=url.pathname;
  if(!path.startsWith('/api/operations/'))return null;
  if(env.APP_KIND==='collector'||!['root','admin','visualizador'].includes(user.role))return fail('Consulta disponível apenas no painel aos perfis autorizados.',403);
+ const deletion=await demandDeletionRoutes(request,url,user,env,{json,fail,body});if(deletion)return deletion;
  if(request.method==='POST'&&!['root','admin'].includes(user.role))return fail('Somente root e admin gerenciam demandas e classificação.',403);
  const db=env.DB,s=url.searchParams,unitId=s.get('unitId')||'',offset=Number(s.get('offset')||0),q=(s.get('q')||'').trim();
  if(!Number.isSafeInteger(offset)||offset<0||q.length>120||unitId&&!uuid(unitId))return fail('Filtros inválidos.');
@@ -71,7 +73,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   const presence=new Map(contacts.map(p=>[p.device_id,p.presence_json]));
   const rows=members.map(r=>({...r,presence_json:presence.get(r.device_id)||null}));
   const counts=new Map();for(const r of rows){const c=counts.get(r.unit_id)||{computers:0,online:0,lost:0,unlinked:0,other:0};c.computers++;const st=r.device_id?presenceState({state:r.state},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):'unlinked';if(['communicating','communicating_with_failure'].includes(st))c.online++;else if(st==='no_recent_communication')c.lost++;else if(st==='unlinked')c.unlinked++;else c.other++;counts.set(r.unit_id,c);}
-  const pending=(await db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id").all()).results;
+  const pending=(await db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests_active WHERE status!='Concluída' GROUP BY unit_id").all()).results;
   return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});
  }
  if(path==='/api/operations/computers'&&request.method==='GET'){
@@ -116,20 +118,22 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   return json({ok:true,version:a.version+1});
  }
  if(path==='/api/operations/requests'&&request.method==='GET'){
-  const id=s.get('id');if(id){if(!uuid(id))return fail('Demanda inválida.');const r=await result(db,id);if(!r)return fail('Demanda não encontrada.',404);const events=(await db.prepare('SELECT actor_name,snapshot_json,note,created_at FROM service_request_events WHERE request_id=? ORDER BY created_at DESC,rowid DESC').bind(id).all()).results.map(e=>({...e,snapshot:JSON.parse(e.snapshot_json)}));return json({request:r,events});}
-  const status=s.get('status')||'pending';if(!['pending','all',...states].includes(status))return fail('Situação inválida.');
-  const clauses=[],args=[];if(unitId){clauses.push('unit_id=?');args.push(unitId);}if(status==='pending')clauses.push("status!='Concluída'");else if(status!=='all'){clauses.push('status=?');args.push(status);}if(q){clauses.push("instr(lower(context_json||' '||description||' '||responsible||' '||number),lower(?))>0");args.push(q);}
+  const id=s.get('id');if(id){if(!uuid(id))return fail('Demanda inválida.');const r=await result(db,id);if(!r||r.deleted_at&&user.role!=='root')return fail('Demanda não encontrada.',404);const events=(await db.prepare('SELECT actor_name,snapshot_json,note,created_at FROM service_request_events WHERE request_id=? ORDER BY created_at DESC,rowid DESC').bind(id).all()).results.map(e=>({...e,snapshot:JSON.parse(e.snapshot_json)}));return json({request:r,events});}
+  const status=s.get('status')||'pending';if(!['pending','all','deleted',...states].includes(status))return fail('Situação inválida.');
+  const archived=status==='deleted';if(archived&&user.role!=='root')return fail('Somente root consulta demandas excluídas.',403);
+  const source=archived?'service_requests r JOIN service_request_deletions d ON d.request_id=r.id':'service_requests_active';
+  const clauses=[],args=[];if(unitId){clauses.push('unit_id=?');args.push(unitId);}if(status==='pending')clauses.push("status!='Concluída'");else if(status!=='all'&&!archived){clauses.push('status=?');args.push(status);}if(q){clauses.push("instr(lower(context_json||' '||description||' '||responsible||' '||number),lower(?))>0");args.push(q);}
   const where=clauses.length?' WHERE '+clauses.join(' AND '):'';
   // Search still counts matching rows; ordinary polling reads a bounded projection.
-  const countQuery=q?db.prepare('SELECT COUNT(*) AS total FROM service_requests'+where).bind(...args):db.prepare("SELECT COALESCE(SUM(total),0) AS total FROM service_request_counts WHERE scope=?"+(status==='pending'?" AND status!='Concluída'":status==='all'?'':' AND status=?')).bind(unitId,...(!['pending','all'].includes(status)?[status]:[]));
-  const [count,page,summary]=await db.batch([countQuery,db.prepare('SELECT * FROM service_requests'+where+' ORDER BY updated_at DESC,id DESC LIMIT 50 OFFSET ?').bind(...args,offset),db.prepare('SELECT status,total FROM service_request_counts WHERE scope=? AND total>0 ORDER BY status').bind(unitId)]);
+  const countQuery=q||archived?db.prepare('SELECT COUNT(*) AS total FROM '+source+where).bind(...args):db.prepare("SELECT COALESCE(SUM(total),0) AS total FROM service_request_counts WHERE scope=?"+(status==='pending'?" AND status!='Concluída'":status==='all'?'':' AND status=?')).bind(unitId,...(!['pending','all'].includes(status)?[status]:[]));
+  const [count,page,summary]=await db.batch([countQuery,db.prepare('SELECT '+(archived?'r.*,d.deleted_at,d.actor_name AS deleted_by_name,d.reason AS deleted_reason':'*')+' FROM '+source+where+' ORDER BY '+(archived?'d.deleted_at DESC,r.id DESC':'updated_at DESC,id DESC')+' LIMIT 50 OFFSET ?').bind(...args,offset),db.prepare('SELECT status,total FROM service_request_counts WHERE scope=? AND total>0 ORDER BY status').bind(unitId)]);
   return json({items:page.results.map(r=>({...r,context:JSON.parse(r.context_json)})),total:count.results[0].total,summary:summary.results,offset,nextOffset:offset+page.results.length<count.results[0].total?offset+50:null});
  }
  if(path==='/api/operations/request-save'&&request.method==='POST'){
   const a=await body(request);if(!uuid(a.operationId)||!uuid(a.id)||!Number.isSafeInteger(a.version)||a.version<0)return fail('Identificação da operação inválida.');
   const payload=JSON.stringify(a),receipt=await db.prepare('SELECT * FROM service_request_events WHERE operation_id=?').bind(a.operationId).first();
-  if(receipt){if(receipt.actor_id!==user.id||receipt.payload_json!==payload)return fail('Esta operação já foi usada com outros dados.',409);return json({request:await result(db,receipt.request_id),replayed:true});}
-  const old=await result(db,a.id);if((old?.version||0)!==a.version)return fail('Esta demanda foi alterada. Reabra para conferir o histórico antes de salvar.',409);
+  if(receipt){if(receipt.actor_id!==user.id||receipt.payload_json!==payload)return fail('Esta operação já foi usada com outros dados.',409);const saved=await result(db,receipt.request_id);if(saved?.deleted_at)return fail('Demanda excluída; histórico preservado. Não é possível alterar ou reabrir.',409);return json({request:saved,replayed:true});}
+  const old=await result(db,a.id);if(old?.deleted_at)return fail('Demanda excluída; histórico preservado. Não é possível alterar ou reabrir.',409);if((old?.version||0)!==a.version)return fail('Esta demanda foi alterada. Reabra para conferir o histórico antes de salvar.',409);
   const description=text(a.description,2000),responsible=text(a.responsible),requester=text(a.requester),note=text(a.note,2000),scheduled=text(a.scheduledDate,10);
   // Saving an unchanged request is read-only, including callers outside this UI.
   if(old&&note===''&&description===old.description&&responsible===old.responsible&&requester===old.requester&&scheduled===old.scheduled_date&&a.status===old.status&&a.kind===old.kind&&a.source===old.source)return json({request:old,unchanged:true});
@@ -140,7 +144,7 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
    unitId=unit.id;equipmentId=eq?.id||null;context={unit_name:unit.name,display_name:eq?.display_name||null,hostname:eq?.hostname||null,environment:eq?.environment_name||null,position:eq?.position_label||null,category:eq?.category||null};
   }else context=old.context;
   const now=Date.now(),snapshot={description,kind:a.kind,source:a.source,requester,status:a.status,responsible,scheduled_date:scheduled,version:a.version+1,context,unit_id:unitId,equipment_id:equipmentId};
-  const stmt=old?db.prepare('UPDATE service_requests SET description=?,kind=?,source=?,requester=?,status=?,responsible=?,scheduled_date=?,version=version+1,updated_at=?,last_operation=? WHERE id=? AND version=?').bind(description,a.kind,a.source,requester,a.status,responsible,scheduled,now,a.operationId,a.id,a.version):db.prepare('INSERT INTO service_requests(id,number,unit_id,equipment_id,context_json,description,kind,source,requester,status,responsible,scheduled_date,created_at,created_by,updated_at,last_operation) SELECT ?,COALESCE(MAX(number),0)+1,?,?,?,?,?,?,?,?,?,?,?,?,?,? FROM service_requests WHERE 1=1 ON CONFLICT(id) DO NOTHING').bind(a.id,unitId,equipmentId,JSON.stringify(context),description,a.kind,a.source,requester,a.status,responsible,scheduled,now,user.id,now,a.operationId);
+  const stmt=old?db.prepare('UPDATE service_requests SET description=?,kind=?,source=?,requester=?,status=?,responsible=?,scheduled_date=?,version=version+1,updated_at=?,last_operation=? WHERE id=? AND version=? AND NOT EXISTS(SELECT 1 FROM service_request_deletions WHERE request_id=service_requests.id)').bind(description,a.kind,a.source,requester,a.status,responsible,scheduled,now,a.operationId,a.id,a.version):db.prepare('INSERT INTO service_requests(id,number,unit_id,equipment_id,context_json,description,kind,source,requester,status,responsible,scheduled_date,created_at,created_by,updated_at,last_operation) SELECT ?,COALESCE(MAX(number),0)+1,?,?,?,?,?,?,?,?,?,?,?,?,?,? FROM service_requests WHERE 1=1 ON CONFLICT(id) DO NOTHING').bind(a.id,unitId,equipmentId,JSON.stringify(context),description,a.kind,a.source,requester,a.status,responsible,scheduled,now,user.id,now,a.operationId);
   // One D1 transaction: the event is emitted only by the winning write. Operation receipt survives response loss.
   const out=await db.batch([stmt,db.prepare('INSERT INTO service_request_events(operation_id,request_id,actor_id,actor_name,payload_json,snapshot_json,note,created_at) SELECT ?,?,?,?,?,?,?,? WHERE changes()=1').bind(a.operationId,a.id,user.id,user.display_name||user.username,payload,JSON.stringify(snapshot),note,now)]);
   if(!out[0].meta.changes)return fail('A demanda mudou durante o envio. Atualize e confira o histórico.',409);

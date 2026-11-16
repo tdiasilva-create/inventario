@@ -178,3 +178,7 @@ O pedido de 15/11/2026 retira equipamentos da busca principal e exige sugestões
 
 ## D-123 — expiração versus revogação; heartbeat versus histórico
 D114 permite localização após expiração NATURAL. Isso não permite manter rastreamento após revogação explícita administrativa: D123 corrige essa lacuna mesmo quando a sessão antiga já saiu da tabela. Desabilitar cópias redundantes em agent_heartbeats usa configuração existente; não remove o snapshot histórico de hardware nem a segurança de recibos/nonces. Medida de menor custo não equivale a homologação da frota de 300 agentes no plano gratuito. Decisões de frequência/retensão e demais lacunas não foram tomadas nesta correção.
+
+
+## D126 — anel após aceite e arquivo de demanda
+Supera D094 somente na cor externa da unidade com aceite: azul até término/pausa/retirada; verde-petróleo permanece para pendências sem aceite. D095 preserva clique na Central. Excluída sai de todos os totais operacionais mesmo mantendo o estado anterior na ficha histórica; não converter em Concluída. Sessão/GPS não encerram o aceite operacional, distinto da autorização de localização D114. [Contrato](../03-painel-desktop/ATENDIMENTO_E_EXCLUSAO_D126.md).

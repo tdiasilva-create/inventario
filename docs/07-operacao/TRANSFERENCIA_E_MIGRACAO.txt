@@ -1,6 +1,6 @@
 SEMED · TRANSFERÊNCIA, OPERAÇÃO E MIGRAÇÃO
-Referência: 16/11/2026, estado até D-125. Gerado dos guias mantidos em docs/07-operacao/.
-Começar pelo guia 16_ESTADO_ATUAL_D125; os guias datados anteriores preservam o histórico.
+Referência: 16/11/2026, estado até D-126. Gerado dos guias mantidos em docs/07-operacao/.
+Começar pelo guia 17_ESTADO_ATUAL_D126; os guias datados anteriores preservam o histórico.
 Repositório: https://github.com/tdiasilva-create/inventario
 Painel: https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
 Coletor: https://inventario-semed-lumiar.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev/login
@@ -1043,5 +1043,20 @@ O build precisa empacotar o WASM de @jsquash/jpeg e respeitar o alias #jpeg-deco
 349 testes gerais e teste do bundle workerd passaram. Backup restaurado em isolamento; evidências sintéticas e agregados versionados. Comparação local não certifica capacidade para toda a frota no gratuito. Validação visual contra o original, regras de retenção/limpeza/revisitas, demais achados e homologação física permanecem fora desta entrega.
 
 Publicado em 16/11/2026, 100%: painel 7bc28e12-21fb-4ccd-afa4-a74b78b5c18b às 06:45:39; coletor a1ff9077-58ac-4799-b733-5d88605c58da às 06:46:01 Fortaleza. Migração 0036 aplicada/verificada. 84 verificações HTTP passaram. APK 1.0.4 preservado. Conferência root após novo login concluída: duas fotos da Biblioteca Municipal, navegação até a fachada original e miniatura 240 × 320 na ficha do PC-01. Nenhum cadastro/arquivo real alterado.
+
+
+==============================================================================
+FONTE: 17_ESTADO_ATUAL_D126.md
+==============================================================================
+
+Estado D126 — 16/11/2026
+
+Complementa D125 (16_ESTADO_ATUAL_D125.md). Contrato (../03-painel-desktop/ATENDIMENTO_E_EXCLUSAO_D126.md) e estado efetivo de publicação (../05-qualidade/DEMANDAS_D126_2026-11-16.md).
+
+Anel azul após aceite da demanda; exclusão exclusiva do root com arquivo imutável, motivo e autoria. Migração 0037 mantém ficha/eventos anteriores e atualiza projeções/filas atomicamente. Localização D114 continua enquanto restar atribuição aberta; a última retirada encerra acompanhamento. Sem novo polling, mudança de plano, APK, EXE ou perguntas da coleta.
+
+Para migração física, manter a visão service_requests_active nas consultas operacionais, contadores e triggers de exclusão. Não apagar registros canônicos nem traduzir exclusão como conclusão. Preservar arquivo, recibos, avisos e a mesma atomicidade. Não fazer rollback para uma aplicação que desconheça demandas excluídas após uso do recurso.
+
+As decisões gerais de retenção/arquivamento da auditoria e paginação (item 19) continuam pendentes; D126 não as altera.
 
 

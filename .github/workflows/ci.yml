@@ -167,3 +167,7 @@ jobs:
       - run: pnpm test:d1-usage:browser
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/demand-activity-deletion-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium

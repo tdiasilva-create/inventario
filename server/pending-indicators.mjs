@@ -15,8 +15,15 @@ export const hardwarePendingFrom=`FROM agent_notifications n
  LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id
  WHERE n.kind='hardware_change' AND hr.notification_id IS NULL`;
 export const collectionCountsSql='SELECT state,total FROM panel_collection_counts WHERE total>0';
+export const demandMapSummarySql=`SELECT c.scope AS unit_id,SUM(c.total) AS total,COALESCE(MAX(active.accepted),0) AS accepted
+  FROM service_request_counts c LEFT JOIN (
+   SELECT r.unit_id,COUNT(DISTINCT a.request_id) AS accepted FROM dispatch_service_activity a
+   CROSS JOIN service_requests_active r ON r.id=a.request_id WHERE r.status!='Concluída' GROUP BY r.unit_id
+  ) active ON active.unit_id=c.scope
+  WHERE c.scope!='' AND c.status!='Concluída' AND c.total>0 GROUP BY c.scope ORDER BY c.scope`;
 export async function readPendingSummary(db,hardwareTotal){
- const statements=[db.prepare(collectionCountsSql),db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id ORDER BY unit_id")];
+ // Reuse D123's bounded counters; acceptance is a small projection, never GPS/history scans.
+ const statements=[db.prepare(collectionCountsSql),db.prepare(demandMapSummarySql)];
  if(hardwareTotal===undefined)statements.push(db.prepare('SELECT COUNT(*) AS total '+hardwarePendingFrom));
  const [collections,demands,hardware]=await db.batch(statements);
  const states={not_started:0,in_progress:0,preserved:0};for(const row of collections.results)states[row.state]=row.total;

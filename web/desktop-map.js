@@ -50,15 +50,17 @@ function paintHardware(){
  if(!current)return;const context=current;
  const pendingState=getPendingState(),demandRows=pendingState.data?.demands?.units,demandReady=Array.isArray(demandRows);
  const counts=new Map((demandReady?demandRows:[]).map(u=>[u.unit_id,u.total]));
+ const acceptedCounts=new Map((demandReady?demandRows:[]).map(u=>[u.unit_id,u.accepted||0]));
  const mapStatus=context.container.closest('.map-panel').querySelector('[data-map-demand-status]');
  if(mapStatus){const hidden=demandReady&&!pendingState.error,message=pendingState.error?'Demandas: consulta indisponível. Última leitura preservada.':'Consultando demandas abertas…';if(mapStatus.hidden!==hidden)mapStatus.hidden=hidden;if(mapStatus.textContent!==message)mapStatus.textContent=message;}
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
-  const openDemands=counts.get(id)||0,node=entry.marker.getElement(),position=entry.marker.getLatLng();
-  const paintKey=JSON.stringify([entry.name,entry.type,entry.color,entry.students,entry.seats,pending,demands,openDemands,!!pendingState.error,position.lat,position.lng]);
+  const openDemands=counts.get(id)||0,accepted=acceptedCounts.get(id)||0,node=entry.marker.getElement(),position=entry.marker.getLatLng();
+  const paintKey=JSON.stringify([entry.name,entry.type,entry.color,entry.students,entry.seats,pending,demands,openDemands,accepted,!!pendingState.error,position.lat,position.lng]);
   if(entry.paintKey===paintKey&&entry.paintedNode===node)continue;
   entry.paintKey=paintKey;entry.paintedNode=node;
   entry.label.textContent=entry.name+' · '+entry.type+'\nAlunos: '+mapFigure(entry.students)+'\nVagas disponíveis: '+mapFigure(entry.seats)+(pending?'\n'+pending+' alteração(ões) de hardware aguardando decisão':'')+(openDemands?'\n'+openDemands+' demanda(s) aberta(s)':'');
   if(pendingState.error&&openDemands)entry.label.textContent+=' · Demandas: última leitura, atualização indisponível';
+  if(accepted)entry.label.textContent+='\n'+accepted+' atendimento(s) aceito(s) · A caminho ou em atendimento';
   if(entry.marker.options.fillColor!==entry.color)entry.marker.setStyle({fillColor:entry.color});
   if(node){node.dataset.unitId=id;node.dataset.unitType=entry.type;node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click',{keyboard:true});}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
@@ -72,7 +74,7 @@ function paintHardware(){
   if(openDemands){
    if(!entry.demandNotice){entry.demandNotice=window.L.marker(entry.marker.getLatLng(),{keyboard:true,zIndexOffset:600,icon:window.L.divIcon({className:'demand-map-notice',iconSize:[48,48],iconAnchor:[24,24],html:'<span class="demand-map-ring" aria-hidden="true"></span>'})}).addTo(context.unitGroup);entry.demandNotice.on('click',e=>selectMapUnit(context,id,e));entry.demandNotice.bindTooltip(()=>entry.label.cloneNode(true),tooltipOptions);}
    entry.demandNotice.setLatLng(entry.marker.getLatLng());const ring=entry.demandNotice.getElement();
-   if(ring){ring.dataset.unitId=id;ring.dataset.demands=String(openDemands);ring.dataset.stale=String(!!pendingState.error);ring.setAttribute('role','button');ring.setAttribute('aria-label',entry.label.textContent+' · Abrir demandas desta unidade');ring.title=entry.label.textContent+' · Abrir demandas desta unidade';ring.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();entry.demandNotice.fire('click',{keyboard:true});}};}
+   if(ring){ring.dataset.unitId=id;ring.dataset.demands=String(openDemands);ring.dataset.attending=String(accepted>0);ring.dataset.stale=String(!!pendingState.error);ring.setAttribute('role','button');ring.setAttribute('aria-label',entry.label.textContent+' · Abrir demandas desta unidade');ring.title=entry.label.textContent+' · Abrir demandas desta unidade';ring.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();entry.demandNotice.fire('click',{keyboard:true});}};}
   }else if(entry.demandNotice){context.unitGroup.removeLayer(entry.demandNotice);entry.demandNotice=null;}
  }
 }

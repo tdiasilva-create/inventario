@@ -454,3 +454,7 @@ Correções técnicas e limites por achado no [registro D124](../05-qualidade/CO
 
 ## D-125 — continuação do item 6
 Decodificação integral do corpo JPEG (AUD043 residual) e consultas globais/índice de manutenção (AUD044b/c) implementados/testados. Estado real e versões no [registro D125](../05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md). Não foi implementada prova visual de derivação contra o original nem revalidação retroativa; preservados original/fallback/reparo root. As decisões e demais pendências de D124 permanecem. Nenhuma limpeza automática de fotos/órfãos autorizada por esta escolha.
+
+
+## D126 — demandas, 16/11/2026
+Autorizados sinalização após aceite e arquivo de exclusão exclusivo do root. Implementação e testes locais concluídos; estado efetivo da publicação em [qualidade D126](../05-qualidade/DEMANDAS_D126_2026-11-16.md). Item 19 (retenção da auditoria e paginação geral) permanece sem decisão; não confundir o arquivo de demandas com expurgo de audit.

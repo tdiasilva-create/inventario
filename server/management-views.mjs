@@ -51,10 +51,10 @@ export async function managementViews(request,url,user,env,{json,fail}){
  }
  const kind=s.get('kind')||'';if(!['','collection','demands','hardware'].includes(kind))return fail('Filtro de providências inválido.');
  // Inclui solicitações antigas de unidade removida/inativa; não as oculta da fila.
- const cte=collectionCTE+`, demands AS (SELECT unit_id,COUNT(*) AS total FROM service_requests WHERE status!='Concluída' GROUP BY unit_id),
+ const cte=collectionCTE+`, demands AS (SELECT unit_id,COUNT(*) AS total FROM service_requests_active WHERE status!='Concluída' GROUP BY unit_id),
  hardware AS (SELECT n.unit_id,COUNT(*) AS total ${hardwarePendingFrom} GROUP BY n.unit_id),
  keys AS (SELECT unit_id FROM pending UNION SELECT unit_id FROM demands UNION SELECT unit_id FROM hardware),
- work AS (SELECT k.unit_id,COALESCE(u.name,(SELECT json_extract(sr.context_json,'$.unit_name') FROM service_requests sr WHERE sr.unit_id=k.unit_id ORDER BY sr.created_at DESC,sr.id LIMIT 1),'Unidade removida') AS name,
+ work AS (SELECT k.unit_id,COALESCE(u.name,(SELECT json_extract(sr.context_json,'$.unit_name') FROM service_requests_active sr WHERE sr.unit_id=k.unit_id ORDER BY sr.created_at DESC,sr.id LIMIT 1),'Unidade removida') AS name,
  u.code,u.active,(u.id IS NULL) AS removed,p.inspection_id,p.updated_at AS collection_updated_at,
  COALESCE(p.state,CASE WHEN u.active=1 AND ${collectionScopeSql('u')} THEN 'none' ELSE 'unavailable' END) AS collection_state,
  (p.unit_id IS NOT NULL) AS collection_pending,COALESCE(d.total,0) AS demands,COALESCE(h.total,0) AS hardware

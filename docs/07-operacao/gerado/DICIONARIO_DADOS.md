@@ -38,6 +38,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0034_agent_network_tests.sql`
 - `0035_audit_read_budget.sql`
 - `0036_photo_gallery_reads.sql`
+- `0037_demand_activity_archive.sql`
 
 ## agent_audit_log
 
@@ -607,6 +608,17 @@ Referências: `attendance_id` → `dispatch_attendances.id` (delete: CASCADE).
 | lease_until | INTEGER | sim |  | 0 |
 | token | TEXT | não |  | — |
 
+## dispatch_service_activity
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| user_id | TEXT | não | 1 | — |
+| assignment_id | TEXT | sim |  | — |
+| request_id | TEXT | sim |  | — |
+| started_at | INTEGER | sim |  | — |
+
+Referências: `request_id` → `service_requests.id` (delete: NO ACTION); `assignment_id` → `dispatch_assignments.id` (delete: NO ACTION); `user_id` → `users.id` (delete: NO ACTION).
+
 ## dispatch_technicians
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1094,6 +1106,20 @@ Referências: `notification_id` → `agent_notifications.id` (delete: CASCADE).
 | status | TEXT | sim | 2 | — |
 | total | INTEGER | sim |  | — |
 
+## service_request_deletions
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| request_id | TEXT | não | 1 | — |
+| operation_id | TEXT | sim |  | — |
+| actor_id | TEXT | sim |  | — |
+| actor_name | TEXT | sim |  | — |
+| reason | TEXT | sim |  | — |
+| deleted_at | INTEGER | sim |  | — |
+| payload_json | TEXT | sim |  | — |
+
+Referências: `request_id` → `service_requests.id` (delete: NO ACTION).
+
 ## service_request_events
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1376,6 +1402,8 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `dispatch_assignment_ended` (trigger, dispatch_assignments)
 - `dispatch_assignment_max` (trigger, dispatch_assignments)
 - `dispatch_attendance_ended` (trigger, dispatch_attendances)
+- `dispatch_deleted_assignment` (trigger, dispatch_assignments)
+- `dispatch_deleted_attendance` (trigger, dispatch_attendances)
 - `dispatch_open_assigned` (trigger, dispatch_assignments)
 - `dispatch_open_assignment_deleted` (trigger, dispatch_assignments)
 - `dispatch_open_request_status` (trigger, service_requests)
@@ -1386,6 +1414,11 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `dispatch_road_route_attendance_ended` (trigger, dispatch_attendances)
 - `dispatch_road_route_position_deleted` (trigger, dispatch_positions)
 - `dispatch_road_route_queue_changed` (trigger, dispatch_meta)
+- `dispatch_service_accepted` (trigger, dispatch_attendances)
+- `dispatch_service_completed` (trigger, service_requests)
+- `dispatch_service_stopped` (trigger, dispatch_attendances)
+- `dispatch_service_unassigned` (trigger, dispatch_assignments)
+- `dispatch_service_user_revoked` (trigger, users)
 - `dispatch_session_removed` (trigger, sessions)
 - `dispatch_technician_disabled` (trigger, dispatch_technicians)
 - `dispatch_tracking_credentials` (trigger, users)
@@ -1484,9 +1517,15 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `progress_equipment_update` (trigger, equipments)
 - `provider_reports_immutable` (trigger, provider_reports)
 - `published_equipment_update` (trigger, equipments)
+- `service_request_archive` (trigger, service_request_deletions)
+- `service_request_archive_immutable` (trigger, service_request_deletions)
+- `service_request_archive_preserved` (trigger, service_request_deletions)
 - `service_request_count_delete` (trigger, service_requests)
 - `service_request_count_insert` (trigger, service_requests)
 - `service_request_count_update` (trigger, service_requests)
+- `service_request_deleted_purge` (trigger, service_requests)
+- `service_request_deleted_write` (trigger, service_requests)
 - `inventory_equipment_all` (view, inventory_equipment_all)
 - `panel_collection_state_source` (view, panel_collection_state_source)
 - `panel_hardware_source` (view, panel_hardware_source)
+- `service_requests_active` (view, service_requests_active)

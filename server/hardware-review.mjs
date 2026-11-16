@@ -6,14 +6,16 @@ export const notificationJoins=`FROM agent_notifications n
  LEFT JOIN environments room ON room.id=e.environment_id AND room.unit_id=e.unit_id
  LEFT JOIN agent_inventory_snapshots snap ON snap.inventory_id=json_extract(n.details_json,'$.inventory_id') AND snap.equipment_id=n.equipment_id
  LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id
- LEFT JOIN service_requests sr ON sr.id=hr.request_id`;
+ LEFT JOIN service_requests sr ON sr.id=hr.request_id
+ LEFT JOIN service_request_deletions sd ON sd.request_id=hr.request_id`;
 export const notificationColumns=`n.*,u.name AS unit_name,COALESCE(room.name,json_extract(e.data_json,'$.environmentName')) AS environment_name,
  e.environment_id,e.position_label,nm.name AS display_name,json_extract(snap.sections_json,'$.system.data.hostname') AS hostname,
  (e.published_json IS NULL) AS partial,
- hr.decision,hr.actor_name AS decision_by,hr.decided_at,hr.note AS decision_note,hr.request_id,sr.number AS request_number,sr.status AS request_status`;
+ hr.decision,hr.actor_name AS decision_by,hr.decided_at,hr.note AS decision_note,hr.request_id,sr.number AS request_number,
+ CASE WHEN sd.request_id IS NOT NULL THEN 'Excluída' ELSE sr.status END AS request_status`;
 export function notificationItem(row){
  const details=parse(row.details_json),context=details.context||{unit_name:row.unit_name,environment_name:row.environment_name,environment_id:row.environment_id,position_label:row.position_label,display_name:row.display_name,hostname:row.hostname};
- return {...row,...context,context_source:details.context?'at_detection':'current',details,details_json:undefined,review_state:!row.decision?'pending':row.decision==='accepted'?'accepted':row.request_status==='Concluída'?'completed':'demand'};
+ return {...row,...context,context_source:details.context?'at_detection':'current',details,details_json:undefined,review_state:!row.decision?'pending':row.decision==='accepted'?'accepted':row.request_status==='Excluída'?'deleted':row.request_status==='Concluída'?'completed':'demand'};
 }
 export async function hardwareSummary(db){
  // Resumo independente da página/filtro de notificações e da marcação individual de leitura.
@@ -32,7 +34,7 @@ export async function hardwareReviewRoutes(request,url,user,env,{json,fail,body}
   if(request.method!=='GET')return fail('Método não permitido.',405);
   const id=url.searchParams.get('id')||'',unit=url.searchParams.get('unitId')||'',offset=Number(url.searchParams.get('offset')||0),state=url.searchParams.get('state')||'active';
   if(id&&!uuid(id)||unit&&!uuid(unit)||!Number.isSafeInteger(offset)||offset<0||!['active','pending','all'].includes(state))return fail('Filtro inválido.',422);
-  const where=" WHERE n.kind='hardware_change'"+(id?' AND n.id=?':unit?' AND n.unit_id=?':'')+(state==='pending'?' AND hr.notification_id IS NULL':id||state==='all'?'':" AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'))"),args=id?[id]:unit?[unit]:[];
+  const where=" WHERE n.kind='hardware_change'"+(id?' AND n.id=?':unit?' AND n.unit_id=?':'')+(state==='pending'?' AND hr.notification_id IS NULL':id||state==='all'?'':" AND (hr.notification_id IS NULL OR (hr.decision='demand' AND sd.request_id IS NULL AND COALESCE(sr.status,'')!='Concluída'))"),args=id?[id]:unit?[unit]:[];
   const [list,total]=await Promise.all([db.prepare(`SELECT ${notificationColumns} ${notificationJoins}${where} ORDER BY (hr.notification_id IS NULL) DESC,n.detected_at DESC,n.id DESC LIMIT 25 OFFSET ?`).bind(...args,offset).all(),db.prepare(`SELECT COUNT(*) AS n ${notificationJoins}${where}`).bind(...args).first()]);
   return json({items:list.results.map(notificationItem),total:total.n,nextOffset:offset+list.results.length<total.n?offset+25:null});
  }

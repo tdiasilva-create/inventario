@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {collectorFixture} from './helpers/collector-db.mjs';
 import {hardwareChange} from './helpers/hardware-change.mjs';
@@ -33,6 +33,8 @@ test('D123: backfill preserves canonical tables; hardware decisions, orphan cont
   for(const t of tables)before.set(t,hash(t));
   f.sqlite.exec(readFileSync('migrations/0035_audit_read_budget.sql','utf8'));
   for(const t of tables)assert.equal(hash(t),before.get(t),t);verify(f);
+  // Backfill above stays pinned to D123. Current Worker routes require later schemas.
+  for(const file of readdirSync('migrations').filter(x=>x.endsWith('.sql')&&x>'0035_audit_read_budget.sql').sort())f.sqlite.exec(readFileSync('migrations/'+file,'utf8'));
   assert.equal((await hardwareSummary(f.db)).pending,1);
   const auth=await session(f,f.root);
   let r=await humanFetch(worker,env,'https://teste.invalid',auth,'/api/inventory/hardware-review',{id:seed.id,decision:'demand',note:'TESTE',operationId:crypto.randomUUID()});assert.equal(r.status,200);verify(f);

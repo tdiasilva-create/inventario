@@ -21,14 +21,14 @@ const assignmentSql=`SELECT a.id,a.request_id,a.user_id,u.display_name,u.usernam
  LEFT JOIN sessions s ON s.token_hash=t.session_hash AND s.credential_version=u.credential_version
  WHERE a.ended_at IS NULL`;
 const queueSql=`SELECT r.*,o.position,u.name AS current_unit_name,u.latitude,u.longitude
- FROM service_requests r JOIN dispatch_order o ON o.request_id=r.id LEFT JOIN units u ON u.id=r.unit_id`;
+ FROM service_requests_active r JOIN dispatch_order o ON o.request_id=r.id LEFT JOIN units u ON u.id=r.unit_id`;
 const asRequest=r=>{const {context_json,...rest}=r;return {...rest,context:JSON.parse(context_json)};};
 async function queue(db,user,{root=false,offset=0,history=false}={}){
  const cond=root?"r.status!='Concluída'":`EXISTS(SELECT 1 FROM dispatch_assignments a WHERE a.request_id=r.id AND a.user_id=? AND a.ended_at IS NULL) AND r.status${history?'=':'!='}'Concluída'`;
  const args=root?[]:[user.id];
  const [page,count,meta,assigned]=await db.batch([
   db.prepare(queueSql+' WHERE '+cond+` ORDER BY ${history?'r.updated_at DESC':'o.position,r.number'} LIMIT 100 OFFSET ?`).bind(...args,offset),
-  db.prepare('SELECT COUNT(*) AS total FROM service_requests r WHERE '+cond).bind(...args),
+  db.prepare('SELECT COUNT(*) AS total FROM service_requests_active r WHERE '+cond).bind(...args),
   db.prepare('SELECT revision FROM dispatch_meta WHERE id=1'),
   db.prepare(assignmentSql+(root?'':' AND a.request_id IN (SELECT request_id FROM dispatch_assignments WHERE user_id=? AND ended_at IS NULL)')).bind(...(root?[]:[user.id]))
  ]);
@@ -84,7 +84,7 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
   return json({item,serverTime:now});
  }
  if(get&&!admin&&endpoint==='active'){
-  const attendance=await db.prepare(`SELECT t.id,t.request_id FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' WHERE t.user_id=? AND t.ended_at IS NULL AND t.session_hash=?`).bind(user.id,user.token_hash).first();
+  const attendance=await db.prepare(`SELECT t.id,t.request_id FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests_active r ON r.id=t.request_id AND r.status!='Concluída' WHERE t.user_id=? AND t.ended_at IS NULL AND t.session_hash=?`).bind(user.id,user.token_hash).first();
   return json({attendance});
  }
  if(get&&admin&&endpoint==='map')return json(await readDispatchMap(db,now));
@@ -101,7 +101,7 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  if(!admin&&endpoint==='position'){
   if(!uuid(a.attendanceId)||!validPosition(a.position,now))return fail('Localização atual indisponível.',422);
   const p=a.position;
-  const r=await db.prepare(`INSERT INTO dispatch_positions SELECT t.id,?,?,?,?,? FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests r ON r.id=t.request_id AND r.status!='Concluída' JOIN dispatch_technicians c ON c.user_id=t.user_id AND c.enabled=1 WHERE t.id=? AND t.user_id=? AND t.session_hash=? AND t.ended_at IS NULL ON CONFLICT(attendance_id) DO UPDATE SET latitude=excluded.latitude,longitude=excluded.longitude,accuracy=excluded.accuracy,observed_at=excluded.observed_at,received_at=excluded.received_at WHERE excluded.observed_at>dispatch_positions.observed_at`).bind(p.latitude,p.longitude,p.accuracy,p.observedAt,now,a.attendanceId,user.id,user.token_hash).run();
+  const r=await db.prepare(`INSERT INTO dispatch_positions SELECT t.id,?,?,?,?,? FROM dispatch_attendances t JOIN dispatch_assignments a ON a.id=t.assignment_id AND a.ended_at IS NULL JOIN service_requests_active r ON r.id=t.request_id AND r.status!='Concluída' JOIN dispatch_technicians c ON c.user_id=t.user_id AND c.enabled=1 WHERE t.id=? AND t.user_id=? AND t.session_hash=? AND t.ended_at IS NULL ON CONFLICT(attendance_id) DO UPDATE SET latitude=excluded.latitude,longitude=excluded.longitude,accuracy=excluded.accuracy,observed_at=excluded.observed_at,received_at=excluded.received_at WHERE excluded.observed_at>dispatch_positions.observed_at`).bind(p.latitude,p.longitude,p.accuracy,p.observedAt,now,a.attendanceId,user.id,user.token_hash).run();
   if(!r.meta.changes){const active=await db.prepare('SELECT id FROM dispatch_attendances WHERE id=? AND user_id=? AND session_hash=? AND ended_at IS NULL').bind(a.attendanceId,user.id,user.token_hash).first();if(!active)return fail('O acompanhamento deste atendimento foi encerrado.',409);}
   return json({ok:true});
  }
@@ -115,16 +115,16 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  }
  if(admin&&endpoint==='move'){
   if(!uuid(a.id)||a.beforeId!==null&&!uuid(a.beforeId))return fail('Destino de ordenação inválido.');
-  const list=(await db.prepare("SELECT o.request_id AS id FROM dispatch_order o JOIN service_requests r ON r.id=o.request_id WHERE r.status!='Concluída' ORDER BY o.position,r.number").all()).results.map(r=>r.id);
+  const list=(await db.prepare("SELECT o.request_id AS id FROM dispatch_order o JOIN service_requests_active r ON r.id=o.request_id WHERE r.status!='Concluída' ORDER BY o.position,r.number").all()).results.map(r=>r.id);
   if(!list.includes(a.id)||a.beforeId&&!list.includes(a.beforeId)||a.beforeId===a.id)return fail('Atualize a lista de demandas.',409);
   const ordered=list.filter(id=>id!==a.id);ordered.splice(a.beforeId?ordered.indexOf(a.beforeId):ordered.length,0,a.id);
-  const recipients=(await db.prepare("SELECT DISTINCT a.user_id FROM dispatch_assignments a JOIN service_requests r ON r.id=a.request_id AND r.status!='Concluída' WHERE a.ended_at IS NULL").all()).results.map(r=>r.user_id);
+  const recipients=(await db.prepare("SELECT DISTINCT a.user_id FROM dispatch_assignments a JOIN service_requests_active r ON r.id=a.request_id AND r.status!='Concluída' WHERE a.ended_at IS NULL").all()).results.map(r=>r.user_id);
   return command(db,user,a,a.revision,({stmt,event,notify})=>[
    stmt('UPDATE dispatch_order SET position=(SELECT (CAST(key AS INTEGER)+1)*1024 FROM json_each(?) WHERE value=dispatch_order.request_id) WHERE request_id IN (SELECT value FROM json_each(?)) AND $gate',[JSON.stringify(ordered),JSON.stringify(ordered)]),event('reorder',{beforeId:a.beforeId}),notify(recipients,'A sequência de atendimentos foi reorganizada pelo root.')
   ],helpers);
  }
  if(!uuid(a.id))return fail('Selecione uma demanda.');
- const row=await db.prepare('SELECT * FROM service_requests WHERE id=?').bind(a.id).first();if(!row)return fail('Demanda não encontrada.',404);
+ const row=await db.prepare('SELECT * FROM service_requests_active WHERE id=?').bind(a.id).first();if(!row)return fail('Demanda não encontrada.',404);
  if(admin&&endpoint==='assign'){
   if(!Array.isArray(a.userIds)||a.userIds.length>2||new Set(a.userIds).size!==a.userIds.length||!a.userIds.every(uuid))return fail('Escolha até dois técnicos distintos.');
   if(row.status==='Concluída')return fail('Demanda já concluída.',409);

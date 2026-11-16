@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4876,
-      "lines": 170,
-      "sha256": "d8dc7e37b9db3a319f6c68414ad8417da88e128d7d9bc4f25ddb808a2ee98e05",
+      "bytes": 4990,
+      "lines": 174,
+      "sha256": "c9752dc426e4d94e513244115a8d012a338f55a7001df522566e4e72d66201d5",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -540,6 +540,16 @@
       "apiLiterals": []
     },
     {
+      "path": "migrations/0037_demand_activity_archive.sql",
+      "bytes": 7129,
+      "lines": 104,
+      "sha256": "a5428d982b4b188c8a297103cc0450228912033e6dd72adb75783412154aa204",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "package.json",
       "bytes": 7604,
       "lines": 95,
@@ -895,7 +905,7 @@
       "path": "scripts/export-operation-manual.mjs",
       "bytes": 2424,
       "lines": 37,
-      "sha256": "a70c8dcce80af7b281167b619b56227e4299474983366cd807b6b456fe0d472c",
+      "sha256": "8000cfb9abb74aad88f1c9cc24505edbe6ec4d6547d998a448a639f7c2f66f30",
       "imports": [
         "node:fs/promises"
       ],
@@ -1385,9 +1395,9 @@
     },
     {
       "path": "scripts/test-audit-browser.mjs",
-      "bytes": 1171,
+      "bytes": 1210,
       "lines": 21,
-      "sha256": "41aed3345f94208d5e468cca275518e5d640439c05d788a9243c61e6377edc74",
+      "sha256": "72c5610f42fd95c0a0bad16559ed1e0fdc57e086a8c32df83333eb58ed1d0a24",
       "imports": [
         "node:child_process"
       ],
@@ -1807,6 +1817,33 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "scripts/verify-demand-d126.mjs",
+      "bytes": 6210,
+      "lines": 61,
+      "sha256": "e536a26817264d05375eed8c0eb417adab6bcbaedc74535f09546d733d9fa4ff",
+      "imports": [
+        "../server/pending-indicators.mjs",
+        "../server/request-timing.mjs",
+        "../server/security.mjs",
+        "../server/worker.mjs",
+        "../tests/helpers/dispatch-fixture.mjs",
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs",
+        "node:module",
+        "node:sqlite"
+      ],
+      "exports": [],
+      "environment": [
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/operations/request-delete",
+        "/api/operations/request-delete-preview?id=",
+        "/api/technician/accept"
+      ]
     },
     {
       "path": "scripts/verify-in-progress.mjs",
@@ -2752,10 +2789,28 @@
       ]
     },
     {
+      "path": "server/demand-deletion.mjs",
+      "bytes": 3462,
+      "lines": 44,
+      "sha256": "04da7663517e2ebebf857b81e2d98cfee77467ae4490cbc3ab4c9f719c3be66e",
+      "imports": [],
+      "exports": [
+        "demandDeletionRoutes"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/operations/request-delete",
+        "/api/operations/request-delete-preview"
+      ]
+    },
+    {
       "path": "server/dispatch-road-routing.mjs",
-      "bytes": 9898,
+      "bytes": 9912,
       "lines": 94,
-      "sha256": "1d725be47037b34e445068f88582530b2bbbcf34057ec38f99792bcdf5b0add7",
+      "sha256": "e9c22da57d5533f2797fe9a04c890822e0f8ee301d1766e0c55046b6b6f88ad3",
       "imports": [
         "./security.mjs",
         "./technician-tracking.mjs"
@@ -2873,9 +2928,9 @@
     },
     {
       "path": "server/hardware-review.mjs",
-      "bytes": 8067,
-      "lines": 64,
-      "sha256": "fb0cc2894a77f902ef37bbee6c353decd25b5cd1c11464fb27ad424c433cc2c3",
+      "bytes": 8271,
+      "lines": 66,
+      "sha256": "291390c9b16d19e8b2f23122a3d5923e737cf551f1a50965dc23c0a7c9ba67ff",
       "imports": [],
       "exports": [
         "hardwareReviewRoutes",
@@ -3062,9 +3117,9 @@
     },
     {
       "path": "server/management-views.mjs",
-      "bytes": 7184,
+      "bytes": 7198,
       "lines": 67,
-      "sha256": "c542872f7987a50019e63431e5f006850520884ff216b945cc6ca4a4f1838bc4",
+      "sha256": "f78cf8e71beaa7532767e84b615d946b78a1927b6695fb0bea73eed5c1eae4b9",
       "imports": [
         "./agentes/presence.mjs",
         "./equipment-link-state.mjs",
@@ -3163,15 +3218,16 @@
     },
     {
       "path": "server/pending-indicators.mjs",
-      "bytes": 3555,
-      "lines": 44,
-      "sha256": "15b6983395b8c1f60a595fa63c5798fd85a013cb47093716420a5dc7dd43284f",
+      "bytes": 4059,
+      "lines": 51,
+      "sha256": "62350a4bc7127585d5035f2816b5d1006a0aa29dd4e85ed1a7a865fce433698a",
       "imports": [
         "./unit-scope.mjs"
       ],
       "exports": [
         "collectionCTE",
         "collectionCountsSql",
+        "demandMapSummarySql",
         "hardwarePendingFrom",
         "pendingIndicatorsRoutes",
         "readPendingSummary"
@@ -3408,11 +3464,12 @@
     },
     {
       "path": "server/service-desk.mjs",
-      "bytes": 19595,
-      "lines": 151,
-      "sha256": "267a49a6fd916bf05da30eb2fd6999ac6a7f39f6c923ebba32330178194ccaa5",
+      "bytes": 20712,
+      "lines": 155,
+      "sha256": "245c40bb85ef494085089cfe907030b10379351620c7f0e4bad387886f8613d2",
       "imports": [
         "./agentes/presence.mjs",
+        "./demand-deletion.mjs",
         "./equipment-link-state.mjs",
         "./panel-read-cache.mjs"
       ],
@@ -3441,9 +3498,9 @@
     },
     {
       "path": "server/technical-dispatch.mjs",
-      "bytes": 19913,
+      "bytes": 19962,
       "lines": 181,
-      "sha256": "246954424f7b34b0df8e0cf694c9557930e55203acebb2cbd8ecbfe1bb8a5171",
+      "sha256": "6d3dd11dcca60c251d8d5f6cca62c7fbf073fc324e9db07a2a311ca6e5c8c159",
       "imports": [
         "./dispatch-road-routing.mjs",
         "./security.mjs",
@@ -3911,9 +3968,9 @@
     },
     {
       "path": "tests/audit-permissions-budget.test.mjs",
-      "bytes": 10836,
-      "lines": 110,
-      "sha256": "230427f1a9a1a090efa8945792dabcd5f670f223d88d7f38eebc64dc05e7c0ba",
+      "bytes": 11106,
+      "lines": 112,
+      "sha256": "6cf0c389c709bc0b43c9a734c24ac2d6af600d0bb2f33ddc8ecb7e1ff2d34aa1",
       "imports": [
         "../server/agentes/index.mjs",
         "../server/hardware-review.mjs",
@@ -4741,6 +4798,66 @@
       "environment": [],
       "apiLiterals": [
         "/api/root/d1-usage"
+      ]
+    },
+    {
+      "path": "tests/demand-activity-deletion-browser.cjs",
+      "bytes": 6322,
+      "lines": 42,
+      "sha256": "f51713c4dd4edd15cb7f0933b982123d4c76d005b2a01fa1e537e56d0a5b11b1",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:crypto",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/dispatch/assign",
+        "/api/dispatch/technician",
+        "/api/operations/request-save",
+        "/api/technician/accept"
+      ]
+    },
+    {
+      "path": "tests/demand-activity-deletion.test.mjs",
+      "bytes": 10479,
+      "lines": 106,
+      "sha256": "d6b0dd716b95581d241116d0f92953c416125afeb84dd426121f08d2823925b0",
+      "imports": [
+        "../server/security.mjs",
+        "../server/technical-dispatch.mjs",
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "./helpers/hardware-change.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/map",
+        "/api/inventory/hardware-alerts?id=",
+        "/api/inventory/hardware-review",
+        "/api/inventory/pending-summary",
+        "/api/operations/request-delete",
+        "/api/operations/request-delete-preview?id=",
+        "/api/operations/request-delete?id=",
+        "/api/operations/request-save",
+        "/api/operations/requests?id=",
+        "/api/operations/requests?status=",
+        "/api/operations/requests?status=deleted",
+        "/api/technician/accept",
+        "/api/technician/complete",
+        "/api/technician/pause",
+        "/api/technician/queue",
+        "/api/technician/request?id="
       ]
     },
     {
@@ -7883,9 +8000,9 @@
     },
     {
       "path": "web/desktop-demand-count.js",
-      "bytes": 4247,
+      "bytes": 4342,
       "lines": 32,
-      "sha256": "19adc5e8e1cc161cba8c4471829675a4f1d57af8dfabfb4cad80b2c78c157701",
+      "sha256": "fa2cca02ea1045ffad179bebda0b2b9f1b0f05aa47f4797be8e8bb7af12c26ef",
       "imports": [
         "./panel-status.js"
       ],
@@ -8031,9 +8148,9 @@
     },
     {
       "path": "web/desktop-map.js",
-      "bytes": 22091,
-      "lines": 245,
-      "sha256": "db6080a8e8d65160e18eff7d0fb0f32428c5312fba44acaa7ba97ebf409cc30f",
+      "bytes": 22384,
+      "lines": 247,
+      "sha256": "69ca3be9e76a5aed7ec5131ec48d5102fd9f31d817f6d5c30c5eb8b11fa8f768",
       "imports": [
         "./desktop-demand-count.js",
         "./desktop-icons.js",
@@ -8420,9 +8537,9 @@
     },
     {
       "path": "web/hardware-attention.js",
-      "bytes": 9173,
+      "bytes": 9276,
       "lines": 33,
-      "sha256": "3540423a412a4fbcd3e7e4881d784afcd74103cd4bff836d1e5668627ca6fa83",
+      "sha256": "1d4dbabc62e1ffe53611cee6b0b3995c78ca3d0446987ca639a84506ae082e1b",
       "imports": [],
       "exports": [
         "createHardwareAttention",
@@ -8585,9 +8702,9 @@
     },
     {
       "path": "web/operations.js",
-      "bytes": 31318,
-      "lines": 106,
-      "sha256": "855c77fcd36152ba3079b40ceee54f95ba179a44e1963f001947676aa9b76a9c",
+      "bytes": 34863,
+      "lines": 128,
+      "sha256": "d4e9244a190306641a27fdd2901b702175557baf487ecd9276387626f98006ed",
       "imports": [
         "./agent-connection.js",
         "./desktop-icons.js",
@@ -8610,9 +8727,9 @@
     },
     {
       "path": "web/painel.css",
-      "bytes": 122871,
-      "lines": 1180,
-      "sha256": "0c6dabd3279f2c8e1b9172fc82c649bf5f6219cd32d5170b168d6e00be780818",
+      "bytes": 123068,
+      "lines": 1183,
+      "sha256": "bfe2c14f1cffbc88984b86f2b26fb889dfe43de853300adf4a2ee0d4faf61e17",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -9038,9 +9155,9 @@
     },
     {
       "path": "web/unit-map-palette.js",
-      "bytes": 1061,
+      "bytes": 1209,
       "lines": 15,
-      "sha256": "4573327a6b99926ff4057e02401d6291c96d78a5ebff8f6b8ada054e3d84f2e7",
+      "sha256": "e1f0f5d75f8ab065bc36be027f96b53d0e41bf8212e529d6ccf44ac78bf98f4b",
       "imports": [],
       "exports": [
         "unitMapColor",

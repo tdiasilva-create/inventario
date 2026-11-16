@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-16T19:55:54.240Z",
+  "runtime": "workerd local / D1",
+  "focusedReadWorkload": true,
+  "backup": {
+    "bytes": 21202768,
+    "sha256": "24a9f4057694af414000f87b13d9f0ebe51260a904857b0a67795c6c791b63de",
+    "unchangedExistingTables": 101,
+    "integrity": "ok",
+    "foreignKeyErrors": 0
+  },
+  "demandMap": {
+    "beforeRowsRead": 11,
+    "afterRowsRead": 26,
+    "beforeWrites": 0,
+    "afterWrites": 0,
+    "totalsEquivalent": true
+  },
+  "summaryTiming": "d1;dur=18.5, total;dur=3544.5, d1_calls;desc=\"1\", d1_rows_read;desc=\"29\", d1_rows_written;desc=\"0\"",
+  "syntheticDeletion": {
+    "atomicHistory": true,
+    "idempotent": true,
+    "trackingPreservedWithRemainingQueue": true,
+    "trackingEndsWithEmptyQueue": true
+  },
+  "productionWrites": false
+}

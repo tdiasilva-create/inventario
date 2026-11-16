@@ -144,6 +144,10 @@
     {
       "file": "0036_photo_gallery_reads.sql",
       "sha256": "7e4ccda1d9740a787486f3a770b971906157c6f6a6917747e89f60d5d8e5aaee"
+    },
+    {
+      "file": "0037_demand_activity_archive.sql",
+      "sha256": "a5428d982b4b188c8a297103cc0450228912033e6dd72adb75783412154aa204"
     }
   ],
   "tables": [
@@ -3089,6 +3093,75 @@
       "foreignKeys": []
     },
     {
+      "name": "dispatch_service_activity",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "assignment_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "started_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "service_requests",
+          "from": "request_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 1,
+          "seq": 0,
+          "table": "dispatch_assignments",
+          "from": "assignment_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        },
+        {
+          "id": 2,
+          "seq": 0,
+          "table": "users",
+          "from": "user_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
       "name": "dispatch_technicians",
       "columns": [
         {
@@ -5678,6 +5751,79 @@
       "foreignKeys": []
     },
     {
+      "name": "service_request_deletions",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "request_id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "operation_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "actor_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "actor_name",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "reason",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "deleted_at",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "payload_json",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "foreignKeys": [
+        {
+          "id": 0,
+          "seq": 0,
+          "table": "service_requests",
+          "from": "request_id",
+          "to": "id",
+          "on_update": "NO ACTION",
+          "on_delete": "NO ACTION",
+          "match": "NONE"
+        }
+      ]
+    },
+    {
       "name": "service_request_events",
       "columns": [
         {
@@ -7368,6 +7514,12 @@
     },
     {
       "type": "index",
+      "name": "dispatch_service_activity_request",
+      "tbl_name": "dispatch_service_activity",
+      "sql": "CREATE INDEX dispatch_service_activity_request ON dispatch_service_activity(request_id)"
+    },
+    {
+      "type": "index",
       "name": "dispatch_tracking_current",
       "tbl_name": "dispatch_tracking",
       "sql": "CREATE UNIQUE INDEX dispatch_tracking_current ON dispatch_tracking(user_id) WHERE ended_at IS NULL"
@@ -7617,6 +7769,18 @@
       "name": "service_request_all_order",
       "tbl_name": "service_requests",
       "sql": "CREATE INDEX service_request_all_order ON service_requests(updated_at DESC,id DESC)"
+    },
+    {
+      "type": "index",
+      "name": "service_request_deletions_time",
+      "tbl_name": "service_request_deletions",
+      "sql": "CREATE INDEX service_request_deletions_time ON service_request_deletions(deleted_at DESC,request_id)"
+    },
+    {
+      "type": "index",
+      "name": "service_request_open_scopes",
+      "tbl_name": "service_request_counts",
+      "sql": "CREATE INDEX service_request_open_scopes ON service_request_counts(scope,total)\n WHERE scope!='' AND status!='Concluída' AND total>0"
     },
     {
       "type": "index",
@@ -7956,6 +8120,12 @@
     },
     {
       "type": "table",
+      "name": "dispatch_service_activity",
+      "tbl_name": "dispatch_service_activity",
+      "sql": "CREATE TABLE dispatch_service_activity (\n user_id TEXT PRIMARY KEY REFERENCES users(id),\n assignment_id TEXT NOT NULL REFERENCES dispatch_assignments(id),\n request_id TEXT NOT NULL REFERENCES service_requests(id),\n started_at INTEGER NOT NULL\n)"
+    },
+    {
+      "type": "table",
       "name": "dispatch_technicians",
       "tbl_name": "dispatch_technicians",
       "sql": "CREATE TABLE dispatch_technicians(user_id TEXT PRIMARY KEY REFERENCES users(id),enabled INTEGER NOT NULL CHECK(enabled IN (0,1)),updated_at INTEGER NOT NULL,updated_by TEXT NOT NULL)"
@@ -8181,6 +8351,12 @@
       "name": "service_request_counts",
       "tbl_name": "service_request_counts",
       "sql": "CREATE TABLE service_request_counts (\r\n scope TEXT NOT NULL,status TEXT NOT NULL,total INTEGER NOT NULL CHECK(total>=0),\r\n PRIMARY KEY(scope,status)\r\n)"
+    },
+    {
+      "type": "table",
+      "name": "service_request_deletions",
+      "tbl_name": "service_request_deletions",
+      "sql": "CREATE TABLE service_request_deletions (\n request_id TEXT PRIMARY KEY REFERENCES service_requests(id),\n operation_id TEXT NOT NULL UNIQUE,\n actor_id TEXT NOT NULL,\n actor_name TEXT NOT NULL,\n reason TEXT NOT NULL CHECK(length(trim(reason)) BETWEEN 1 AND 1000),\n deleted_at INTEGER NOT NULL,\n payload_json TEXT NOT NULL\n)"
     },
     {
       "type": "table",
@@ -8418,6 +8594,18 @@
     },
     {
       "type": "trigger",
+      "name": "dispatch_deleted_assignment",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_deleted_assignment BEFORE INSERT ON dispatch_assignments\n WHEN EXISTS(SELECT 1 FROM service_request_deletions WHERE request_id=NEW.request_id) BEGIN SELECT RAISE(ABORT,'REQUEST_DELETED'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_deleted_attendance",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TRIGGER dispatch_deleted_attendance BEFORE INSERT ON dispatch_attendances\n WHEN EXISTS(SELECT 1 FROM service_request_deletions WHERE request_id=NEW.request_id) BEGIN SELECT RAISE(ABORT,'REQUEST_DELETED'); END"
+    },
+    {
+      "type": "trigger",
       "name": "dispatch_open_assigned",
       "tbl_name": "dispatch_assignments",
       "sql": "CREATE TRIGGER dispatch_open_assigned AFTER INSERT ON dispatch_assignments\nWHEN NEW.ended_at IS NULL AND EXISTS(SELECT 1 FROM service_requests WHERE id=NEW.request_id AND status!='Concluída') BEGIN\n INSERT INTO dispatch_open_counts VALUES(NEW.user_id,1) ON CONFLICT(user_id) DO UPDATE SET open_count=open_count+1;\nEND"
@@ -8475,6 +8663,36 @@
       "name": "dispatch_road_route_queue_changed",
       "tbl_name": "dispatch_meta",
       "sql": "CREATE TRIGGER dispatch_road_route_queue_changed AFTER UPDATE OF revision ON dispatch_meta\nBEGIN DELETE FROM dispatch_road_routes; END"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_service_accepted",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TRIGGER dispatch_service_accepted AFTER INSERT ON dispatch_attendances WHEN NEW.ended_at IS NULL BEGIN\n INSERT INTO dispatch_service_activity VALUES(NEW.user_id,NEW.assignment_id,NEW.request_id,NEW.started_at)\n ON CONFLICT(user_id) DO UPDATE SET assignment_id=excluded.assignment_id,request_id=excluded.request_id,started_at=excluded.started_at;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_service_completed",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER dispatch_service_completed AFTER UPDATE OF status ON service_requests WHEN NEW.status='Concluída' BEGIN\n DELETE FROM dispatch_service_activity WHERE request_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_service_stopped",
+      "tbl_name": "dispatch_attendances",
+      "sql": "CREATE TRIGGER dispatch_service_stopped AFTER UPDATE OF ended_at ON dispatch_attendances\n WHEN NEW.ended_at IS NOT NULL AND NEW.end_reason NOT IN ('session_expired','session_ended') BEGIN\n DELETE FROM dispatch_service_activity WHERE user_id=NEW.user_id AND assignment_id=NEW.assignment_id AND started_at=NEW.started_at;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_service_unassigned",
+      "tbl_name": "dispatch_assignments",
+      "sql": "CREATE TRIGGER dispatch_service_unassigned AFTER UPDATE OF ended_at ON dispatch_assignments WHEN NEW.ended_at IS NOT NULL BEGIN\n DELETE FROM dispatch_service_activity WHERE assignment_id=NEW.id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "dispatch_service_user_revoked",
+      "tbl_name": "users",
+      "sql": "CREATE TRIGGER dispatch_service_user_revoked AFTER UPDATE OF active,credential_version ON users\n WHEN NEW.active=0 OR NEW.credential_version!=OLD.credential_version BEGIN\n DELETE FROM dispatch_service_activity WHERE user_id=NEW.id;\nEND"
     },
     {
       "type": "trigger",
@@ -9066,6 +9284,24 @@
     },
     {
       "type": "trigger",
+      "name": "service_request_archive",
+      "tbl_name": "service_request_deletions",
+      "sql": "CREATE TRIGGER service_request_archive AFTER INSERT ON service_request_deletions BEGIN\n INSERT INTO dispatch_notifications(user_id,request_id,message,created_at)\n SELECT a.user_id,NEW.request_id,'Demanda #'||r.number||' excluída pelo root e retirada do roteiro. Histórico preservado.',NEW.deleted_at\n FROM dispatch_assignments a JOIN service_requests r ON r.id=a.request_id\n WHERE a.request_id=NEW.request_id AND a.ended_at IS NULL;\n UPDATE dispatch_attendances SET ended_at=NEW.deleted_at,end_reason='request_deleted'\n WHERE request_id=NEW.request_id AND ended_at IS NULL;\n -- Existing D114 triggers decrement open_count and stop tracking ONLY if no work remains.\n UPDATE dispatch_assignments SET ended_at=NEW.deleted_at WHERE request_id=NEW.request_id AND ended_at IS NULL;\n DELETE FROM dispatch_service_activity WHERE request_id=NEW.request_id;\n UPDATE dispatch_meta SET revision=revision+1 WHERE id=1;\n DELETE FROM dispatch_road_routes;\n UPDATE service_request_counts SET total=total-1\n WHERE scope IN ('',(SELECT unit_id FROM service_requests WHERE id=NEW.request_id))\n AND status=(SELECT status FROM service_requests WHERE id=NEW.request_id);\n DELETE FROM panel_hardware_active WHERE notification_id IN\n (SELECT notification_id FROM agent_hardware_reviews WHERE request_id=NEW.request_id);\n INSERT INTO audit(user_id,event,created_at) VALUES(NEW.actor_id,'request_deleted:'||NEW.request_id,NEW.deleted_at);\n INSERT INTO dispatch_events VALUES(NEW.operation_id,NEW.request_id,NEW.actor_id,NEW.actor_name,'delete',json_object('reason',NEW.reason),NEW.deleted_at);\n INSERT INTO service_request_events\n SELECT NEW.operation_id,r.id,NEW.actor_id,NEW.actor_name,NEW.payload_json,\n json_object('description',r.description,'kind',r.kind,'source',r.source,'status',r.status,'version',r.version,\n 'responsible',r.responsible,'requester',r.requester,'scheduled_date',r.scheduled_date,'context',json(r.context_json),\n 'unit_id',r.unit_id,'equipment_id',r.equipment_id,'deleted',json('true')),\n 'Excluída pelo root. Motivo: '||NEW.reason,NEW.deleted_at FROM service_requests r WHERE r.id=NEW.request_id;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "service_request_archive_immutable",
+      "tbl_name": "service_request_deletions",
+      "sql": "CREATE TRIGGER service_request_archive_immutable BEFORE UPDATE ON service_request_deletions BEGIN SELECT RAISE(ABORT,'REQUEST_ARCHIVE_IMMUTABLE'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "service_request_archive_preserved",
+      "tbl_name": "service_request_deletions",
+      "sql": "CREATE TRIGGER service_request_archive_preserved BEFORE DELETE ON service_request_deletions BEGIN SELECT RAISE(ABORT,'REQUEST_ARCHIVE_PRESERVED'); END"
+    },
+    {
+      "type": "trigger",
       "name": "service_request_count_delete",
       "tbl_name": "service_requests",
       "sql": "CREATE TRIGGER service_request_count_delete AFTER DELETE ON service_requests BEGIN\r\n UPDATE service_request_counts SET total=total-1 WHERE scope IN ('',OLD.unit_id) AND status=OLD.status;\r\nEND"
@@ -9083,6 +9319,18 @@
       "sql": "CREATE TRIGGER service_request_count_update AFTER UPDATE OF status,unit_id ON service_requests\r\n WHEN OLD.status IS NOT NEW.status OR OLD.unit_id IS NOT NEW.unit_id BEGIN\r\n UPDATE service_request_counts SET total=total-1 WHERE scope IN ('',OLD.unit_id) AND status=OLD.status;\r\n INSERT INTO service_request_counts VALUES('',NEW.status,1),(NEW.unit_id,NEW.status,1)\r\n ON CONFLICT(scope,status) DO UPDATE SET total=total+1;\r\nEND"
     },
     {
+      "type": "trigger",
+      "name": "service_request_deleted_purge",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER service_request_deleted_purge BEFORE DELETE ON service_requests\n WHEN EXISTS(SELECT 1 FROM service_request_deletions WHERE request_id=OLD.id) BEGIN SELECT RAISE(ABORT,'REQUEST_ARCHIVE_PRESERVED'); END"
+    },
+    {
+      "type": "trigger",
+      "name": "service_request_deleted_write",
+      "tbl_name": "service_requests",
+      "sql": "CREATE TRIGGER service_request_deleted_write BEFORE UPDATE ON service_requests\n WHEN EXISTS(SELECT 1 FROM service_request_deletions WHERE request_id=OLD.id) BEGIN SELECT RAISE(ABORT,'REQUEST_DELETED'); END"
+    },
+    {
       "type": "view",
       "name": "inventory_equipment_all",
       "tbl_name": "inventory_equipment_all",
@@ -9098,7 +9346,13 @@
       "type": "view",
       "name": "panel_hardware_source",
       "tbl_name": "panel_hardware_source",
-      "sql": "CREATE VIEW panel_hardware_source AS\r\n SELECT n.id AS notification_id,n.unit_id,n.detected_at,\r\n CASE WHEN hr.notification_id IS NULL THEN 'pending' ELSE 'demand' END AS state\r\n FROM agent_notifications n\r\n JOIN units u ON u.id=n.unit_id\r\n JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id\r\n LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id\r\n LEFT JOIN service_requests sr ON sr.id=hr.request_id\r\n WHERE n.kind='hardware_change'\r\n AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'))"
+      "sql": "CREATE VIEW panel_hardware_source AS\n SELECT n.id AS notification_id,n.unit_id,n.detected_at,\n CASE WHEN hr.notification_id IS NULL THEN 'pending' ELSE 'demand' END AS state\n FROM agent_notifications n JOIN units u ON u.id=n.unit_id\n JOIN equipments e ON e.id=n.equipment_id AND e.unit_id=n.unit_id\n LEFT JOIN agent_hardware_reviews hr ON hr.notification_id=n.id\n LEFT JOIN service_requests sr ON sr.id=hr.request_id\n WHERE n.kind='hardware_change'\n AND (hr.notification_id IS NULL OR (hr.decision='demand' AND COALESCE(sr.status,'')!='Concluída'\n AND NOT EXISTS(SELECT 1 FROM service_request_deletions d WHERE d.request_id=hr.request_id)))"
+    },
+    {
+      "type": "view",
+      "name": "service_requests_active",
+      "tbl_name": "service_requests_active",
+      "sql": "CREATE VIEW service_requests_active AS\n SELECT r.* FROM service_requests r\n WHERE NOT EXISTS(SELECT 1 FROM service_request_deletions d WHERE d.request_id=r.id)"
     }
   ]
 }
