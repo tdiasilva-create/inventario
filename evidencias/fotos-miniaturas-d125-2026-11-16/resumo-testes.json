@@ -22,6 +22,22 @@
     "photoIndexes": 3,
     "revisionTriggers": 15
   },
-  "authenticatedProduction": "pending: session expired",
+  "authenticatedProduction": {
+    "passed": true,
+    "role": "root",
+    "unitGalleryPhotos": 2,
+    "nextPhotoOpened": true,
+    "originalDimensions": [
+      1600,
+      1200
+    ],
+    "equipmentThumbnailDimensions": [
+      240,
+      320
+    ],
+    "thumbnailRequest": true,
+    "officialRecordsChanged": false,
+    "scope": "one real unit, gallery and equipment detail; not full archive or Android physical validation"
+  },
   "planGpsAlertsPermissions": "unchanged"
 }

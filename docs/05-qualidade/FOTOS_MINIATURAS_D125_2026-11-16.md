@@ -1,6 +1,6 @@
 # D125 — fotos e miniaturas, 16/11/2026
 
-Status: publicado nos dois Workers em 16/11/2026, após autorização na continuidade das correções de coleta/fotos e da escolha do item 6. Testes locais/HTTP aprovados; conferência visual autenticada aguarda renovação da sessão root.
+Status: publicado nos dois Workers em 16/11/2026, após autorização na continuidade das correções de coleta/fotos e da escolha do item 6. Testes locais/HTTP e conferência visual autenticada root aprovados.
 
 ## Escopo e aceite
 
@@ -52,3 +52,9 @@ Commit funcional `5cabf68`, branch `codex/fotos-miniaturas-d125-2026-11-16`. Mig
 Wrangler informou inicialização de 7 ms no painel e 6 ms no coletor; isso não mede CPU de todos os requests. 84 verificações HTTP públicas passaram (51 painel, 14 mobile, sete limites de tracking, seis coletor e seis limites de fotos). Requests anônimos continuam negados. A sonda inicial de POST de miniatura esperava 401, mas foi corretamente barrada antes por origem/conteúdo com 403; expectativa corrigida conforme contrato, sem alteração de produto. Um relatório local inicialmente não foi salvo porque sua pasta ainda não existia; a sonda foi repetida e o artefato salvo.
 
 APK continua 1.0.4, hash remoto `f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5`. Não reinstalar nem apagar dados. Dados/perfis/localização/alertas preservados. A aba real abriu o login após recarregar; não apresentar a conferência visual anterior ao deploy como prova desta versão. Pedido de renovação da sessão enviado; nenhum upload/reparo/exclusão real usado como teste.
+
+## Conferência autenticada após renovação do login
+
+Em 16/11/2026, após o responsável confirmar o novo login root, conferida a versão publicada no navegador: Biblioteca Municipal com duas fotografias, ação Ver todas abrindo o computador e Próxima abrindo a fachada (2 de 2). A fachada original carregou em 1600 × 1200 pixels. O computador PC-01 abriu sua ficha no Mapa de Setores; sua miniatura carregou em 240 × 320 pixels com URL solicitando size=thumb, e as opções de editar/apagar permaneceram visíveis sem acionamento.
+
+Inspeção visual da fotografia ampliada e da ficha realizada. Nenhum cadastro, foto, classificação, demanda ou localização foi alterado; não foi acionada geração/recriação de miniaturas reais. A ficha foi deixada aberta para conferência do responsável. Esta checagem usa uma unidade e não substitui homologação de câmera/GPS Android nem afirma revalidação de todo o acervo. Pendência de sessão autenticada encerrada; demais limites permanecem.
