@@ -1,0 +1,2547 @@
+{
+  "passed": true,
+  "photos": 50,
+  "totalThumbnailBytes": 441137,
+  "preparation": {
+    "milliseconds": 2449,
+    "full": 101238,
+    "thumb": 8836,
+    "width": 1600,
+    "height": 1200
+  },
+  "heic": {
+    "width": 1280,
+    "height": 854,
+    "thumbnailBytes": 21373,
+    "milliseconds": 3709
+  },
+  "timings": [
+    {
+      "profile": "4G",
+      "milliseconds": 1193,
+      "bytes": 441137
+    },
+    {
+      "profile": "Fast3G",
+      "milliseconds": 3095,
+      "bytes": 441137
+    }
+  ],
+  "physicalDevicesTested": false,
+  "requests": [
+    {
+      "url": "/configuracoes",
+      "method": "GET",
+      "status": 200,
+      "bytes": 595
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 10859
+    },
+    {
+      "url": "/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6205
+    },
+    {
+      "url": "/painel.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 124039
+    },
+    {
+      "url": "/desktop.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 55202
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 147268
+    },
+    {
+      "url": "/agent-connection.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3944
+    },
+    {
+      "url": "/desktop-management.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 15797
+    },
+    {
+      "url": "/environment-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2924
+    },
+    {
+      "url": "/desktop-demand-count.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4248
+    },
+    {
+      "url": "/collection-overview.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3319
+    },
+    {
+      "url": "/desktop-blocks.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2200
+    },
+    {
+      "url": "/desktop-exports.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3465
+    },
+    {
+      "url": "/desktop-thumbnails.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3538
+    },
+    {
+      "url": "/desktop-equipment.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 30300
+    },
+    {
+      "url": "/unit-equipment-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11407
+    },
+    {
+      "url": "/unit-names.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6455
+    },
+    {
+      "url": "/unit-figures.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2732
+    },
+    {
+      "url": "/desktop-results.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7408
+    },
+    {
+      "url": "/school-presence.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4784
+    },
+    {
+      "url": "/photo-viewer.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6082
+    },
+    {
+      "url": "/spreadsheet-io.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4519
+    },
+    {
+      "url": "/desktop-progress.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12762
+    },
+    {
+      "url": "/desktop-inventory.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8889
+    },
+    {
+      "url": "/desktop-agents.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12885
+    },
+    {
+      "url": "/desktop-request.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3366
+    },
+    {
+      "url": "/panel-shell.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8728
+    },
+    {
+      "url": "/desktop-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2707
+    },
+    {
+      "url": "/metric-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 909
+    },
+    {
+      "url": "/unit-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11410
+    },
+    {
+      "url": "/unit-map-palette.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1061
+    },
+    {
+      "url": "/runtime-config.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 66
+    },
+    {
+      "url": "/desktop-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22093
+    },
+    {
+      "url": "/desktop-data.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 437
+    },
+    {
+      "url": "/provider-report.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8576
+    },
+    {
+      "url": "/equipment-link-state.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2181
+    },
+    {
+      "url": "/panel-status.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2954
+    },
+    {
+      "url": "/collector-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 19225
+    },
+    {
+      "url": "/photo-prepare.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4840
+    },
+    {
+      "url": "/collector-v2-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12357
+    },
+    {
+      "url": "/desktop-notifications.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3039
+    },
+    {
+      "url": "/equipment-deletion.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5786
+    },
+    {
+      "url": "/equipment-name-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4138
+    },
+    {
+      "url": "/equipment-signal.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1422
+    },
+    {
+      "url": "/collector-v3-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6415
+    },
+    {
+      "url": "/desktop-progress-photos.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5538
+    },
+    {
+      "url": "/panel-pulse.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4998
+    },
+    {
+      "url": "/panel-unit-search.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5325
+    },
+    {
+      "url": "/map-geography.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 914
+    },
+    {
+      "url": "/dispatch-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5597
+    },
+    {
+      "url": "/hardware-attention.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9173
+    },
+    {
+      "url": "/panel-usage.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6797
+    },
+    {
+      "url": "/technician-avatar.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5277
+    },
+    {
+      "url": "/panel-confirm.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1183
+    },
+    {
+      "url": "/data/map-v33.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7130
+    },
+    {
+      "url": "/data/map-examples.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 128
+    },
+    {
+      "url": "/api/auth/me",
+      "method": "GET",
+      "status": 200,
+      "bytes": 170
+    },
+    {
+      "url": "/api/inventory/summary",
+      "method": "GET",
+      "status": 200,
+      "bytes": 238
+    },
+    {
+      "url": "/api/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5537
+    },
+    {
+      "url": "/api/root/d1-usage",
+      "method": "GET",
+      "status": 200,
+      "bytes": 314
+    },
+    {
+      "url": "/api/operations/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1357
+    },
+    {
+      "url": "/api/inventory/in-progress?cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 996
+    },
+    {
+      "url": "/api/root/google/status",
+      "method": "GET",
+      "status": 200,
+      "bytes": 791
+    },
+    {
+      "url": "/api/root/agent-install-grants",
+      "method": "GET",
+      "status": 200,
+      "bytes": 110
+    },
+    {
+      "url": "/api/root/agent-devices?unit_id=&q=&state=&cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 145
+    },
+    {
+      "url": "/api/inventory/panel-status?equipmentIds=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 354
+    },
+    {
+      "url": "/vendor/barlow/Barlow-400.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22196
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9900
+    },
+    {
+      "url": "/vendor/barlow/Barlow-500.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22008
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9968
+    },
+    {
+      "url": "/vendor/barlow/Barlow-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22772
+    },
+    {
+      "url": "/vendor/barlow/Barlow-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22788
+    },
+    {
+      "url": "/painel-favicon.svg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8195
+    },
+    {
+      "url": "/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 40404
+    },
+    {
+      "url": "/api/root/photo-thumbnails?cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 288
+    },
+    {
+      "url": "/api/inventory/photo?id=223b6b5f-f905-40ec-bd84-f1cc40c16dae",
+      "method": "GET",
+      "status": 200,
+      "bytes": 68
+    },
+    {
+      "url": "/api/root/photo-thumbnails",
+      "method": "POST",
+      "status": 201,
+      "bytes": 100
+    },
+    {
+      "url": "/api/root/photo-thumbnails?cursor=&force=1",
+      "method": "GET",
+      "status": 200,
+      "bytes": 288
+    },
+    {
+      "url": "/api/inventory/photo?id=223b6b5f-f905-40ec-bd84-f1cc40c16dae",
+      "method": "GET",
+      "status": 200,
+      "bytes": 68
+    },
+    {
+      "url": "/api/root/photo-thumbnails?force=1",
+      "method": "POST",
+      "status": 201,
+      "bytes": 100
+    },
+    {
+      "url": "/coleta-v3?vistoria=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&tela=facade",
+      "method": "GET",
+      "status": 200,
+      "bytes": 511
+    },
+    {
+      "url": "/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6205
+    },
+    {
+      "url": "/collector.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 32869
+    },
+    {
+      "url": "/collector-v3.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 21993
+    },
+    {
+      "url": "/collector-v3.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 97940
+    },
+    {
+      "url": "/collector-app.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1790
+    },
+    {
+      "url": "/collector-dialog.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2057
+    },
+    {
+      "url": "/photo-prepare.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4840
+    },
+    {
+      "url": "/collector-photo-viewer.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2279
+    },
+    {
+      "url": "/collector-photo-previews.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 738
+    },
+    {
+      "url": "/collector-v3-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6415
+    },
+    {
+      "url": "/collector-drafts.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2255
+    },
+    {
+      "url": "/environment-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2924
+    },
+    {
+      "url": "/collector-environments.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4988
+    },
+    {
+      "url": "/collector-qr.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7161
+    },
+    {
+      "url": "/collector-ui.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5967
+    },
+    {
+      "url": "/collector-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 19225
+    },
+    {
+      "url": "/desktop-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2707
+    },
+    {
+      "url": "/collector-request.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1107
+    },
+    {
+      "url": "/collector-v2-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12357
+    },
+    {
+      "url": "/api/auth/me",
+      "method": "GET",
+      "status": 200,
+      "bytes": 205
+    },
+    {
+      "url": "/collector-favicon.svg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8099
+    },
+    {
+      "url": "/api/collector/capabilities",
+      "method": "GET",
+      "status": 200,
+      "bytes": 76
+    },
+    {
+      "url": "/api/collector/inspection?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3461
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9968
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9900
+    },
+    {
+      "url": "/vendor/barlow/Barlow-400.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22196
+    },
+    {
+      "url": "/vendor/barlow/Barlow-500.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22008
+    },
+    {
+      "url": "/collector-favicon.svg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8099
+    },
+    {
+      "url": "/api/collector/photo-upload",
+      "method": "POST",
+      "status": 201,
+      "bytes": 179
+    },
+    {
+      "url": "/api/collector/photo-thumb",
+      "method": "POST",
+      "status": 503,
+      "bytes": 45
+    },
+    {
+      "url": "/api/collector/photo-upload",
+      "method": "POST",
+      "status": 201,
+      "bytes": 179
+    },
+    {
+      "url": "/api/collector/photo-thumb",
+      "method": "POST",
+      "status": 201,
+      "bytes": 104
+    },
+    {
+      "url": "/api/collector/photo?id=d1a541c7-3814-49c1-b4b9-8521eae610e8",
+      "method": "GET",
+      "status": 200,
+      "bytes": 101238
+    },
+    {
+      "url": "/configuracoes",
+      "method": "GET",
+      "status": 200,
+      "bytes": 595
+    },
+    {
+      "url": "/api/collector/photo?id=f0491756-47c3-46c9-b669-dc22bf0ccfc3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 101238
+    },
+    {
+      "url": "/api/collector/photo?id=d1a541c7-3814-49c1-b4b9-8521eae610e8&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6205
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 10859
+    },
+    {
+      "url": "/painel.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 124039
+    },
+    {
+      "url": "/desktop.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 55202
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 147268
+    },
+    {
+      "url": "/agent-connection.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3944
+    },
+    {
+      "url": "/desktop-management.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 15797
+    },
+    {
+      "url": "/environment-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2924
+    },
+    {
+      "url": "/desktop-demand-count.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4248
+    },
+    {
+      "url": "/collection-overview.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3319
+    },
+    {
+      "url": "/desktop-blocks.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2200
+    },
+    {
+      "url": "/desktop-exports.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3465
+    },
+    {
+      "url": "/desktop-thumbnails.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3538
+    },
+    {
+      "url": "/desktop-equipment.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 30300
+    },
+    {
+      "url": "/unit-equipment-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11407
+    },
+    {
+      "url": "/unit-names.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6455
+    },
+    {
+      "url": "/unit-figures.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2732
+    },
+    {
+      "url": "/desktop-results.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7408
+    },
+    {
+      "url": "/school-presence.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4784
+    },
+    {
+      "url": "/photo-viewer.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6082
+    },
+    {
+      "url": "/spreadsheet-io.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4519
+    },
+    {
+      "url": "/desktop-progress.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12762
+    },
+    {
+      "url": "/desktop-inventory.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8889
+    },
+    {
+      "url": "/desktop-agents.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12885
+    },
+    {
+      "url": "/desktop-request.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3366
+    },
+    {
+      "url": "/panel-shell.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8728
+    },
+    {
+      "url": "/desktop-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2707
+    },
+    {
+      "url": "/metric-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 909
+    },
+    {
+      "url": "/unit-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11410
+    },
+    {
+      "url": "/unit-map-palette.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1061
+    },
+    {
+      "url": "/runtime-config.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 66
+    },
+    {
+      "url": "/desktop-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22093
+    },
+    {
+      "url": "/desktop-data.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 437
+    },
+    {
+      "url": "/provider-report.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8576
+    },
+    {
+      "url": "/equipment-link-state.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2181
+    },
+    {
+      "url": "/panel-status.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2954
+    },
+    {
+      "url": "/collector-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 19225
+    },
+    {
+      "url": "/photo-prepare.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4840
+    },
+    {
+      "url": "/collector-v2-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12357
+    },
+    {
+      "url": "/desktop-notifications.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3039
+    },
+    {
+      "url": "/equipment-deletion.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5786
+    },
+    {
+      "url": "/equipment-name-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4138
+    },
+    {
+      "url": "/equipment-signal.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1422
+    },
+    {
+      "url": "/collector-v3-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6415
+    },
+    {
+      "url": "/desktop-progress-photos.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5538
+    },
+    {
+      "url": "/panel-pulse.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4998
+    },
+    {
+      "url": "/panel-unit-search.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5325
+    },
+    {
+      "url": "/map-geography.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 914
+    },
+    {
+      "url": "/dispatch-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5597
+    },
+    {
+      "url": "/hardware-attention.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9173
+    },
+    {
+      "url": "/panel-usage.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6797
+    },
+    {
+      "url": "/technician-avatar.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5277
+    },
+    {
+      "url": "/panel-confirm.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1183
+    },
+    {
+      "url": "/data/map-v33.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7130
+    },
+    {
+      "url": "/data/map-examples.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 128
+    },
+    {
+      "url": "/painel-favicon.svg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8195
+    },
+    {
+      "url": "/api/auth/me",
+      "method": "GET",
+      "status": 200,
+      "bytes": 170
+    },
+    {
+      "url": "/api/inventory/summary",
+      "method": "GET",
+      "status": 200,
+      "bytes": 238
+    },
+    {
+      "url": "/api/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5537
+    },
+    {
+      "url": "/api/root/d1-usage",
+      "method": "GET",
+      "status": 200,
+      "bytes": 314
+    },
+    {
+      "url": "/api/operations/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1357
+    },
+    {
+      "url": "/api/inventory/in-progress?cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 898
+    },
+    {
+      "url": "/api/root/google/status",
+      "method": "GET",
+      "status": 200,
+      "bytes": 791
+    },
+    {
+      "url": "/api/root/agent-install-grants",
+      "method": "GET",
+      "status": 200,
+      "bytes": 110
+    },
+    {
+      "url": "/api/root/agent-devices?unit_id=&q=&state=&cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 145
+    },
+    {
+      "url": "/api/inventory/panel-status?equipmentIds=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 354
+    },
+    {
+      "url": "/vendor/barlow/Barlow-400.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22196
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9900
+    },
+    {
+      "url": "/vendor/barlow/Barlow-500.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22008
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9968
+    },
+    {
+      "url": "/vendor/barlow/Barlow-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22772
+    },
+    {
+      "url": "/vendor/barlow/Barlow-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22788
+    },
+    {
+      "url": "/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 40404
+    },
+    {
+      "url": "/api/root/photo-thumbnails?cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 288
+    },
+    {
+      "url": "/api/inventory/photo?id=f0491756-47c3-46c9-b669-dc22bf0ccfc3",
+      "method": "GET",
+      "status": 200,
+      "bytes": 101238
+    },
+    {
+      "url": "/api/root/photo-thumbnails",
+      "method": "POST",
+      "status": 201,
+      "bytes": 104
+    },
+    {
+      "url": "/coletas-em-andamento?vistoria=7e46761e-64b6-4e85-bda6-94b63f7ca6e5",
+      "method": "GET",
+      "status": 200,
+      "bytes": 595
+    },
+    {
+      "url": "/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6205
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 10859
+    },
+    {
+      "url": "/painel.css",
+      "method": "GET",
+      "status": 200,
+      "bytes": 124039
+    },
+    {
+      "url": "/desktop.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 55202
+    },
+    {
+      "url": "/vendor/leaflet/leaflet.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 147268
+    },
+    {
+      "url": "/agent-connection.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3944
+    },
+    {
+      "url": "/desktop-management.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 15797
+    },
+    {
+      "url": "/environment-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2924
+    },
+    {
+      "url": "/desktop-demand-count.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4248
+    },
+    {
+      "url": "/collection-overview.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3319
+    },
+    {
+      "url": "/desktop-blocks.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2200
+    },
+    {
+      "url": "/desktop-exports.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3465
+    },
+    {
+      "url": "/desktop-thumbnails.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3538
+    },
+    {
+      "url": "/desktop-equipment.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 30300
+    },
+    {
+      "url": "/unit-equipment-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11407
+    },
+    {
+      "url": "/unit-names.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6455
+    },
+    {
+      "url": "/unit-figures.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2732
+    },
+    {
+      "url": "/desktop-results.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7408
+    },
+    {
+      "url": "/school-presence.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4784
+    },
+    {
+      "url": "/photo-viewer.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6082
+    },
+    {
+      "url": "/spreadsheet-io.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4519
+    },
+    {
+      "url": "/desktop-progress.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12762
+    },
+    {
+      "url": "/desktop-inventory.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8889
+    },
+    {
+      "url": "/desktop-agents.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12885
+    },
+    {
+      "url": "/desktop-request.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3366
+    },
+    {
+      "url": "/panel-shell.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8728
+    },
+    {
+      "url": "/desktop-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2707
+    },
+    {
+      "url": "/metric-icons.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 909
+    },
+    {
+      "url": "/unit-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 11410
+    },
+    {
+      "url": "/unit-map-palette.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1061
+    },
+    {
+      "url": "/runtime-config.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 66
+    },
+    {
+      "url": "/desktop-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22093
+    },
+    {
+      "url": "/desktop-data.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 437
+    },
+    {
+      "url": "/provider-report.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8576
+    },
+    {
+      "url": "/equipment-link-state.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2181
+    },
+    {
+      "url": "/panel-status.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 2954
+    },
+    {
+      "url": "/photo-prepare.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4840
+    },
+    {
+      "url": "/collector-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 19225
+    },
+    {
+      "url": "/collector-v2-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 12357
+    },
+    {
+      "url": "/desktop-notifications.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3039
+    },
+    {
+      "url": "/equipment-deletion.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5786
+    },
+    {
+      "url": "/equipment-name-editor.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4138
+    },
+    {
+      "url": "/equipment-signal.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1422
+    },
+    {
+      "url": "/collector-v3-schema.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6415
+    },
+    {
+      "url": "/desktop-progress-photos.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5538
+    },
+    {
+      "url": "/panel-pulse.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 4998
+    },
+    {
+      "url": "/panel-unit-search.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5325
+    },
+    {
+      "url": "/map-geography.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 914
+    },
+    {
+      "url": "/hardware-attention.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9173
+    },
+    {
+      "url": "/dispatch-map.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5597
+    },
+    {
+      "url": "/panel-usage.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 6797
+    },
+    {
+      "url": "/technician-avatar.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5277
+    },
+    {
+      "url": "/panel-confirm.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1183
+    },
+    {
+      "url": "/data/map-v33.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 7130
+    },
+    {
+      "url": "/painel-favicon.svg",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8195
+    },
+    {
+      "url": "/data/map-examples.json",
+      "method": "GET",
+      "status": 200,
+      "bytes": 128
+    },
+    {
+      "url": "/api/auth/me",
+      "method": "GET",
+      "status": 200,
+      "bytes": 170
+    },
+    {
+      "url": "/api/inventory/summary",
+      "method": "GET",
+      "status": 200,
+      "bytes": 238
+    },
+    {
+      "url": "/api/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 5537
+    },
+    {
+      "url": "/api/root/d1-usage",
+      "method": "GET",
+      "status": 200,
+      "bytes": 314
+    },
+    {
+      "url": "/api/operations/units",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1357
+    },
+    {
+      "url": "/api/inventory/in-progress?cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 898
+    },
+    {
+      "url": "/api/inventory/panel-status?equipmentIds=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 354
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9900
+    },
+    {
+      "url": "/vendor/barlow/Barlow-500.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22008
+    },
+    {
+      "url": "/vendor/barlow/Barlow-400.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22196
+    },
+    {
+      "url": "/vendor/chakra-petch/ChakraPetch-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 9968
+    },
+    {
+      "url": "/vendor/barlow/Barlow-600.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22772
+    },
+    {
+      "url": "/api/inventory/in-progress-detail?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5",
+      "method": "GET",
+      "status": 200,
+      "bytes": 1861
+    },
+    {
+      "url": "/api/inventory/in-progress-equipment?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5",
+      "method": "GET",
+      "status": 200,
+      "bytes": 43
+    },
+    {
+      "url": "/api/inventory/in-progress-photos?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&cursor=",
+      "method": "GET",
+      "status": 200,
+      "bytes": 24302
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d4b3e463-deb4-4701-8ecf-7a553d7d96d7&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1615661b-08d2-43d3-9dc9-d444167a89a0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=fe6d8302-40ab-4af7-8031-60452da3c759&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=49be3248-08e2-43e2-a1d3-03f4c4ee19f2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ec7c6073-50b3-45a6-8c19-b4125574b4b9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b33f4c05-13de-4fbe-ab97-e3d2c74a0b3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/vendor/barlow/Barlow-700.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 22788
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ba87e08c-a2e8-4198-921f-1c3248a1b26e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5a708185-ed10-4dd6-a3d4-beadc3a41d18&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=13a9a45d-789c-4eb8-8944-5348a18a7bb2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=edd1b210-74e2-4eaf-90f4-289f4b6a66a3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5de346d7-f6a9-4e10-8c63-a3d34ff6fa1f&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2e400d55-0690-43b7-99d3-1a79195f467c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=15b38b7d-b719-48e6-a67a-73b66faa09fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=6225aa14-7563-4b7b-97d6-d9f69520d75b&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=823aae4e-a4fb-47f7-939c-f1f35ace4d9c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=272bc5d3-42ac-42b6-a872-aec58febdc00&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4758e4ac-abe8-48a8-814e-3364fddcadae&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=02c9e14b-368e-47fc-be1f-7560ef2dc7fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=82fce020-88ee-4de1-ab07-12bab3217faa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=9902381a-ee74-45bf-a27d-ee908effef0a&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=dd282de2-e9de-47d5-ab02-03f55eb60e96&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7b67d745-4b91-4629-aee4-4da4b2698aab&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1b5534f1-dfc1-4179-bb31-1d2e7465f6bc&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=21ea9a6f-bcf2-41ea-9905-0c0e50f15124&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4248bd55-50ca-492c-8935-d416031a6208&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7da9da8f-f613-4765-abe8-c3f216827cda&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2c5dc304-64f6-4c86-a93a-3bc8240809cd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a000209e-3aaa-40ce-bc4d-335312450fd5&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f338a809-5c06-4711-b3f6-2ae09315d3bf&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1da1a5bc-bb93-4b85-8ad5-0b7e4bc5003e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8eaa7180-e54e-4088-bf81-eb90ad2f2436&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0ccf8252-6b69-479f-8153-af94bbbe86a1&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=691064fd-f500-4b23-8940-9c06311f6f49&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8f6e0285-1564-47d3-b331-2e99601efa73&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=200c2c14-b325-4f39-b3a9-f016daa4d296&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7bbf1be7-0796-45b9-8e53-a8b8508c79c9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d6b809d4-3c68-4cd4-9b3a-9c33da09e573&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a534adaf-ac2c-40da-8001-e605be4b4940&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31da2dd5-7377-4832-9982-60bd10fc7e3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31841328-6a99-4b39-98ac-deb7eb018900&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=458daddd-94e4-4b65-8374-bd86c454a680&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=951bd899-b2fa-437e-b02a-18e547b90d55&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1ea2bbc0-c0f7-4d5d-8beb-082edd0a8a5e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5875a8ce-7363-40ba-b588-13f788f6812c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b5c53441-bcf3-4e7e-b3c1-18668d353eb3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=788c2ce4-ae03-4b69-86b3-8646dea637b0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0433932c-0947-4869-8e77-a80340aa48dd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=c0f7edc2-495c-4132-b577-e6fd95588d59&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d1a541c7-3814-49c1-b4b9-8521eae610e8&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f0491756-47c3-46c9-b669-dc22bf0ccfc3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8173
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d4b3e463-deb4-4701-8ecf-7a553d7d96d7",
+      "method": "GET",
+      "status": 200,
+      "bytes": 101238
+    },
+    {
+      "url": "/vendor/jetbrains-mono/JetBrainsMono-Variable.woff2",
+      "method": "GET",
+      "status": 200,
+      "bytes": 40404
+    },
+    {
+      "url": "/vendor/heic-to/heic-to.min.js",
+      "method": "GET",
+      "status": 200,
+      "bytes": 3224697
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d4b3e463-deb4-4701-8ecf-7a553d7d96d7&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1615661b-08d2-43d3-9dc9-d444167a89a0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=fe6d8302-40ab-4af7-8031-60452da3c759&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=49be3248-08e2-43e2-a1d3-03f4c4ee19f2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ec7c6073-50b3-45a6-8c19-b4125574b4b9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b33f4c05-13de-4fbe-ab97-e3d2c74a0b3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ba87e08c-a2e8-4198-921f-1c3248a1b26e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5a708185-ed10-4dd6-a3d4-beadc3a41d18&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=13a9a45d-789c-4eb8-8944-5348a18a7bb2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=edd1b210-74e2-4eaf-90f4-289f4b6a66a3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5de346d7-f6a9-4e10-8c63-a3d34ff6fa1f&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2e400d55-0690-43b7-99d3-1a79195f467c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=15b38b7d-b719-48e6-a67a-73b66faa09fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=6225aa14-7563-4b7b-97d6-d9f69520d75b&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=823aae4e-a4fb-47f7-939c-f1f35ace4d9c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=272bc5d3-42ac-42b6-a872-aec58febdc00&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4758e4ac-abe8-48a8-814e-3364fddcadae&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=02c9e14b-368e-47fc-be1f-7560ef2dc7fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=82fce020-88ee-4de1-ab07-12bab3217faa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=9902381a-ee74-45bf-a27d-ee908effef0a&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=dd282de2-e9de-47d5-ab02-03f55eb60e96&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7b67d745-4b91-4629-aee4-4da4b2698aab&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1b5534f1-dfc1-4179-bb31-1d2e7465f6bc&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=21ea9a6f-bcf2-41ea-9905-0c0e50f15124&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4248bd55-50ca-492c-8935-d416031a6208&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7da9da8f-f613-4765-abe8-c3f216827cda&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2c5dc304-64f6-4c86-a93a-3bc8240809cd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a000209e-3aaa-40ce-bc4d-335312450fd5&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f338a809-5c06-4711-b3f6-2ae09315d3bf&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1da1a5bc-bb93-4b85-8ad5-0b7e4bc5003e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8eaa7180-e54e-4088-bf81-eb90ad2f2436&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0ccf8252-6b69-479f-8153-af94bbbe86a1&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=691064fd-f500-4b23-8940-9c06311f6f49&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8f6e0285-1564-47d3-b331-2e99601efa73&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=200c2c14-b325-4f39-b3a9-f016daa4d296&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7bbf1be7-0796-45b9-8e53-a8b8508c79c9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d6b809d4-3c68-4cd4-9b3a-9c33da09e573&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a534adaf-ac2c-40da-8001-e605be4b4940&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31da2dd5-7377-4832-9982-60bd10fc7e3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31841328-6a99-4b39-98ac-deb7eb018900&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=458daddd-94e4-4b65-8374-bd86c454a680&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=951bd899-b2fa-437e-b02a-18e547b90d55&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1ea2bbc0-c0f7-4d5d-8beb-082edd0a8a5e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5875a8ce-7363-40ba-b588-13f788f6812c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b5c53441-bcf3-4e7e-b3c1-18668d353eb3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=788c2ce4-ae03-4b69-86b3-8646dea637b0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0433932c-0947-4869-8e77-a80340aa48dd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=c0f7edc2-495c-4132-b577-e6fd95588d59&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d1a541c7-3814-49c1-b4b9-8521eae610e8&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f0491756-47c3-46c9-b669-dc22bf0ccfc3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8173
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d4b3e463-deb4-4701-8ecf-7a553d7d96d7&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1615661b-08d2-43d3-9dc9-d444167a89a0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=fe6d8302-40ab-4af7-8031-60452da3c759&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=49be3248-08e2-43e2-a1d3-03f4c4ee19f2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ec7c6073-50b3-45a6-8c19-b4125574b4b9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b33f4c05-13de-4fbe-ab97-e3d2c74a0b3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=ba87e08c-a2e8-4198-921f-1c3248a1b26e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5a708185-ed10-4dd6-a3d4-beadc3a41d18&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=13a9a45d-789c-4eb8-8944-5348a18a7bb2&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=edd1b210-74e2-4eaf-90f4-289f4b6a66a3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5de346d7-f6a9-4e10-8c63-a3d34ff6fa1f&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2e400d55-0690-43b7-99d3-1a79195f467c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=15b38b7d-b719-48e6-a67a-73b66faa09fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=6225aa14-7563-4b7b-97d6-d9f69520d75b&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=823aae4e-a4fb-47f7-939c-f1f35ace4d9c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=272bc5d3-42ac-42b6-a872-aec58febdc00&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4758e4ac-abe8-48a8-814e-3364fddcadae&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=02c9e14b-368e-47fc-be1f-7560ef2dc7fa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=82fce020-88ee-4de1-ab07-12bab3217faa&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=9902381a-ee74-45bf-a27d-ee908effef0a&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=dd282de2-e9de-47d5-ab02-03f55eb60e96&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7b67d745-4b91-4629-aee4-4da4b2698aab&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1b5534f1-dfc1-4179-bb31-1d2e7465f6bc&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=21ea9a6f-bcf2-41ea-9905-0c0e50f15124&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=4248bd55-50ca-492c-8935-d416031a6208&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7da9da8f-f613-4765-abe8-c3f216827cda&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=2c5dc304-64f6-4c86-a93a-3bc8240809cd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a000209e-3aaa-40ce-bc4d-335312450fd5&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f338a809-5c06-4711-b3f6-2ae09315d3bf&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1da1a5bc-bb93-4b85-8ad5-0b7e4bc5003e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8eaa7180-e54e-4088-bf81-eb90ad2f2436&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0ccf8252-6b69-479f-8153-af94bbbe86a1&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=691064fd-f500-4b23-8940-9c06311f6f49&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=8f6e0285-1564-47d3-b331-2e99601efa73&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=200c2c14-b325-4f39-b3a9-f016daa4d296&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=7bbf1be7-0796-45b9-8e53-a8b8508c79c9&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d6b809d4-3c68-4cd4-9b3a-9c33da09e573&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=a534adaf-ac2c-40da-8001-e605be4b4940&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31da2dd5-7377-4832-9982-60bd10fc7e3d&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=31841328-6a99-4b39-98ac-deb7eb018900&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=458daddd-94e4-4b65-8374-bd86c454a680&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=951bd899-b2fa-437e-b02a-18e547b90d55&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=1ea2bbc0-c0f7-4d5d-8beb-082edd0a8a5e&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=5875a8ce-7363-40ba-b588-13f788f6812c&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=b5c53441-bcf3-4e7e-b3c1-18668d353eb3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=788c2ce4-ae03-4b69-86b3-8646dea637b0&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=0433932c-0947-4869-8e77-a80340aa48dd&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=c0f7edc2-495c-4132-b577-e6fd95588d59&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=d1a541c7-3814-49c1-b4b9-8521eae610e8&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8836
+    },
+    {
+      "url": "/api/inventory/in-progress-photo?id=7e46761e-64b6-4e85-bda6-94b63f7ca6e5&photoId=f0491756-47c3-46c9-b669-dc22bf0ccfc3&size=thumb",
+      "method": "GET",
+      "status": 200,
+      "bytes": 8173
+    }
+  ]
+}

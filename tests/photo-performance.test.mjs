@@ -10,8 +10,8 @@ import worker from '../server/worker.mjs';
 test('fotos: menos consultas, primeiro envio sem busca, reenvio perdido recupera arquivo e ETag evita Drive',async()=>{
  const f=await photoFixture();try{
   const firstId=crypto.randomUUID(),secondId=crypto.randomUUID();
-  const first=await f.measure(()=>f.upload(firstId));assert.equal(first.response.status,201);assert.equal(first.integrationReads,1);assert.equal(first.drive,3);
-  const second=await f.measure(()=>f.upload(secondId));assert.equal(second.response.status,201);assert.equal(second.integrationReads,1);assert.equal(second.drive,1,'pasta existente: só upload');assert.equal(second.sql,9);
+  const first=await f.measure(()=>f.upload(firstId));assert.equal(first.response.status,201);assert.equal(first.integrationReads,1);assert.equal(first.drive,4);
+  const second=await f.measure(()=>f.upload(secondId));assert.equal(second.response.status,201);assert.equal(second.integrationReads,1);assert.equal(second.drive,2,'pasta existente: reserva do ID e upload idempotente');assert.equal(second.sql,12);
   const repeated=await f.measure(()=>f.upload(secondId));assert.equal(repeated.response.status,200);assert.equal(repeated.drive,0);
   f.sqlite.prepare("UPDATE collection_photos SET status='pending',storage_ref=NULL WHERE id=?").run(secondId);
   const retry=await f.measure(()=>f.upload(secondId));assert.equal(retry.response.status,201);assert.equal((await retry.response.json()).reused,true);assert.equal(retry.drive,1,'retomada pesquisa e recupera sem novo upload');

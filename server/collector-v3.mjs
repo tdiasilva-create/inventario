@@ -16,7 +16,8 @@ export async function startV3(request,user,env,{body,json,fail,unit,history}){
 // Digitação livre com identidade estável: reutiliza o nome normalizado na mesma unidade.
 // Nunca aproxima nomes diferentes silenciosamente (Sala 1 e Sala 10 são distintos).
 export async function resolveV3Environment(db,i,name,user,history,touch){
- name=String(name||'').trim().replace(/\s+/g,' ');if(!name||name.length>180)return null;
+ if(typeof name!=='string')return null;
+ name=name.trim().replace(/\s+/g,' ');if(!name||name.length>180)return null;
  const list=(await db.prepare('SELECT * FROM environments WHERE unit_id=? ORDER BY created_at,id').bind(i.unit_id).all()).results;
  const existing=list.find(e=>environmentKey(e.name)===environmentKey(name));if(existing)return existing;
  const id=crypto.randomUUID(),now=Date.now();
@@ -40,7 +41,7 @@ export async function reviewV3(db,i,context,snapshot={}){
   if(!row||row.state!=='Concluído'){if(!errors[g])errors[g]='Marque este assunto como concluído.';pending.push({code:'ASSUNTO_NAO_CONCLUIDO',section:g,kind:'section',id:null,label:sectionName(g),message:row?.state==='Em andamento'?'Assunto em andamento: falta marcá-lo como concluído.':'Assunto ainda não concluído.',action:'complete-section',blocking:true});}}
  const equipment=snapshot.equipment??(await v3ReviewEquipmentStatement(db,i).all()).results;
  const photos=snapshot.photos??await v2Evidence(db,i);
- if(!photos.some(p=>p.target_kind==='facade')){errors.facade='Envie a fotografia inicial da fachada.';pending.push({code:'FOTO_OBRIGATORIA_PENDENTE',section:'facade',kind:'facade',id:i.unit_id,label:'Fachada da unidade',message:'Envie a fotografia inicial da fachada.',action:'open-facade',blocking:true});}
+ if(!photos.some(p=>p.target_kind==='facade'&&p.status==='ready')){errors.facade='Envie a fotografia inicial da fachada.';pending.push({code:'FOTO_OBRIGATORIA_PENDENTE',section:'facade',kind:'facade',id:i.unit_id,label:'Fachada da unidade',message:'Envie a fotografia inicial da fachada.',action:'open-facade',blocking:true});}
  const roomName=id=>context.environments?.find(e=>e.id===id)?.name||'';
  const fieldLabel=key=>v3EquipmentFields.find(f=>f.key===key)?.label||key;
  for(const e of equipment){const d=parse(e.data_json),group=d.category==='printer'?'G':d.category==='other'?'O':'F';
@@ -51,7 +52,12 @@ export async function reviewV3(db,i,context,snapshot={}){
    const keys=Object.keys(missing);
    pending.push(keys.length?{code:'CAMPO_OBRIGATORIO',section:group,kind:'equipment',id:e.id,category,label,fields:Object.fromEntries(keys.map(k=>[k,fieldLabel(k.split('.')[0])])),message:'Faltam: '+keys.map(k=>fieldLabel(k.split('.')[0])).join(', ')+'. Depois salve a ficha.',action:'open-equipment',blocking:true}:{code:'FICHA_EM_RASCUNHO',section:group,kind:'equipment',id:e.id,category,label,message:'Campos preenchidos; falta salvar a ficha (Salvar equipamento).',action:'open-equipment',blocking:true});}
   if(isComputer(d)&&d.registration==='Agente'&&!e.agent_linked){errors.F='Vincule os computadores em modo Agente ou escolha cadastro manual.';details['agent:'+e.id]='Vínculo pendente.';pending.push({code:'VINCULO_AGENTE_PENDENTE',section:'F',kind:'equipment',id:e.id,category,label,message:'Modo Agente sem vínculo confirmado: leia o QR e vincule, ou troque para cadastro manual.',action:'open-equipment',blocking:true});}
-  if(d.category==='printer'&&!photos.some(p=>p.target_kind==='equipment'&&p.target_id===e.id)){errors['photo:'+e.id]='Envie a fotografia inicial da impressora.';pending.push({code:'FOTO_OBRIGATORIA_PENDENTE',section:'G',kind:'equipment',id:e.id,category,label,message:'Envie a fotografia inicial da impressora.',action:'open-equipment',blocking:true});}
+  if(d.category==='printer'&&!photos.some(p=>p.target_kind==='equipment'&&p.target_id===e.id&&p.status==='ready')){errors['photo:'+e.id]='Envie a fotografia inicial da impressora.';pending.push({code:'FOTO_OBRIGATORIA_PENDENTE',section:'G',kind:'equipment',id:e.id,category,label,message:'Envie a fotografia inicial da impressora.',action:'open-equipment',blocking:true});}
+ }
+ for(const photo of photos.filter(p=>p.inspection_id===i.id&&p.status!=='ready')){
+  const eq=equipment.find(e=>e.id===photo.target_id),d=eq?parse(eq.data_json):{},section=photo.target_kind==='facade'?'facade':photo.target_kind==='environment'?'B':photo.target_kind==='equipment'?(d.category==='printer'?'G':d.category==='other'?'O':'F'):'H';
+  errors['upload:'+photo.id]='Há fotografia com envio ainda não confirmado.';
+  pending.push({code:'FOTO_ENVIO_PENDENTE',section,kind:photo.target_kind,id:photo.target_id,photoId:photo.id,label:photo.label||'Fotografia pendente',message:'O servidor ainda não confirmou esta foto. Reenvie a prévia ou descarte explicitamente o envio na tela de origem.',action:section==='facade'?'open-facade':photo.target_kind==='equipment'?'open-equipment':'open-section',blocking:true});
  }
  // ordem de apresentação: assuntos na ordem do coletor; dentro do assunto, fichas antes da ação manual de concluir.
  const rank=p=>(p.section==='facade'?-1:order.indexOf(p.section))*10+(p.code==='ASSUNTO_NAO_CONCLUIDO'?9:p.code==='RESPOSTA_PENDENTE'?1:0);

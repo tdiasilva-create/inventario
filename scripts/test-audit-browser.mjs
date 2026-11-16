@@ -2,7 +2,7 @@
 // Run both asset builds first. Does not include legacy V2 screen tests.
 import {spawnSync} from 'node:child_process';
 const files=[
- 'collector-concurrency-browser.cjs','collector-unit-navigation-browser.cjs',
+ 'collector-concurrency-browser.cjs','collection-photos-d124-browser.cjs','collector-unit-navigation-browser.cjs',
  'mobile-app-browser.cjs','mobile-safe-viewport-browser.cjs',
  'technician-tracking-browser.cjs','technician-redesign-browser.cjs',
  'collection-control-browser.cjs','collection-overview-browser.cjs',

@@ -40,7 +40,7 @@ export function validateV2Section(section,data,context={}){
 }
 export function problemSummary(sections,equipment=[]){
  const result=[],add=(source,description,id)=>{if(typeof description==='string'&&description.trim())result.push({source,description:description.trim(),id});};
- const c=sections.C||{};add('Internet',c.problems);for(const l of c.links||[]){add('Internet · '+(l.provider||'Link'),l.problems,l.id);if(l.works==='Não'||l.works==='Parcialmente')add('Internet · '+(l.provider||'Link'),'Funcionamento: '+l.works,l.id);if(l.drops==='Sim')add('Internet · '+(l.provider||'Link'),'Quedas: '+(l.frequency||'frequência não informada'),l.id);}
+ const c=sections.C||{};add('Internet',c.problems);for(const l of c.exists==='Sim'?c.links||[]:[]){add('Internet · '+(l.provider||'Link'),l.problems,l.id);if(l.works==='Não'||l.works==='Parcialmente')add('Internet · '+(l.provider||'Link'),'Funcionamento: '+l.works,l.id);if(l.drops==='Sim')add('Internet · '+(l.provider||'Link'),'Quedas: '+(l.frequency||'frequência não informada'),l.id);}
  for(const n of sections.D?.networks||[]){add('Wi-Fi · '+(n.ssid||'Não identificado'),n.notes,n.id);if(n.quality==='Ruim')add('Wi-Fi · '+(n.ssid||'Não identificado'),'Qualidade ruim',n.id);}
  for(const e of equipment)add(e.data?.category==='printer'?'Impressora':'Computador',e.data?.problems,e.id);
  return result;

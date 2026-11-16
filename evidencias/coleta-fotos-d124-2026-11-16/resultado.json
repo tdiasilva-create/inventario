@@ -1,0 +1,313 @@
+{
+  "fixture": "Worker real + SQLite isolado",
+  "physicalAndroid": false,
+  "results": [
+    {
+      "id": "R1-A conflito da mesma conta não vira confirmação",
+      "ok": true,
+      "dialog": "FICHA ALTERADA EM OUTRA SESSÃO\n\nOutra sessão da sua conta gravou esta ficha com respostas ",
+      "stored": {
+        "version": 2,
+        "position_label": "OUTRA ABA · MESA B"
+      },
+      "status": "Ficha não salva · conflito com outra sessão; recarregue antes de salvar",
+      "field": "MINHA EDICAO · MESA C"
+    },
+    {
+      "id": "R1-A salvar sem recarregar não sobrescreve; recarregar traz o servidor",
+      "ok": true,
+      "after": {
+        "version": 2,
+        "position_label": "OUTRA ABA · MESA B"
+      },
+      "conflictsLogged": 1,
+      "reloaded": "OUTRA ABA · MESA B"
+    },
+    {
+      "id": "R1-A salvar após recarregar grava uma versão acima",
+      "ok": true,
+      "version": 3,
+      "position_label": "APOS RECARGA · MESA D"
+    },
+    {
+      "id": "R1-B conflito com outro usuário preserva as duas versões",
+      "ok": true,
+      "dialog": "FICHA ALTERADA EM OUTRA SESSÃO\n\nOutra sessão alterou esta ficha enquan",
+      "stored": {
+        "version": 2,
+        "position_label": "ROOT · MESA G"
+      },
+      "status": "Ficha não salva · conflito com outra sessão; recarregue antes de salvar",
+      "field": "MINHA EDICAO · MESA F"
+    },
+    {
+      "id": "R1-C1 resposta perdida após gravar · repetição idempotente sem conflito falso",
+      "ok": true,
+      "stored": {
+        "version": 2,
+        "position_label": "PERDIDA · MESA I"
+      },
+      "status": "Equipamento recebido · confirmado após a falha de rede",
+      "log": [
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 200
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "dropped": "response"
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 200
+        },
+        {
+          "path": "/api/collector/equipment-unlock",
+          "method": "POST",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "id": "R1-C2 resposta perdida após gravar · reconciliação pela trava confirma o mesmo conteúdo",
+      "ok": true,
+      "stored": {
+        "version": 2,
+        "position_label": "PERDIDA · MESA K"
+      },
+      "status": "Equipamento recebido · confirmado após a falha de rede",
+      "log": [
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 200
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "dropped": "response"
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "dropped": "request"
+        },
+        {
+          "path": "/api/collector/equipment-lock",
+          "method": "POST",
+          "status": 200
+        },
+        {
+          "path": "/api/collector/equipment-unlock",
+          "method": "POST",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "id": "R1-D falha antes de gravar · reenvio único após consultar a trava",
+      "ok": true,
+      "stored": {
+        "version": 2,
+        "position_label": "ANTES · MESA M"
+      },
+      "status": "Equipamento recebido no servidor",
+      "saves": 1
+    },
+    {
+      "id": "R1-E ficha nova com resposta perdida · um registro, confirmada após a falha",
+      "ok": true,
+      "rows": [
+        {
+          "version": 1,
+          "position_label": "NOVA PERDIDA · MESA N"
+        }
+      ],
+      "status": "Equipamento recebido · confirmado após a falha de rede",
+      "log": [
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 201
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "dropped": "response"
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "id": "R2-A navegar durante a preparação mantém a ficha alvo e cria o rascunho dela",
+      "ok": true,
+      "refusal": "Aguarde o envio das fotos antes de trocar de unidade.",
+      "photoRows": [
+        {
+          "target_id": "a0fec8f4-99a7-4455-ac99-f0f8fd33c4e9",
+          "status": "ready"
+        }
+      ],
+      "draft": {
+        "version": 1
+      },
+      "log": [
+        {
+          "path": "/collector-favicon.svg",
+          "method": "GET",
+          "status": 200
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 201
+        },
+        {
+          "path": "/api/collector/photo-upload",
+          "method": "POST",
+          "status": 201
+        },
+        {
+          "path": "/api/collector/photo-thumb",
+          "method": "POST",
+          "status": 201
+        },
+        {
+          "path": "/api/collector/equipment-lock",
+          "method": "POST",
+          "status": 200
+        },
+        {
+          "path": "/collector-favicon.svg",
+          "method": "GET",
+          "status": 200
+        }
+      ]
+    },
+    {
+      "id": "R2-B criar outra ficha aguarda a foto e não grava rascunho na ficha errada",
+      "ok": true,
+      "originId": "6bd15259-874b-471b-bdeb-b17d7a92b6a3",
+      "newId": "9fe6d314-ecc7-4ade-bba0-c749a30cca3f",
+      "photoRows": [
+        {
+          "target_id": "6bd15259-874b-471b-bdeb-b17d7a92b6a3"
+        }
+      ]
+    },
+    {
+      "id": "60900345-6409-4799-9605-4e3915f330a2",
+      "ok": true,
+      "rows": [
+        {
+          "target_id": "60900345-6409-4799-9605-4e3915f330a2"
+        }
+      ]
+    },
+    {
+      "id": "R3-A releitura durante o envio não duplica a foto",
+      "ok": true,
+      "ids": [
+        "db2dd1f1-0313-4ebe-851a-14e5783a8941"
+      ],
+      "ready": 1,
+      "count": "1 recebida(s)"
+    },
+    {
+      "id": "R3-B leitura atrasada da visita não apaga a foto confirmada",
+      "ok": true,
+      "ids": [
+        "db2dd1f1-0313-4ebe-851a-14e5783a8941",
+        "4afe098d-c211-4b2c-9a27-2e4a2ed055e8"
+      ],
+      "ready": 2
+    },
+    {
+      "id": "R3-C remoção após os cenários mantém a contagem coerente",
+      "ok": true,
+      "left": 1
+    },
+    {
+      "id": "R1-F-a rascunho concorrente com o mesmo conteúdo NÃO é confirmado como salvamento",
+      "ok": true,
+      "dialog": "FICHA ALTERADA EM OUTRA SESSÃO\n\nOutra sessão da sua conta gravou esta ficha como rascunho enquanto o envio est",
+      "stored": {
+        "version": 2,
+        "draft": true
+      },
+      "status": "Ficha não salva · conflito com outra sessão; recarregue antes de salvar"
+    },
+    {
+      "id": "R1-F-a após recarregar, Salvar grava a ficha completa",
+      "ok": true,
+      "version": 3
+    },
+    {
+      "id": "R1-F-b 409 de versão com rascunho concorrente NÃO é confirmado",
+      "ok": true,
+      "status": "Ficha não salva · conflito com outra sessão; recarregue antes de salvar",
+      "log": [
+        {
+          "path": "/api/collector/equipment-save",
+          "dropped": "request"
+        },
+        {
+          "path": "/api/collector/equipment-save",
+          "method": "POST",
+          "status": 409
+        }
+      ]
+    },
+    {
+      "id": "R4-A concluir assunto com foto não recebida é recusado apontando a ficha",
+      "ok": true,
+      "refusal": "Há uma foto selecionada e não recebida em TESTE · Foto pendente. Reenvie ou descarte a prévia antes de concluir o assunto.",
+      "sectionO": "Em andamento"
+    },
+    {
+      "id": "R4-B revisão mostra as fotos não recebidas com o alvo e bloqueia a conclusão",
+      "ok": true,
+      "n": 2,
+      "disabled": true,
+      "countText": "FALTAM 2 PENDÊNCIAS PARA CONCLUIR ESTA VISITA"
+    },
+    {
+      "id": "R4-C descartar a prévia opcional libera a pendência",
+      "ok": true,
+      "left": 1
+    },
+    {
+      "id": "R4-D reenvio bem-sucedido libera; conclusão manual funciona; nenhuma foto abandonada",
+      "ok": true,
+      "finalState": "completed",
+      "photos": [
+        {
+          "target_kind": "equipment"
+        },
+        {
+          "target_kind": "equipment"
+        },
+        {
+          "target_kind": "equipment"
+        },
+        {
+          "target_kind": "equipment"
+        },
+        {
+          "target_kind": "facade"
+        }
+      ]
+    },
+    {
+      "id": "R4-E a Coleta embutida no /app aplica a mesma pendência local e o mesmo descarte",
+      "ok": true,
+      "n": 1,
+      "disabled": true,
+      "after": 0
+    }
+  ],
+  "errors": []
+}

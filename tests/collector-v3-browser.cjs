@@ -20,7 +20,7 @@ const QRCode=require('qrcode');
   // Esperar a atualização visual disparada pelo foco antes de consultar o botão.
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   const close=page.getByRole('button',{name:'Fechar teclado',exact:true});if(await close.isVisible())await close.click();await page.waitForFunction(()=>!document.querySelector('#collector.is-typing'));};
- const waitPhoto=async()=>{await page.waitForFunction(()=>[...document.querySelectorAll('.photo-thumb img')].some(i=>i.src.includes('/api/collector/photo?')));await page.waitForFunction(()=>!document.querySelector('.notice.error'));};
+ const waitPhoto=async()=>{await page.waitForFunction(()=>!!document.querySelector('.photo-thumb .photo-tag.now,.photo-thumb .photo-tag.old'));await page.waitForFunction(()=>!document.querySelector('.notice.error'));};
  try{
   await page.goto(origin);await page.getByRole('heading',{name:'Selecione a unidade',exact:true}).waitFor();assert.equal(await page.locator('[data-action=toggle-questionnaire]').count(),0);assert.doesNotMatch(await page.locator('body').innerText(),/Questionário reformulado V3|Usar questionário anterior|Usar questionário V3/);await page.getByRole('button',{name:/Unidade sem inventário/}).click();await page.getByRole('heading',{name:'Fachada da unidade',exact:true}).first().waitFor();assert.match(page.url(),/coleta-v3/);
   await page.locator('input[data-photo]').last().setInputFiles(png);await waitPhoto();assert.equal(f.sqlite.prepare('SELECT count(*) n FROM collection_photos WHERE status=?').get('ready').n,1);

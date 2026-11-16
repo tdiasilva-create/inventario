@@ -26,7 +26,7 @@ export function createProgressPhotos(){
   catch(e){if(ticket===sequence)error=e.message;}
   finally{if(ticket===sequence){loading=false;mount();}}
  }
- document.addEventListener('error',event=>{const img=event.target;if(!img.matches?.('.progress-photos img,.progress-photo-dialog img'))return;img.hidden=true;const warning=img.nextElementSibling;if(warning)warning.hidden=false;},true);
+ document.addEventListener('error',event=>{const img=event.target;if(!img.matches?.('.progress-photos img,.progress-photo-dialog img'))return;const src=new URL(img.src,location.href);if(src.searchParams.get('size')==='thumb'&&!img.dataset.originalFallback){img.dataset.originalFallback='1';src.searchParams.delete('size');img.src=src.href;return;}img.hidden=true;const warning=img.nextElementSibling;if(warning)warning.hidden=false;},true);
  document.addEventListener('click',async event=>{
   const button=event.target.closest('[data-progress-photo]');if(!button||button.disabled)return;
   const action=button.dataset.progressPhoto;

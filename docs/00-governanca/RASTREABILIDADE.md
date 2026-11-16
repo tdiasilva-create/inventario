@@ -699,3 +699,6 @@ Pedido do responsável para atualizar o repositório e preparar auditoria pelo C
 
 ## D-123 — permissões e orçamento, 15/11/2026
 Pedido autorizado após devolutiva → AUD-005/AUD-006/AUD-002/AUD-003/AUD-020/AUD-023 e ajuste parcial de CI AUD-022 → server/worker.mjs, agentes/index.mjs, hardware-review.mjs, service-desk.mjs, web/desktop-request.js, configurações e migrations/0035_audit_read_budget.sql → tests/audit-permissions-budget.test.mjs, audit-session-budget-browser.cjs, regressões de cache/assíncrono/hardware/GPS/ruas → scripts/measure-audit-budget.mjs → [qualidade e implantação](../05-qualidade/PERMISSOES_D1_D123_2026-11-15.md). Backup privado excluído do Git. Fases/decisões pendentes não são consideradas resolvidas por esta entrega.
+
+## D-124 — coleta/fotos, 16/11/2026
+Pedido autorizado → AUD010/011/012/014/015/016/037/038/039/040/041/042 e mitigação 043/044(a) → server/collector*, collection-equality, photo-storage, photo-thumbnails, mobile-app; web/collector*, photo-prepare, desktop-inventory/progress-photos/thumbnails → tests/collection-photos-d124.test.mjs e collection-photos-d124-browser.cjs, regressões gerais/mobile/miniaturas/concorrência → [qualidade D124](../05-qualidade/COLETA_FOTOS_D124_2026-11-16.md). Base original, fotos completas, permissões e GPS preservados; decisões restantes documentadas sem implementação presumida.

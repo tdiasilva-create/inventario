@@ -61,7 +61,7 @@ export function validV3SectionShape(section,data){
 }
 export function problemSummary(sections,equipment=[]){
  const result=[],add=(source,description,id)=>{if(typeof description==='string'&&description.trim())result.push({source,description:description.trim(),id});};
- for(const l of sections.C?.links||[]){add('Internet · '+(l.provider||'Link'),l.problems,l.id);if(l.drops==='Sim')add('Internet · '+(l.provider||'Link'),'Quedas: '+(l.frequency||'frequência não informada'),l.id);}
+ for(const l of sections.C?.exists==='Sim'?sections.C.links||[]:[]){add('Internet · '+(l.provider||'Link'),l.problems,l.id);if(l.drops==='Sim')add('Internet · '+(l.provider||'Link'),'Quedas: '+(l.frequency||'frequência não informada'),l.id);}
  for(const n of sections.D?.networks||[])add('Wi-Fi · '+(n.ssid||'Não identificado'),n.notes,n.id);
  for(const e of equipment)add(e.data?.category==='printer'?'Impressora':'Computador',e.data?.problems,e.id);
  return result;

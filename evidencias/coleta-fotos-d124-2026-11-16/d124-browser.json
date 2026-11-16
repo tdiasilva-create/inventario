@@ -1,0 +1,23 @@
+{
+  "fixture": "Worker real + SQLite isolado",
+  "physicalAndroid": false,
+  "results": [
+    {
+      "id": "D124 rascunho com resposta perdida preserva edição e foto",
+      "ok": true
+    },
+    {
+      "id": "D124 comparação recupera conflito sem apagar a cópia local",
+      "ok": true
+    },
+    {
+      "id": "D124 falha de conversão libera controles; miniatura corrompida usa original",
+      "ok": true
+    },
+    {
+      "id": "D124 HEIC válido recebido sob CSP do app unificado",
+      "ok": true
+    }
+  ],
+  "errors": []
+}

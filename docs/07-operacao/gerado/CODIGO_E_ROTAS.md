@@ -1,6 +1,6 @@
 # Índice do código e referências de API
 
-Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
+Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
 
 ## server
 
@@ -22,10 +22,11 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/agentes/presence.mjs](../../../server/agentes/presence.mjs) | 11 | 887 |
 | [server/asset-response.mjs](../../../server/asset-response.mjs) | 13 | 1039 |
 | [server/collection-control.mjs](../../../server/collection-control.mjs) | 59 | 5702 |
+| [server/collection-equality.mjs](../../../server/collection-equality.mjs) | 25 | 1587 |
 | [server/collector-access.mjs](../../../server/collector-access.mjs) | 8 | 317 |
-| [server/collector-v2.mjs](../../../server/collector-v2.mjs) | 60 | 8040 |
-| [server/collector-v3.mjs](../../../server/collector-v3.mjs) | 62 | 8469 |
-| [server/collector.mjs](../../../server/collector.mjs) | 194 | 55711 |
+| [server/collector-v2.mjs](../../../server/collector-v2.mjs) | 60 | 8124 |
+| [server/collector-v3.mjs](../../../server/collector-v3.mjs) | 68 | 9360 |
+| [server/collector.mjs](../../../server/collector.mjs) | 199 | 58472 |
 | [server/communication-log.mjs](../../../server/communication-log.mjs) | 36 | 3727 |
 | [server/d1-budget.mjs](../../../server/d1-budget.mjs) | 11 | 1034 |
 | [server/d1-usage.mjs](../../../server/d1-usage.mjs) | 79 | 5768 |
@@ -42,7 +43,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/inventory-equipment.mjs](../../../server/inventory-equipment.mjs) | 67 | 8713 |
 | [server/inventory-results.mjs](../../../server/inventory-results.mjs) | 54 | 9214 |
 | [server/management-views.mjs](../../../server/management-views.mjs) | 67 | 7184 |
-| [server/mobile-app.mjs](../../../server/mobile-app.mjs) | 29 | 1955 |
+| [server/mobile-app.mjs](../../../server/mobile-app.mjs) | 29 | 1980 |
 | [server/monitoring-queries.mjs](../../../server/monitoring-queries.mjs) | 40 | 2786 |
 | [server/panel-read-cache.mjs](../../../server/panel-read-cache.mjs) | 42 | 2692 |
 | [server/panel-search.mjs](../../../server/panel-search.mjs) | 49 | 5491 |
@@ -51,8 +52,8 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/photo-labels.mjs](../../../server/photo-labels.mjs) | 35 | 3958 |
 | [server/photo-read.mjs](../../../server/photo-read.mjs) | 13 | 996 |
 | [server/photo-response.mjs](../../../server/photo-response.mjs) | 20 | 1150 |
-| [server/photo-storage.mjs](../../../server/photo-storage.mjs) | 129 | 17945 |
-| [server/photo-thumbnails.mjs](../../../server/photo-thumbnails.mjs) | 82 | 7479 |
+| [server/photo-storage.mjs](../../../server/photo-storage.mjs) | 163 | 22220 |
+| [server/photo-thumbnails.mjs](../../../server/photo-thumbnails.mjs) | 82 | 7587 |
 | [server/provider-report-history.mjs](../../../server/provider-report-history.mjs) | 42 | 3058 |
 | [server/provider-report.mjs](../../../server/provider-report.mjs) | 43 | 2900 |
 | [server/request-timing.mjs](../../../server/request-timing.mjs) | 50 | 3434 |
@@ -88,8 +89,8 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/collector-account.html](../../../web/collector-account.html) | 2 | 1549 |
 | [web/collector-account.js](../../../web/collector-account.js) | 34 | 2791 |
 | [web/collector-app.js](../../../web/collector-app.js) | 22 | 1769 |
-| [web/collector-dialog.js](../../../web/collector-dialog.js) | 21 | 1535 |
-| [web/collector-drafts.js](../../../web/collector-drafts.js) | 25 | 1737 |
+| [web/collector-dialog.js](../../../web/collector-dialog.js) | 22 | 2057 |
+| [web/collector-drafts.js](../../../web/collector-drafts.js) | 28 | 2255 |
 | [web/collector-environments.js](../../../web/collector-environments.js) | 53 | 4988 |
 | [web/collector-errors.js](../../../web/collector-errors.js) | 20 | 1159 |
 | [web/collector-login.html](../../../web/collector-login.html) | 2 | 2031 |
@@ -102,13 +103,13 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/collector-schema.js](../../../web/collector-schema.js) | 91 | 19225 |
 | [web/collector-ui.js](../../../web/collector-ui.js) | 95 | 5967 |
 | [web/collector-unit-list.js](../../../web/collector-unit-list.js) | 7 | 646 |
-| [web/collector-v2-schema.js](../../../web/collector-v2-schema.js) | 54 | 12337 |
+| [web/collector-v2-schema.js](../../../web/collector-v2-schema.js) | 54 | 12357 |
 | [web/collector-v2.html](../../../web/collector-v2.html) | 2 | 463 |
 | [web/collector-v2.js](../../../web/collector-v2.js) | 181 | 46495 |
-| [web/collector-v3-schema.js](../../../web/collector-v3-schema.js) | 69 | 6386 |
+| [web/collector-v3-schema.js](../../../web/collector-v3-schema.js) | 69 | 6415 |
 | [web/collector-v3.css](../../../web/collector-v3.css) | 265 | 21993 |
 | [web/collector-v3.html](../../../web/collector-v3.html) | 2 | 511 |
-| [web/collector-v3.js](../../../web/collector-v3.js) | 753 | 92867 |
+| [web/collector-v3.js](../../../web/collector-v3.js) | 787 | 97693 |
 | [web/collector.css](../../../web/collector.css) | 288 | 32869 |
 | [web/collector.html](../../../web/collector.html) | 2 | 537 |
 | [web/collector.js](../../../web/collector.js) | 149 | 56680 |
@@ -124,7 +125,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/desktop-equipment.js](../../../web/desktop-equipment.js) | 107 | 30300 |
 | [web/desktop-exports.js](../../../web/desktop-exports.js) | 40 | 3465 |
 | [web/desktop-icons.js](../../../web/desktop-icons.js) | 36 | 2707 |
-| [web/desktop-inventory.js](../../../web/desktop-inventory.js) | 25 | 8844 |
+| [web/desktop-inventory.js](../../../web/desktop-inventory.js) | 25 | 8865 |
 | [web/desktop-management.js](../../../web/desktop-management.js) | 65 | 15797 |
 | [web/desktop-map.css](../../../web/desktop-map.css) | 31 | 3468 |
 | [web/desktop-map.js](../../../web/desktop-map.js) | 245 | 22091 |
@@ -133,12 +134,12 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/desktop-notifications.js](../../../web/desktop-notifications.js) | 30 | 3039 |
 | [web/desktop-photos.css](../../../web/desktop-photos.css) | 25 | 7711 |
 | [web/desktop-progress-photos.css](../../../web/desktop-progress-photos.css) | 4 | 1613 |
-| [web/desktop-progress-photos.js](../../../web/desktop-progress-photos.js) | 42 | 5292 |
+| [web/desktop-progress-photos.js](../../../web/desktop-progress-photos.js) | 42 | 5497 |
 | [web/desktop-progress.js](../../../web/desktop-progress.js) | 60 | 12709 |
 | [web/desktop-request.js](../../../web/desktop-request.js) | 54 | 3366 |
 | [web/desktop-results.js](../../../web/desktop-results.js) | 29 | 7408 |
 | [web/desktop-theme.css](../../../web/desktop-theme.css) | 93 | 19405 |
-| [web/desktop-thumbnails.js](../../../web/desktop-thumbnails.js) | 21 | 3278 |
+| [web/desktop-thumbnails.js](../../../web/desktop-thumbnails.js) | 21 | 3518 |
 | [web/desktop.css](../../../web/desktop.css) | 27 | 32546 |
 | [web/desktop.js](../../../web/desktop.js) | 343 | 55202 |
 | [web/dispatch-map.js](../../../web/dispatch-map.js) | 63 | 5596 |
@@ -178,7 +179,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [web/panorama-layout.css](../../../web/panorama-layout.css) | 66 | 8024 |
 | [web/pending-collections.html](../../../web/pending-collections.html) | 2 | 487 |
 | [web/pending-collections.js](../../../web/pending-collections.js) | 32 | 5877 |
-| [web/photo-prepare.js](../../../web/photo-prepare.js) | 45 | 4703 |
+| [web/photo-prepare.js](../../../web/photo-prepare.js) | 46 | 4840 |
 | [web/photo-viewer.js](../../../web/photo-viewer.js) | 31 | 6082 |
 | [web/provider-report.js](../../../web/provider-report.js) | 62 | 8576 |
 | [web/runtime-config.js](../../../web/runtime-config.js) | 4 | 158 |
@@ -459,7 +460,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [scripts/register-requested-semed.mjs](../../../scripts/register-requested-semed.mjs) | 16 | 3742 |
 | [scripts/rehearse-collection-control.mjs](../../../scripts/rehearse-collection-control.mjs) | 12 | 1444 |
 | [scripts/serve.mjs](../../../scripts/serve.mjs) | 12 | 1023 |
-| [scripts/test-audit-browser.mjs](../../../scripts/test-audit-browser.mjs) | 21 | 1134 |
+| [scripts/test-audit-browser.mjs](../../../scripts/test-audit-browser.mjs) | 21 | 1171 |
 | [scripts/test-audit.mjs](../../../scripts/test-audit.mjs) | 10 | 626 |
 | [scripts/test-partial-photos-release.mjs](../../../scripts/test-partial-photos-release.mjs) | 26 | 2701 |
 | [scripts/test-technician-android.mjs](../../../scripts/test-technician-android.mjs) | 10 | 1015 |
@@ -524,7 +525,9 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/collection-control-browser.cjs](../../../tests/collection-control-browser.cjs) | 22 | 4002 |
 | [tests/collection-control.test.mjs](../../../tests/collection-control.test.mjs) | 87 | 10078 |
 | [tests/collection-overview-browser.cjs](../../../tests/collection-overview-browser.cjs) | 28 | 4938 |
-| [tests/collector-concurrency-browser.cjs](../../../tests/collector-concurrency-browser.cjs) | 274 | 38439 |
+| [tests/collection-photos-d124-browser.cjs](../../../tests/collection-photos-d124-browser.cjs) | 116 | 14879 |
+| [tests/collection-photos-d124.test.mjs](../../../tests/collection-photos-d124.test.mjs) | 32 | 14100 |
+| [tests/collector-concurrency-browser.cjs](../../../tests/collector-concurrency-browser.cjs) | 274 | 38403 |
 | [tests/collector-environments-browser.cjs](../../../tests/collector-environments-browser.cjs) | 65 | 8241 |
 | [tests/collector-environments.test.mjs](../../../tests/collector-environments.test.mjs) | 65 | 5610 |
 | [tests/collector-evidence-browser.cjs](../../../tests/collector-evidence-browser.cjs) | 19 | 9935 |
@@ -543,8 +546,8 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/collector-v2-browser.cjs](../../../tests/collector-v2-browser.cjs) | 14 | 8632 |
 | [tests/collector-v2-qr-browser.cjs](../../../tests/collector-v2-qr-browser.cjs) | 92 | 15542 |
 | [tests/collector-v2-qr-lost-response-browser.cjs](../../../tests/collector-v2-qr-lost-response-browser.cjs) | 55 | 9181 |
-| [tests/collector-v2.test.mjs](../../../tests/collector-v2.test.mjs) | 28 | 12327 |
-| [tests/collector-v3-browser.cjs](../../../tests/collector-v3-browser.cjs) | 57 | 15715 |
+| [tests/collector-v2.test.mjs](../../../tests/collector-v2.test.mjs) | 28 | 12340 |
+| [tests/collector-v3-browser.cjs](../../../tests/collector-v3-browser.cjs) | 57 | 15699 |
 | [tests/collector-v3.test.mjs](../../../tests/collector-v3.test.mjs) | 75 | 16124 |
 | [tests/d1-budget-soak.cjs](../../../tests/d1-budget-soak.cjs) | 34 | 2969 |
 | [tests/d1-budget.test.mjs](../../../tests/d1-budget.test.mjs) | 142 | 13504 |
@@ -587,7 +590,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/helpers/dispatch-fixture.mjs](../../../tests/helpers/dispatch-fixture.mjs) | 7 | 1644 |
 | [tests/helpers/equipment-consultation.mjs](../../../tests/helpers/equipment-consultation.mjs) | 27 | 4914 |
 | [tests/helpers/equipment-link-state.mjs](../../../tests/helpers/equipment-link-state.mjs) | 13 | 1082 |
-| [tests/helpers/fake-drive.mjs](../../../tests/helpers/fake-drive.mjs) | 35 | 4562 |
+| [tests/helpers/fake-drive.mjs](../../../tests/helpers/fake-drive.mjs) | 36 | 4787 |
 | [tests/helpers/hardware-change.mjs](../../../tests/helpers/hardware-change.mjs) | 10 | 1310 |
 | [tests/helpers/map-demands.mjs](../../../tests/helpers/map-demands.mjs) | 15 | 1485 |
 | [tests/helpers/panel-blocks.mjs](../../../tests/helpers/panel-blocks.mjs) | 21 | 1644 |
@@ -607,7 +610,7 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/map-demands-browser.cjs](../../../tests/map-demands-browser.cjs) | 57 | 10158 |
 | [tests/map-examples.test.mjs](../../../tests/map-examples.test.mjs) | 5 | 548 |
 | [tests/map-geography.test.mjs](../../../tests/map-geography.test.mjs) | 17 | 1353 |
-| [tests/mobile-app-browser.cjs](../../../tests/mobile-app-browser.cjs) | 43 | 9642 |
+| [tests/mobile-app-browser.cjs](../../../tests/mobile-app-browser.cjs) | 43 | 9679 |
 | [tests/mobile-app.test.mjs](../../../tests/mobile-app.test.mjs) | 51 | 4225 |
 | [tests/mobile-safe-viewport-browser.cjs](../../../tests/mobile-safe-viewport-browser.cjs) | 49 | 6329 |
 | [tests/network-tests-browser.cjs](../../../tests/network-tests-browser.cjs) | 27 | 3427 |
@@ -633,9 +636,9 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/pending-indicators.test.mjs](../../../tests/pending-indicators.test.mjs) | 66 | 8198 |
 | [tests/photo-gallery.test.mjs](../../../tests/photo-gallery.test.mjs) | 37 | 4485 |
 | [tests/photo-performance-browser.cjs](../../../tests/photo-performance-browser.cjs) | 48 | 7048 |
-| [tests/photo-performance.test.mjs](../../../tests/photo-performance.test.mjs) | 84 | 8794 |
+| [tests/photo-performance.test.mjs](../../../tests/photo-performance.test.mjs) | 84 | 8819 |
 | [tests/photo-storage.test.mjs](../../../tests/photo-storage.test.mjs) | 167 | 18247 |
-| [tests/photo-thumbnails-browser.cjs](../../../tests/photo-thumbnails-browser.cjs) | 50 | 11877 |
+| [tests/photo-thumbnails-browser.cjs](../../../tests/photo-thumbnails-browser.cjs) | 53 | 12507 |
 | [tests/photo-thumbnails.test.mjs](../../../tests/photo-thumbnails.test.mjs) | 79 | 10378 |
 | [tests/provider-report-browser.cjs](../../../tests/provider-report-browser.cjs) | 40 | 8433 |
 | [tests/provider-report-history.test.mjs](../../../tests/provider-report-history.test.mjs) | 86 | 8754 |
@@ -672,8 +675,8 @@ Gerado por `pnpm docs:code`. 628 arquivos de texto. Hashes/bytes usam UTF-8 com 
 
 | Arquivo | Linhas | Bytes |
 |---|---:|---:|
-| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 165 | 4577 |
-| [package.json](../../../package.json) | 91 | 7397 |
+| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 168 | 4678 |
+| [package.json](../../../package.json) | 92 | 7484 |
 | [pnpm-lock.yaml](../../../pnpm-lock.yaml) | 2982 | 93879 |
 | [wrangler.collector.jsonc](../../../wrangler.collector.jsonc) | 12 | 786 |
 | [wrangler.jsonc](../../../wrangler.jsonc) | 22 | 1643 |
@@ -787,6 +790,10 @@ Ambiente: `APP_KIND`, `DB`.
 - `/api/collection-control/classify`
 - `/api/collection-control/history`
 - `/api/collection-control/summary`
+
+### server/collection-equality.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
 
 ### server/collector-access.mjs
 

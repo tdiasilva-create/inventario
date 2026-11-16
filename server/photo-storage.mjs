@@ -30,6 +30,7 @@ export const logIntegration=(db,event,actor,detail)=>db.prepare('INSERT INTO int
 // One decrypted token per DB binding; every request still validates a fresh D1 row.
 // An encrypted-token change, environment/key change, expiry or revocation invalidates it.
 const tokenMemo=new WeakMap();
+const tokenRefreshes=new WeakMap();
 export async function accessToken(env,db,{fetchImpl=fetch,now=Date.now(),row:loadedRow}={}){
  if(!driveConfigured(env))throw new StorageError('Integração Google Drive não configurada no servidor.',503,'not_configured');
  const row=loadedRow===undefined?await integrationRow(db):loadedRow;if(!row||!row.refresh_token_enc||row.revoked_at){tokenMemo.delete(databaseIdentity(db));throw new StorageError('Google Drive não autorizado. Solicite ao root a conexão em Configurações.',503,'not_connected');}
@@ -39,18 +40,26 @@ export async function accessToken(env,db,{fetchImpl=fetch,now=Date.now(),row:loa
   const token=await open(env,row.access_token_enc);tokenMemo.set(databaseIdentity(db),{context,token,until:Math.min(now+60000,row.access_token_expires_at-60000)});return {token,row};
  }
  tokenMemo.delete(databaseIdentity(db));
+ const identity=databaseIdentity(db),context=[env.GOOGLE_CLIENT_ID,env.GOOGLE_CLIENT_SECRET,env.GOOGLE_TOKEN_KEY,row.refresh_token_enc,row.access_token_enc,row.connected_at];
+ const active=tokenRefreshes.get(identity);if(active&&context.every((v,i)=>v===active.context[i]))return active.promise;
+ const promise=refreshAccessToken(env,db,row,{fetchImpl,now});tokenRefreshes.set(identity,{context,promise});
+ try{return await promise;}finally{if(tokenRefreshes.get(identity)?.promise===promise)tokenRefreshes.delete(identity);}
+}
+async function refreshAccessToken(env,db,row,{fetchImpl,now}){
  const refresh=await open(env,row.refresh_token_enc);
  const response=await fetchImpl(TOKEN_URL,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:env.GOOGLE_CLIENT_ID,client_secret:env.GOOGLE_CLIENT_SECRET,refresh_token:refresh,grant_type:'refresh_token'})});
  const data=await response.json().catch(()=>({}));
  if(!response.ok||!data.access_token){
   const reason=String(data.error||response.status);
-  if(['invalid_grant','unauthorized_client'].includes(data.error)){await db.batch([db.prepare('UPDATE integration_tokens SET revoked_at=?,access_token_enc=NULL,access_token_expires_at=NULL,last_error=? WHERE provider=?').bind(now,'refresh:'+reason,DRIVE_PROVIDER),logIntegration(db,'authorization_revoked',null,reason)]);throw new StorageError('A autorização do Google Drive foi revogada ou expirou. Reconecte em Configurações.',503,'revoked');}
-  await db.prepare('UPDATE integration_tokens SET last_error=? WHERE provider=?').bind('refresh:'+reason,DRIVE_PROVIDER).run();
+  if(['invalid_grant','unauthorized_client'].includes(data.error)){const revoked=await db.prepare('UPDATE integration_tokens SET revoked_at=?,access_token_enc=NULL,access_token_expires_at=NULL,last_error=? WHERE provider=? AND refresh_token_enc=? AND access_token_enc IS ? AND revoked_at IS NULL').bind(now,'refresh:'+reason,DRIVE_PROVIDER,row.refresh_token_enc,row.access_token_enc).run();if(revoked.meta.changes)await logIntegration(db,'authorization_revoked',null,reason).run();throw new StorageError('A autorização do Google Drive foi revogada ou expirou. Reconecte em Configurações.',503,'revoked');}
+  await db.prepare('UPDATE integration_tokens SET last_error=? WHERE provider=? AND refresh_token_enc=? AND access_token_enc IS ? AND revoked_at IS NULL').bind('refresh:'+reason,DRIVE_PROVIDER,row.refresh_token_enc,row.access_token_enc).run();
   throw new StorageError('Não foi possível renovar o acesso ao Google Drive. Tente novamente.',503,'refresh_failed');
  }
  const expires=now+Math.max(60,Number(data.expires_in)||3600)*1000;
- await db.prepare('UPDATE integration_tokens SET access_token_enc=?,access_token_expires_at=?,last_refresh_at=?,last_error=NULL WHERE provider=?').bind(await seal(env,data.access_token),expires,now,DRIVE_PROVIDER).run();
- return {token:data.access_token,row};
+ const encrypted=await seal(env,data.access_token);
+ const changed=await db.prepare('UPDATE integration_tokens SET access_token_enc=?,access_token_expires_at=?,last_refresh_at=?,last_error=NULL WHERE provider=? AND refresh_token_enc=? AND access_token_enc IS ? AND revoked_at IS NULL AND connected_at IS ?').bind(encrypted,expires,now,DRIVE_PROVIDER,row.refresh_token_enc,row.access_token_enc,row.connected_at).run();
+ if(!changed.meta.changes){const current=await integrationRow(db);if(!current||current.revoked_at||current.refresh_token_enc!==row.refresh_token_enc||!current.access_token_enc||current.access_token_expires_at<=now+60000)throw new StorageError('A autorização mudou durante a renovação. Tente novamente.',503,'authorization_changed');return {token:await open(env,current.access_token_enc),row:current};}
+ return {token:data.access_token,row:{...row,access_token_enc:encrypted,access_token_expires_at:expires,last_refresh_at:now,last_error:null}};
 }
 
 // ---- Google Drive: chamadas ----
@@ -63,8 +72,8 @@ function driveMessage(status,data){const reason=data?.error?.errors?.[0]?.reason
 const q=v=>String(v).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 export async function createFolder(token,fetchImpl,name,parent){return driveJson(token,fetchImpl,'/files?fields=id,name&supportsAllDrives=true',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,mimeType:'application/vnd.google-apps.folder',...(parent?{parents:[parent]}:{})})});}
 export async function findByProperty(token,fetchImpl,key,value,extra=''){const data=await driveJson(token,fetchImpl,'/files?q='+encodeURIComponent(`appProperties has { key='${q(key)}' and value='${q(value)}' } and trashed=false${extra}`)+'&fields=files(id,name,size,parents)&pageSize=5&spaces=drive&supportsAllDrives=true&includeItemsFromAllDrives=true');return data.files||[];}
-export async function multipartUpload(token,fetchImpl,{name,mime,bytes,parents,appProperties,description}){
- const boundary='semed-'+crypto.randomUUID(),meta=JSON.stringify({name,mimeType:mime,parents,appProperties,description});
+export async function multipartUpload(token,fetchImpl,{name,mime,bytes,parents,appProperties,description,id}){
+ const boundary='semed-'+crypto.randomUUID(),meta=JSON.stringify({...(id?{id}:{}),name,mimeType:mime,parents,appProperties,description});
  const head=new TextEncoder().encode(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: ${mime}\r\n\r\n`),tail=new TextEncoder().encode(`\r\n--${boundary}--`);
  const body=new Uint8Array(head.byteLength+bytes.byteLength+tail.byteLength);body.set(head,0);body.set(new Uint8Array(bytes),head.byteLength);body.set(tail,head.byteLength+bytes.byteLength);
  return driveJson(token,fetchImpl,DRIVE_UPLOAD+'?uploadType=multipart&fields=id,name,size,md5Checksum&supportsAllDrives=true',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});
@@ -83,10 +92,22 @@ function r2Store(bucket){
   async get(row){if(!bucket)throw new StorageError('Fotografias indisponíveis.');const object=await bucket.get(row.object_key);return object?{body:object.body,contentLength:object.size}:null;},
   async delete(row){if(!bucket)throw new StorageError('Armazenamento indisponível.');if(row.storage_provider&&row.storage_provider!==R2_PROVIDER)throw new StorageError('Arquivo pertence a outro provedor ('+row.storage_provider+').',409,'provider_mismatch');await bucket.delete(row.object_key);return true;}};
 }
-function driveStore(env,db,fetchImpl,integration){
+function driveStore(env,db,rawFetch,integration){
  let cached=integration;const row=async()=>cached===undefined?(cached=await integrationRow(db)):cached;
  const ready=async()=>{if(!driveConfigured(env))return false;const r=await row();return !!(r&&r.refresh_token_enc&&!r.revoked_at&&r.folder_id);};
- const tok=async()=>accessToken(env,db,{fetchImpl,row:await row()});
+ let authorization;
+ const tok=async()=>{authorization=await accessToken(env,db,{fetchImpl:rawFetch,row:await row()});cached=authorization.row;return authorization;};
+ // Retry exactly once after a definitive 401. Never replay a timeout/5xx upload here.
+ const fetchImpl=async(path,init={})=>{
+  const headers=new Headers(init.headers);if(authorization)headers.set('Authorization','Bearer '+authorization.token);
+  const response=await rawFetch(path,{...init,headers});if(response.status!==401)return response;
+  await response.body?.cancel();const rejected=authorization;
+  if(!rejected)return response;
+  tokenMemo.delete(databaseIdentity(db));
+  await db.prepare('UPDATE integration_tokens SET access_token_enc=NULL,access_token_expires_at=NULL WHERE provider=? AND refresh_token_enc=? AND access_token_enc IS ? AND revoked_at IS NULL').bind(DRIVE_PROVIDER,rejected.row.refresh_token_enc,rejected.row.access_token_enc).run();
+  cached=undefined;const renewed=await tok();headers.set('Authorization','Bearer '+renewed.token);
+  return rawFetch(path,{...init,headers});
+ };
  async function avatarFolder(token,rootFolder){
   const scope='technician-avatars',hit=await db.prepare('SELECT folder_id FROM integration_folders WHERE provider=? AND scope_key=?').bind(DRIVE_PROVIDER,scope).first();if(hit)return hit.folder_id;
   const found=await findByProperty(token,fetchImpl,'semedAvatarFolder','1',` and mimeType='application/vnd.google-apps.folder'`);
@@ -102,14 +123,27 @@ function driveStore(env,db,fetchImpl,integration){
  }
  return {provider:DRIVE_PROVIDER,enabled:ready,
   async status(){const r=await row();return {provider:DRIVE_PROVIDER,configured:driveConfigured(env),enabled:await ready(),connected:!!(r&&r.refresh_token_enc&&!r.revoked_at),accountEmail:r?.account_email||null,folderId:r?.folder_id||null,folderName:r?.folder_name||null,connectedAt:r?.connected_at||null,lastRefreshAt:r?.last_refresh_at||null,lastTestAt:r?.last_test_at||null,lastTestResult:r?.last_test_result||null,revokedAt:r?.revoked_at||null,lastError:r?.last_error||null};},
-  async put({key,bytes,mime,photoId,unitId,unitName,inspectionId,targetKind,targetId,sha256,retry=true}){
+  async put({key,bytes,mime,photoId,unitId,unitName,inspectionId,targetKind,targetId,sha256,retry=true,reservePhotoId=false}){
    if(!await ready())throw new StorageError('Armazenamento de fotos ainda indisponível. Nenhum upload confirmado.',503,'not_connected');
    const {token,row:r}=await tok();
    // Idempotência: uma tentativa anterior pode ter gravado o arquivo sem confirmar no D1.
    // Only the route that just inserted the unique pending row may skip the lookup.
-   if(retry){const existing=await findByProperty(token,fetchImpl,'semedPhotoId',photoId);if(existing[0])return {ref:existing[0].id,provider:DRIVE_PROVIDER,reused:true};}
+   let reserved=reservePhotoId?await db.prepare('SELECT storage_ref FROM collection_photos WHERE id=? AND sha256=? AND storage_provider=?').bind(photoId,sha256,DRIVE_PROVIDER).first():null;
+   if(retry&&!reserved?.storage_ref){const existing=await findByProperty(token,fetchImpl,'semedPhotoId',photoId);if(existing[0])return {ref:existing[0].id,provider:DRIVE_PROVIDER,reused:true};}
+   if(reservePhotoId&&!reserved?.storage_ref){
+    const generated=await driveJson(token,fetchImpl,'/files/generateIds?count=1&space=drive&type=files');const id=generated.ids?.[0];
+    if(typeof id!=='string'||!/^[\w-]+$/.test(id))throw new StorageError('Não foi possível reservar a fotografia no Drive.',502,'file_id');
+    await db.prepare("UPDATE collection_photos SET storage_ref=? WHERE id=? AND sha256=? AND status='pending' AND storage_provider=? AND storage_ref IS NULL").bind(id,photoId,sha256,DRIVE_PROVIDER).run();
+    reserved=await db.prepare('SELECT storage_ref FROM collection_photos WHERE id=? AND sha256=? AND storage_provider=?').bind(photoId,sha256,DRIVE_PROVIDER).first();
+    if(!reserved?.storage_ref)throw new StorageError('O envio foi removido ou alterado. A foto não foi confirmada.',409,'photo_changed');
+   }
    const avatar=targetKind==='technician-avatar',parent=avatar?await avatarFolder(token,r.folder_id):await unitFolder(token,unitId,unitName,r.folder_id);
-   const file=await multipartUpload(token,fetchImpl,{name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,...(avatar?{}:{semedUnitId:unitId,semedInspectionId:inspectionId}),semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:avatar?'Inventário Tecnológico SEMED · avatar do técnico':'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});
+   let file;try{file=await multipartUpload(token,fetchImpl,{id:reserved?.storage_ref,name:`${targetKind}_${photoId}.${ext(mime)}`,mime,bytes,parents:[parent],appProperties:{semedPhotoId:photoId,...(avatar?{}:{semedUnitId:unitId,semedInspectionId:inspectionId}),semedTargetKind:targetKind,semedTargetId:targetId,semedSha256:sha256,semedKey:key},description:avatar?'Inventário Tecnológico SEMED · avatar do técnico':'Inventário Tecnológico SEMED · evidência de coleta · '+targetKind});}
+   catch(error){if(error.code!=='drive_409'||!reserved?.storage_ref)throw error;
+    const existing=await driveJson(token,fetchImpl,'/files/'+encodeURIComponent(reserved.storage_ref)+'?fields=id,trashed,appProperties&supportsAllDrives=true');
+    if(existing.trashed||existing.appProperties?.semedPhotoId!==photoId||existing.appProperties?.semedSha256!==sha256)throw new StorageError('A fotografia reservada não corresponde a este envio.',409,'photo_mismatch');
+    return {ref:existing.id,provider:DRIVE_PROVIDER,reused:true};
+   }
    return {ref:file.id,provider:DRIVE_PROVIDER,reused:false};
   },
   async get(row){if(!await ready())throw new StorageError('Fotografias indisponíveis.',503,'not_connected');if(!row.storage_ref)return null;const {token}=await tok();const r=await timed(env,'drive_headers',()=>driveFetch(token,fetchImpl,'/files/'+encodeURIComponent(row.storage_ref)+'?alt=media&supportsAllDrives=true'));if(r.status===404)return null;if(!r.ok)throw new StorageError(driveMessage(r.status,await r.json().catch(()=>({}))),502,'drive_'+r.status);return {body:r.body,contentLength:r.headers.get('Content-Length')};},

@@ -21,7 +21,7 @@ export async function mobileCollector(request,env,user){
  const r=await assetResponse(new Request(url,request),env);
  if(page){
   r.headers.set('X-Frame-Options','SAMEORIGIN');
-  r.headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'none'");
+  r.headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'none'");
   r.headers.set('Permissions-Policy','camera=(self), geolocation=(), microphone=()');
  }
  return r;

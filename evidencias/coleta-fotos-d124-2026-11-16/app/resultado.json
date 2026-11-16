@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "backend": "Worker real e SQLite isolado",
+  "physicalAndroid": false,
+  "framesPreserved": true,
+  "photoReady": true,
+  "trackingPreserved": true,
+  "reauthSameAccount": true,
+  "requests": 81
+}

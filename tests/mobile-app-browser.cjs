@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 (async()=>{
  const {authFixture,temporaryPassword,panelOrigin}=await import('./helpers/auth-fixture.mjs'),worker=(await import('../server/worker.mjs')).default,{session,humanFetch}=await import('./helpers/agent-client.mjs');
- const f=await authFixture(),objects=new Map(),errors=[],requests=[],dir='docs/05-qualidade/evidencias/app-unificado-d115';fs.mkdirSync(dir,{recursive:true});
+ const f=await authFixture(),objects=new Map(),errors=[],requests=[],dir=process.env.SEMED_TEST_EVIDENCE_DIR||'docs/05-qualidade/evidencias/app-unificado-d115';fs.mkdirSync(dir,{recursive:true});
  f.sqlite.prepare('UPDATE users SET must_change=0').run();
  const root=await session(f,f.root),call=(p,d)=>humanFetch(worker,f.env,panelOrigin,root,p,d),revision=()=>f.sqlite.prepare('SELECT revision FROM dispatch_meta').get().revision;
  const enabled=await call('/api/dispatch/technician',{userId:f.root.id,enabled:true,operationId:crypto.randomUUID(),revision:revision()});assert.equal(enabled.status,200);

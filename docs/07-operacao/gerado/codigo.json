@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4577,
-      "lines": 165,
-      "sha256": "7dae1ea870ec2c88fb78b7638e9a559613deb9a332f7bce083c88ae95ac44e90",
+      "bytes": 4678,
+      "lines": 168,
+      "sha256": "f1d37eb3b1288741bd518c1136e52a7a7a2970d24d842289a02b7626da97c860",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -531,9 +531,9 @@
     },
     {
       "path": "package.json",
-      "bytes": 7397,
-      "lines": 91,
-      "sha256": "115e1e854997e619173deeb16c7018f9f39b137714fa286d2c2a892d75dc5b1c",
+      "bytes": 7484,
+      "lines": 92,
+      "sha256": "8d814da32460f6923b292753cc0e54fefcfebf6712a2b75a3c39a600ff2bb0c5",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -1347,9 +1347,9 @@
     },
     {
       "path": "scripts/test-audit-browser.mjs",
-      "bytes": 1134,
+      "bytes": 1171,
       "lines": 21,
-      "sha256": "ce3f5d43af6f32157da690fde3ea534f8cd1d57b370e8e6cd173565af435342f",
+      "sha256": "41aed3345f94208d5e468cca275518e5d640439c05d788a9243c61e6377edc74",
       "imports": [
         "node:child_process"
       ],
@@ -2512,6 +2512,23 @@
       ]
     },
     {
+      "path": "server/collection-equality.mjs",
+      "bytes": 1587,
+      "lines": 25,
+      "sha256": "0775097fd898fcc675b6d174cf08dd46ceeb6bbb0aba73674aa42a0ff47c1851",
+      "imports": [
+        "../web/collector-v3-schema.js"
+      ],
+      "exports": [
+        "equalAnswers",
+        "sameEquipmentAnswers",
+        "sameEquipmentSubmission",
+        "stableAnswers"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "server/collector-access.mjs",
       "bytes": 317,
       "lines": 8,
@@ -2526,9 +2543,9 @@
     },
     {
       "path": "server/collector-v2.mjs",
-      "bytes": 8040,
+      "bytes": 8124,
       "lines": 60,
-      "sha256": "3c7c51e5c1683b1017509fab34180537314fd4d2d5021ca6a09ceaf49840d777",
+      "sha256": "abf9e774e4e30d180d796c6524f3a7566768a8a8ea851750dd0fd99bd5bc1bb8",
       "imports": [
         "../web/collector-v2-schema.js",
         "./photo-labels.mjs"
@@ -2553,9 +2570,9 @@
     },
     {
       "path": "server/collector-v3.mjs",
-      "bytes": 8469,
-      "lines": 62,
-      "sha256": "c4991f1f1eef7010ed5d80cb5505ba5ed12a1443d692fd20540edddd25ba7754",
+      "bytes": 9360,
+      "lines": 68,
+      "sha256": "91db09228ee9ea8131b2b1d545b7d24810f7d7b2a68db00eec0263b83ca98ca9",
       "imports": [
         "../web/collector-v3-schema.js",
         "./collector-v2.mjs"
@@ -2575,15 +2592,16 @@
     },
     {
       "path": "server/collector.mjs",
-      "bytes": 55711,
-      "lines": 194,
-      "sha256": "0090ee119fbe024889eab09d90672d64c5a5528f3af4a490e82556406c3c62ed",
+      "bytes": 58472,
+      "lines": 199,
+      "sha256": "bc5e23b8dc856ef849bb0645ec6b52384a40225095eba4c6c14822a66558073e",
       "imports": [
         "../web/collector-errors.js",
         "../web/collector-schema.js",
         "../web/collector-v2-schema.js",
         "../web/collector-v3-schema.js",
         "../web/visit-schema.js",
+        "./collection-equality.mjs",
         "./collector-access.mjs",
         "./collector-v2.mjs",
         "./collector-v3.mjs",
@@ -2975,9 +2993,9 @@
     },
     {
       "path": "server/mobile-app.mjs",
-      "bytes": 1955,
+      "bytes": 1980,
       "lines": 29,
-      "sha256": "bbfad2bd4b2c1c0e0324737480f1e676df9b93b59e6926dceb73cc99032c7bc1",
+      "sha256": "7697321e45477ea285a8147f01d33b6f855f0292384c7585341fe793a5a4de79",
       "imports": [
         "../shared/mobile-assets.mjs",
         "./asset-response.mjs"
@@ -3136,9 +3154,9 @@
     },
     {
       "path": "server/photo-storage.mjs",
-      "bytes": 17945,
-      "lines": 129,
-      "sha256": "f9fa8bced2b3ca41ea5a384d197526962bc45ef8826a6cfa11694b11f4a44d20",
+      "bytes": 22220,
+      "lines": 163,
+      "sha256": "8aaa521d7e7040df526f72677e8c9073062b1a72ae5f9b7307d2e6b513620a2f",
       "imports": [
         "./request-timing.mjs"
       ],
@@ -3174,9 +3192,9 @@
     },
     {
       "path": "server/photo-thumbnails.mjs",
-      "bytes": 7479,
+      "bytes": 7587,
       "lines": 82,
-      "sha256": "10691b9263b537f30994afd9ec6c013db49ff5e7f06069a70bf1b6bcdc523f5b",
+      "sha256": "14c3d72a46cd69e9997de3b3b0f52b71b93db629edb07f76180c06e4e911a669",
       "imports": [
         "./collector-access.mjs",
         "./photo-response.mjs",
@@ -3938,10 +3956,74 @@
       ]
     },
     {
+      "path": "tests/collection-photos-d124-browser.cjs",
+      "bytes": 14879,
+      "lines": 116,
+      "sha256": "cee6178b9dd6dfad2a4545363b861b3d502165ddeb00843b415ff3362cf149c1",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/playwright.cjs",
+        "./helpers/select-environment.cjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:http",
+        "node:path"
+      ],
+      "exports": [
+        "authEnabled",
+        "collectorUrl"
+      ],
+      "environment": [
+        "SEMED_CONCURRENCY_OUT"
+      ],
+      "apiLiterals": [
+        "/api/collector/equipment-lock",
+        "/api/collector/equipment-save",
+        "/api/collector/section-save"
+      ]
+    },
+    {
+      "path": "tests/collection-photos-d124.test.mjs",
+      "bytes": 14100,
+      "lines": 32,
+      "sha256": "21163d1ec350a208c33cfabea9793be7debe93a9e03502bb786a191c5b4d7c5e",
+      "imports": [
+        "../server/photo-storage.mjs",
+        "../server/photo-thumbnails.mjs",
+        "../server/worker.mjs",
+        "../web/collector-drafts.js",
+        "../web/collector-v3-schema.js",
+        "../web/desktop-inventory.js",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/fake-drive.mjs",
+        "./helpers/photo-performance.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "PHOTOS"
+      ],
+      "apiLiterals": [
+        "/api/collector/equipment-lock",
+        "/api/collector/equipment-save",
+        "/api/collector/finish",
+        "/api/collector/inventory-section",
+        "/api/collector/photo-upload",
+        "/api/collector/review?id=",
+        "/api/collector/section-save",
+        "/api/collector/v3-start"
+      ]
+    },
+    {
       "path": "tests/collector-concurrency-browser.cjs",
-      "bytes": 38439,
+      "bytes": 38403,
       "lines": 274,
-      "sha256": "e2625a0810f71082eccb65fd473f1d5d31e5b6fdcd6cc847579530d5e161b80c",
+      "sha256": "c7a2f5c6f47f76beae4a4d7893f2c055e1ad79c694ed9b5256840405a2765cdb",
       "imports": [
         "../server/worker.mjs",
         "./helpers/agent-client.mjs",
@@ -4367,9 +4449,9 @@
     },
     {
       "path": "tests/collector-v2.test.mjs",
-      "bytes": 12327,
+      "bytes": 12340,
       "lines": 28,
-      "sha256": "fa36b0ebf12a2b05cbac7794af682b040bd0b030acfc23484d6680e20e7b0bfa",
+      "sha256": "432472ac130ede019ec812bb4393366fbc0e05e3dd3f29a699320f36d7f7c841",
       "imports": [
         "../server/collector.mjs",
         "../server/inventory-results.mjs",
@@ -4394,9 +4476,9 @@
     },
     {
       "path": "tests/collector-v3-browser.cjs",
-      "bytes": 15715,
+      "bytes": 15699,
       "lines": 57,
-      "sha256": "e76893dc3457d33da650ea6b0bd808dfa54ae929a9178fce9b773dd42cf334e7",
+      "sha256": "b78766247711ce046dee8eaef3b053a8841bc5729df949b9fb26cf6d76bfa660",
       "imports": [
         "../server/worker.mjs",
         "./helpers/accept-collector-dialogs.cjs",
@@ -4419,7 +4501,6 @@
         "SEMED_TEST_EVIDENCE_DIR"
       ],
       "apiLiterals": [
-        "/api/collector/photo?",
         "/api/collector/section-save",
         "/api/root/agent-install-grants"
       ]
@@ -5295,9 +5376,9 @@
     },
     {
       "path": "tests/helpers/fake-drive.mjs",
-      "bytes": 4562,
-      "lines": 35,
-      "sha256": "b9693f3c9a2e933ec6d2b1b51a05cf0f7be7a8a33fcd9a51b5fa54925f377191",
+      "bytes": 4787,
+      "lines": 36,
+      "sha256": "e1d2421f6d1a29e57d517e3da41d808e458c07311a25cf611d111dc7e17f1312",
       "imports": [],
       "exports": [
         "fakeGoogle",
@@ -5619,9 +5700,9 @@
     },
     {
       "path": "tests/mobile-app-browser.cjs",
-      "bytes": 9642,
+      "bytes": 9679,
       "lines": 43,
-      "sha256": "f46915cb5c2bf8f441456d3efa0f7e9797ce6550e1ce1ac60c243e6fb09d60c9",
+      "sha256": "04f4b256a65dc74a6ad5eddc21d1476e1ff4240ec12262baeea70efa4716ee58",
       "imports": [
         "../server/worker.mjs",
         "./helpers/agent-client.mjs",
@@ -5634,7 +5715,8 @@
       "exports": [],
       "environment": [
         "ASSETS",
-        "PHOTOS"
+        "PHOTOS",
+        "SEMED_TEST_EVIDENCE_DIR"
       ],
       "apiLiterals": [
         "/api/dispatch/assign",
@@ -6127,9 +6209,9 @@
     },
     {
       "path": "tests/photo-performance.test.mjs",
-      "bytes": 8794,
+      "bytes": 8819,
       "lines": 84,
-      "sha256": "6e4a70603b8dac604216339ca157300704c57071abaac1fe0b71538ab9398e6a",
+      "sha256": "105a34ae03e0332b15cd2f7b376dcef8f7e7d961d62ae40031c1eb4b9bdaafd5",
       "imports": [
         "../server/photo-response.mjs",
         "../server/photo-storage.mjs",
@@ -6183,9 +6265,9 @@
     },
     {
       "path": "tests/photo-thumbnails-browser.cjs",
-      "bytes": 11877,
-      "lines": 50,
-      "sha256": "ae40e7b1c5c8faf1376e99b7589c8b9ec8dae3edf2ac94729cd7cfd83c6587a4",
+      "bytes": 12507,
+      "lines": 53,
+      "sha256": "a5037141e19d58845839c4c7f658259b4a852ca75eff6d7b4e6fb89fcc371193",
       "imports": [
         "../server/worker.mjs",
         "./helpers/agent-client.mjs",
@@ -6202,7 +6284,8 @@
         "collectorUrl"
       ],
       "environment": [
-        "APP_KIND"
+        "APP_KIND",
+        "SEMED_TEST_EVIDENCE_DIR"
       ],
       "apiLiterals": [
         "/api/collector/photo-thumb",
@@ -7136,9 +7219,9 @@
     },
     {
       "path": "web/collector-dialog.js",
-      "bytes": 1535,
-      "lines": 21,
-      "sha256": "c18b7810fa41ea6f8766e09a1d5dd2c3644a844da09d78837ef6e284e21c9971",
+      "bytes": 2057,
+      "lines": 22,
+      "sha256": "34d37afdb85d46c639b6274cf611804be3aba761710c6ebc3323a1df90ebf3df",
       "imports": [],
       "exports": [
         "confirmCollection"
@@ -7148,9 +7231,9 @@
     },
     {
       "path": "web/collector-drafts.js",
-      "bytes": 1737,
-      "lines": 25,
-      "sha256": "4f4a8078610f4b49f802e0633a3fa19560efb80fdbc76a1b2c84e1778442f3d2",
+      "bytes": 2255,
+      "lines": 28,
+      "sha256": "5fea3d27a4a44970c98ffc502f2bd2f9b7caf6f35d465d4ff9b013235cdc8a7b",
       "imports": [],
       "exports": [
         "createDraftQueue"
@@ -7328,9 +7411,9 @@
     },
     {
       "path": "web/collector-v2-schema.js",
-      "bytes": 12337,
+      "bytes": 12357,
       "lines": 54,
-      "sha256": "fb896e1edb2a20826ebb1e1e56a14e06b8341bb40261a8d302903dee70542251",
+      "sha256": "bfb1680220725a579619a576384885b538076180d5bdb105e30a5536f551427c",
       "imports": [
         "./collector-schema.js"
       ],
@@ -7404,9 +7487,9 @@
     },
     {
       "path": "web/collector-v3-schema.js",
-      "bytes": 6386,
+      "bytes": 6415,
       "lines": 69,
-      "sha256": "d48c89aa155a7a9884adb0326fecb65f1242c8ebdef09c49427168a750e78e42",
+      "sha256": "71fa3995e32d5d5c37a904bbfbe11109d68c228aee5eb98a93a3d2807f3c42fe",
       "imports": [
         "./collector-schema.js",
         "./collector-v2-schema.js"
@@ -7448,9 +7531,9 @@
     },
     {
       "path": "web/collector-v3.js",
-      "bytes": 92867,
-      "lines": 753,
-      "sha256": "ad6b10fab02caa371c41618fba5bbafc91c9db84470aa9885fd81d520138de8d",
+      "bytes": 97693,
+      "lines": 787,
+      "sha256": "f7daf95bf2f1932cc05b26af2882bbbc2fbc7f28fa246e2f32eb66d9999b36e7",
       "imports": [
         "./collector-app.js",
         "./collector-dialog.js",
@@ -7736,9 +7819,9 @@
     },
     {
       "path": "web/desktop-inventory.js",
-      "bytes": 8844,
+      "bytes": 8865,
       "lines": 25,
-      "sha256": "b98177e8492e503620f05d437ef98530c8102a065dd74f14b3a74a5bf52c1fdc",
+      "sha256": "81593e6f109ab9277ae5bf2b5e4bcb4193568d3d0fe64a2aedf545b854e27569",
       "imports": [
         "./collector-schema.js",
         "./collector-v2-schema.js",
@@ -7881,9 +7964,9 @@
     },
     {
       "path": "web/desktop-progress-photos.js",
-      "bytes": 5292,
+      "bytes": 5497,
       "lines": 42,
-      "sha256": "3f31292364b21da5f054c8187767265cab6e4721a1e58ded2aa0339ab8c8b37b",
+      "sha256": "297bd65d09eac46fd06bef778251d07062c04acff72da2ea68fde3a37b7195ef",
       "imports": [
         "./photo-viewer.js"
       ],
@@ -7969,9 +8052,9 @@
     },
     {
       "path": "web/desktop-thumbnails.js",
-      "bytes": 3278,
+      "bytes": 3518,
       "lines": 21,
-      "sha256": "6a4ba5585d66017534d74bb3e607f6f1f55a3b213f61ffd263be4f0f8f2a8e75",
+      "sha256": "a14d5cd345ad7ba7a7f895cc8634b831e9fd36c05a2f8abea10ed1e7cecf9f27",
       "imports": [
         "./photo-prepare.js"
       ],
@@ -8570,9 +8653,9 @@
     },
     {
       "path": "web/photo-prepare.js",
-      "bytes": 4703,
-      "lines": 45,
-      "sha256": "b1248b259f320874c07765b0e69bbd9f33ce51f0d2bb7366c0d9b9f61321d790",
+      "bytes": 4840,
+      "lines": 46,
+      "sha256": "3b88d3dd571761433a2abd3c0d0286f618aa0a8af04c5aa2323384eaa527ba28",
       "imports": [
         "./vendor/heic-to/heic-to.min.js"
       ],

@@ -98,12 +98,12 @@ const pw=require('./helpers/playwright.cjs'),selectEnvironment=require('./helper
    await backToList();}
 
   // ------------------------------------------------ R1-C: resposta perdida DEPOIS de o servidor gravar (ficha existente).
-  // C1: a repetição automática do navegador chega ao servidor e recebe 409 de versão com o MESMO conteúdo → confirmado, sem diálogo.
+  // C1 (D124): a repetição chega ao servidor e recebe ACK idempotente para o MESMO conteúdo → confirmado, sem diálogo.
   {const e=await createSaved('ORIGINAL · MESA H');await edit(e.id,'PERDIDA · MESA I');
    gate('/api/collector/equipment-save',{sequence:['drop-response'],once:true});const mark=requests.length;
    await saveButton().click();await page.locator('.equipment-card').first().waitFor();
    const stored=sql('SELECT version,position_label FROM equipments WHERE id=?',e.id),st=await status();
-   record('R1-C1 resposta perdida após gravar · repetição com 409 de versão e mesmo conteúdo é confirmada',stored.version===2&&stored.position_label==='PERDIDA · MESA I'&&/confirmado após a falha/i.test(st)&&saves200(mark)===1&&!(await page.getByRole('dialog').count()),{stored,status:st,log:requests.slice(mark)});}
+   record('R1-C1 resposta perdida após gravar · repetição idempotente sem conflito falso',stored.version===2&&stored.position_label==='PERDIDA · MESA I'&&/confirmado após a falha/i.test(st)&&saves200(mark)===2&&!(await page.getByRole('dialog').count()),{stored,status:st,log:requests.slice(mark)});}
   // C2: a repetição também cai; a reconciliação pela trava encontra versão+1, mesmo usuário, mesmo conteúdo → confirmado.
   {const e=await createSaved('ORIGINAL · MESA J');await edit(e.id,'PERDIDA · MESA K');
    gate('/api/collector/equipment-save',{sequence:['drop-response','drop-request'],until:'/api/collector/equipment-lock'});const mark=requests.length;
@@ -122,7 +122,7 @@ const pw=require('./helpers/playwright.cjs'),selectEnvironment=require('./helper
   {await manual('NOVA PERDIDA · MESA N');gate('/api/collector/equipment-save',{sequence:['drop-response'],once:true});const mark=requests.length;
    await saveButton().click();await page.locator('.equipment-card').first().waitFor();
    const rows=all("SELECT version,position_label FROM equipments WHERE position_label='NOVA PERDIDA · MESA N'"),st=await status();
-   record('R1-E ficha nova com resposta perdida · um registro, confirmada após a falha',rows.length===1&&rows[0].version===1&&/confirmado após a falha/i.test(st)&&saves200(mark)===1,{rows,status:st,log:requests.slice(mark).filter(x=>/equipment/.test(x.path))});}
+   record('R1-E ficha nova com resposta perdida · um registro, confirmada após a falha',rows.length===1&&rows[0].version===1&&/confirmado após a falha/i.test(st)&&saves200(mark)===2,{rows,status:st,log:requests.slice(mark).filter(x=>/equipment/.test(x.path))});}
 
   // ------------------------------------------------ R2-A: foto numa ficha nova; navegação DURANTE a preparação; trocar unidade recusado.
   {await manual('FOTO · FICHA SEM SALVAR');const unsavedId=await monoId();

@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:collection-photos:browser": "node tests/collection-photos-d124-browser.cjs",
     "test:all": "node scripts/test-audit.mjs",
     "test:audit:browser": "node scripts/test-audit-browser.mjs",
     "start": "node scripts/serve.mjs",

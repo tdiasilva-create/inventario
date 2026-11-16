@@ -1,0 +1,27 @@
+{
+  "decision": "D124",
+  "node": {
+    "tests": 343,
+    "pass": 343,
+    "fail": 0
+  },
+  "browser": {
+    "concurrency": 22,
+    "newCases": 4,
+    "v3": true,
+    "thumbnailsAndRepair": true,
+    "unifiedAppAndTracking": true
+  },
+  "physicalAndroidTested": false,
+  "noMigration": true,
+  "apkChanged": false,
+  "backup": {
+    "bytes": 17184370,
+    "sha256": "a776c3c51d10f13ddcd4959f1a3767322ed65789fd08b90c473acefe856561fc",
+    "integrity": {
+      "integrity_check": "ok"
+    },
+    "fkViolations": 0,
+    "tables": 101
+  }
+}

@@ -36,13 +36,13 @@ export async function thumbnailRoutes(request,url,user,env,{json,fail}){
  if(!backfill&&!upload)return null;
  if(backfill&&(user.role!=='root'||env.APP_KIND==='collector'))return fail('Somente root no painel pode preparar fotografias antigas.',403);
  if(upload&&!['root','admin','operador'].includes(user.role))return fail('Perfil sem permissão de coleta.',403);
- const db=env.DB;
+ const db=env.DB,force=backfill&&user.role==='root'&&url.searchParams.get('force')==='1';
  if(backfill&&request.method==='GET'){
   const cursor=url.searchParams.get('cursor')||'';let after=null;
   try{if(cursor){after=JSON.parse(atob(cursor));if(!Array.isArray(after)||after.length!==2||!Number.isSafeInteger(after[0])||!uuid(after[1]))throw Error();}}catch{return fail('Página inválida.');}
   const rows=(await db.prepare(`SELECT p.id,p.inspection_id,p.sha256,p.created_at,u.name AS unit_name
    FROM collection_photos p JOIN units u ON u.id=p.unit_id JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id
-   WHERE p.status='ready' AND (p.thumb_blob IS NULL OR p.thumb_source_sha256<>p.sha256)
+   WHERE p.status='ready' ${force?'':'AND (p.thumb_blob IS NULL OR p.thumb_source_sha256<>p.sha256)'}
    AND u.active=1 AND u.unit_type<>'Escola conveniada' AND i.state IN ('open','paused','completed')
    AND (i.state<>'completed' OR p.target_kind<>'equipment' OR EXISTS(SELECT 1 FROM inventory_equipment_all e WHERE e.id=p.target_id AND e.unit_id=p.unit_id AND e.published_json IS NOT NULL))
    ${after?'AND (p.created_at>? OR (p.created_at=? AND p.id>?))':''}
@@ -70,9 +70,9 @@ export async function thumbnailRoutes(request,url,user,env,{json,fail}){
  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
  const dimensions=jpegDimensions(bytes);if(!dimensions)return fail('Use uma miniatura JPEG válida, de até 320 × 320 pixels.');
  const sha=await hash(bytes);
- if(row.thumb_sha256&&row.thumb_source_sha256===sourceHash)return json({id,status:'ready',thumbnail:true,repeated:true});
+ if(!force&&row.thumb_sha256&&row.thumb_source_sha256===sourceHash)return json({id,status:'ready',thumbnail:true,repeated:true});
  const changed=await db.prepare(`UPDATE collection_photos SET thumb_blob=?,thumb_mime='image/jpeg',thumb_width=?,thumb_height=?,thumb_sha256=?,thumb_source_sha256=?,thumb_created_at=?,thumb_created_by=?
-  WHERE id=? AND inspection_id=? AND status='ready' AND sha256=? AND (thumb_blob IS NULL OR thumb_source_sha256<>sha256)
+  WHERE id=? AND inspection_id=? AND status='ready' AND sha256=? ${force?'':'AND (thumb_blob IS NULL OR thumb_source_sha256<>sha256)'}
   AND EXISTS(SELECT 1 FROM units u WHERE u.id=collection_photos.unit_id AND u.active=1 AND u.unit_type<>'Escola conveniada')
   ${user.role!=='root'?"AND created_by=? AND EXISTS(SELECT 1 FROM inspections i JOIN units u ON u.id=i.unit_id WHERE i.id=collection_photos.inspection_id AND i.state='open' AND "+collectionScopeSql()+")":''}`)
   .bind(bytes.buffer,dimensions.width,dimensions.height,sha,sourceHash,Date.now(),user.id,id,inspection,sourceHash,...(user.role!=='root'?[user.id]:[])).run();

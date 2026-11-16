@@ -19,6 +19,7 @@ import {readCollectorJson} from './collector-request.js';
 const app=document.querySelector('#collector');
 const readyPreviews=createPhotoPreviews({onEvict:(id,url)=>{for(const img of app.querySelectorAll('img'))if(img.getAttribute('src')===url)img.src='/api/collector/photo?id='+encodeURIComponent(id)+'&size=thumb';}});
 addEventListener('pagehide',()=>readyPreviews.clear());
+app.addEventListener('error',event=>{const img=event.target;if(!img.matches?.('.photo-open img')||img.dataset.originalFallback)return;const id=img.closest('[data-photo-id]')?.dataset.photoId;if(!id)return;img.dataset.originalFallback='1';img.src='/api/collector/photo?id='+encodeURIComponent(id);},true);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const names={desktop:'Desktop',notebook:'Notebook',computer:'Computador',printer:'Impressora',other:'Outro equipamento',...registrationLabels};
 const topicName=g=>topics.find(t=>t[0]===g)?.[1]||g;
@@ -55,7 +56,7 @@ async function api(path,data,options={}){
  return v;
 }
 async function load({review=false}={}){
- await drafts.flushAll();
+ await drafts.flushAll({skipConflicts:true});
  const started=Date.now();
  collection=await api('/api/collector/inspection?id='+collection.inspection.id+(review?'&review=1':''));
  if(review)reviewData=collection.review??await api('/api/collector/review?id='+collection.inspection.id);
@@ -160,8 +161,10 @@ function photos(kind,id,label,{compact=false,primary=false}={}){
  const thumbs=sent.map(p=>`<figure data-ui-key="photo:${p.id}" class="photo-thumb ${p.current?'':'historic'}"><button type="button" class="photo-open" data-action="view-photo" data-photo-id="${p.id}" aria-label="Ampliar ${esc(p.label||label)}"><img src="${readyPreviews.get(p.id)||'/api/collector/photo?id='+p.id+'&size=thumb'}" alt="${esc(p.label||label)}" width="160" height="120" loading="lazy" decoding="async"></button><figcaption><span class="photo-tag ${p.current?'now':'old'}">${p.current?'Nesta visita':'Visita anterior'}</span><span class="photo-date">${esc(p.created_at?new Date(p.created_at).toLocaleDateString('pt-BR'):'')}</span>${p.current&&canSend?button('Remover','remove-photo',`data-photo-id="${p.id}" aria-label="Remover foto"`,'text-button'):''}</figcaption></figure>`).join('')
   +pending.map((p,i)=>{const state=p.error?'failed':up&&p===pending[0]&&!p.queued?'sending':up?'queued':'waiting';return `<figure data-ui-key="preview:${p.id}" class="photo-thumb preview ${state}"><img src="${p.url}" alt="Prévia ainda não enviada"><figcaption><span class="photo-tag ${state}">${state==='sending'?'Enviando…':state==='queued'?'Na fila':state==='failed'?'Falhou':'Não enviada'}</span>${state==='sending'||state==='queued'?'':button('Remover','remove-preview',`data-key="${esc(key)}" data-index="${i}" aria-label="Remover prévia"`,'text-button')}</figcaption></figure>`;}).join('');
  const controls=!canSend?'':(prep||up)?`<div class="photo-actions"><span class="photo-progress" role="status">${icon('clock')} ${prep?'Preparando foto…':`Enviando foto ${Math.min(up.done+1,up.total)} de ${up.total}…`}</span></div>`:`<div class="photo-actions"><label class="${primary?'primary':'secondary'} photo-control">${icon('camera')}<span>Câmera</span><input type="file" accept="image/*" capture="environment" data-photo="${key}" aria-label="Fotografar · ${esc(label)}"></label><label class="secondary photo-control"><span>Galeria</span><input type="file" accept="image/*" multiple data-photo="${key}" aria-label="Escolher da galeria · ${esc(label)}"></label>${pending.length&&!up&&!prep?button(icon('export')+' Reenviar foto','upload',`data-key="${key}" ${!caps.photosEnabled?'disabled':''}`,'secondary'):''}</div>`;
+ const serverPending=collection.photos.filter(p=>p.target_kind===kind&&p.target_id===id&&p.current&&p.status!=='ready'&&!pending.some(local=>local.id===p.id));
+ const waiting=serverPending.map(p=>`<p class="notice">Envio de foto ainda sem confirmação · ${esc(p.created_by_name||'operador da visita')}. ${canSend&&p.created_by===me.id?button('Descartar envio pendente','remove-photo',`data-photo-id="${p.id}"`,'text-button'):'A pessoa que enviou deve reenviar ou descartar explicitamente.'}</p>`).join('');
  const failure=pending.find(p=>p.error)?.error;
- return `<section class="photos-block ${compact?'compact':''}" data-ui-key="photos:${esc(key)}"><h3 class="block">${esc(label)}${sent.length||pending.length?` <small>${sent.length} recebida(s)${pending.length?' · '+pending.length+' por enviar':''}</small>`:''}</h3>${thumbs?`<div class="photos">${thumbs}</div>`:''}${controls}${failure?`<p class="field-error" role="alert">${icon('alert')}<span>${esc(failure)} A prévia continua aqui; toque em Reenviar foto.</span></p>`:''}${!caps.photosEnabled?'<p class="notice">Armazenamento de fotos indisponível no momento: a prévia fica só nesta aba e não conta como enviada.</p>':''}${compact?'':'<p class="help">Até cinco fotos por registro nesta visita. Prévias não enviadas se perdem ao fechar o aplicativo.</p>'}</section>`;
+ return `<section class="photos-block ${compact?'compact':''}" data-ui-key="photos:${esc(key)}"><h3 class="block">${esc(label)}${sent.length||pending.length?` <small>${sent.length} recebida(s)${pending.length?' · '+pending.length+' por enviar':''}</small>`:''}</h3>${thumbs?`<div class="photos">${thumbs}</div>`:''}${waiting}${controls}${failure?`<p class="field-error" role="alert">${icon('alert')}<span>${esc(failure)} A prévia continua aqui; toque em Reenviar foto.</span></p>`:''}${!caps.photosEnabled?'<p class="notice">Armazenamento de fotos indisponível no momento: a prévia fica só nesta aba e não conta como enviada.</p>':''}${compact?'':'<p class="help">Até cinco fotos por registro nesta visita. Prévias não enviadas se perdem ao fechar o aplicativo.</p>'}</section>`;
 }
 async function preparePhotos(input){
  const key=input.dataset.photo,list=previews.get(key)||[],sent=collection.photos.filter(p=>p.target_kind+':'+p.target_id===key&&p.status==='ready'&&p.current).length,files=[...input.files];
@@ -178,7 +181,7 @@ async function preparePhotos(input){
   }
  })();
  preparing.set(key,job);render();
- try{await job;}finally{if(preparing.get(key)===job)preparing.delete(key);}
+ try{await job;}finally{if(preparing.get(key)===job)preparing.delete(key);if(renderedContext===contextKey())render();}
  if(renderedContext===contextKey())render();
  if(list.length&&!list[0].error)startUpload(key);
 }
@@ -340,8 +343,9 @@ function render(){
  else if(screen==='review'){const local=localPhotoPending().length,blocked=Object.keys(reviewData?.errors||{}).length+local,count=(reviewData?.pending?reviewData.pending.filter(p=>p.blocking!==false).length:Object.keys(reviewData?.errors||{}).length)+local;actions=(blocked?`<span class="footer-note">${count===1?'A pendência acima impede a conclusão':'As '+count+' pendências acima impedem a conclusão'}</span>`:'')+button('Confirmar conclusão','finish',blocked?'disabled aria-disabled="true"':'');}
  if(sectionLocked()){content=lockedNotice()+(screen==='inventory'?content:`<fieldset class="locked" disabled>${content}</fieldset>`);actions=screen==='equipment'?button('Voltar à lista','item-previous','','secondary'):'<span class="footer-note">Assunto concluído · somente leitura</span>';}
  if(loadingScreen){content=`<div class="collection-loading" role="status" aria-live="polite"><span class="loading-dot" aria-hidden="true"></span><p>Carregando ${esc(topicName(topic).toLowerCase())}…</p><small>Você pode voltar às categorias enquanto aguarda.</small></div>`;actions='';}
+ if(screen==='group'&&sectionRecovery.has(collection.inspection.id+':'+topic))content=button('Consultar minhas respostas anteriores','view-section-copy','','secondary')+content;
  const context=contextKey();app.dataset.screen=screen;
- const errorBlock=error?`<div class="notice error" role="alert">${icon('alert')}<div><span>${esc(error)}</span>${errorSession?'<div class="session-actions">'+(mobileHost()?'':'<a href="/login" target="_blank" rel="noopener" class="text-button">Entrar novamente em outra aba</a>')+button('Já entrei · retomar','recover-session','','secondary')+'</div>':''}${!errorSession&&screen==='group'&&drafts.failed()?'<div class="session-actions">'+button('Tentar enviar de novo','save','','secondary')+'</div>':''}</div></div>`:'';
+ const errorBlock=error?`<div class="notice error" role="alert">${icon('alert')}<div><span>${esc(error)}</span>${errorSession?'<div class="session-actions">'+(mobileHost()?'':'<a href="/login" target="_blank" rel="noopener" class="text-button">Entrar novamente em outra aba</a>')+button('Já entrei · retomar','recover-session','','secondary')+'</div>':''}${!errorSession&&screen==='group'&&drafts.failed()?'<div class="session-actions">'+(drafts.failed().error?.conflict?button('Comparar e recuperar assunto','resolve-section-conflict','','secondary'):button('Tentar enviar de novo','save','','secondary'))+'</div>':''}</div></div>`:'';
  updateScreen(app,header()+`<main class="content" ${loadingScreen?'aria-busy="true"':''}>${errorBlock}${content}</main>`+footer(actions),renderedContext===context);
  renderedContext=context;ux.sync();
 }
@@ -353,6 +357,22 @@ function repaint({scroll='auto'}={}){const changed=renderedContext!==contextKey(
 // ---------------------------------------------------------------------------------------------------------------------
 const drafts=createDraftQueue({send:p=>api('/api/collector/section-save',p),reconcile:async(i,g)=>(await api('/api/collector/inspection?id='+i)).sections[g],onState:()=>{status=drafts.failed()?'Há alterações não enviadas':'Rascunho no servidor';paintStatus();}});
 async function save(){clearTimeout(timer);if(dirty&&['group','facade','inventory'].includes(screen)){const row=collection.sections[topic];drafts.set(collection.inspection.id,topic,row.version,answers);row.data=structuredClone(answers);dirty=false;}await drafts.flushAll();for(const [g,row]of Object.entries(collection.sections)){const d=drafts.get(collection.inspection.id,g);if(d){row.version=d.version;row.state=d.state||row.state;}}}
+function readableSectionAnswers(g,data){
+ const describe=(defs,row)=>defs.filter(f=>row[f.key]!==undefined&&row[f.key]!==null&&row[f.key]!=='').map(f=>f.label+': '+(f.children&&Array.isArray(row[f.key])?'\n'+row[f.key].map((r,n)=>'Item '+(n+1)+'\n'+describe(f.children,r)).join('\n'):Array.isArray(row[f.key])?row[f.key].join(', '):String(row[f.key]))).join('\n');
+ return describe(v2Sections[g]||[],data)||'Nenhuma resposta preenchida.';
+}
+async function resolveSectionConflict(){
+ clearTimeout(timer);const entry=drafts.failed();if(!entry?.error?.conflict)return;
+ const fresh=(await api('/api/collector/inspection?id='+entry.i)).sections[entry.g];
+ if(!fresh)throw Error('Assunto não encontrado. Suas respostas continuam nesta aba.');
+ const local=structuredClone(entry.local);
+ if(!await confirmCollection('Outra sessão gravou este assunto. Compare as respostas abaixo. Recarregar usa a versão do servidor; a cópia do seu texto continua disponível nesta aba para consulta, sem envio automático.',{title:'Comparar '+topicName(entry.g),confirmLabel:'Recarregar do servidor',cancelLabel:'Manter minhas respostas',comparison:{'Minhas respostas não enviadas':readableSectionAnswers(entry.g,local),'Respostas atuais do servidor':readableSectionAnswers(entry.g,fresh.data)}}))return;
+ entry.recoveryCopy=local;sectionRecovery.set(entry.i+':'+entry.g,local);
+ drafts.adopt(entry.i,entry.g,fresh);collection.sections[entry.g]=fresh;
+ if(screen==='group'&&topic===entry.g){answers=structuredClone(fresh.data);dirty=false;}
+ error='';fields={};status='Assunto recuperado. Confira antes de editar ou concluir.';
+}
+const sectionRecovery=new Map();
 function saveSoon(){save().then(()=>{if(error&&!errorSession&&!drafts.failed()){error='';render();}}).catch(e=>{error=e.message;errorSession=!!e.session;status='Há alterações não enviadas';if(e.session||renderedContext===contextKey())render();else paintStatus();});}
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -446,13 +466,24 @@ async function relock(target){
 // aberta mexe nos globais de versão/trava; a trava só é obtida se a edição dela está na tela.
 async function saveDraft(target=item){
  const own=item===target,submitted=structuredClone(target.data);
- const r=await api('/api/collector/equipment-save',{inspectionId:collection.inspection.id,id:target.id,version:own?itemVersion:target.version||0,lockToken:own?lock:null,environmentId:submitted.environment||'',draft:true,data:{...submitted,registration:submitted.category==='printer'||submitted.category==='other'?'Manual':submitted.registration}});
- const unchanged=JSON.stringify(target.data)===JSON.stringify(submitted);
+ const body=target.pendingDraft||{inspectionId:collection.inspection.id,id:target.id,version:own?itemVersion:target.version||0,lockToken:own?lock:null,environmentId:submitted.environment||'',draft:true,data:{...submitted,registration:submitted.category==='printer'||submitted.category==='other'?'Manual':submitted.registration}};
+ target.pendingDraft=body;
+ let r;try{r=await api('/api/collector/equipment-save',body);}catch(e){if(e.unknown||e.httpStatus===409)r=await reconcileDraft(target,body);else{delete target.pendingDraft;throw e;}}
+ delete target.pendingDraft;
+ const unchanged=sameAsServer(target.data,{...body.data,draft:false});
  target.version=r.version;target.data.draft=true;
- if(r.environment&&target.data.environmentName===submitted.environmentName){target.data.environment=r.environment.id;target.data.environmentName=r.environment.name;}
+ if(r.environment&&target.data.environmentName===body.data.environmentName){target.data.environment=r.environment.id;target.data.environmentName=r.environment.name;}
  if(!own)return;
  itemVersion=r.version;itemSaved=unchanged;status='Rascunho da ficha recebido no servidor';
  if(!lock&&screen==='equipment'){const l=await api('/api/collector/equipment-lock',{inspectionId:collection.inspection.id,id:target.id});lock=l.token;lockAt=Date.now();}
+}
+async function reconcileDraft(target,body){
+ const l=await api('/api/collector/equipment-lock',{inspectionId:body.inspectionId,id:target.id});
+ const fresh=l.equipment,same=fresh.version===body.version+1&&fresh.updated_by===me.id&&fresh.data?.draft===true&&sameAsServer(body.data,{...fresh.data,draft:false});
+ if(item===target){lock=l.token;lockAt=Date.now();}
+ if(!same){if(item!==target)await api('/api/collector/equipment-unlock',{id:target.id,token:l.token}).catch(()=>{});throw Object.assign(Error('A ficha foi alterada durante o envio da foto. Suas respostas e a prévia continuam nesta tela.'),{conflict:true,server:fresh.data,fresh:l});}
+ if(item!==target)await api('/api/collector/equipment-unlock',{id:target.id,token:l.token}).catch(()=>{});
+ return {version:fresh.version,environment:{id:fresh.environment_id,name:fresh.data.environmentName},reconciled:true};
 }
 // R1 (revisão independente 14/11): versão+1 e autor identificam UMA gravação desta conta, não ESTA operação — outra aba/aparelho
 // da mesma conta pode ter gravado outro conteúdo. Só é confirmação quando todos os campos graváveis do corpo congelado coincidem
@@ -485,6 +516,7 @@ async function resolveConflict(target,e){
  await reloadFromServer();status='Ficha recarregada do servidor; confira e salve de novo se precisar';
 }
 async function saveItem({keepEditing=true}={}){
+ if(item.pendingDraft)await saveDraft(item);
  const target=item,payload=structuredClone(target.data);delete payload.draft;
  const submitted=JSON.stringify(payload);
  const body={inspectionId:collection.inspection.id,id:target.id,version:itemVersion,lockToken:lock,environmentId:payload.environment||'',data:payload};
@@ -536,7 +568,7 @@ function showError(e){
  if(e.session)sessionExpired();
  const n=Object.keys(e.fields||{}).length;
  status=e.session?'Alterações não enviadas':e.unknown?'Resultado desconhecido · nada foi apagado':n?(n===1?'Não salvo: 1 campo precisa de atenção':'Não salvo: '+n+' campos precisam de atenção'):'Operação não confirmada';
- error=e.message;errorSession=!!e.session;fields=e.fields||{};
+ error=e.message||'Não foi possível concluir a operação. Suas respostas continuam nesta tela.';errorSession=!!e.session;fields=e.fields||{};
  if(Array.isArray(e.pending)&&screen==='inventory')inlinePending=e.pending;
  render();ux.focusError();
 }
@@ -659,6 +691,8 @@ app.addEventListener('click',async e=>{
   else if(a==='companion')await open('A');
   else if(a==='open')await open(t.dataset.topic);
   else if(a==='save'){await save();if(drafts.failed())throw drafts.failed().error;}
+  else if(a==='view-section-copy')await confirmCollection('Cópia das respostas anteriores, mantida somente nesta aba. Você pode selecionar e copiar o texto. Nenhum dado será enviado.',{title:'Minhas respostas anteriores',confirmLabel:'Fechar',comparison:{Respostas:readableSectionAnswers(topic,sectionRecovery.get(collection.inspection.id+':'+topic))}});
+  else if(a==='resolve-section-conflict')await resolveSectionConflict();
   else if(a==='recover-session'){if(mobileHost())sessionExpired();else await recoverSession();}
   else if(a==='complete'){await settleUploads(null,undefined,{strict:false});settleTopicPhotos();await save();await api('/api/collector/section-save',{inspectionId:collection.inspection.id,section:topic,version:collection.sections[topic].version,answers,complete:true});drafts.forget(collection.inspection.id,topic);await load();screen='cards';status='Assunto concluído · recebido pelo servidor';}
   else if(a==='add-row'){const list=read(t.dataset.path)||[];list.push({id:crypto.randomUUID()});write(t.dataset.path,list);dirty=true;saveSoon();}
@@ -695,7 +729,7 @@ app.addEventListener('click',async e=>{
   else if(a==='upload'){const key=t.dataset.key;if(key.startsWith('equipment:')&&item?.id===key.slice(10))targets.set(key,item);await startUpload(key);}
   else if(a==='view-photo'){const photo=collection.photos.find(p=>p.id===t.dataset.photoId);if(photo)viewCollectorPhoto(photo,t);}
   else if(a==='remove-photo'){if(await confirmCollection('Remover esta fotografia? Ela sai da visita atual; o histórico anterior não é alterado.',{title:'Remover foto',confirmLabel:'Remover'})){await api('/api/collector/photo-remove',{id:t.dataset.photoId});collection.photos=collection.photos.filter(p=>p.id!==t.dataset.photoId);receivedPhotos.delete(t.dataset.photoId);readyPreviews.remove(t.dataset.photoId);status='Foto removida no servidor';}}
-  else if(a==='remove-preview'){const list=previews.get(t.dataset.key)||[];const [p]=list.splice(Number(t.dataset.index),1);if(p)URL.revokeObjectURL(p.url);}
+  else if(a==='remove-preview'){const list=previews.get(t.dataset.key)||[],index=Number(t.dataset.index),p=list[index];if(p&&await confirmCollection('Descartar este envio? A prévia só será removida após conferir o registro no servidor.',{title:'Descartar foto pendente',confirmLabel:'Descartar'})){try{await api('/api/collector/photo-remove',{id:p.id});}catch(e){if(e.httpStatus!==404)throw e;}list.splice(index,1);URL.revokeObjectURL(p.url);collection.photos=collection.photos.filter(x=>x.id!==p.id);}}
   else if(a==='review'){await settleUploads(null,undefined,{strict:false});await leave();await load({review:true});screen='review';}
   else if(a==='drop-local-photo'){const key=t.dataset.key,l=previews.get(key)||[];if(!l.length)return;if(!await confirmCollection((l.length===1?'Descartar esta prévia?':'Descartar estas '+l.length+' prévias?')+' Ela'+(l.length===1?'':'s')+' não foi'+(l.length===1?'':'ram')+' recebida'+(l.length===1?'':'s')+' pelo servidor e não poderá'+(l.length===1?'':'ão')+' ser recuperada'+(l.length===1?'':'s')+'. A foto é opcional; nada mais muda.',{title:'Descartar prévia',confirmLabel:'Descartar'}))return;for(const p of l)URL.revokeObjectURL(p.url);previews.delete(key);targets.delete(key);status='Prévia descartada · nada foi enviado';}
   else if(a==='fix'){const key=t.dataset.error;if(key.startsWith('photo:')){await open('G');}else if(['facade','facadeChanged'].includes(key)){await openFacade();}else if(topics.some(t=>t[0]===key))await open(key);}

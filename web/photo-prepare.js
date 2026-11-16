@@ -20,8 +20,9 @@ async function sourceFor(blob,max){
  try{image.src=url;await image.decode();return {image,width:image.naturalWidth,height:image.naturalHeight,close:()=>{image.src='';URL.revokeObjectURL(url);}};}catch{URL.revokeObjectURL(url);}
  if(/^image\/(heic|heif)/i.test(blob.type)||/\.(heic|heif)$/i.test(blob.name||'')){
   // Loaded from our own version-pinned asset only when the browser cannot decode HEIC.
-  const {heicTo}=await import('./vendor/heic-to/heic-to.min.js');
-  const bitmap=await heicTo({blob,type:'bitmap'});return {image:bitmap,width:bitmap.width,height:bitmap.height,close:()=>bitmap.close()};
+  try{const {heicTo}=await import('./vendor/heic-to/heic-to.min.js');
+   const bitmap=await heicTo({blob,type:'bitmap'});return {image:bitmap,width:bitmap.width,height:bitmap.height,close:()=>bitmap.close()};
+  }catch{throw Error('Não foi possível converter esta foto HEIC. Tente outra foto ou selecione uma versão JPEG, PNG ou WebP.');}
  }
  throw Error('Não foi possível abrir a imagem. Selecione uma fotografia JPEG, PNG, WebP ou HEIC válida.');
 }

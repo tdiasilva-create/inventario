@@ -32,6 +32,9 @@ jobs:
       - run: git diff --exit-code -- docs/07-operacao/gerado
       - run: pnpm exec playwright install --with-deps chromium
         timeout-minutes: 5
+      - run: pnpm test:collection-photos:browser
+        env:
+          SEMED_TEST_BROWSER: chromium
       - run: pnpm test:v3:browser
         env:
           SEMED_TEST_BROWSER: chromium
