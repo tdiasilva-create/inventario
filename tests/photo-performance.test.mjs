@@ -78,6 +78,6 @@ test('fotos: hash ausente não gera ETag; comprimento é repassado e índices at
  assert.equal(photoResponse({...row,sha256:'legacy'},{body:png}).headers.get('Cache-Control'),'private, no-store');
  assert.equal(photoNotModified(new Request('https://test',{headers:{'If-None-Match':'*'}}),{...row,sha256:'legacy'}),null);
  const f=collectorFixture();try{
-  for(const [sql,index]of [["SELECT id FROM collection_photos WHERE inspection_id='x' ORDER BY created_at DESC,id DESC LIMIT 51",'collection_photos_inspection'],["SELECT id FROM collection_photos WHERE unit_id='x' AND status='ready' ORDER BY created_at DESC LIMIT 49",'collection_photos_unit_status']])assert.match(JSON.stringify(f.sqlite.prepare('EXPLAIN QUERY PLAN '+sql).all()),new RegExp(index));
+  for(const [sql,index]of [["SELECT id FROM collection_photos WHERE inspection_id='x' ORDER BY created_at DESC,id DESC LIMIT 51",'collection_photos_inspection'],["SELECT id FROM collection_photos WHERE unit_id='x' AND status='ready' ORDER BY created_at DESC LIMIT 49",'collection_photos_(unit_status|ready_unit_date)']])assert.match(JSON.stringify(f.sqlite.prepare('EXPLAIN QUERY PLAN '+sql).all()),new RegExp(index));
  }finally{f.sqlite.close();}
 });

@@ -37,6 +37,7 @@ Gerado por `pnpm docs:schema`. Nenhum dado de produção. Instalação deve usar
 - `0033_technician_tracking.sql`
 - `0034_agent_network_tests.sql`
 - `0035_audit_read_budget.sql`
+- `0036_photo_gallery_reads.sql`
 
 ## agent_audit_log
 
@@ -1018,6 +1019,14 @@ Referências: `notification_id` → `agent_notifications.id` (delete: CASCADE).
 | storage_provider | TEXT | sim |  | 'r2' |
 | storage_ref | TEXT | não |  | — |
 
+## photo_gallery_revision
+
+| Coluna | Tipo | NOT NULL | PK | Default |
+|---|---|---|---|---|
+| id | INTEGER | não | 1 | — |
+| epoch | TEXT | sim |  | — |
+| revision | INTEGER | sim |  | 0 |
+
 ## provider_report_schedule
 
 | Coluna | Tipo | NOT NULL | PK | Default |
@@ -1456,6 +1465,21 @@ Referências: `inspection_id` → `inspections.id` (delete: NO ACTION).
 - `panel_revision_visit_answers_delete` (trigger, visit_answers)
 - `panel_revision_visit_answers_insert` (trigger, visit_answers)
 - `panel_revision_visit_answers_update` (trigger, visit_answers)
+- `photo_gallery_equipment_delete` (trigger, equipments)
+- `photo_gallery_equipment_insert` (trigger, equipments)
+- `photo_gallery_equipment_update` (trigger, equipments)
+- `photo_gallery_inspection_delete` (trigger, inspections)
+- `photo_gallery_inspection_insert` (trigger, inspections)
+- `photo_gallery_inspection_update` (trigger, inspections)
+- `photo_gallery_misc_delete` (trigger, miscellaneous_equipments)
+- `photo_gallery_misc_insert` (trigger, miscellaneous_equipments)
+- `photo_gallery_misc_update` (trigger, miscellaneous_equipments)
+- `photo_gallery_photo_delete` (trigger, collection_photos)
+- `photo_gallery_photo_insert` (trigger, collection_photos)
+- `photo_gallery_photo_update` (trigger, collection_photos)
+- `photo_gallery_unit_delete` (trigger, units)
+- `photo_gallery_unit_insert` (trigger, units)
+- `photo_gallery_unit_update` (trigger, units)
 - `progress_equipment_insert` (trigger, equipments)
 - `progress_equipment_update` (trigger, equipments)
 - `provider_reports_immutable` (trigger, provider_reports)

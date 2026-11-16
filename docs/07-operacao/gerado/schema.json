@@ -140,6 +140,10 @@
     {
       "file": "0035_audit_read_budget.sql",
       "sha256": "2fa8016c3e89e014fdd403db66591b14a54cdf24a3df2438a78ad63ef4aaa079"
+    },
+    {
+      "file": "0036_photo_gallery_reads.sql",
+      "sha256": "7e4ccda1d9740a787486f3a770b971906157c6f6a6917747e89f60d5d8e5aaee"
     }
   ],
   "tables": [
@@ -5346,6 +5350,36 @@
       "foreignKeys": []
     },
     {
+      "name": "photo_gallery_revision",
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "epoch",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "revision",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": "0",
+          "pk": 0
+        }
+      ],
+      "foreignKeys": []
+    },
+    {
       "name": "provider_report_schedule",
       "columns": [
         {
@@ -7268,9 +7302,27 @@
     },
     {
       "type": "index",
+      "name": "collection_photos_ready_date",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_ready_date ON collection_photos(created_at DESC,id DESC) WHERE status='ready'"
+    },
+    {
+      "type": "index",
+      "name": "collection_photos_ready_unit_date",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_ready_unit_date ON collection_photos(unit_id,created_at DESC,id DESC) WHERE status='ready'"
+    },
+    {
+      "type": "index",
       "name": "collection_photos_target",
       "tbl_name": "collection_photos",
       "sql": "CREATE INDEX collection_photos_target ON collection_photos(target_kind,target_id,created_at)"
+    },
+    {
+      "type": "index",
+      "name": "collection_photos_thumb_repair",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE INDEX collection_photos_thumb_repair ON collection_photos(created_at,id)\n WHERE status='ready' AND (thumb_blob IS NULL OR thumb_source_sha256 IS NOT sha256)"
     },
     {
       "type": "index",
@@ -8084,6 +8136,12 @@
     },
     {
       "type": "table",
+      "name": "photo_gallery_revision",
+      "tbl_name": "photo_gallery_revision",
+      "sql": "CREATE TABLE photo_gallery_revision (\n id INTEGER PRIMARY KEY CHECK(id=1),epoch TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0\n)"
+    },
+    {
+      "type": "table",
       "name": "provider_report_schedule",
       "tbl_name": "provider_report_schedule",
       "sql": "CREATE TABLE provider_report_schedule (\n id INTEGER PRIMARY KEY CHECK(id=1),\n started_at TEXT NOT NULL,\n next_due_at TEXT NOT NULL\n)"
@@ -8891,6 +8949,96 @@
       "name": "panel_revision_visit_answers_update",
       "tbl_name": "visit_answers",
       "sql": "CREATE TRIGGER panel_revision_visit_answers_update AFTER UPDATE OF inspection_id,data_json ON visit_answers WHEN (OLD.inspection_id IS NOT NEW.inspection_id OR OLD.data_json IS NOT NEW.data_json) AND (EXISTS(SELECT 1 FROM inspections WHERE id=OLD.inspection_id AND state='completed') OR EXISTS(SELECT 1 FROM inspections WHERE id=NEW.inspection_id AND state='completed')) BEGIN\n UPDATE panel_read_versions SET revision=revision+1 WHERE name IN ('results');\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_equipment_delete",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER photo_gallery_equipment_delete AFTER DELETE ON equipments WHEN OLD.published_json IS NOT NULL BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_equipment_insert",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER photo_gallery_equipment_insert AFTER INSERT ON equipments WHEN NEW.published_json IS NOT NULL BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_equipment_update",
+      "tbl_name": "equipments",
+      "sql": "CREATE TRIGGER photo_gallery_equipment_update AFTER UPDATE OF id,unit_id,published_json ON equipments\n WHEN (OLD.published_json IS NOT NULL OR NEW.published_json IS NOT NULL) AND (OLD.id IS NOT NEW.id OR OLD.unit_id IS NOT NEW.unit_id OR (OLD.published_json IS NULL)<>(NEW.published_json IS NULL)) BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_inspection_delete",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER photo_gallery_inspection_delete AFTER DELETE ON inspections BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_inspection_insert",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER photo_gallery_inspection_insert AFTER INSERT ON inspections BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_inspection_update",
+      "tbl_name": "inspections",
+      "sql": "CREATE TRIGGER photo_gallery_inspection_update AFTER UPDATE OF id,unit_id,state ON inspections\n WHEN OLD.id IS NOT NEW.id OR OLD.unit_id IS NOT NEW.unit_id OR OLD.state IS NOT NEW.state BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_misc_delete",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER photo_gallery_misc_delete AFTER DELETE ON miscellaneous_equipments WHEN OLD.published_json IS NOT NULL BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_misc_insert",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER photo_gallery_misc_insert AFTER INSERT ON miscellaneous_equipments WHEN NEW.published_json IS NOT NULL BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_misc_update",
+      "tbl_name": "miscellaneous_equipments",
+      "sql": "CREATE TRIGGER photo_gallery_misc_update AFTER UPDATE OF id,unit_id,published_json ON miscellaneous_equipments\n WHEN (OLD.published_json IS NOT NULL OR NEW.published_json IS NOT NULL) AND (OLD.id IS NOT NEW.id OR OLD.unit_id IS NOT NEW.unit_id OR (OLD.published_json IS NULL)<>(NEW.published_json IS NULL)) BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_photo_delete",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER photo_gallery_photo_delete AFTER DELETE ON collection_photos WHEN OLD.status='ready' BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_photo_insert",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER photo_gallery_photo_insert AFTER INSERT ON collection_photos WHEN NEW.status='ready' BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_photo_update",
+      "tbl_name": "collection_photos",
+      "sql": "CREATE TRIGGER photo_gallery_photo_update AFTER UPDATE OF unit_id,inspection_id,target_kind,target_id,status ON collection_photos\n WHEN (OLD.status='ready' OR NEW.status='ready') AND (OLD.unit_id IS NOT NEW.unit_id OR OLD.inspection_id IS NOT NEW.inspection_id OR OLD.target_kind IS NOT NEW.target_kind OR OLD.target_id IS NOT NEW.target_id OR OLD.status IS NOT NEW.status) BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_unit_delete",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER photo_gallery_unit_delete AFTER DELETE ON units BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_unit_insert",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER photo_gallery_unit_insert AFTER INSERT ON units BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
+    },
+    {
+      "type": "trigger",
+      "name": "photo_gallery_unit_update",
+      "tbl_name": "units",
+      "sql": "CREATE TRIGGER photo_gallery_unit_update AFTER UPDATE OF id,active,unit_type ON units\n WHEN OLD.id IS NOT NEW.id OR OLD.active IS NOT NEW.active OR OLD.unit_type IS NOT NEW.unit_type BEGIN\n UPDATE photo_gallery_revision SET revision=revision+1 WHERE id=1;\nEND"
     },
     {
       "type": "trigger",

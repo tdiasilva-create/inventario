@@ -44,3 +44,6 @@ Retorno de código: versões anteriores ignoram as colunas e continuam lendo o i
 ## Otimização desktop D-104 (12/11/2026)
 
 No Worker do painel, as duas consultas de domínio agora são enviadas no mesmo batch D1. Com a consulta de sessão: três instruções SQL, duas chamadas ao binding (antes três chamadas). Perfis que exigem consultas adicionais continuam executando-as. Nenhuma autorização é reutilizada entre requisições; integração/foto são lidas novamente inclusive para 304. Pedido de original não seleciona thumb_blob. Worker do coletor permanece na versão publicada anterior. Ver [D-104](../03-painel-desktop/DESEMPENHO_D104.md).
+
+## D-125 — validação integral e manutenção indexada (16/11/2026)
+O servidor decodifica o corpo JPEG antes de aceitar a derivada; recusa não altera o original ou uma miniatura válida. Galeria usa revisão transacional para suas contagens e índices ordenados; manutenção encontra hash NULL divergente. Limites D072, fallback e recriação root permanecem. Ver [contrato D125](FOTOS_E_MINIATURAS_D125.md) e [estado de publicação](../05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md).

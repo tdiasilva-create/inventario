@@ -1,0 +1,9 @@
+{
+  "runtime": "Node 24, Windows; elapsed time, not Cloudflare CPU quota",
+  "moduleLoadMs": 18.451759999999993,
+  "firstDecodeMs": 8.402870000000007,
+  "medianDecodeMs": 0.8284400000000005,
+  "p95DecodeMs": 1.7057900000000075,
+  "samples": 100,
+  "bytes": 3360
+}

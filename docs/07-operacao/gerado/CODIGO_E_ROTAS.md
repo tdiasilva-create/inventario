@@ -1,6 +1,6 @@
 # Índice do código e referências de API
 
-Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
+Gerado por `pnpm docs:code`. 640 arquivos de texto. Hashes/bytes usam UTF-8 com finais de linha LF normalizados; hashes exatos das migrações estão no catálogo físico separado. Não inclui bibliotecas vendor, binários, segredos nem dados reais. O JSON inclui imports literais, exports nomeados, nomes de variáveis de ambiente e referências de API. **Índice estático parcial de rotas**, não contrato executável: conferir método, autenticação e parâmetros na implementação/testes.
 
 ## server
 
@@ -42,18 +42,23 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [server/in-progress.mjs](../../../server/in-progress.mjs) | 48 | 6332 |
 | [server/inventory-equipment.mjs](../../../server/inventory-equipment.mjs) | 67 | 8713 |
 | [server/inventory-results.mjs](../../../server/inventory-results.mjs) | 54 | 9214 |
+| [server/jpeg-decoder-node.mjs](../../../server/jpeg-decoder-node.mjs) | 7 | 452 |
+| [server/jpeg-decoder-runtime.mjs](../../../server/jpeg-decoder-runtime.mjs) | 14 | 582 |
+| [server/jpeg-decoder-worker.mjs](../../../server/jpeg-decoder-worker.mjs) | 4 | 193 |
+| [server/jpeg-thumbnail.mjs](../../../server/jpeg-thumbnail.mjs) | 46 | 1994 |
 | [server/management-views.mjs](../../../server/management-views.mjs) | 67 | 7184 |
 | [server/mobile-app.mjs](../../../server/mobile-app.mjs) | 29 | 1980 |
 | [server/monitoring-queries.mjs](../../../server/monitoring-queries.mjs) | 40 | 2786 |
 | [server/panel-read-cache.mjs](../../../server/panel-read-cache.mjs) | 42 | 2692 |
 | [server/panel-search.mjs](../../../server/panel-search.mjs) | 49 | 5491 |
 | [server/pending-indicators.mjs](../../../server/pending-indicators.mjs) | 44 | 3555 |
-| [server/photo-gallery.mjs](../../../server/photo-gallery.mjs) | 38 | 4599 |
+| [server/photo-gallery-cache.mjs](../../../server/photo-gallery-cache.mjs) | 26 | 1780 |
+| [server/photo-gallery.mjs](../../../server/photo-gallery.mjs) | 40 | 4760 |
 | [server/photo-labels.mjs](../../../server/photo-labels.mjs) | 35 | 3958 |
 | [server/photo-read.mjs](../../../server/photo-read.mjs) | 13 | 996 |
 | [server/photo-response.mjs](../../../server/photo-response.mjs) | 20 | 1150 |
 | [server/photo-storage.mjs](../../../server/photo-storage.mjs) | 163 | 22220 |
-| [server/photo-thumbnails.mjs](../../../server/photo-thumbnails.mjs) | 82 | 7587 |
+| [server/photo-thumbnails.mjs](../../../server/photo-thumbnails.mjs) | 65 | 6969 |
 | [server/provider-report-history.mjs](../../../server/provider-report-history.mjs) | 42 | 3058 |
 | [server/provider-report.mjs](../../../server/provider-report.mjs) | 43 | 2900 |
 | [server/request-timing.mjs](../../../server/request-timing.mjs) | 50 | 3434 |
@@ -247,6 +252,7 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [migrations/0033_technician_tracking.sql](../../../migrations/0033_technician_tracking.sql) | 88 | 5764 |
 | [migrations/0034_agent_network_tests.sql](../../../migrations/0034_agent_network_tests.sql) | 27 | 1111 |
 | [migrations/0035_audit_read_budget.sql](../../../migrations/0035_audit_read_budget.sql) | 111 | 8622 |
+| [migrations/0036_photo_gallery_reads.sql](../../../migrations/0036_photo_gallery_reads.sql) | 66 | 4467 |
 
 ## android
 
@@ -406,8 +412,8 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 
 | Arquivo | Linhas | Bytes |
 |---|---:|---:|
-| [config/wrangler.coletor.example.jsonc](../../../config/wrangler.coletor.example.jsonc) | 11 | 657 |
-| [config/wrangler.painel.example.jsonc](../../../config/wrangler.painel.example.jsonc) | 11 | 637 |
+| [config/wrangler.coletor.example.jsonc](../../../config/wrangler.coletor.example.jsonc) | 12 | 723 |
+| [config/wrangler.painel.example.jsonc](../../../config/wrangler.painel.example.jsonc) | 12 | 703 |
 
 ## scripts
 
@@ -443,6 +449,7 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [scripts/measure-d1-budget-local.mjs](../../../scripts/measure-d1-budget-local.mjs) | 92 | 9484 |
 | [scripts/measure-panel-read-cache.mjs](../../../scripts/measure-panel-read-cache.mjs) | 53 | 5830 |
 | [scripts/measure-panel-sql.mjs](../../../scripts/measure-panel-sql.mjs) | 27 | 3025 |
+| [scripts/measure-photo-budget-d125.mjs](../../../scripts/measure-photo-budget-d125.mjs) | 56 | 5968 |
 | [scripts/measure-photo-performance.mjs](../../../scripts/measure-photo-performance.mjs) | 17 | 1154 |
 | [scripts/measure-technician-tracking.mjs](../../../scripts/measure-technician-tracking.mjs) | 36 | 4627 |
 | [scripts/package-code-audit.py](../../../scripts/package-code-audit.py) | 105 | 5970 |
@@ -635,11 +642,13 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 | [tests/pending-indicators-browser.cjs](../../../tests/pending-indicators-browser.cjs) | 43 | 7000 |
 | [tests/pending-indicators.test.mjs](../../../tests/pending-indicators.test.mjs) | 66 | 8198 |
 | [tests/photo-gallery.test.mjs](../../../tests/photo-gallery.test.mjs) | 37 | 4485 |
+| [tests/photo-integrity-budget-d125.test.mjs](../../../tests/photo-integrity-budget-d125.test.mjs) | 104 | 10764 |
 | [tests/photo-performance-browser.cjs](../../../tests/photo-performance-browser.cjs) | 48 | 7048 |
-| [tests/photo-performance.test.mjs](../../../tests/photo-performance.test.mjs) | 84 | 8819 |
+| [tests/photo-performance.test.mjs](../../../tests/photo-performance.test.mjs) | 84 | 8837 |
 | [tests/photo-storage.test.mjs](../../../tests/photo-storage.test.mjs) | 167 | 18247 |
 | [tests/photo-thumbnails-browser.cjs](../../../tests/photo-thumbnails-browser.cjs) | 53 | 12507 |
 | [tests/photo-thumbnails.test.mjs](../../../tests/photo-thumbnails.test.mjs) | 79 | 10378 |
+| [tests/photo-wasm-runtime.cjs](../../../tests/photo-wasm-runtime.cjs) | 25 | 3791 |
 | [tests/provider-report-browser.cjs](../../../tests/provider-report-browser.cjs) | 40 | 8433 |
 | [tests/provider-report-history.test.mjs](../../../tests/provider-report-history.test.mjs) | 86 | 8754 |
 | [tests/provider-report.test.mjs](../../../tests/provider-report.test.mjs) | 39 | 4304 |
@@ -675,13 +684,13 @@ Gerado por `pnpm docs:code`. 631 arquivos de texto. Hashes/bytes usam UTF-8 com 
 
 | Arquivo | Linhas | Bytes |
 |---|---:|---:|
-| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 168 | 4678 |
-| [package.json](../../../package.json) | 92 | 7484 |
-| [pnpm-lock.yaml](../../../pnpm-lock.yaml) | 2982 | 93879 |
-| [wrangler.collector.jsonc](../../../wrangler.collector.jsonc) | 12 | 786 |
-| [wrangler.jsonc](../../../wrangler.jsonc) | 22 | 1643 |
-| [wrangler.validation.jsonc](../../../wrangler.validation.jsonc) | 30 | 986 |
-| [wrangler.validation.painel.jsonc](../../../wrangler.validation.painel.jsonc) | 21 | 1497 |
+| [.github/workflows/ci.yml](../../../.github/workflows/ci.yml) | 170 | 4876 |
+| [package.json](../../../package.json) | 95 | 7604 |
+| [pnpm-lock.yaml](../../../pnpm-lock.yaml) | 2998 | 94357 |
+| [wrangler.collector.jsonc](../../../wrangler.collector.jsonc) | 13 | 849 |
+| [wrangler.jsonc](../../../wrangler.jsonc) | 23 | 1706 |
+| [wrangler.validation.jsonc](../../../wrangler.validation.jsonc) | 32 | 1052 |
+| [wrangler.validation.painel.jsonc](../../../wrangler.validation.painel.jsonc) | 22 | 1562 |
 
 ## API e dependências de plataforma por módulo servidor
 
@@ -942,6 +951,22 @@ Ambiente: `DB`.
 - `/api/inventory/findings`
 - `/api/inventory/results`
 
+### server/jpeg-decoder-node.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
+
+### server/jpeg-decoder-runtime.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
+
+### server/jpeg-decoder-worker.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
+
+### server/jpeg-thumbnail.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
+
 ### server/management-views.mjs
 
 Ambiente: `APP_KIND`, `DB`.
@@ -978,6 +1003,10 @@ Ambiente: `APP_KIND`, `DB`.
 
 - `/api/inventory/pending-collections`
 - `/api/inventory/pending-summary`
+
+### server/photo-gallery-cache.mjs
+
+Sem rota literal detectada; pode ser auxiliar ou compor caminhos dinamicamente.
 
 ### server/photo-gallery.mjs
 

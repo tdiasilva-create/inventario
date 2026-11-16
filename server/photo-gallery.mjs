@@ -4,6 +4,7 @@ import {describePhotos} from './photo-labels.mjs';
 import {photoNotModified,photoResponse} from './photo-response.mjs';
 // D-064: consulta paginada de fotos recebidas; não publica nem modifica coletas.
 import {StorageError} from './photo-storage.mjs';
+import {readGalleryPage} from './photo-gallery-cache.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 const kinds=['facade','environment','equipment','answer','occurrence'];
 const from=`FROM collection_photos p JOIN units u ON u.id=p.unit_id JOIN inspections i ON i.id=p.inspection_id AND i.unit_id=p.unit_id`;
@@ -26,12 +27,13 @@ export async function photoGalleryRead(request,url,user,env,{json,fail}){
  let cursor=null;try{if(url.searchParams.get('cursor')){cursor=JSON.parse(atob(url.searchParams.get('cursor')));if(!Array.isArray(cursor)||cursor.length!==2||!Number.isSafeInteger(cursor[0])||!uuid(cursor[1]))throw Error();}}catch{return fail('Página inválida.');}
  const where=`WHERE ${eligible} ${unit?'AND p.unit_id=?':''} ${kind?'AND p.target_kind=?':''} ${equipment?"AND p.target_kind='equipment' AND p.target_id=?":''} ${scope==='published'?"AND i.state='completed'":scope==='partial'?"AND i.state='open'":scope==='paused'?"AND i.state='paused'":''}`;
  const params=[...(unit?[unit]:[]),...(kind?[kind]:[]),...(equipment?[equipment]:[])];
- const rows=(await env.DB.prepare(`SELECT p.id,p.unit_id,u.name AS unit_name,p.inspection_id,i.state AS inspection_state,p.target_kind,p.target_id,p.created_at,
+ const pageFrom=from.replace('collection_photos p JOIN',`collection_photos p INDEXED BY ${unit?'collection_photos_ready_unit_date':'collection_photos_ready_date'} JOIN`);
+ const pageSql=`SELECT p.id,p.unit_id,u.name AS unit_name,p.inspection_id,i.state AS inspection_state,p.target_kind,p.target_id,p.created_at,
  COALESCE(NULLIF(author.display_name,''),author.username,'Usuário indisponível') AS created_by_name
- ${from} LEFT JOIN users author ON author.id=p.created_by ${where}
- ${cursor?'AND (p.created_at<? OR (p.created_at=? AND p.id<?))':''}
- ORDER BY p.created_at DESC,p.id DESC LIMIT 49`).bind(...params,...(cursor?[cursor[0],cursor[0],cursor[1]]:[])).all()).results;
- const counts=(await env.DB.prepare(`SELECT i.state,COUNT(*) AS total ${from} ${where} GROUP BY i.state`).bind(...params).all()).results;
+ ${pageFrom} LEFT JOIN users author ON author.id=p.created_by ${where}
+ ${cursor?'AND (p.created_at,p.id)<(?,?)':''}
+ ORDER BY p.created_at DESC,p.id DESC LIMIT 49`;
+ const {rows,counts}=await readGalleryPage(env.DB,pageSql,[...params,...(cursor?[cursor[0],cursor[1]]:[])],`SELECT i.state,COUNT(*) AS total ${from} ${where} GROUP BY i.state`,params);
  const items=rows.slice(0,48),last=items.at(-1);
  return json({items:await describePhotos(env.DB,items),published:counts.find(x=>x.state==='completed')?.total||0,partial:counts.find(x=>x.state==='open')?.total||0,paused:counts.find(x=>x.state==='paused')?.total||0,nextCursor:rows.length>48?btoa(JSON.stringify([last.created_at,last.id])):null});
 }

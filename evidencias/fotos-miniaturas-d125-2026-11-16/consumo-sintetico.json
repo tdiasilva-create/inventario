@@ -1,0 +1,51 @@
+{
+  "at": "2026-11-16T09:38:09.686Z",
+  "runtime": "local workerd",
+  "source": "5000 synthetic photos, 100 missing thumbnails",
+  "unchangedTables": 99,
+  "queries": [
+    {
+      "name": "gallery.first",
+      "before": {
+        "d1_calls": 3,
+        "d1_rows_read": 20353,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 3,
+        "d1_rows_read": 5740,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    },
+    {
+      "name": "gallery.next",
+      "before": {
+        "d1_calls": 3,
+        "d1_rows_read": 20212,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 2,
+        "d1_rows_read": 537,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    },
+    {
+      "name": "backfill",
+      "before": {
+        "d1_calls": 1,
+        "d1_rows_read": 5107,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 1,
+        "d1_rows_read": 63,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    }
+  ],
+  "note": "First page includes a cold count; next page reuses exact counts at the same revision. No production writes."
+}

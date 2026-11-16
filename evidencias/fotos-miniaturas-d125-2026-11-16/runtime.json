@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "runtime": "Cloudflare workerd; actual Wrangler bundle and compiled WASM",
+  "checks": 5,
+  "originalPreserved": true,
+  "noOfficialRecordsWritten": true
+}

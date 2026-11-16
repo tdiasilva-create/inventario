@@ -451,3 +451,6 @@ Publicação desta correção expressamente autorizada; não pedir nova aprovaç
 
 ## D-124 — atualização da frente coleta/fotos, 16/11/2026
 Correções técnicas e limites por achado no [registro D124](../05-qualidade/COLETA_FOTOS_D124_2026-11-16.md). Permanecem decisões sobre retenção/limpeza (AUD013/045), envio legado já concluído (015 residual), leitura gerencial dos conflitos (038 residual), criação de ambiente com B concluído (040 residual), revisitas (076). Validação integral da derivação/corpo JPEG no servidor (043 residual), consultas globais/índice de fotos (044b/c) e homologação física continuam pendências técnicas; não declarar auditoria integral encerrada.
+
+## D-125 — continuação do item 6
+Decodificação integral do corpo JPEG (AUD043 residual) e consultas globais/índice de manutenção (AUD044b/c) implementados/testados. Estado real e versões no [registro D125](../05-qualidade/FOTOS_MINIATURAS_D125_2026-11-16.md). Não foi implementada prova visual de derivação contra o original nem revalidação retroativa; preservados original/fallback/reparo root. As decisões e demais pendências de D124 permanecem. Nenhuma limpeza automática de fotos/órfãos autorizada por esta escolha.

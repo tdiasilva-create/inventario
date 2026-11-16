@@ -1,0 +1,51 @@
+{
+  "at": "2026-11-16T09:43:13.401Z",
+  "runtime": "local workerd",
+  "source": "private backup",
+  "unchangedTables": 100,
+  "queries": [
+    {
+      "name": "gallery.first",
+      "before": {
+        "d1_calls": 3,
+        "d1_rows_read": 1625,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 3,
+        "d1_rows_read": 1448,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    },
+    {
+      "name": "gallery.next",
+      "before": {
+        "d1_calls": 3,
+        "d1_rows_read": 1497,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 2,
+        "d1_rows_read": 924,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    },
+    {
+      "name": "backfill",
+      "before": {
+        "d1_calls": 1,
+        "d1_rows_read": 304,
+        "d1_rows_written": 0
+      },
+      "after": {
+        "d1_calls": 1,
+        "d1_rows_read": 1,
+        "d1_rows_written": 0
+      },
+      "equivalent": true
+    }
+  ],
+  "note": "First page includes a cold count; next page reuses exact counts at the same revision. No production writes."
+}

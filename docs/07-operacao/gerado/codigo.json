@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4678,
-      "lines": 168,
-      "sha256": "f1d37eb3b1288741bd518c1136e52a7a7a2970d24d842289a02b7626da97c860",
+      "bytes": 4876,
+      "lines": 170,
+      "sha256": "d8dc7e37b9db3a319f6c68414ad8417da88e128d7d9bc4f25ddb808a2ee98e05",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -161,9 +161,9 @@
     },
     {
       "path": "config/wrangler.coletor.example.jsonc",
-      "bytes": 657,
-      "lines": 11,
-      "sha256": "368c5795415fda0e179c0ccd7329da2ffdc8a69508700563bf4c289ebc9441aa",
+      "bytes": 723,
+      "lines": 12,
+      "sha256": "6762ee560cd1d47e44f5cd3dffee698a8308d4c060cd82dce2335a66a4a36236",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -171,9 +171,9 @@
     },
     {
       "path": "config/wrangler.painel.example.jsonc",
-      "bytes": 637,
-      "lines": 11,
-      "sha256": "9ff8fbea469229552100d7e62f41fc9bf3691d53a2cb5b86f522ea9b45ae5eb9",
+      "bytes": 703,
+      "lines": 12,
+      "sha256": "06355056c03c5f4cc13d501553bf582dda6b027460d48634d294522a26ed8504",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -530,10 +530,20 @@
       "apiLiterals": []
     },
     {
+      "path": "migrations/0036_photo_gallery_reads.sql",
+      "bytes": 4467,
+      "lines": 66,
+      "sha256": "7e4ccda1d9740a787486f3a770b971906157c6f6a6917747e89f60d5d8e5aaee",
+      "imports": [],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "package.json",
-      "bytes": 7484,
-      "lines": 92,
-      "sha256": "8d814da32460f6923b292753cc0e54fefcfebf6712a2b75a3c39a600ff2bb0c5",
+      "bytes": 7604,
+      "lines": 95,
+      "sha256": "1fb48036c0726439452c06cb8458f821e19580d8bae59c3005d029c0d8550624",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -541,9 +551,9 @@
     },
     {
       "path": "pnpm-lock.yaml",
-      "bytes": 93879,
-      "lines": 2982,
-      "sha256": "cae40d45792389ee4fe4656d0ef7bb2b60497f1d99e5c48c2098703151f403fe",
+      "bytes": 94357,
+      "lines": 2998,
+      "sha256": "945b0f78886bac566832e42b724c0f0d376ae4292164936e779b6b294a24c497",
       "imports": [
         "node:util"
       ],
@@ -885,7 +895,7 @@
       "path": "scripts/export-operation-manual.mjs",
       "bytes": 2424,
       "lines": 37,
-      "sha256": "871e9d6d56a1980049894d4a4a2f396a6c390bdb6d80f62d7d0d8c73d5e3c882",
+      "sha256": "a70c8dcce80af7b281167b619b56227e4299474983366cd807b6b456fe0d472c",
       "imports": [
         "node:fs/promises"
       ],
@@ -1078,6 +1088,34 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "scripts/measure-photo-budget-d125.mjs",
+      "bytes": 5968,
+      "lines": 56,
+      "sha256": "5fbb47926ef2e4f5c49f80cc507fcd26c8d08da57382d5e5cc1ea6141a9b857d",
+      "imports": [
+        "+q+pathToFileURL(path.resolve(path.dirname(file),p)).href+q);return import(",
+        "../server/photo-gallery.mjs",
+        "../server/photo-thumbnails.mjs",
+        "../server/request-timing.mjs",
+        "../tests/helpers/collector-db.mjs",
+        "node:assert/strict",
+        "node:child_process",
+        "node:crypto",
+        "node:fs",
+        "node:module",
+        "node:path",
+        "node:sqlite",
+        "node:url"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/inventory/photos",
+        "/api/inventory/photos?cursor=",
+        "/api/root/photo-thumbnails"
+      ]
     },
     {
       "path": "scripts/measure-photo-performance.mjs",
@@ -2963,6 +3001,66 @@
       ]
     },
     {
+      "path": "server/jpeg-decoder-node.mjs",
+      "bytes": 452,
+      "lines": 7,
+      "sha256": "4f45839d0fb807598dbc273a0359e80c867d9098c1d70040bdcd09d3860a804e",
+      "imports": [
+        "./jpeg-decoder-runtime.mjs",
+        "node:fs"
+      ],
+      "exports": [
+        "decodeThumbnail"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "server/jpeg-decoder-runtime.mjs",
+      "bytes": 582,
+      "lines": 14,
+      "sha256": "48cf29534759fff9dee526986a56cbdbc1acc9a0e8fffa185da0e174b006e225",
+      "imports": [
+        "@jsquash/jpeg/codec/dec/mozjpeg_dec.js",
+        "@jsquash/jpeg/utils.js"
+      ],
+      "exports": [
+        "createThumbnailDecoder"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "server/jpeg-decoder-worker.mjs",
+      "bytes": 193,
+      "lines": 4,
+      "sha256": "bf6dc8c7357f562702069ed31de8bc287bddcc4805caf52ce0f382fca7a02542",
+      "imports": [
+        "./jpeg-decoder-runtime.mjs",
+        "@jsquash/jpeg/codec/dec/mozjpeg_dec.wasm"
+      ],
+      "exports": [
+        "decodeThumbnail"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "server/jpeg-thumbnail.mjs",
+      "bytes": 1994,
+      "lines": 46,
+      "sha256": "fc5b8fc1ad159efd7dd63d9daf2e65cafdcec3b2be04bb6f82744bfdecabf68d",
+      "imports": [
+        "#jpeg-decoder"
+      ],
+      "exports": [
+        "thumbnailFrame",
+        "validThumbnail"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "server/management-views.mjs",
       "bytes": 7184,
       "lines": 67,
@@ -3088,11 +3186,26 @@
       ]
     },
     {
-      "path": "server/photo-gallery.mjs",
-      "bytes": 4599,
-      "lines": 38,
-      "sha256": "c7c21e50d44c5573c3c96f43e1b1a758302b887c3ece8327e29a964a5e9723f4",
+      "path": "server/photo-gallery-cache.mjs",
+      "bytes": 1780,
+      "lines": 26,
+      "sha256": "0214999d0a52d52a7c564eae416af31519cef5dde0af116e1560a74d8ee146be",
       "imports": [
+        "./request-timing.mjs"
+      ],
+      "exports": [
+        "readGalleryPage"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "server/photo-gallery.mjs",
+      "bytes": 4760,
+      "lines": 40,
+      "sha256": "3c1890edcc8f6df866a954f62c512d81523a2b82a5e7d3f961ed0f2965636da9",
+      "imports": [
+        "./photo-gallery-cache.mjs",
         "./photo-labels.mjs",
         "./photo-read.mjs",
         "./photo-response.mjs",
@@ -3192,11 +3305,12 @@
     },
     {
       "path": "server/photo-thumbnails.mjs",
-      "bytes": 7587,
-      "lines": 82,
-      "sha256": "14c3d72a46cd69e9997de3b3b0f52b71b93db629edb07f76180c06e4e911a669",
+      "bytes": 6969,
+      "lines": 65,
+      "sha256": "ecc028f11bce40898f70bad6ad4d630f80d41b6a791c0133d1b41d926d47d089",
       "imports": [
         "./collector-access.mjs",
+        "./jpeg-thumbnail.mjs",
         "./photo-response.mjs",
         "./photo-storage.mjs",
         "./unit-scope.mjs"
@@ -6185,6 +6299,26 @@
       "apiLiterals": []
     },
     {
+      "path": "tests/photo-integrity-budget-d125.test.mjs",
+      "bytes": 10764,
+      "lines": 104,
+      "sha256": "778752ba71242e438e2b7fa6f87e10a681dcf25a9e5713e5e362a390c7c3004d",
+      "imports": [
+        "../server/jpeg-thumbnail.mjs",
+        "../server/photo-gallery.mjs",
+        "../server/photo-thumbnails.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/photo-performance.mjs",
+        "jpeg-js",
+        "node:assert/strict",
+        "node:fs",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "tests/photo-performance-browser.cjs",
       "bytes": 7048,
       "lines": 48,
@@ -6209,9 +6343,9 @@
     },
     {
       "path": "tests/photo-performance.test.mjs",
-      "bytes": 8819,
+      "bytes": 8837,
       "lines": 84,
-      "sha256": "105a34ae03e0332b15cd2f7b376dcef8f7e7d961d62ae40031c1eb4b9bdaafd5",
+      "sha256": "dfc27ba8b4b30c3257e86119802ce3117c62d3003eeecc106c298e7254fbe95b",
       "imports": [
         "../server/photo-response.mjs",
         "../server/photo-storage.mjs",
@@ -6321,6 +6455,23 @@
         "/api/inventory/photo?id=",
         "/api/root/photo-thumbnails"
       ]
+    },
+    {
+      "path": "tests/photo-wasm-runtime.cjs",
+      "bytes": 3791,
+      "lines": 25,
+      "sha256": "ac37cd4e3b1666769d6118b4d9f566863611925750ddf64eb38d4768aa615c8b",
+      "imports": [
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "node:assert/strict",
+        "node:fs",
+        "node:module",
+        "node:path"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
     },
     {
       "path": "tests/provider-report-browser.cjs",
@@ -10311,9 +10462,9 @@
     },
     {
       "path": "wrangler.collector.jsonc",
-      "bytes": 786,
-      "lines": 12,
-      "sha256": "8da54ca95d7ccb9f09707c678ebe6289c56e23fa3fd54a2050d54bfdfdbc43de",
+      "bytes": 849,
+      "lines": 13,
+      "sha256": "cd451af43ca23ded8ce3e4b8726804ef54fb414b351c2458c44ae4c943efe096",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -10321,9 +10472,9 @@
     },
     {
       "path": "wrangler.jsonc",
-      "bytes": 1643,
-      "lines": 22,
-      "sha256": "79b989c290cf800f9c682c9604fd704a3f8c048cf54c825d7d845d3d505446da",
+      "bytes": 1706,
+      "lines": 23,
+      "sha256": "328de0620eea4a9d93263de9391073e0527bc9a61b837f9a35b241b8b701b72e",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -10331,9 +10482,9 @@
     },
     {
       "path": "wrangler.validation.jsonc",
-      "bytes": 986,
-      "lines": 30,
-      "sha256": "34257ba1a0a8cac8f318064c790739a7d2b220e2c118680c5bf2f65bded24630",
+      "bytes": 1052,
+      "lines": 32,
+      "sha256": "dff82f6d61fee785aa48dd8a9ed962675cb69aec0c5aaf302e336eeaedbd1635",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -10341,9 +10492,9 @@
     },
     {
       "path": "wrangler.validation.painel.jsonc",
-      "bytes": 1497,
-      "lines": 21,
-      "sha256": "7fd725e259dc4d7f547a55ff2c650c584388f1b3c7f3bc4d4e35db4b02b347fc",
+      "bytes": 1562,
+      "lines": 22,
+      "sha256": "f8b8720c3943249f40e25c0c7b0763a61b1f2613e93c5a11805faeb582c86029",
       "imports": [],
       "exports": [],
       "environment": [],
