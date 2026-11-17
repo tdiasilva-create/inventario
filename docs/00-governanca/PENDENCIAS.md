@@ -464,4 +464,4 @@ Botões e listagens implementados e testados; estado da publicação/conferênci
 
 
 ## D128 — designação pelo Panorama
-Implementação local e testes da opção 1 concluídos. Publicação/conferência autenticada aguardam autorização específica; nenhuma atribuição oficial de teste. [Estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Pontos pendentes da auditoria permanecem fora deste escopo.
+Opção 1 publicada após autorização explícita em 17/11/2026 às 06:12 Fortaleza, painel 3aee0153-07d0-43d1-8998-83458594c30b (100%). Conferência autenticada concluída; nenhuma atribuição oficial de teste. [Estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Pontos pendentes da auditoria permanecem fora deste escopo.

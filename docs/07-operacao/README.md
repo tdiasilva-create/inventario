@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência atual: **16/11/2026, até D127**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](18_ESTADO_ATUAL_D127.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D127 já foram publicados; a preparação anterior de auditoria é histórica.
+Referência atual: **17/11/2026, até D128**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](19_ESTADO_ATUAL_D128.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D128 já foram publicados; a preparação anterior de auditoria é histórica.
 
 | Guia | Uso |
 |---|---|
@@ -21,6 +21,8 @@ Referência atual: **16/11/2026, até D127**. São **37 migrações**, 102 tabel
 | [15 · Estado D124](15_ESTADO_ATUAL_D124.md) | Coleta, fotos, publicação e pendências preservadas |
 | [16 · Estado D125](16_ESTADO_ATUAL_D125.md) | Miniaturas e consumo das consultas de fotos |
 | [17 · Estado D126](17_ESTADO_ATUAL_D126.md) | Sinalização de atendimento e arquivo de demandas |
+| [18 · Estado D127](18_ESTADO_ATUAL_D127.md) | Listas de unidades com e sem agente vinculado |
+| [19 · Estado D128](19_ESTADO_ATUAL_D128.md) | Designar coleta pela lista Sem agente vinculado |
 | [Índice estático do código](gerado/CODIGO_E_ROTAS.md) / [JSON](gerado/codigo.json) | Arquivos, hashes, imports, variáveis e referências de API |
 | [Checklist TXT](TRANSFERENCIA_E_MIGRACAO.txt) | Transferência para outra equipe |
 | [Dicionário físico](gerado/DICIONARIO_DADOS.md) / [JSON](gerado/schema.json) | Esquema completo sem dados reais |

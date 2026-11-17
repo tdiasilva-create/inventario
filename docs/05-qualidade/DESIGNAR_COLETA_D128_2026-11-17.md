@@ -1,6 +1,6 @@
 # D128 — verificação da designação de coleta
 
-**Estado: implementação local; ainda não publicada.** Escolha funcional aprovada pelo responsável (opção 1, Central de demandas). [Contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md). Nenhuma demanda, atribuição ou notificação oficial foi criada nos testes.
+**Estado: publicado em 17/11/2026 às 06:12:28 Fortaleza, com aprovação explícita do responsável.** Escolha funcional aprovada pelo responsável (opção 1, Central de demandas). [Contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md). Nenhuma demanda, atribuição ou notificação oficial foi criada nos testes.
 
 Consultados entrada, precedência, decisões/pendências/conflitos, manifesto e cinco PNGs desktop na ordem, Central D071, roteiro D105, localização D114, exclusão D126 e listas D127; modelo de dados, migrações existentes e critérios de qualidade. Identidade D065/D080 preservada.
 
@@ -11,7 +11,7 @@ Consultados entrada, precedência, decisões/pendências/conflitos, manifesto e 
 - Teste de consumo do navegador: zero chamada a collection-tasks ao entrar no Panorama; uma ao abrir Sem agente como root e uma após criar. Digitar e avançar 61 segundos não aumentaram essa contagem. Leitura explícita por lote usa índice por unidade; demais consultas de autenticação permanecem. Não é medição de linhas da conta Cloudflare nem garantia de capacidade ilimitada no gratuito.
 - Regressões de navegador D127, organização de atendimentos D105, exclusão/sinalização D126 e localização D114 aprovadas.
 - Suíte geral: **369/369 testes aprovados** (84 s). Build desktop aprovado: 153 arquivos, 14 bundles; 854 links documentais verificados sem erro. O navegador D128 foi repetido após liberar imediatamente o fechamento do modal no sucesso; aprovado.
-- Dry-run do Worker e revisão de diff aprovados. Controle do índice Git: 1.211 arquivos verificados sem apontamentos. Branch `codex/designar-coleta-d128`; sem publicação de código ou escrita em dados oficiais nesta etapa.
+- Dry-run do Worker e revisão de diff aprovados. Controle do índice Git: 1.211 arquivos verificados sem apontamentos. Branch `codex/designar-coleta-d128`, commit funcional `9b2eafa`. Essas verificações precederam a publicação; nenhuma escrita de teste em dados oficiais.
 
 ## Evidências e comparação visual
 
@@ -19,7 +19,7 @@ Capturas em `evidencias/designar-coleta-d128-2026-11-17/`: formulário desktop, 
 
 ## Liberação e reversão
 
-Sem migração de banco, instalação de APK ou alteração do coletor. Publicar somente o Worker do painel após autorização. Base de produção D127: `a816fd06-05e1-491b-bc3d-8deed5f2745f`. Retorno a essa versão remove os atalhos D128; demandas já criadas continuam na Central com histórico e atribuições. A versão antiga não aplica a proteção especial contra reabertura duplicada; avaliar antes de reabrir designações após rollback.
+Publicação autorizada expressamente pela resposta “Sim, publicar no ambiente real”. Somente o Worker do painel foi publicado: `3aee0153-07d0-43d1-8998-83458594c30b`, confirmado em 100% do tráfego às 06:12:28 Fortaleza. Sem migração de banco, instalação de APK ou alteração do coletor. Base de produção D127: `a816fd06-05e1-491b-bc3d-8deed5f2745f`. Retorno a essa versão remove os atalhos D128; demandas já criadas continuam na Central com histórico e atribuições. A versão antiga não aplica a proteção especial contra reabertura duplicada; avaliar antes de reabrir designações após rollback.
 
 ## Roteiro após publicação
 
@@ -31,3 +31,11 @@ Sem migração de banco, instalação de APK ou alteração do coletor. Publicar
 6. Como visualizador, conferir ausência de botões de designação.
 
 GPS físico/tela bloqueada e notificações Android continuam sujeitos aos limites de homologação já documentados; testes locais não substituem aparelho real.
+
+## Conferência em produção
+
+Nove verificações HTTP públicas aprovadas: login/app disponíveis; Panorama e módulos privados redirecionam ao login; APIs de designação/fila exigem autenticação. Coletor permanece `a1ff9077-58ac-4799-b733-5d88605c58da`, 100%; mesmo APK 1.0.4 e 37 migrações.
+
+Sessão root real: lista Sem agente retornou 54 unidades naquele instante. Busca `almox` encontrou uma unidade, botão abriu o formulário e sete técnicos elegíveis foram carregados. Orientação opcional e botão Criar demanda e designar visíveis. Formulário fechado sem selecionar responsável nem salvar; foco voltou ao botão. Não houve POST de designação, aceite/GPS, notificação ou cadastro de teste em produção. A verificação de salvamento/concorrência permanece a dos testes isolados.
+
+Captura real privada: `private-data/d128/designar-coleta-publicado.jpg`, fora do Git. Capturas públicas deste registro são sintéticas. Logs de implantação e verificações em `private-data/d128/`; não publicar dados reais junto das evidências de teste.

@@ -1,6 +1,6 @@
 # D128 — designar coleta pela lista Sem agente vinculado
 
-Escolha do responsável em 17/11/2026: opção 1, usar a Central de demandas para encaminhar uma visita de coleta e vinculação de agentes. Implementação local; publicação depende de autorização específica. [Testes e estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md).
+Escolha do responsável em 17/11/2026: opção 1, usar a Central de demandas para encaminhar uma visita de coleta e vinculação de agentes. Publicado após autorização explícita em 17/11/2026 às 06:12 Fortaleza, com conferência root sem gravação de demanda. [Testes e estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md).
 
 ## Uso
 
