@@ -1,6 +1,6 @@
 # D129 — Registrar nova demanda na página da unidade
 
-Pedido esclarecido pelo responsável em 17/11/2026: **clique no mapa → página da unidade → Registrar nova demanda ao lado do nome → modal para descrever a necessidade e escolher o técnico**. Implementado e testado localmente; publicação ainda depende de aprovação específica. [Verificações](../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md).
+Pedido esclarecido pelo responsável em 17/11/2026: **clique no mapa → página da unidade → Registrar nova demanda ao lado do nome → modal para descrever a necessidade e escolher o técnico**. Publicado após autorização explícita em 17/11/2026 às 07:13 Fortaleza, com conferência root real sem gravação de demanda. [Verificações](../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md).
 
 ## Comportamento
 

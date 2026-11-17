@@ -1,6 +1,6 @@
-# D129 — verificação local de Registrar nova demanda
+# D129 — testes e publicação de Registrar nova demanda
 
-Estado em 17/11/2026: **implementado e testado localmente; não publicado**. O pedido definiu o atalho e o formulário. A autorização de publicação anterior era da D128; a regra de aprovação explícita do AGENTS.md continua aplicável. [Contrato](../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md).
+Estado em 17/11/2026: **publicado às 07:13:17 Fortaleza**, após resposta expressa “Sim, publicar no ambiente real” à confirmação específica D129. [Contrato](../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md).
 
 ## Resultados
 
@@ -30,9 +30,11 @@ O teste de navegador usa o mesmo servidor de aplicação com dados **TESTE**. Ve
 
 Capturas abertas e comparadas visualmente com a composição atual D080: identidade, cabeçalho, fotos e organograma preservados. A primeira revisão encontrou corte do cabeçalho em 390 px; o ajuste flexível foi corrigido e a repetição passou com verificação de limites do botão. Nada nessas capturas representa unidades ou técnicos reais. GPS físico/tela bloqueada não foi homologado por estes testes; o código nativo permanece inalterado.
 
-## Publicação e conferência futura
+## Publicação e conferência real
 
-Somente Worker do painel, sem migração, APK ou atualização do coletor. Base real vigente: D128 `3aee0153-07d0-43d1-8998-83458594c30b`. Após autorização, publicar e conferir versão/HTTP; abrir unidade e modal com sessão root real, fechando sem criar demanda de teste. O salvamento já foi validado isoladamente. Retorno ao Worker D128 remove o atalho; demandas criadas continuam na Central com histórico e atribuições.
+Somente Worker do painel publicado: `0933006b-fd3a-4b90-9622-2c037d0a46fc`, 100% do tráfego, commit funcional `c1c5e71`, branch `codex/registrar-demanda-unidade-d129`. Coletor confirmado inalterado: `a1ff9077-58ac-4799-b733-5d88605c58da`, 100%; mesmas 37 migrações e APK 1.0.4. Onze verificações HTTP públicas aprovadas: login/app disponíveis, módulos privados redirecionam ao login e APIs exigem autenticação. Retorno ao Worker D128 `3aee0153-07d0-43d1-8998-83458594c30b` remove o atalho; demandas criadas continuam na Central com histórico e atribuições.
+
+Sessão root real: aberto o marcador da EMI ALANA LUDMILA pelo mapa, selecionando a unidade na lista de pontos próximos. Página mostrou o botão junto ao nome; modal trouxe a unidade correta, descrição, quatro tipos e sete técnicos habilitados. Fechado sem preencher, escolher responsável ou enviar. Modal removido e foco retornou ao botão. Nenhuma demanda, atribuição, aviso ou aceite de teste foi criado em produção; salvamento e concorrência foram validados nos testes isolados. Captura real privada: `private-data/d129/registrar-demanda-publicado.jpg`, fora do Git.
 
 Roteiro manual: abrir uma unidade pelo mapa (as que já têm demanda mantêm destino Central por D095); conferir botão; abrir e fechar com Escape; abrir novamente e conferir unidade/técnicos; em uso real solicitado pelo root, informar necessidade e confirmar; conferir número, fechamento e demanda no aplicativo do responsável. Não aceitar, excluir nem atribuir a usuários reais apenas para testar.
 
