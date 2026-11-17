@@ -461,3 +461,7 @@ Sinalização após aceite e arquivo de exclusão exclusivo do root implementado
 
 ## D127 — vínculos por unidade
 Botões e listagens implementados e testados; estado da publicação/conferência em [qualidade D127](../05-qualidade/VINCULOS_PANORAMA_D127_2026-11-16.md). Não redefine escolas online/offline nem encerra itens pendentes da auditoria. Custo SQL incremental zero não certifica capacidade ilimitada do gratuito.
+
+
+## D128 — designação pelo Panorama
+Implementação local e testes da opção 1 concluídos. Publicação/conferência autenticada aguardam autorização específica; nenhuma atribuição oficial de teste. [Estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Pontos pendentes da auditoria permanecem fora deste escopo.

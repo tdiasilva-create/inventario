@@ -349,6 +349,21 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .unit-agent-list li:last-child{border:0}
 .unit-agent-list a{color:var(--preto);font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .unit-agent-list small{display:block;color:var(--texto-secundario);margin-top:4px}
+.collection-designation-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:10px 0 12px}
+.collection-designation-controls small{font-size:12px;color:var(--texto-secundario)}
+.collection-designation-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:8px}
+.collection-designation-actions small{flex:1;min-width:180px}
+.collection-designation-actions .btn{font-size:12px;font-weight:500;text-decoration:none;white-space:normal}
+.collection-designation-dialog{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+.collection-designation-dialog .dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.collection-designation-dialog h2{font-size:19px;margin:0}
+.collection-designation-body{padding:16px;overflow-wrap:anywhere}
+.collection-designation-body p{font-size:14px;color:var(--texto-secundario);line-height:1.5}
+.collection-designation-body label{display:block;font-weight:600;font-size:13px;margin:16px 0 6px}
+.collection-designation-body select,.collection-designation-body textarea{box-sizing:border-box;width:100%;max-width:100%;padding:10px;border:1px solid var(--linha);border-radius:4px;font:inherit;background:var(--branco,#fff);color:var(--preto)}
+.collection-designation-body .help{font-size:12px}
+.collection-designation-body .primary{background:var(--preto);color:#fff}
+.collection-designation-dialog button:focus-visible,.collection-designation-dialog a:focus-visible{outline:2px solid var(--vermelho);outline-offset:2px}
 @media(max-width:640px){.unit-agent-metrics button{align-items:flex-start;flex-direction:column;gap:5px}.unit-agent-metrics span{font-size:13px}.unit-agent-dialog h2{font-size:16px}}
 /* D-091: somente o Panorama; a tela Mapa da Rede mantém seu tamanho. */
 .panorama .map-operation{transform:scale(.7);transform-origin:bottom right}

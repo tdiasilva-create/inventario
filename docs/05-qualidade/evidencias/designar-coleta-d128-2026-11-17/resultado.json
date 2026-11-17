@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "scope": "LOCAL ISOLADO",
+  "noPolling": true,
+  "lostAckReplayed": true,
+  "roleRestricted": true,
+  "errors": []
+}

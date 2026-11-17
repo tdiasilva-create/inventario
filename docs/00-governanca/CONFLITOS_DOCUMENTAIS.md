@@ -185,3 +185,7 @@ Supera D094 somente na cor externa da unidade com aceite: azul até término/pau
 
 ## D127 — vínculo não é comunicação
 Os novos grupos incluem todas as unidades do catálogo filtrado e medem vínculo atual, mesmo offline. D083/D088/D100 continuam medindo comunicação recente de escolas. Sem vínculo não comprova ausência de instalação física; cadastro manual isolado não é agente vinculado. Os botões não substituem os indicadores de comunicação. [Contrato](../03-painel-desktop/UNIDADES_COM_AGENTE_D127.md).
+
+
+## D128 — designar trabalho não restringe acesso de coleta
+O pedido usa “iniciar vínculo” para atribuir a visita a um usuário. A opção escolhida foi criar demanda técnica; o botão se chama Designar coleta para distinguir esse encaminhamento do pareamento real do agente. Preserva D046: qualquer operador autorizado continua contribuindo, sem propriedade exclusiva. Designação não conclui visita/classificação D111, não habilita GPS sem aceite e não interpreta unidade sem agente como unidade sem inventário. [Contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md).

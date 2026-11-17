@@ -714,3 +714,7 @@ Pedido de 16/11/2026 → aceite sinalizado e exclusão só root → migração 0
 
 ## D127 — unidades com/sem agente
 Pedido de 16/11/2026 → dois botões no Panorama, listas e busca local → server/service-desk.mjs (atributo linked), web/unit-agent-overview.js, desktop.js, desktop-blocks.js, painel.css e build → tests/unit-agent-overview.test.mjs e unit-agent-overview-browser.cjs → [contrato](../03-painel-desktop/UNIDADES_COM_AGENTE_D127.md), [aceite/publicação](../05-qualidade/VINCULOS_PANORAMA_D127_2026-11-16.md). Sem novo SQL, polling, migração ou alteração de dados/GPS/alertas.
+
+
+## D128 — designar coleta
+Pedido/opção 1 de 17/11/2026 → server/collection-dispatch.mjs, technical-dispatch.mjs, service-desk.mjs; web/collection-designation.js, unit-agent-overview.js, dispatch.js, desktop.js, painel.css e build → tests/collection-dispatch.test.mjs e collection-designation-browser.cjs → [contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md), [testes e estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Sem migração; root escolhe responsável e gera demanda/aviso atomicamente, sem ativar GPS ou concluir coleta. Publicação ainda pendente.

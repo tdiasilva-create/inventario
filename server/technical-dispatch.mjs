@@ -2,6 +2,7 @@ import {digest} from './security.mjs';
 import {readDispatchMap,roadRoute} from './dispatch-road-routing.mjs';
 import {technicianAvatarRoutes} from './technician-avatars.mjs';
 import {cleanTracking,trackingCredential} from './technician-tracking.mjs';
+import {collectionDispatchRoutes,collectionPurpose,collectionRoles} from './collection-dispatch.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const freshMs=180000;
 export async function cleanDispatchPositions(db,now=Date.now()){
@@ -38,7 +39,7 @@ async function queue(db,user,{root=false,offset=0,history=false}={}){
 async function noticeData(db,user){const [items,count]=await db.batch([db.prepare('SELECT id,request_id,message,created_at,read_at FROM dispatch_notifications WHERE user_id=? ORDER BY id DESC LIMIT 30').bind(user.id),db.prepare('SELECT COUNT(*) AS total FROM dispatch_notifications WHERE user_id=? AND read_at IS NULL').bind(user.id)]);return {notifications:items.results,unread:count.results[0].total};}
 // One compare-and-swap and transaction for every business command. The random attempt,
 // rather than the client operation ID, gates statements even in a simultaneous retry.
-async function command(db,user,a,expected,build,{json,fail}){
+async function command(db,user,a,expected,build,{json,fail,condition='1=1',conditionArgs=[]}){
  if(!uuid(a.operationId)||!Number.isSafeInteger(expected)||expected<0)return fail('Atualize a lista antes de enviar.');
  const hash=await digest(JSON.stringify(a));
  const replay=async()=>{const rec=await db.prepare('SELECT actor_id,payload_hash FROM dispatch_receipts WHERE operation_id=?').bind(a.operationId).first();return rec?rec.actor_id===user.id&&rec.payload_hash===hash?json({ok:true,replayed:true}):fail('Operação já utilizada com outros dados.',409):null;};
@@ -49,7 +50,7 @@ async function command(db,user,a,expected,build,{json,fail}){
  const event=(action,detail,id=a.id||null)=>stmt('INSERT INTO dispatch_events SELECT ?,?,?,?,?,?,? WHERE $gate',[crypto.randomUUID(),id,user.id,user.display_name||user.username,action,JSON.stringify(detail),now]);
  const notify=(ids,message,id=a.id||null)=>stmt('INSERT INTO dispatch_notifications(user_id,request_id,message,created_at) SELECT value,?,?,? FROM json_each(?) WHERE $gate',[id,message,now,JSON.stringify([...new Set(ids)])]);
  const operations=await build({stmt,event,notify,now});
- const out=await db.batch([db.prepare('UPDATE dispatch_meta SET revision=revision+1,attempt=? WHERE id=1 AND revision=?').bind(attempt,expected),stmt('INSERT INTO dispatch_receipts SELECT ?,?,?,? WHERE $gate',[a.operationId,user.id,hash,now]),...operations]);
+ const out=await db.batch([db.prepare('UPDATE dispatch_meta SET revision=revision+1,attempt=? WHERE id=1 AND revision=? AND ('+condition+')').bind(attempt,expected,...conditionArgs),stmt('INSERT INTO dispatch_receipts SELECT ?,?,?,? WHERE $gate',[a.operationId,user.id,hash,now]),...operations]);
  if(!out[0].meta.changes)return await replay()||fail('A lista foi alterada por outra pessoa. Atualize e confira antes de tentar novamente.',409);
  return json({ok:true});
 }
@@ -59,13 +60,14 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  if(env.APP_KIND==='collector')return fail('Este módulo não pertence ao coletor.',403);
  const db=env.DB,admin=path.startsWith('/api/dispatch/'),root=user.role==='root';
  if(admin&&!root)return fail('Somente root organiza e acompanha os atendimentos.',403);
+ const collection=await collectionDispatchRoutes(request,url,user,env,helpers);if(collection)return collection;
  if(!admin&&!await isTechnician(db,user.id))return fail('Sua conta ainda não foi habilitada como técnico pelo root.',403);
  const avatar=await technicianAvatarRoutes(request,url,user,env,helpers);if(avatar)return avatar;
  const endpoint=path.split('/').at(-1),get=request.method==='GET',now=Date.now();
  if(get&&endpoint==='queue'){
   const offset=Number(url.searchParams.get('offset')||0);if(!Number.isSafeInteger(offset)||offset<0)return fail('Página inválida.');
   const data=await queue(db,user,{root:admin,offset,history:!admin&&url.searchParams.get('history')==='1'});
-  if(admin)data.technicians=(await db.prepare('SELECT u.id,u.username,u.display_name,u.active,COALESCE(t.enabled,0) AS enabled,p.image_id AS avatar_id FROM users u LEFT JOIN dispatch_technicians t ON t.user_id=u.id LEFT JOIN technician_profiles p ON p.user_id=u.id ORDER BY u.display_name,u.username').all()).results;
+  if(admin)data.technicians=(await db.prepare('SELECT u.id,u.username,u.display_name,u.role,u.active,COALESCE(t.enabled,0) AS enabled,p.image_id AS avatar_id FROM users u LEFT JOIN dispatch_technicians t ON t.user_id=u.id LEFT JOIN technician_profiles p ON p.user_id=u.id ORDER BY u.display_name,u.username').all()).results;
   else Object.assign(data,await noticeData(db,user));
   return json(data);
  }
@@ -128,13 +130,15 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  if(admin&&endpoint==='assign'){
   if(!Array.isArray(a.userIds)||a.userIds.length>2||new Set(a.userIds).size!==a.userIds.length||!a.userIds.every(uuid))return fail('Escolha até dois técnicos distintos.');
   if(row.status==='Concluída')return fail('Demanda já concluída.',409);
+  const isCollection=JSON.parse(row.context_json).purpose===collectionPurpose;
+  if(isCollection)for(const id of a.userIds)if(!await db.prepare(`SELECT 1 FROM users WHERE id=? AND active=1 AND role IN ${collectionRoles}`).bind(id).first())return fail('A coleta exige um técnico com permissão para coletar.',422);
   for(const id of a.userIds)if(!await db.prepare('SELECT 1 FROM users u JOIN dispatch_technicians t ON t.user_id=u.id AND t.enabled=1 WHERE u.id=? AND u.active=1').bind(id).first())return fail('Habilite os usuários como técnicos antes de atribuir.',422);
   const old=(await db.prepare('SELECT id,user_id FROM dispatch_assignments WHERE request_id=? AND ended_at IS NULL').bind(a.id).all()).results;
   return command(db,user,a,a.revision,({stmt,event,notify,now})=>[
    stmt('UPDATE dispatch_assignments SET ended_at=? WHERE request_id=? AND ended_at IS NULL AND user_id NOT IN (SELECT value FROM json_each(?)) AND $gate',[now,a.id,JSON.stringify(a.userIds)]),
    ...a.userIds.filter(id=>!old.some(x=>x.user_id===id)).map(id=>stmt('INSERT INTO dispatch_assignments SELECT ?,?,?,?,?,NULL WHERE $gate',[crypto.randomUUID(),a.id,id,now,user.id])),
    event('assign',{before:old.map(x=>x.user_id),after:a.userIds}),notify([...a.userIds,...old.map(x=>x.user_id)],'A atribuição da demanda #'+row.number+' foi atualizada.')
-  ],helpers);
+  ],{...helpers,...(isCollection?{condition:`NOT EXISTS(SELECT 1 FROM json_each(?) wanted WHERE NOT EXISTS(SELECT 1 FROM users u JOIN dispatch_technicians t ON t.user_id=u.id AND t.enabled=1 WHERE u.id=wanted.value AND u.active=1 AND u.role IN ${collectionRoles}))`,conditionArgs:[JSON.stringify(a.userIds)]}:{})});
  }
  if(admin)return fail('Operação não encontrada.',404);
  const assignment=await db.prepare('SELECT id FROM dispatch_assignments WHERE request_id=? AND user_id=? AND ended_at IS NULL').bind(a.id,user.id).first();if(!assignment)return fail('Esta demanda não está atribuída a você.',403);

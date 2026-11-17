@@ -17,7 +17,7 @@ import {createUnitAgentOverview} from './unit-agent-overview.js';
 import {openPhotoViewer} from './photo-viewer.js';
 const receivedResults=createResultsView();
 const schoolPresence=createSchoolPresenceView();
-const unitAgentOverview=createUnitAgentOverview();
+const unitAgentOverview=createUnitAgentOverview({identity:()=>authUser});
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
 const progress=createProgressView({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});

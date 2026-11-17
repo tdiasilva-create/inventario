@@ -175,3 +175,7 @@ jobs:
       - run: node tests/unit-agent-overview-browser.cjs
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/collection-designation-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium

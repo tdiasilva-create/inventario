@@ -176,3 +176,7 @@ Responsável autorizou implementação, testes e publicação. Aceite confirmado
 
 ## D-127 — unidades com agente no Panorama, 16/11/2026
 Responsável autorizou implementar, testar e publicar Com agente vinculado/Sem agente vinculado, com contagem por unidade e lista pesquisável. Mesmo catálogo/filtros do Panorama; vínculo atual em computador conta mesmo offline/sem contato, inclusive parcial. Encerrados/revogados/excluídos fora. Campo linked calculado no loop existente de /api/operations/units; SQL e pulso de 60 s preservados. Sem migração, novo polling, alteração de gratuito/GPS/alertas/coletor/APK. Contrato: docs/03-painel-desktop/UNIDADES_COM_AGENTE_D127.md; estado efetivo: docs/05-qualidade/VINCULOS_PANORAMA_D127_2026-11-16.md.
+
+
+## D-128 — designação de coleta pelo Panorama, 17/11/2026
+Responsável escolheu opção 1: Designar coleta em Sem agente vinculado cria demanda na Central e atribui técnico ativo com permissão de coleta. Uma designação aberta por unidade; operação transacional/idempotente, responsável e atalho na lista; sem exclusividade de coleta. Não inicia GPS nem conclui coleta/vínculo automaticamente. Preserva fila, avisos, D114 e D126; consulta explícita sem polling extra. Sem migração/APK/coletor. Implementação local testada; publicação aguarda autorização específica. Ver docs/03-painel-desktop/DESIGNAR_COLETA_D128.md e docs/05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md.

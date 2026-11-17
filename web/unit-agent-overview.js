@@ -1,4 +1,5 @@
 import {isOutOfScope} from './unit-schema.js';
+import {createCollectionDesignations} from './collection-designation.js';
 
 const labels={linked:'Com agente vinculado',unlinked:'Sem agente vinculado'};
 const normalize=value=>String(value??'').normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase('pt-BR').trim();
@@ -21,15 +22,17 @@ export function unitAgentGroups(catalogue,fleet){
 }
 export function findAgentUnits(units,query){const q=normalize(query);return units.filter(u=>normalize(u.name).includes(q));}
 
-// Shared 60-second fleet event; no fetch, timer, storage or new D1 read.
-export function createUnitAgentOverview(){
+// Counts reuse the shared fleet event; assignment details are read only on root action.
+export function createUnitAgentOverview({identity=()=>null}={}){
  let catalogue=[],loaded=false,fleet=null,error=false,opened=null;
+ const designations=createCollectionDesignations({identity,onChange:()=>{if(opened){opened.signature=undefined;drawList(snapshot());}},restoreFocus:()=>opened?.input.focus()});
  function snapshot(){if(!loaded||!fleet||error)return null;try{return unitAgentGroups(catalogue,fleet);}catch{return null;}}
  function close(){opened?.dialog.close();}
  function drawList(result){
   if(!opened)return;
   const {state,body,input,status}=opened,all=result?.[state],items=all?findAgentUnits(all,input.value):null;
   status.textContent=items?`${items.length} de ${all.length} unidade(s).`:'Lista indisponível. Aguardando atualização dos vínculos.';
+  if(opened.designationStatus)opened.designationStatus.textContent=designations.status();
   const signature=JSON.stringify(items);
   if(opened.signature===signature)return;opened.signature=signature;
   const scroll=body.scrollTop,focusId=body.contains(document.activeElement)?document.activeElement?.dataset.unitId:null;
@@ -38,7 +41,8 @@ export function createUnitAgentOverview(){
    for(const unit of items){
     const li=document.createElement('li'),link=document.createElement('a'),count=document.createElement('small');
     link.href='/unidade?id='+encodeURIComponent(unit.id);link.dataset.unitId=unit.id;link.textContent=unit.name;
-    count.textContent=unit.linked+' computador(es) com agente vinculado';li.append(link,count);list.append(li);
+    count.textContent=unit.linked+' computador(es) com agente vinculado';li.append(link,count);
+    if(state==='unlinked')designations.decorate(li,unit,catalogue.find(u=>u.id===unit.id)?.unit_type);list.append(li);
    }
    body.replaceChildren(list);
   }else{
@@ -56,8 +60,13 @@ export function createUnitAgentOverview(){
   opened.input.addEventListener('input',()=>drawList(snapshot()));
   dialog.querySelector('button').addEventListener('click',close);
   dialog.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();}});
-  dialog.addEventListener('close',()=>{dialog.remove();if(opened?.dialog===dialog)opened=null;if(trigger.isConnected)trigger.focus({preventScroll:true});},{once:true});
+  dialog.addEventListener('close',()=>{designations.dispose();dialog.remove();if(opened?.dialog===dialog)opened=null;if(trigger.isConnected)trigger.focus({preventScroll:true});},{once:true});
+  if(state==='unlinked'&&designations.isRoot()){
+   const controls=document.createElement('div'),refresh=document.createElement('button'),note=document.createElement('small');controls.className='collection-designation-controls';refresh.type='button';refresh.className='btn';refresh.textContent='Atualizar designações';note.setAttribute('role','status');controls.append(refresh,note);dialog.querySelector('.unit-agent-search').append(controls);opened.designationStatus=note;
+   refresh.onclick=()=>designations.refresh(snapshot()?.unlinked.map(u=>u.id)||[]);
+  }
   document.body.append(dialog);drawList(snapshot());dialog.showModal();
+  if(state==='unlinked'&&designations.isRoot())designations.refresh(snapshot().unlinked.map(u=>u.id));
  }
  function draw(){
   const result=snapshot(),host=document.getElementById('panorama-agent-links');
