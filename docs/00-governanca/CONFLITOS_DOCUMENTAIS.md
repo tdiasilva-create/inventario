@@ -189,3 +189,7 @@ Os novos grupos incluem todas as unidades do catálogo filtrado e medem vínculo
 
 ## D128 — designar trabalho não restringe acesso de coleta
 O pedido usa “iniciar vínculo” para atribuir a visita a um usuário. A opção escolhida foi criar demanda técnica; o botão se chama Designar coleta para distinguir esse encaminhamento do pareamento real do agente. Preserva D046: qualquer operador autorizado continua contribuindo, sem propriedade exclusiva. Designação não conclui visita/classificação D111, não habilita GPS sem aceite e não interpreta unidade sem agente como unidade sem inventário. [Contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md).
+
+
+## D129 — demanda geral não é designação de coleta
+O responsável corrigiu o local/nome do atalho: fica ao lado do nome na página da unidade e se chama Registrar nova demanda. D128 permanece na lista Sem agente vinculado. A restrição de uma designação de coleta aberta e de técnico com papel de coleta pertence a D128; atendimento geral mantém a elegibilidade da Central, inclusive técnico habilitado com papel visualizador. Não concede acesso de coleta. D095 não foi revogada: unidades com demanda aberta ainda abrem a Central pelo mapa. [Contrato](../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md).

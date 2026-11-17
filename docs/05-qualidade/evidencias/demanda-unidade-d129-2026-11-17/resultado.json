@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "mapToUnit": true,
+  "headerButton": true,
+  "unitFixed": true,
+  "retryIdempotent": true,
+  "modalClosesAfterSave": true,
+  "noGpsStart": true,
+  "rootOnly": true,
+  "errors": []
+}

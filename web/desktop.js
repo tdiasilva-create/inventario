@@ -14,10 +14,12 @@ import {unitFigures,networkFigures,unitFiguresLine} from './unit-figures.js';
 import {createResultsView} from './desktop-results.js';
 import {createSchoolPresenceView} from './school-presence.js';
 import {createUnitAgentOverview} from './unit-agent-overview.js';
+import {createCollectionDesignations} from './collection-designation.js';
 import {openPhotoViewer} from './photo-viewer.js';
 const receivedResults=createResultsView();
 const schoolPresence=createSchoolPresenceView();
 const unitAgentOverview=createUnitAgentOverview({identity:()=>authUser});
+const unitDemands=createCollectionDesignations({identity:()=>authUser,onCreated:request=>toast('Demanda #'+request.number+' registrada e atribuída ao técnico.'),restoreFocus:()=>document.querySelector('[data-action="unit-new-demand"]')?.focus()});
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
 const progress=createProgressView({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});
@@ -157,7 +159,7 @@ function pageContent(){
  if(state.page==='Equipamentos')return `<div class="page-view">${heading('Equipamentos por Unidade','Inventário confirmado • cores indicam quantidade, sem inferência de risco',btn(icon('download')+' Exportar matriz','export'))}${filters()}${matrixPanel(true)}${equipmentConsultation.markup()}<div class="detail-notice">Selecione o nome da unidade ou uma quantidade para consultar os equipamentos publicados da unidade. Lotes contribuem com sua quantidade física; revisitas não duplicam bens.</div></div>`;
  if(state.page==='Unidades')return `<div class="page-view">${heading('Unidades educacionais','Cadastro mestre e inventário das vistorias confirmadas.')}${filters()}<div style="margin-top:16px">${unitList()}</div></div>`;
  if(state.page==='Detalhe da Unidade'){
-  const u=chosen();return `<div class="page-view">${heading('Unidades','Cadastro mestre, equipamentos e última vistoria confirmada',btn('Voltar ao panorama','panorama'))}${u?`<section class="panel detail-banner"><div class="school-photo">${photo()}</div><div><span class="badge">${esc(u.region||"Polo não informado")}</span><h2>${esc(u.name)}</h2><p>Identificador da unidade: ${esc(u.id)}</p><p>Dados do cadastro mestre e última vistoria confirmada.</p>${btn(icon('pin')+' Ver no mapa','map-unit')}</div></section>${authUser?unitEquipmentMap.markup()+sectorConsultation.markup():''}<div class="detail-grid">${selectedPanel()}${unitFigures(u)}${galleryPanel()}${environmentsPanel()}${receivedAnswers()}<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3><div data-result-summary="${esc(u.id)}">${receivedResults.brief(u.id)}</div></div></section></div>${btn('Consultar equipamentos recebidos','inventory-page','','data-unit="'+esc(u.id)+'" data-offset="0"')}${equipmentConsultation.markup()}`:'<div class="empty">Nenhuma unidade selecionada.</div>'}</div>`;
+  const u=chosen();return `<div class="page-view">${heading('Unidades','Cadastro mestre, equipamentos e última vistoria confirmada',btn('Voltar ao panorama','panorama'))}${u?`<section class="panel detail-banner"><div class="school-photo">${photo()}</div><div class="detail-banner-info"><span class="badge">${esc(u.region||"Polo não informado")}</span><div class="detail-unit-title"><h2>${esc(u.name)}</h2>${authUser?.role==='root'&&u.active?btn('Registrar nova demanda','unit-new-demand'):""}</div><p>Identificador da unidade: ${esc(u.id)}</p><p>Dados do cadastro mestre e última vistoria confirmada.</p>${btn(icon('pin')+' Ver no mapa','map-unit')}</div></section>${authUser?unitEquipmentMap.markup()+sectorConsultation.markup():''}<div class="detail-grid">${selectedPanel()}${unitFigures(u)}${galleryPanel()}${environmentsPanel()}${receivedAnswers()}<section class="panel"><div class="dialog-body"><h3>Funcionamento e impressoras da unidade</h3><div data-result-summary="${esc(u.id)}">${receivedResults.brief(u.id)}</div></div></section></div>${btn('Consultar equipamentos recebidos','inventory-page','','data-unit="'+esc(u.id)+'" data-offset="0"')}${equipmentConsultation.markup()}`:'<div class="empty">Nenhuma unidade selecionada.</div>'}</div>`;
  }
  if(state.page==='Ambientes')return `<div class="page-view">${heading('Ambientes da unidade','Escolha uma unidade para consultar os ambientes recebidos')}<label class="unit-picker">Unidade<input type="search" list="unit-options" id="unit-picker" placeholder="Buscar por nome ou INEP" value="${esc(chosen()?.name||'')}"><datalist id="unit-options">${catalogue.map(u=>`<option value="${esc(u.name)}">${esc(u.code||'')}</option>`).join('')}</datalist></label>${selectedPanel()}<div class="detail-grid">${environmentsPanel()}${galleryPanel()}</div>${equipmentConsultation.markup()}</div>`;
  if(state.page==='Ocorrências')return '<div class="page-view" id="received-findings">'+receivedResults.list()+'</div>';
@@ -289,6 +291,7 @@ document.addEventListener('click',e=>{
  if(a==='select-unit'){showEquipment(b.dataset.unit);return;}
  if(a==='open-unit'){state.selected=b.dataset.unit;navigate('Detalhe da Unidade');return;}
  if(a==='unit-detail'){if(chosen())navigate('Detalhe da Unidade');return;}
+ if(a==='unit-new-demand'){if(authUser?.role==='root'&&chosen())unitDemands.openUnitRequest({...chosen()},b);return;}
  if(a==='map-unit'){state.focus=state.selected;navigate('Mapa da Rede');if(!chosen()?.latitude)toast('Esta unidade ainda não tem coordenadas cadastradas; o mapa mostra a rede inteira.');return;}
  if(a==='zoom-in'||a==='zoom-out'){zoomMap(a==='zoom-in'?1:-1);return;}
  if(a==='reset-map'){fitMap();return;}

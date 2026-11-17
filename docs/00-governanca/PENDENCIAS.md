@@ -465,3 +465,7 @@ Botões e listagens implementados e testados; estado da publicação/conferênci
 
 ## D128 — designação pelo Panorama
 Opção 1 publicada após autorização explícita em 17/11/2026 às 06:12 Fortaleza, painel 3aee0153-07d0-43d1-8998-83458594c30b (100%). Conferência autenticada concluída; nenhuma atribuição oficial de teste. [Estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Pontos pendentes da auditoria permanecem fora deste escopo.
+
+
+## D129 — atalho na página da unidade
+Implementação e testes locais concluídos. Falta autorização específica para publicar o Worker do painel e posterior conferência autenticada do modal; sem migração ou APK. [Estado](../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md). Nenhuma demanda oficial foi criada para teste. Demais decisões da auditoria continuam pendentes.

@@ -180,3 +180,7 @@ Responsável autorizou implementar, testar e publicar Com agente vinculado/Sem a
 
 ## D-128 — designação de coleta pelo Panorama, 17/11/2026
 Responsável escolheu opção 1: Designar coleta em Sem agente vinculado cria demanda na Central e atribui técnico ativo com permissão de coleta. Uma designação aberta por unidade; operação transacional/idempotente, responsável e atalho na lista; sem exclusividade de coleta. Não inicia GPS nem conclui coleta/vínculo automaticamente. Preserva fila, avisos, D114 e D126; consulta explícita sem polling extra. Sem migração/APK/coletor. Publicação autorizada expressamente e executada em 17/11/2026 às 06:12 Fortaleza; painel 3aee0153-07d0-43d1-8998-83458594c30b (100%). Conferência root real sem escrita e 369 testes aprovados. Ver docs/03-painel-desktop/DESIGNAR_COLETA_D128.md e docs/05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md.
+
+
+## D-129 — demanda pela página da unidade, 17/11/2026
+Botão Registrar nova demanda junto ao nome da unidade, exclusivo root, abre modal com unidade fixa, necessidade/tipo e técnico habilitado. Criação, atribuição, histórico e aviso atômicos/idempotentes; fecha após salvar. Demanda geral, inclusive em unidade com agente; D128 conserva suas próprias restrições. Sem migração, polling extra, APK ou mudança de D114/coletor. D095 preservado. Implementado/testado localmente, produção ainda D128 até autorização específica. Ver docs/03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md e docs/05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md.

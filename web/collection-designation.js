@@ -2,7 +2,7 @@ import {readPanelJson} from './desktop-request.js';
 const element=(tag,text,className)=>{const n=document.createElement(tag);if(text!=null)n.textContent=text;if(className)n.className=className;return n;};
 const requestLink=(id,text)=>{const a=element('a',text,'btn');a.href='/demandas?demanda='+encodeURIComponent(id);return a;};
 // Explicit reads only: opening/refreshing this list, opening a form, or confirming a write.
-export function createCollectionDesignations({identity,onChange,restoreFocus}){
+export function createCollectionDesignations({identity,onChange=()=>{},restoreFocus=()=>{},onCreated=()=>{}}){
  let generation=0,controller=null,tasks=new Map(),ids=[],loading=false,error='',queriedAt=null,form=null;
  const isRoot=()=>identity()?.role==='root';
  async function refresh(unitIds=ids){
@@ -26,10 +26,11 @@ export function createCollectionDesignations({identity,onChange,restoreFocus}){
   else{const button=element('button',loading?'Consultando…':error?'Verificar designação':'Designar coleta','btn');button.type='button';button.disabled=loading;button.dataset.unitId=unit.id;button.setAttribute('aria-label',(error?'Verificar designação':'Designar coleta')+' · '+unit.name);button.onclick=()=>show(unit,button);actions.append(button);}
   row.append(actions);
  }
- async function show(unit,trigger){
+ async function show(unit,trigger,general=false){
   if(form||!isRoot())return;
   const dialog=element('dialog',null,'collection-designation-dialog');dialog.setAttribute('aria-labelledby','collection-designation-title');
   dialog.innerHTML='<header class="dialog-head"><h2 id="collection-designation-title">Designar coleta</h2><button type="button" class="btn" data-close>Fechar</button></header><div class="collection-designation-body"><strong data-unit></strong><p data-message role="status">Consultando a unidade e os técnicos…</p><div data-content></div></div>';
+  if(general){dialog.classList.add('unit-request-dialog');dialog.querySelector('h2').textContent='Registrar nova demanda';dialog.querySelector('h2').id='unit-request-title';dialog.setAttribute('aria-labelledby','unit-request-title');}
   dialog.querySelector('[data-unit]').textContent=unit.name;document.body.append(dialog);
   const current={dialog,abort:new AbortController(),busy:false,payload:null};form=current;
   const message=dialog.querySelector('[data-message]'),content=dialog.querySelector('[data-content]');
@@ -38,34 +39,36 @@ export function createCollectionDesignations({identity,onChange,restoreFocus}){
   dialog.addEventListener('close',()=>{current.abort.abort();dialog.remove();if(form===current)form=null;if(trigger.isConnected)trigger.focus({preventScroll:true});else restoreFocus();},{once:true});
   dialog.showModal();
   try{
-   const data=await readPanelJson('/api/dispatch/collection-options?unitId='+encodeURIComponent(unit.id),{signal:current.abort.signal});if(form!==current)return;
+   const data=await readPanelJson('/api/dispatch/'+(general?'unit-request-options':'collection-options')+'?unitId='+encodeURIComponent(unit.id),{signal:current.abort.signal});if(form!==current)return;
    if(data.task){tasks.set(unit.id,data.task);onChange();message.textContent='Já existe uma coleta designada — '+taskSummary(data.task)+'.';content.append(requestLink(data.task.id,'Ver demanda #'+data.task.number));return;}
    if(data.unit.linked){message.textContent='Esta unidade já possui agente vinculado. Atualize o Panorama para conferir.';return;}
-   if(!data.technicians.length){message.textContent='Não há técnico habilitado com permissão de coleta. O root pode habilitar uma conta de operador ou administrador em Organizar atendimentos → Técnicos.';const link=element('a','Organizar atendimentos','btn');link.href='/roteiro-demandas';content.append(link);return;}
+   if(!data.technicians.length){message.textContent=general?'Não há técnico ativo habilitado. Habilite uma conta em Organizar atendimentos → Técnicos.':'Não há técnico habilitado com permissão de coleta. O root pode habilitar uma conta de operador ou administrador em Organizar atendimentos → Técnicos.';const link=element('a','Organizar atendimentos','btn');link.href='/roteiro-demandas';content.append(link);return;}
    message.textContent='A demanda entrará no final da fila. O técnico receberá um aviso e iniciará o atendimento pelo aplicativo.';
    const fields=element('form');fields.innerHTML='<label for="collection-technician">Técnico responsável</label><select id="collection-technician" required><option value="">Selecione um técnico</option></select><label for="collection-instructions">Orientação para a visita (opcional)</label><textarea id="collection-instructions" maxlength="1000" rows="3" placeholder="Ex.: conferir computadores da secretaria e do laboratório"></textarea><p class="help">O vínculo com o agente será feito na unidade. Designar a visita não conclui a coleta.</p><button type="submit" class="btn primary">Criar demanda e designar</button>';
-   const select=fields.querySelector('select'),notes=fields.querySelector('textarea'),submit=fields.querySelector('button');
+   if(general)fields.innerHTML='<label for="unit-request-description">O que a unidade precisa?</label><textarea id="unit-request-description" required maxlength="2000" rows="4" placeholder="Descreva o atendimento necessário"></textarea><label for="unit-request-kind">Tipo de demanda</label><select id="unit-request-kind"><option>Manutenção</option><option>Reposição de insumo</option><option>Visita técnica</option><option>Outro</option></select><label for="unit-request-technician">Técnico responsável</label><select id="unit-request-technician" required><option value="">Selecione um técnico</option></select><button type="submit" class="btn primary">Registrar e designar</button>';
+   const select=fields.querySelector(general?'#unit-request-technician':'select'),notes=fields.querySelector('textarea'),kind=fields.querySelector('#unit-request-kind'),submit=fields.querySelector('button');
    for(const technician of data.technicians){const option=element('option',technician.display_name||technician.username);option.value=technician.id;select.append(option);}
-   content.append(fields);select.focus();
+   content.append(fields);(general?notes:select).focus();
    fields.onsubmit=async event=>{
     event.preventDefault();if(current.busy)return;
-    current.payload??={operationId:crypto.randomUUID(),unitId:unit.id,technicianId:select.value,notes:notes.value.trim()};
-    current.busy=true;select.disabled=true;notes.disabled=true;submit.disabled=true;dialog.querySelector('[data-close]').disabled=true;message.textContent='Criando a demanda e atribuindo o técnico…';
+    current.payload??={operationId:crypto.randomUUID(),unitId:unit.id,technicianId:select.value,...(general?{description:notes.value.trim(),kind:kind.value}:{notes:notes.value.trim()})};
+    current.busy=true;select.disabled=true;notes.disabled=true;if(kind)kind.disabled=true;submit.disabled=true;dialog.querySelector('[data-close]').disabled=true;message.textContent='Criando a demanda e atribuindo o técnico…';
     try{
-     const response=await fetch('/api/dispatch/collection-designate',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':identity()?.csrf||''},body:JSON.stringify(current.payload),signal:AbortSignal.timeout(20000)});
+     const response=await fetch('/api/dispatch/'+(general?'unit-request-create':'collection-designate'),{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':identity()?.csrf||''},body:JSON.stringify(current.payload),signal:AbortSignal.timeout(20000)});
      const result=await response.json();if(form!==current)return;
      if(!response.ok){
       if(result.existing){tasks.set(unit.id,result.existing);onChange();message.textContent=result.error;content.replaceChildren(requestLink(result.existing.id,'Ver demanda #'+result.existing.number));return;}
-      if(response.status<500){current.payload=null;select.disabled=false;notes.disabled=false;}
+      if(response.status<500){current.payload=null;select.disabled=false;notes.disabled=false;if(kind)kind.disabled=false;}
       throw Error(result.error||'Não foi possível confirmar a designação.');
      }
      message.textContent='Demanda #'+result.request.number+' confirmada. O aviso foi registrado para o técnico.';
      content.replaceChildren(requestLink(result.request.id,'Ver demanda #'+result.request.number));
-     window.dispatchEvent(new Event('semed:pending-refresh'));void refresh();
-    }catch(e){if(form!==current)return;message.textContent=(e.message||'Não foi possível confirmar o envio.')+(current.payload?' Tente novamente para conferir o mesmo envio, sem duplicar a demanda.':'');submit.textContent=current.payload?'Conferir envio / tentar novamente':'Criar demanda e designar';}
+     window.dispatchEvent(new Event('semed:pending-refresh'));
+     if(general){onCreated(result.request);dialog.close();}else void refresh();
+    }catch(e){if(form!==current)return;message.textContent=(e.message||'Não foi possível confirmar o envio.')+(current.payload?' Tente novamente para conferir o mesmo envio, sem duplicar a demanda.':'');submit.textContent=current.payload?'Conferir envio / tentar novamente':general?'Registrar e designar':'Criar demanda e designar';}
     finally{current.busy=false;if(form===current){submit.disabled=false;dialog.querySelector('[data-close]').disabled=false;}}
    };
   }catch(e){if(form===current)message.textContent=e.message;}
  }
- return {refresh,decorate,dispose,status:()=>loading?'Consultando designações…':error?'Designações indisponíveis. Use Atualizar designações ou Verificar designação.':queriedAt?'Designações consultadas às '+queriedAt.toLocaleTimeString('pt-BR')+'.':'',isRoot};
+ return {refresh,decorate,dispose,openUnitRequest:(unit,trigger)=>show(unit,trigger,true),status:()=>loading?'Consultando designações…':error?'Designações indisponíveis. Use Atualizar designações ou Verificar designação.':queriedAt?'Designações consultadas às '+queriedAt.toLocaleTimeString('pt-BR')+'.':'',isRoot};
 }

@@ -718,3 +718,7 @@ Pedido de 16/11/2026 → dois botões no Panorama, listas e busca local → serv
 
 ## D128 — designar coleta
 Pedido/opção 1 de 17/11/2026 → server/collection-dispatch.mjs, technical-dispatch.mjs, service-desk.mjs; web/collection-designation.js, unit-agent-overview.js, dispatch.js, desktop.js, painel.css e build → tests/collection-dispatch.test.mjs e collection-designation-browser.cjs → [contrato](../03-painel-desktop/DESIGNAR_COLETA_D128.md), [testes e estado](../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md). Sem migração; root escolhe responsável e gera demanda/aviso atomicamente, sem ativar GPS ou concluir coleta. Publicado após autorização explícita em 17/11/2026 às 06:12 Fortaleza; painel 3aee0153-07d0-43d1-8998-83458594c30b (100%), conferência root sem escrita e 369 testes aprovados.
+
+
+## D129 — Registrar nova demanda na unidade
+Esclarecimento de 17/11/2026 → web/desktop.js (botão no cabeçalho), collection-designation.js (modal geral), painel.css; server/collection-dispatch.mjs (criação/atribuição atômicas) → tests/unit-demand.test.mjs e unit-demand-browser.cjs → [contrato](../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md) e [qualidade](../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md). 372 testes, quatro roteiros de navegador e layout 390 px aprovados. Sem migração, polling adicional, APK ou mudança de GPS/coletor. Estado local; produção continua D128 até autorização específica.

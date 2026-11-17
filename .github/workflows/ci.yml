@@ -179,3 +179,7 @@ jobs:
       - run: node tests/collection-designation-browser.cjs
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/unit-demand-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium
