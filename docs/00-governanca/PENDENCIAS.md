@@ -457,4 +457,4 @@ Decodificação integral do corpo JPEG (AUD043 residual) e consultas globais/ín
 
 
 ## D126 — demandas, 16/11/2026
-Sinalização após aceite e arquivo de exclusão exclusivo do root implementados, testados e publicados; conferência visual autenticada aguarda login. Versão e limites em [qualidade D126](../05-qualidade/DEMANDAS_D126_2026-11-16.md). Item 19 (retenção da auditoria e paginação geral) permanece sem decisão; não confundir o arquivo de demandas com expurgo de audit.
+Sinalização após aceite e arquivo de exclusão exclusivo do root implementados, testados e publicados; conferência visual autenticada concluída, com prévia cancelada e sem exclusão real. Versão e limites em [qualidade D126](../05-qualidade/DEMANDAS_D126_2026-11-16.md). Item 19 (retenção da auditoria e paginação geral) permanece sem decisão; não confundir o arquivo de demandas com expurgo de audit.
