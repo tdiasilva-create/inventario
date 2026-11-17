@@ -72,9 +72,9 @@ export async function serviceDeskRoutes(request,url,user,env,{json,fail,body}){
   const contacts=ids.length?(await db.prepare(fleetContactsSql).bind(JSON.stringify(ids)).all()).results:[];
   const presence=new Map(contacts.map(p=>[p.device_id,p.presence_json]));
   const rows=members.map(r=>({...r,presence_json:presence.get(r.device_id)||null}));
-  const counts=new Map();for(const r of rows){const c=counts.get(r.unit_id)||{computers:0,online:0,lost:0,unlinked:0,other:0};c.computers++;const st=r.device_id?presenceState({state:r.state},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):'unlinked';if(['communicating','communicating_with_failure'].includes(st))c.online++;else if(st==='no_recent_communication')c.lost++;else if(st==='unlinked')c.unlinked++;else c.other++;counts.set(r.unit_id,c);}
+  const counts=new Map();for(const r of rows){const c=counts.get(r.unit_id)||{computers:0,online:0,lost:0,unlinked:0,other:0,linked:0};c.computers++;if(r.device_id&&r.state==='linked')c.linked++;const st=r.device_id?presenceState({state:r.state},JSON.parse(r.presence_json||'{}'),Date.now(),presenceThreshold(env)):'unlinked';if(['communicating','communicating_with_failure'].includes(st))c.online++;else if(st==='no_recent_communication')c.lost++;else if(st==='unlinked')c.unlinked++;else c.other++;counts.set(r.unit_id,c);}
   const pending=(await db.prepare("SELECT unit_id,COUNT(*) AS total FROM service_requests_active WHERE status!='Concluída' GROUP BY unit_id").all()).results;
-  return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});
+  return json({units:units.map(u=>({...u,...(counts.get(u.id)||{computers:0,online:0,lost:0,unlinked:0,other:0,linked:0}),demands:pending.find(p=>p.unit_id===u.id)?.total||0})),server_time:new Date().toISOString(),threshold_seconds:presenceThreshold(env)});
  }
  if(path==='/api/operations/computers'&&request.method==='GET'){
   // 10/11/2026: sem unitId, lista os computadores de TODA a rede num estado de comunicação (pulso e ribbon do painel).

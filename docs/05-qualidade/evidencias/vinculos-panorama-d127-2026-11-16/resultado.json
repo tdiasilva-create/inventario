@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "noExtraReadOnOpenOrSearch": true,
+  "sharedFleetInterval": 60000,
+  "scope": "LOCAL ISOLADO",
+  "errors": []
+}

@@ -1,0 +1,12 @@
+{
+  "baseline": "7498a13",
+  "passed": true,
+  "queriesUnchanged": true,
+  "cacheUnchanged": true,
+  "queryHash": "12877ff0a350d9be4ae604cd368ec4c5eaa5dae392ee5cc2eb208e400a938695",
+  "warmD1Calls": 3,
+  "additionalD1Calls": 0,
+  "additionalWrites": 0,
+  "additionalPolling": 0,
+  "source": "comparação de código + teste isolado de rota e navegador; não é Analytics da conta"
+}

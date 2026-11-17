@@ -182,3 +182,6 @@ D114 permite localização após expiração NATURAL. Isso não permite manter r
 
 ## D126 — anel após aceite e arquivo de demanda
 Supera D094 somente na cor externa da unidade com aceite: azul até término/pausa/retirada; verde-petróleo permanece para pendências sem aceite. D095 preserva clique na Central. Excluída sai de todos os totais operacionais mesmo mantendo o estado anterior na ficha histórica; não converter em Concluída. Sessão/GPS não encerram o aceite operacional, distinto da autorização de localização D114. [Contrato](../03-painel-desktop/ATENDIMENTO_E_EXCLUSAO_D126.md).
+
+## D127 — vínculo não é comunicação
+Os novos grupos incluem todas as unidades do catálogo filtrado e medem vínculo atual, mesmo offline. D083/D088/D100 continuam medindo comunicação recente de escolas. Sem vínculo não comprova ausência de instalação física; cadastro manual isolado não é agente vinculado. Os botões não substituem os indicadores de comunicação. [Contrato](../03-painel-desktop/UNIDADES_COM_AGENTE_D127.md).

@@ -13,9 +13,11 @@ import {shortUnitNames} from './unit-names.js';
 import {unitFigures,networkFigures,unitFiguresLine} from './unit-figures.js';
 import {createResultsView} from './desktop-results.js';
 import {createSchoolPresenceView} from './school-presence.js';
+import {createUnitAgentOverview} from './unit-agent-overview.js';
 import {openPhotoViewer} from './photo-viewer.js';
 const receivedResults=createResultsView();
 const schoolPresence=createSchoolPresenceView();
+const unitAgentOverview=createUnitAgentOverview();
 import './spreadsheet-io.js';
 import {createProgressView} from './desktop-progress.js';
 const progress=createProgressView({canRename:()=>authUser?.role==='root',csrf:()=>authUser?.csrf||'',onCompleted:async unitId=>{details.delete(unitId);detailTimes.delete(unitId);await refreshSummary();}});
@@ -86,7 +88,7 @@ function stats(){
   ['Equipamentos','monitor','green',activeUnits().reduce((n,u)=>n+u.values.reduce((a,b)=>a+b,0),0),'Inventário confirmado'],
   ['Ambientes Mapeados','box','purple',visits.reduce((n,v)=>n+v.environment_count,0),'Ambientes individualizados']
  ];
- return unitCategoryStats(units)+'<section class="stats inventory-stats" aria-label="Indicadores do inventário">'+metrics.map(([label,glyph,color,value,description])=>'<article class="metric '+color+'">'+metricIcon(glyph)+'<div><strong>'+(value===null?'—':num(value))+'</strong><span>'+label+'</span><small>'+(inventoryError?'Consulta indisponível':description)+'</small></div></article>').join('')+'</section>'+collectionOverview()+pendingIndicators({collections:false});
+ return unitAgentOverview.markup()+unitCategoryStats(units)+'<section class="stats inventory-stats" aria-label="Indicadores do inventário">'+metrics.map(([label,glyph,color,value,description])=>'<article class="metric '+color+'">'+metricIcon(glyph)+'<div><strong>'+(value===null?'—':num(value))+'</strong><span>'+label+'</span><small>'+(inventoryError?'Consulta indisponível':description)+'</small></div></article>').join('')+'</section>'+collectionOverview()+pendingIndicators({collections:false});
 }
 function mapTitle(){if(state.page==='Mapa da Rede')return '';return '<div class="panel-title"><div><h3>'+icon('pin')+'Mapa da Rede Municipal de Educação</h3><small>Paço do Lumiar</small></div></div>';}
 function mapPanel(){
@@ -226,6 +228,7 @@ function render(){
  sectorConsultation.attach();
  receivedResults.attach(filteredCatalogue());
  schoolPresence.attach(filteredCatalogue(),catalogueLoaded);
+ unitAgentOverview.attach(filteredCatalogue(),catalogueLoaded);
  progress.attach(state.page==='Coletas em andamento'?new URLSearchParams(location.search).get('vistoria'):null,state.page==='Planejamento'?'':state.q);
  const mapNode=document.querySelector('#municipal-map');if(mapNode){mountMap(mapNode,{technical:authUser?.role==='root',units:filteredCatalogue(),selected:state.selected,focus:state.focus,onSelect:id=>{equipmentConsultation.hide();state.selected=id;navigate('Detalhe da Unidade');}});state.focus=null;}
  document.querySelectorAll('.nav-item[href]').forEach(a=>{const active=new URL(a.href,location.href).pathname===(state.page==='Detalhe da Unidade'?'/unidades':pageRoutes[state.page]);a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});

@@ -711,3 +711,6 @@ Pedido item 6 / AUD043–044 → server/jpeg-thumbnail.mjs e adaptadores WASM, p
 
 ## D126 — demandas
 Pedido de 16/11/2026 → aceite sinalizado e exclusão só root → migração 0037, server/demand-deletion.mjs, pending-indicators, service-desk, technical-dispatch, dispatch-road-routing, hardware-review, management-views; web/operations.js, desktop-map.js, painel.css, legenda/alertas → tests/demand-activity-deletion.test.mjs e demand-activity-deletion-browser.cjs → [aceite/publicação](../05-qualidade/DEMANDAS_D126_2026-11-16.md). Preservar histórico, GPS quando resta fila, gratuito, fotos e coleta.
+
+## D127 — unidades com/sem agente
+Pedido de 16/11/2026 → dois botões no Panorama, listas e busca local → server/service-desk.mjs (atributo linked), web/unit-agent-overview.js, desktop.js, desktop-blocks.js, painel.css e build → tests/unit-agent-overview.test.mjs e unit-agent-overview-browser.cjs → [contrato](../03-painel-desktop/UNIDADES_COM_AGENTE_D127.md), [aceite/publicação](../05-qualidade/VINCULOS_PANORAMA_D127_2026-11-16.md). Sem novo SQL, polling, migração ou alteração de dados/GPS/alertas.
