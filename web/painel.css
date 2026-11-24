@@ -293,9 +293,9 @@ dialog .dialog-body,.ops-dialog-body,.root-delete-dialog{padding:16px}
 .map-unit-choices button strong,.map-unit-choices button small{display:block;white-space:normal;overflow-wrap:anywhere}
 .map-unit-choices button small{font-size:11px;margin-top:3px}
 .unit-map-marker{filter:drop-shadow(0 1px 1px #16191d90)}
-.unit-map-legend{position:absolute;top:88px;right:8px;z-index:1001;max-width:calc(100% - 64px);width:max-content;border:1px solid #c5c9ce;border-radius:4px;background:#fffffff5;color:var(--preto);box-shadow:0 1px 4px #16191d1f;font:500 11px/1.4 var(--font-sans)}
-.unit-map-legend summary{padding:7px 10px;cursor:pointer;font-weight:600}
-.unit-map-legend summary:focus-visible{outline:2px solid var(--vermelho);outline-offset:2px}
+.unit-map-legend,.map-agent-filter{position:absolute;top:88px;right:8px;z-index:1001;max-width:calc(100% - 64px);width:max-content;border:1px solid #c5c9ce;border-radius:4px;background:#fffffff5;color:var(--preto);box-shadow:0 1px 4px #16191d1f;font:500 11px/1.4 var(--font-sans)}
+.unit-map-legend summary,.map-agent-filter summary{padding:7px 10px;cursor:pointer;font-weight:600}
+.unit-map-legend summary:focus-visible,.map-agent-filter summary:focus-visible{outline:2px solid var(--vermelho);outline-offset:2px}
 .unit-map-legend ul{list-style:none;margin:0;padding:0 10px 5px;display:grid;gap:6px}
 .unit-map-legend li{display:flex;align-items:center;gap:8px}
 .unit-map-swatch{display:inline-block;width:11px;height:11px;flex-shrink:0;border-radius:50%;background:var(--unit-color);border:1px solid #16191d55}
@@ -959,11 +959,13 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 @media(max-width:640px){.map-panel.map-expanded:has(.map-unit-search) .unit-map-legend{top:190px}.map-unit-search input{font-size:16px}}
 
 /* D131: agent capability filter is independent of route creation. */
-.map-agent-filter{flex:1 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;max-width:100%}
-.panorama .map-panel.has-agent-filter .cartography-controls{width:560px}
-.map-agent-filter small{font:11px/1.4 var(--font-sans);color:var(--texto-secundario);max-width:290px}
-.map-agent-filter button[aria-pressed="true"]{background:var(--pessego-suave);color:var(--preto);border-color:var(--laranja,#ff4b1e)}
-.panorama .map-panel.has-agent-filter .unit-map-legend{top:var(--map-controls-bottom,130px)}
+.map-disclosures{position:absolute;top:var(--map-controls-bottom,88px);right:8px;z-index:1001;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start;gap:6px;max-width:calc(100% - 64px)}
+.map-disclosures>details{position:static;max-width:100%;min-width:0}
+.map-agent-filter.filter-enabled summary::after{content:'';display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:var(--laranja,#ff4b1e);vertical-align:middle}
+.map-agent-filter-option{display:flex;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid var(--linha);cursor:pointer}
+.map-agent-filter-option input{width:14px;height:14px;margin:0;accent-color:var(--laranja,#ff4b1e)}
+.map-agent-filter small{display:block;padding:0 10px 8px;max-width:230px;font:11px/1.4 var(--font-sans);color:var(--texto-secundario)}
+.map-agent-filter small[hidden]{display:none}
 /* D130: root's draft route lives beside the same expanded map. */
 .map-panel .cartography-controls .map-route-start{display:none}
 .map-panel.map-expanded .cartography-controls .map-route-start{display:inline-flex;background:var(--preto);color:white}
@@ -1004,7 +1006,7 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .map-route-number{background:#006D77;color:white;border:2px solid white;border-radius:50%;box-shadow:0 1px 5px #0003;text-align:center;font:bold 12px/20px var(--font-sans);pointer-events:none!important}
 .map-expanded.map-route-open{--route-width:clamp(390px,32vw,480px)}
 .map-expanded.map-route-open .map-canvas{right:var(--route-width)}
-.map-expanded.map-route-open .cartography-controls,.map-expanded.map-route-open .unit-map-legend{right:calc(var(--route-width) + 8px);max-width:calc(100% - var(--route-width) - 64px)}
+.map-expanded.map-route-open .cartography-controls,.map-expanded.map-route-open .map-disclosures{right:calc(var(--route-width) + 8px);max-width:calc(100% - var(--route-width) - 64px)}
 .map-expanded.map-route-open .map-unit-search{width:calc(100% - var(--route-width) - 24px)}
 .map-expanded.map-route-open .map-operation{right:calc(var(--route-width) + 12px)}
 .map-expanded.map-route-open .cartography-status{max-width:calc(100% - var(--route-width) - 120px)}
@@ -1019,7 +1021,7 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
  .map-expanded.map-route-open .map-route-planner{top:44%;width:100%;border-left:0}
  .map-expanded.map-route-open .map-canvas{right:0;bottom:56%}
  .map-expanded.map-route-open .map-unit-search{width:calc(100% - 24px)}
- .map-expanded.map-route-open .cartography-controls{right:8px;max-width:calc(100% - 64px)}
+ .map-expanded.map-route-open .cartography-controls,.map-expanded.map-route-open .map-disclosures{right:8px;max-width:calc(100% - 64px)}
  .map-expanded.map-route-open .unit-map-legend,.map-expanded.map-route-open .cartography-status,.map-expanded.map-route-open .map-operation{display:none}
  .map-route-planner>header{padding:8px 12px}.map-route-planner header p,.map-route-kicker,.map-route-steps{display:none}
  .map-route-planner h2{font-size:18px}.map-route-planner footer{padding:8px 12px}.map-route-planner textarea,.map-route-planner select{font-size:16px}
