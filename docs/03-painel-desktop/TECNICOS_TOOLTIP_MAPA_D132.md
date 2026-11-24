@@ -1,6 +1,6 @@
 # D132 — técnicos designados no aviso da unidade
 
-Pedido de 24/11/2026: identificar, ao passar o mouse sobre a unidade no mapa, qual técnico foi designado. Implementação local autorizada; publicação ainda depende de aprovação específica. Preserva a visibilidade root das atribuições no mapa D105/D106.
+Pedido de 24/11/2026: identificar, ao passar o mouse sobre a unidade no mapa, qual técnico foi designado. Publicação autorizada especificamente e concluída em 24/11/2026 às 15:58:25 Fortaleza; painel `bfa2cbce-3faa-4e1f-8e2d-44981b73c173` em 100%. Preserva a visibilidade root das atribuições no mapa D105/D106.
 
 ## Comportamento
 

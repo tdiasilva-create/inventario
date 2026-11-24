@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência atual: **24/11/2026, até D131**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](22_ESTADO_ATUAL_D131.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D131 já foram publicados; a preparação anterior de auditoria é histórica.
+Referência atual: **24/11/2026, até D132**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](23_ESTADO_ATUAL_D132.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D132 já foram publicados; a preparação anterior de auditoria é histórica.
 
 | Guia | Uso |
 |---|---|
@@ -66,3 +66,5 @@ Nova instalação aplica as 25 migrações. 0025 acrescenta 28 campos opcionais 
 ## D-107 — avatares técnicos
 
 Nova instalação aplica 29 migrações. 0029 só acrescenta perfis, uploads e eventos de avatar. Imagens no Drive privado em Avatares dos técnicos, preservando autorização e pasta atuais; nenhum binário no D1. Backup/migração devem incluir referências e arquivos privados anteriores/atuais. Rollback de código deixa tabelas aditivas; não restaurar banco e perder escritas concorrentes. [Contrato operacional](../03-painel-desktop/AVATARES_TECNICOS_D107.md), [validação/publicação](../05-qualidade/AVATARES_TECNICOS_2026-11-12.md).
+
+[D132 · Técnicos designados no mapa](23_ESTADO_ATUAL_D132.md): versão publicada, verificação e migração.
