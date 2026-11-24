@@ -1,5 +1,7 @@
 # Estado D131 — 24/11/2026
 
+**Versão atual após refino visual:** `6c6c3da2-b60e-4ff9-b731-239a73eb7078`, 100%, publicada às **14:27:54 Fortaleza**. Controle compacto **Agente 0.1.9** ao lado de **Tipos de unidade**, com opção interna e ponto discreto quando ativo. Commit funcional `30bdb9a`; três testes direcionados, quatro roteiros de navegador e 62 verificações HTTP aprovados. [Evidências do refino](../05-qualidade/FILTRO_AGENTE_COMPACTO_D131_2026-11-24.md). A publicação inicial abaixo permanece como histórico; regra de capacidade e servidor inalterados.
+
 Complementa [D130](21_ESTADO_ATUAL_D130.md). **Sem agente 0.1.9** fica diretamente nos controles do mapa do Panorama, normal ou ampliado. Basta um computador com vínculo atual e capacidade `network_test_protocol=1` para ocultar a unidade, mesmo offline ou com outros agentes antigos. Criar rota continua independente e utiliza os marcadores visíveis. [Contrato](../03-painel-desktop/FILTRO_AGENTE_INTERNET_D131.md), [testes e publicação](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md).
 
 Publicado com autorização expressa em **24/11/2026 às 14:08:22 Fortaleza**, painel `de6b5594-a28f-4aeb-a438-e94c5fa4dbb1`, 100%; commit funcional `f19628f`, branch `codex/filtro-agente-internet-d131`. **381 testes**, regressões de navegador, build e **64 verificações HTTP** aprovados. Conferência root oficial comparou os nomes: 77 marcadores antes, 32 compatíveis ocultados, 45 restantes; desligar/restaurar o filtro funcionou. Contagens podem mudar conforme novos vínculos e comunicação dos agentes.

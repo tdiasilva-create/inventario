@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "localOnly": true,
+  "compactControl": true,
+  "filterIndependent": true,
+  "mixedVersionHidden": true,
+  "offlineCounts": true,
+  "noExtraReads": true,
+  "draftPreserved": true,
+  "failurePreserved": true,
+  "errors": []
+}
