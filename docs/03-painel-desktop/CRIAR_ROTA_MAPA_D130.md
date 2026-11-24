@@ -1,6 +1,6 @@
 # D130 — Criar rota pelo mapa ampliado
 
-24/11/2026. **Implementação local; publicação ainda depende da aprovação específica.**
+24/11/2026. **Publicado às 13:26:28 Fortaleza após aprovação específica**, painel `c516cd99-c3d0-4480-b5ef-aaaf1383e5ed` em 100%. Conferência root real concluída sem criar demandas de teste oficiais. [Estado operacional](../07-operacao/21_ESTADO_ATUAL_D130.md).
 
 ## Fonte e escopo aprovado
 
