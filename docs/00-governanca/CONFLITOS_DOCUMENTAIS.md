@@ -196,3 +196,6 @@ O responsável corrigiu o local/nome do atalho: fica ao lado do nome na página 
 
 ## D130 — seleção temporária não redefine clique nem roteamento
 Durante o modo explícito Criar rota, clique no marcador/anel seleciona a unidade e não navega para a Central/ficha. Fora desse modo, D095 permanece. Preview é somente entre as unidades do rascunho; não finge posição do técnico nem otimiza a sequência. O acompanhamento D106 continua partindo do GPS após aceite. Precedência antes das pendências preserva o aceite operacional D126, mesmo com sessão/GPS vencidos; não usar apenas dispatch_attendances para escolher o atendimento protegido. [Contrato](../03-painel-desktop/CRIAR_ROTA_MAPA_D130.md).
+
+## D131 — filtro do mapa, não etapa da criação de rota
+Correção explícita do responsável supera a proposta de filtro dentro do criador: controle independente no Panorama, usado antes de abrir Criar rota e mantido ao abri-lo. “Agente atualizado” é aptidão para testes D118 confirmada no vínculo atual, não comunicação online nem exigência de atualizar todos os computadores. Escola com um compatível e outros antigos sai do filtro por decisão expressa. D127 continua medindo vínculo geral e D083/D100 comunicação; números desses blocos não são reclassificados. [Contrato](../03-painel-desktop/FILTRO_AGENTE_INTERNET_D131.md).

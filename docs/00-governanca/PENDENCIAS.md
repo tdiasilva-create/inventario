@@ -472,3 +472,6 @@ Publicado após autorização explícita em 17/11/2026 às 07:13:17 Fortaleza; p
 
 ## D130 — rota lateral publicada
 Publicação autorizada e concluída em 24/11/2026 às 13:26:28 Fortaleza, painel c516cd99-c3d0-4480-b5ef-aaaf1383e5ed em 100%. Conferência autenticada root concluída com seleção/ordenação de três unidades e consulta de técnicos; rascunho descartado sem criar demandas oficiais. Gravação, concorrência e preservação do atendimento/GPS cobertas pelos testes isolados. Uso operacional de uma nova rota no celular depende das atividades reais do responsável, sem atribuições fictícias para homologação. Não requer migração nem novo APK. [Estado e limites](../05-qualidade/CRIAR_ROTA_D130_2026-11-24.md). As demais pendências da auditoria continuam abertas.
+
+## D131 — filtro independente preparado localmente
+Critério resolvido: ao menos um agente compatível por unidade, independentemente dos demais antigos. Filtro fora do painel Criar rota. Falta autorização específica de publicação e conferência autenticada real; nenhuma demanda/vínculo deve ser criado apenas para testar em produção. Sem migração ou novo APK. [Estado](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md). Demais pendências de auditoria preservadas.

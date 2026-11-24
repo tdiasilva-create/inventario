@@ -8,7 +8,7 @@ export function unitSearchMarkup(){
 }
 
 // One catalogue per page. Typing filters in memory; never queries equipment or D1 per key.
-export function bindUnitSearch(form,{getUnits=async()=> (await readPanelJson('/api/units')).units,onSelect=unit=>location.assign('/unidade?id='+encodeURIComponent(unit.id))}={}){
+export function bindUnitSearch(form,{getUnits=async()=> (await readPanelJson('/api/units')).units,filterUnits=units=>units,onSelect=unit=>location.assign('/unidade?id='+encodeURIComponent(unit.id))}={}){
  if(!form)return;
  const input=form.querySelector('input'),clear=form.querySelector('.unit-search-clear'),popup=form.querySelector('.unit-search-popup'),list=form.querySelector('ul'),hint=form.querySelector('[role=status]');
  let catalogue=null,loading=null,matches=[],active=-1,open=false,generation=0;
@@ -30,7 +30,7 @@ export function bindUnitSearch(form,{getUnits=async()=> (await readPanelJson('/a
    }catch{if(turn===generation)hint.textContent='Não foi possível consultar as unidades. Use a lupa para tentar novamente.';return;}
   }
   if(turn!==generation||!open)return;
-  matches=catalogue.filter(u=>normalize(u.name).includes(query)||normalize(u.code).includes(query));
+  matches=filterUnits(catalogue).filter(u=>normalize(u.name).includes(query)||normalize(u.code).includes(query));
   hint.textContent=matches.length?matches.length+' unidade(s) encontrada(s). Selecione uma unidade.':'Nenhuma unidade encontrada.';
   matches.forEach((unit,index)=>{
    const option=document.createElement('li');option.id='header-unit-option-'+index;option.setAttribute('role','option');option.setAttribute('aria-selected','false');option.dataset.unitId=unit.id;

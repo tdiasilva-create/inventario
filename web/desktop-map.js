@@ -4,6 +4,7 @@ import {icon} from './desktop-icons.js';
 import {unitMapColor} from './unit-map-palette.js';
 import {getPendingState} from './desktop-demand-count.js';
 import {mountMapRoutePlanner} from './map-route-planner.js';
+import {mountMapAgentFilter} from './map-agent-filter.js';
 let current=null,generation=0;
 let hardwareUnits=new Map(),paintFrame=null;
 function schedulePaint(){if(!current||paintFrame!==null)return;paintFrame=requestAnimationFrame(()=>{paintFrame=null;paintHardware();});}
@@ -91,7 +92,7 @@ export function unmountMap(){
  generation++;
  if(paintFrame!==null){cancelAnimationFrame(paintFrame);paintFrame=null;}
  if(!current)return;
- collapseMap({restoreFocus:false,force:true});current.planner?.dispose();
+ collapseMap({restoreFocus:false,force:true});current.planner?.dispose();current.agentFilter?.dispose();
  preference.camera={center:current.map.getCenter(),zoom:current.map.getZoom()};
  current.stopDispatch?.();current.observer?.disconnect();current.map.remove();current=null;
 }
@@ -103,6 +104,7 @@ function status(text,error=false){
 function baseStatus(){
  if(!current)return;
  const count=current.markerCount;
+ if(current.agentFilter?.isActive()&&!count){status('Nenhuma unidade com coordenadas neste filtro');return;}
  const examples=current.exampleCount?`${preference.examples?current.exampleCount:0} locais de referência`:'Nenhuma unidade cadastrada';
  status(`Paço do Lumiar · ${count?count+' unidade(s) com coordenadas':examples}`);
 }
@@ -133,6 +135,7 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup(),markers:new Map(),unitGroup:L.featureGroup().addTo(map),onSelect};current=context;
   if(technical)context.stopDispatch=mountDispatchMap(map,container);
   if(technical&&container.closest('.panorama'))context.planner=mountMapRoutePlanner(context,identity);
+  if(container.closest('.panorama')&&identity())context.agentFilter=mountMapAgentFilter(context,()=>updateMarkers(context.sourceUnits||[],context.selected));
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   context.boundary=L.polygon(data.ring,{color:'#ff4b1e',weight:2,opacity:.95,fillColor:'#ff4b1e',fillOpacity:.06,dashArray:'5 4'});
   context.boundary.bindTooltip('Área de referência do município',{className:'v33-tooltip',sticky:true});
@@ -168,6 +171,8 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
 }
 export function updateMarkers(units,selected){
  if(!current)return;const context=current,keep=new Set();
+ context.sourceUnits=units;context.selected=selected;
+ if(context.agentFilter)units=context.agentFilter.filter(units);
  for(const {unit,coordinates} of geolocatedUnits(units)){
   keep.add(unit.id);let entry=context.markers.get(unit.id);
   const type=unit.unit_type||unit.type||'Tipo não informado',color=unitMapColor(type);
@@ -185,6 +190,7 @@ export function updateMarkers(units,selected){
  context.planner?.refreshMarkers();
 }
 export function focusUnit(id){const entry=current?.markers.get(id);for(const [otherId,other]of current?.markers||[]){if(otherId!==id)other.marker.closeTooltip();}if(!entry){if(current)frameMunicipality(current);return false;}current.map.setView(entry.marker.getLatLng(),15,{animate:false});entry.marker.openTooltip();return true;}
+export function filterMapSearchUnits(units){return current?.agentFilter?.search(units)||units;}
 export function zoomMap(direction){if(current)direction>0?current.map.zoomIn():current.map.zoomOut();}
 // PAN-02: ampliar o mesmo mapa, preservando seleção, marcadores e atualizações.
 export function expandMap(){
@@ -202,6 +208,7 @@ export function expandMap(){
  document.body.classList.add('map-expanded-open');
  context.map.invalidateSize({pan:false});context.map.setView(previous.center,previous.zoom,{animate:false});
  context.map.scrollWheelZoom.enable();
+ context.agentFilter?.layout();
  previous.onKey=e=>{
   // Diálogos de hardware/fotos continuam na camada superior, com seu próprio foco.
   if(document.querySelector('dialog[open]'))return;
@@ -226,6 +233,7 @@ export function collapseMap({restoreFocus=true,force=false}={}){
  for(const node of previous.background)node.inert=false;
  if(previous.search){const {node,parent,next}=previous.search;node.dispatchEvent(new Event('semed:close-unit-search'));node.classList.remove('map-unit-search');parent.insertBefore(node,next?.parentNode===parent?next:null);}
  context.map.scrollWheelZoom[previous.wheel?'enable':'disable']();
+ context.agentFilter?.layout();
  context.map.invalidateSize({pan:false});context.map.setView(previous.center,previous.zoom,{animate:false});
  if(restoreFocus&&previous.focus?.isConnected)previous.focus.focus({preventScroll:true});
 }

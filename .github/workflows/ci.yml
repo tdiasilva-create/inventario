@@ -187,3 +187,7 @@ jobs:
       - run: node tests/map-route-planner-browser.cjs
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/map-agent-filter-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium

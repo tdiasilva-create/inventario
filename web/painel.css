@@ -958,6 +958,12 @@ dialog.photo-viewer{width:min(1160px,96vw);max-width:96vw;max-height:94dvh;overf
 .map-panel.map-expanded:has(.map-unit-search) .unit-map-legend{top:144px}
 @media(max-width:640px){.map-panel.map-expanded:has(.map-unit-search) .unit-map-legend{top:190px}.map-unit-search input{font-size:16px}}
 
+/* D131: agent capability filter is independent of route creation. */
+.map-agent-filter{flex:1 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;max-width:100%}
+.panorama .map-panel.has-agent-filter .cartography-controls{width:560px}
+.map-agent-filter small{font:11px/1.4 var(--font-sans);color:var(--texto-secundario);max-width:290px}
+.map-agent-filter button[aria-pressed="true"]{background:var(--pessego-suave);color:var(--preto);border-color:var(--laranja,#ff4b1e)}
+.panorama .map-panel.has-agent-filter .unit-map-legend{top:var(--map-controls-bottom,130px)}
 /* D130: root's draft route lives beside the same expanded map. */
 .map-panel .cartography-controls .map-route-start{display:none}
 .map-panel.map-expanded .cartography-controls .map-route-start{display:inline-flex;background:var(--preto);color:white}

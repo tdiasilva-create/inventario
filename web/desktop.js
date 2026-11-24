@@ -32,7 +32,7 @@ import {metricIcon} from './metric-icons.js';
 import {unitTypes,isOutOfScope} from './unit-schema.js';
 import {unitMapLegend} from './unit-map-palette.js';
 import {collectorUrl,authEnabled} from './runtime-config.js';
-import {mountMap,unmountMap,zoomMap,fitMap,changeBasemap,toggleMapBoundary,toggleMapExamples,expandMap,collapseMap} from './desktop-map.js';
+import {mountMap,unmountMap,zoomMap,fitMap,changeBasemap,toggleMapBoundary,toggleMapExamples,expandMap,collapseMap,filterMapSearchUnits} from './desktop-map.js';
 import {sampleUnits,categories,regionShapes} from './desktop-data.js';
 const authUser=authEnabled?await fetch('/api/auth/me').then(r=>r.ok?r.json():null):null;
 let catalogue=[],catalogueLoaded=false,inventory={equipment:[],visits:[],environments:0},inventoryError='';
@@ -191,6 +191,7 @@ function googleBlock(){
 }
 function sidebarArt(){return `<div class="sidebar-art" aria-hidden="true"><svg viewBox="0 0 240 230" fill="none" stroke="currentColor" stroke-width="1"><path d="M0 220v-40l30-30V90l30-30h35l20-20h45l15-15h28l20 20v75l-24 24v30l-33 33v23M0 180l22-22V80l30-30h42l22-22h49l13-13h23l28 28v82l-24 24v27l-26 26v28M0 115h38l24-24h33l25-25h30l18-18h30l15 15v29l-22 22v27l-35 35v54M0 127h43l24-24h33l25-25h30l20-20h18l10 10v19l-23 23v27l-37 37v56M0 90h27l25-25h40l21-21h46M76 0v35m12-35v27m14-27v18M40 230v-40l36-36v-29h30l25-25h26m-36 130v-44l36-36v-26"/>${Array.from({length:18},(_,i)=>`<circle cx="${95+(i*19%100)}" cy="${20+(i*13%110)}" r="3" fill="#05243c"/>`).join('')}</svg><p>Tecnologia<br>que fortalece<br>a educação</p></div>`;}
 function shell(){root.innerHTML=panelShell(authUser);bindPanelShell(authUser,{unitSearch:{
+ filterUnits:units=>filterMapSearchUnits(units),
  getUnits:async()=>{if(!catalogueLoaded){catalogue=(await readPanelJson('/api/units')).units;catalogueLoaded=true;}return catalogue;},
  onSelect:unit=>{
   equipmentConsultation.hide();sectorConsultation.hide();
