@@ -41,4 +41,11 @@ O responsável respondeu “Sim, publicar no ambiente real” à pergunta espec�
 
 **64 verificações HTTP aprovadas:** 51 de páginas/assets/acesso, 11 do aplicativo técnico e duas dos módulos do mapa. APK 1.0.4 mantém SHA256 `f258f5f8a483a52d092d9a0d4d8bceba89654256524dae24a28b369c397a82a5`; JS/CSS técnicos idênticos ao build. Sem novo polling, migração, publicação do coletor independente ou alteração de dados oficiais. Logs em `private-data/d132/`, fora do Git.
 
-Ao conferir o Panorama, a sessão já estava expirada. A atualização abriu o login; solicitado novo acesso root para concluir a observação dos nomes com dados reais. Esta conferência permanece pendente, sem impedir a disponibilidade da alteração publicada.
+Ao conferir o Panorama, a sessão já estava expirada. A atualização abriu o login; solicitado novo acesso root para concluir a observação dos nomes com dados reais. Naquele momento a conferência ficou pendente; foi concluída após renovação da sessão, conforme registro abaixo.
+
+
+## Conferência autenticada concluída
+
+Após confirmação do novo login root em 24/11/2026, o painel mostrou nomes em todas as unidades com atribuições abertas consultadas na tela. A EM EDITH RIBEIRO foi localizada pela busca; tooltip exibiu nome/tipo, alunos, vagas, uma demanda aberta e técnico designado no mapa normal e ampliado. O aviso permaneceu aberto após ampliar. Rota por ruas e estado de localização continuaram presentes na interface. Nenhuma demanda, atribuição ou unidade foi alterada.
+
+Evidência real privada: `private-data/d132/tooltip-tecnico-producao.jpg`, aberta para inspeção e fora do Git. Esta conferência usou a busca para abrir o tooltip; interação direta por hover, atualização após aceite/troca e falhas foram testadas no navegador isolado. Não foi fabricado aceite em produção para comprovar essa condição. Pendência de conferência visual encerrada.
