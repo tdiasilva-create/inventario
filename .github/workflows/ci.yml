@@ -191,3 +191,7 @@ jobs:
       - run: node tests/map-agent-filter-browser.cjs
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/map-unit-technicians-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium

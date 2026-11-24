@@ -475,3 +475,7 @@ Publicação autorizada e concluída em 24/11/2026 às 13:26:28 Fortaleza, paine
 
 ## D131 — filtro independente publicado e conferido
 Critério resolvido: ao menos um agente compatível por unidade, independentemente dos demais antigos. Filtro fora do painel Criar rota. Publicação autorizada e concluída em 24/11/2026 às 14:08:22 Fortaleza, painel de6b5594-a28f-4aeb-a438-e94c5fa4dbb1 em 100%. Conferência autenticada root concluída: 77 marcadores, 32 compatíveis ocultados e 45 mantidos, incluindo casos de versões mistas e compatível offline. Nenhuma demanda/vínculo criado para testar. Sem migração ou novo APK. [Estado](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md). Demais pendências de auditoria preservadas.
+
+
+## D132 — implementação local pronta
+Hover do mapa root identifica técnicos designados/aceites; 385 testes completos e verificações navegador/runtime aprovados. Falta aprovação específica para publicar e posterior conferência autenticada com dados reais. Produção continua D131 6c6c3da2-b60e-4ff9-b731-239a73eb7078. Não altera as pendências anteriores da auditoria. [Estado](../05-qualidade/TECNICOS_TOOLTIP_D132_2026-11-24.md).

@@ -71,3 +71,7 @@ Lista oficial completa das 90 unidades, credenciais e recursos Cloudflare, bras�
 ## Atualização D-068 — publicada em 06/11/2026
 
 Cadastro ampliado, tipos de unidade e matriz compacta publicados nos dois Workers reais após autorização do responsável. Migração aditiva 0016 aplicada ao D1 compartilhado, com backup prévio e sem carga de planilhas. Conveniadas fora do escopo e obras fora da coleta. Base original preservada. Consultar DECISOES/PENDENCIAS, [testes locais](docs/05-qualidade/CADASTRO_UNIDADES_2026-11-06.md) e [publicação real](docs/05-qualidade/PUBLICACAO_D068_2026-11-06.md).
+
+
+## D132 — preparado localmente em 24/11/2026
+Nomes dos técnicos designados no aviso da unidade do mapa root; aceite operacional identificado separadamente. 385 testes aprovados, sem novo polling/migração/APK. Publicação específica pendente; produção permanece D131. [Contrato](docs/03-painel-desktop/TECNICOS_TOOLTIP_MAPA_D132.md) e [verificações](docs/05-qualidade/TECNICOS_TOOLTIP_D132_2026-11-24.md).

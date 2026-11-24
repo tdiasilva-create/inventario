@@ -1060,3 +1060,86 @@ Para migração física, manter a visão service_requests_active nas consultas o
 As decisões gerais de retenção/arquivamento da auditoria e paginação (item 19) continuam pendentes; D126 não as altera.
 
 
+==============================================================================
+FONTE: 18_ESTADO_ATUAL_D127.md
+==============================================================================
+
+Estado D127 — 16/11/2026
+
+Complementa D126 (17_ESTADO_ATUAL_D126.md). Panorama apresenta unidades com e sem agente vinculado, contagens e listas pesquisáveis. Contrato (../03-painel-desktop/UNIDADES_COM_AGENTE_D127.md) e testes/publicação (../05-qualidade/VINCULOS_PANORAMA_D127_2026-11-16.md).
+
+Publicado às 22:51:02 Fortaleza; painel a816fd06-05e1-491b-bc3d-8deed5f2745f, 100%. Conferência root real concluída, sem alteração de cadastros. Coletor a1ff9077-58ac-4799-b733-5d88605c58da e APK 1.0.4 preservados. Suíte 360/360 e quatro cenários de navegador aprovados.
+
+Mesmo catálogo filtrado, vínculo atual independente de comunicação e dados parciais incluídos. O atributo aditivo linked da API de frota usa os registros existentes; nenhum SQL/polling adicional. Sem novas migrações (continuam 37), APK, agente, alteração do coletor ou gravação de dados oficiais.
+
+Na migração física, manter os mesmos critérios de link não encerrado, dispositivo linked, equipamento ativo e filtro do catálogo. Preservar revalidação transacional D110; não substituir ausência de resposta por zero. Demais decisões da auditoria permanecem pendentes.
+
+
+==============================================================================
+FONTE: 19_ESTADO_ATUAL_D128.md
+==============================================================================
+
+Estado D128 — 17/11/2026
+
+Complementa D127 (18_ESTADO_ATUAL_D127.md). Panorama → Sem agente vinculado oferece Designar coleta ao root. Cria uma demanda atribuída a técnico habilitado com permissão de coleta; mostra responsável/atalho na lista e impede duplicidade por unidade. Contrato (../03-painel-desktop/DESIGNAR_COLETA_D128.md) e testes/publicação (../05-qualidade/DESIGNAR_COLETA_D128_2026-11-17.md).
+
+Publicado às 06:12:28 Fortaleza após aprovação explícita. Painel 3aee0153-07d0-43d1-8998-83458594c30b, 100%; commit funcional 9b2eafa, branch codex/designar-coleta-d128. Coletor a1ff9077-58ac-4799-b733-5d88605c58da, APK 1.0.4 e 37 migrações preservados. 369 testes gerais, nove testes D128, cinco cenários de navegador e nove verificações HTTP públicos aprovados. Root conferiu lista/busca/formulário/técnicos em produção; não houve criação real de teste.
+
+Sem polling adicional: detalhes de designação só consultados em ações explícitas do root. Não inicia GPS sem aceite, não restringe acesso D046 à unidade e não conclui coleta/vínculo automaticamente. Localização durante fila D114 e alertas preservados.
+
+Na migração física, preservar transação da criação + atribuição + recibos + avisos; predicado de unicidade lógica por unidade e propósito; idempotência e bloqueio de reabertura duplicada. Propósito em service_requests.context_json, sem tabela nova. Cadastro de responsável não é autorização exclusiva de coleta.
+
+
+==============================================================================
+FONTE: 20_ESTADO_ATUAL_D129.md
+==============================================================================
+
+Estado D129 — 17/11/2026
+
+Complementa D128 (19_ESTADO_ATUAL_D128.md). Na página da unidade, Registrar nova demanda aparece junto ao nome para o root. Modal com unidade fixa, necessidade, tipo e técnico habilitado; gravação atômica, aviso no aplicativo e fechamento após confirmar. Contrato (../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md), testes e publicação (../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md).
+
+Publicado às 07:13:17 Fortaleza após autorização específica. Painel 0933006b-fd3a-4b90-9622-2c037d0a46fc em 100%; commit funcional c1c5e71, branch codex/registrar-demanda-unidade-d129. Coletor a1ff9077-58ac-4799-b733-5d88605c58da, APK 1.0.4 e 37 migrações preservados. 372 testes gerais, quatro roteiros de navegador, empacotamento e 11 verificações HTTP aprovados. Root conferiu o modal real na EMI ALANA LUDMILA, com sete técnicos; fechou sem salvar.
+
+Sem polling adicional nem mudança de localização/alertas. Atendimento geral pode coexistir com outras demandas e funcionar em unidade com agente. D128 conserva exclusividade da designação de coleta e seus papéis. D095 conserva destino Central para unidade com demanda aberta; atalho D129 fica na página da unidade. Nova atribuição não inicia GPS sem aceite.
+
+Na migração física, preservar transação de demanda + histórico + atribuição + aviso + auditoria, recibos por operação/autor/conteúdo e nonce de tentativa. Propósito unit_request no contexto distingue atendimento geral de collection_agent_link. A classificação de coleta, fotos, fichas e regras de fila não são alteradas. Retorno possível ao Worker D128, mantendo as demandas já criadas na Central.
+
+
+==============================================================================
+FONTE: 21_ESTADO_ATUAL_D130.md
+==============================================================================
+
+Estado D130 — 24/11/2026
+
+Complementa D129 (20_ESTADO_ATUAL_D129.md). Panorama → ampliar mapa → Criar rota, exclusivo do root, abre painel lateral. Selecionar unidades no mapa, ordenar por arraste/setas, descrever cada atividade e escolher um técnico. Uma demanda por unidade, novas tarefas antes das pendências do técnico, atendimento já iniciado preservado. Contrato (../03-painel-desktop/CRIAR_ROTA_MAPA_D130.md), testes/publicação e limites (../05-qualidade/CRIAR_ROTA_D130_2026-11-24.md).
+
+Publicado após autorização específica em 24/11/2026 às 13:26:28 Fortaleza. Painel c516cd99-c3d0-4480-b5ef-aaaf1383e5ed, 100%; commit funcional c2b9c7c, branch codex/criar-rota-mapa-d130. Coletor independente a1ff9077-58ac-4799-b733-5d88605c58da, APK 1.0.4 e 37 migrações preservados. 378 testes, roteiros de navegador e 68 verificações HTTP aprovados. Sessão root real confirmou seleção, ordem, campos e consulta de técnicos; rascunho descartado sem criar demandas oficiais.
+
+Criação usa os contratos existentes de Central, avisos e aplicativo. Atribuição não ativa localização: aceite continua obrigatório. Atendimento protegido é o aceite operacional D126 mesmo com login vencido; D114 continua acompanhando a fila. Sem polling novo: seleção/edição/reordenação são locais, opções consultadas apenas ao abrir/trocar técnico/atualizar. Prévia entre unidades é explícita, pelo OSRM/FOSSGIS e limitador existentes; acompanhamento operacional continua partindo do GPS, na ordem definida, sem otimização.
+
+Na migração física, preservar transação integral de demandas, históricos, atribuições, avisos, auditoria e ordem global; comparação de revisão, nonce por tentativa e recibos por operação/autor/conteúdo. purpose: map_route, route_id e route_stop identificam o lote. Manter revalidação de root/técnico/unidades na escrita, limite de 99 demandas abertas por técnico, corpo de 1 MiB somente na criação do lote e proteção contra reenvio duplicado. Contadores D114 seguem os triggers existentes. Consulta de opções por técnico deve conservar o índice de atribuições.
+
+Retorno ao Worker D129 0933006b-fd3a-4b90-9622-2c037d0a46fc remove a nova interface; demandas já criadas seguem disponíveis na Central, com histórico e responsáveis. Não restaurar banco nem excluir tarefas para reverter código. Evidências reais/logs ficam em private-data/d130/, fora do repositório; documentação pública contém apenas referências técnicas e evidências sintéticas. GPS físico/tela bloqueada e operação real de uma nova rota não foram simulados com usuários oficiais.
+
+
+==============================================================================
+FONTE: 22_ESTADO_ATUAL_D131.md
+==============================================================================
+
+Estado D131 — 24/11/2026
+
+Versão atual após refino visual: 6c6c3da2-b60e-4ff9-b731-239a73eb7078, 100%, publicada às 14:27:54 Fortaleza. Controle compacto Agente 0.1.9 ao lado de Tipos de unidade, com opção interna e ponto discreto quando ativo. Commit funcional 30bdb9a; três testes direcionados, quatro roteiros de navegador e 62 verificações HTTP aprovados. Evidências do refino (../05-qualidade/FILTRO_AGENTE_COMPACTO_D131_2026-11-24.md). A publicação inicial abaixo permanece como histórico; regra de capacidade e servidor inalterados.
+
+Conferência visual root do controle compacto concluída após renovação da sessão: abre/recolhe, mantém o filtro ativo e 45 dos 77 marcadores, inclusive ao ampliar o mapa. Camada de técnico/rota preservada, sem alteração de registros oficiais.
+
+Complementa D130 (21_ESTADO_ATUAL_D130.md). Sem agente 0.1.9 fica diretamente nos controles do mapa do Panorama, normal ou ampliado. Basta um computador com vínculo atual e capacidade network_test_protocol=1 para ocultar a unidade, mesmo offline ou com outros agentes antigos. Criar rota continua independente e utiliza os marcadores visíveis. Contrato (../03-painel-desktop/FILTRO_AGENTE_INTERNET_D131.md), testes e publicação (../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md).
+
+Publicado com autorização expressa em 24/11/2026 às 14:08:22 Fortaleza, painel de6b5594-a28f-4aeb-a438-e94c5fa4dbb1, 100%; commit funcional f19628f, branch codex/filtro-agente-internet-d131. 381 testes, regressões de navegador, build e 64 verificações HTTP aprovados. Conferência root oficial comparou os nomes: 77 marcadores antes, 32 compatíveis ocultados, 45 restantes; desligar/restaurar o filtro funcionou. Contagens podem mudar conforme novos vínculos e comunicação dos agentes.
+
+São 37 migrações, sem alteração de esquema. Coletor independente permanece a1ff9077-58ac-4799-b733-5d88605c58da; APK 1.0.4, GPS, alertas, permissões e plano gratuito preservados. internet_test_capable é agregado em memória na leitura existente /api/operations/units; nenhum SQL, join, polling ou requisição adicional por clique. A capacidade permanece fresca junto à presença, não no cache estático de catálogo/vínculos. Falhas conservam última leitura com aviso, nunca viram ausência fictícia.
+
+Na migração física, preservar declaração autenticada de capacidade, vínculo atual por ID, exclusões/revogações, elegibilidade de computador e relação com unidade. Não substituir por texto da versão nem exigir comunicação online. Manter reutilização do pulso existente e busca local coerente com o filtro. Nenhuma alteração do protocolo do agente foi necessária.
+
+Rollback para D130 c516cd99-c3d0-4480-b5ef-aaaf1383e5ed remove o controle e o campo agregado, sem restauração de banco ou alteração de demandas. Evidências reais em private-data/d131/, fora do repositório. Não houve escrita de cadastro/demanda de teste em produção nem nova homologação física de GPS/instalador.
+
+

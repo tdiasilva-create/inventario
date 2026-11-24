@@ -1,7 +1,7 @@
 import {avatarElement} from './technician-avatar.js';
 import {readPanelJson} from './desktop-request.js';
 const distance=(a,b)=>{const rad=Math.PI/180,h=Math.sin((a[0]-b[0])*rad/2)**2+Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin((a[1]-b[1])*rad/2)**2;return 12742000*Math.asin(Math.min(1,Math.sqrt(h)));};
-export function mountDispatchMap(map,container){
+export function mountDispatchMap(map,container,{onAssignments=()=>{}}={}){
  const L=window.L,group=L.layerGroup().addTo(map);
  let stopped=false,busy=false,last=null,calculating=false,retryTimer,routeAbort;
  const routes=new Map(),avatars=new Map(),status=document.createElement('span');
@@ -52,8 +52,8 @@ export function mountDispatchMap(map,container){
  }
  async function update(){
   if(stopped||busy||document.hidden)return;busy=true;
-  try{const value=await readPanelJson('/api/dispatch/map',{timeoutMs:12000});if(stopped||document.hidden)return;last=value;paint();schedule();}
-  catch{if(stopped)return;last=null;routes.clear();avatars.clear();group.clearLayers();status.textContent='Localização indisponível. Aguardando atualização.';}
+  try{const value=await readPanelJson('/api/dispatch/map',{timeoutMs:12000});if(stopped||document.hidden)return;last=value;onAssignments({routes:value.routes});paint();schedule();}
+  catch{if(stopped)return;onAssignments({error:true});last=null;routes.clear();avatars.clear();group.clearLayers();status.textContent='Localização indisponível. Aguardando atualização.';}
   finally{busy=false;}
  }
  const onVisible=()=>{if(document.hidden){routeAbort?.abort();clearTimeout(retryTimer);group.clearLayers();}else update();};

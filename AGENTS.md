@@ -194,3 +194,7 @@ Filtro independente no mapa do Panorama, fora de Criar rota. Responsável confir
 
 ### D131 — refino visual de 24/11/2026
 Responsável pediu botão discreto como Tipos de unidade. Controle Agente 0.1.9 recolhível ao lado da legenda, checkbox/contagem internos e ponto laranja de estado ativo; fechar não desfaz filtro. Refino de apresentação da publicação D131 previamente autorizada, sem nova regra, SQL, migração ou APK. web/map-agent-filter.js e painel.css; teste existente de navegador atualizado. Publicado às 14:27:54 Fortaleza, painel 6c6c3da2-b60e-4ff9-b731-239a73eb7078 em 100%, commit 30bdb9a. Três testes direcionados, quatro roteiros de navegador e 62 verificações HTTP aprovados. Ver docs/05-qualidade/FILTRO_AGENTE_COMPACTO_D131_2026-11-24.md.
+
+
+## D-132 — técnicos no aviso da unidade, 24/11/2026
+Root vê técnicos designados às demandas abertas ao passar o mouse no marcador/anel, inclusive sem GPS; deduplicar por usuário/unidade e mostrar aceite operacional D126 sem inferir chegada. Reutiliza /api/dispatch/map a cada 15 s, sem requisição por hover. Acrescenta accepted à projeção com lookup pela PK de dispatch_service_activity; três statements mantidos, sem migração. Falha explícita e texto seguro; permissões, GPS, rotas, alertas e APK preservados. 385 testes e quatro verificações de navegador/runtime aprovados. Implementação local; publicação específica pendente. Ver docs/03-painel-desktop/TECNICOS_TOOLTIP_MAPA_D132.md e docs/05-qualidade/TECNICOS_TOOLTIP_D132_2026-11-24.md.

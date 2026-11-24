@@ -22,7 +22,7 @@ const manifest=[];
 files.push('panel-status.js','account-entry.js','panel-unit-search.js');
 files.push('dispatch.html','dispatch.js','dispatch-map.js','technician-avatar.js','technician.html','technician.js','technician.css');
 files.push('environment-editor.js','panel-confirm.js','school-presence.js','unit-agent-overview.js','collection-designation.js','map-route-planner.js','map-agent-filter.js');
-files.push('unit-map-palette.js','communication-log.html','communication-log.js');
+files.push('unit-map-palette.js','map-unit-technicians.js','communication-log.html','communication-log.js');
 files.push('equipment-name-editor.js','equipment-deletion.js','equipment-link-state.js');
 files.push('desktop-blocks.js','desktop-exports.js','panel-search.html','panel-search.js');
 files.push('pending-collections.html','pending-collections.js','desktop-management.js','provider-report.js');

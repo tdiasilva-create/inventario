@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "localOnly": true,
+  "hoverRequests": 0,
+  "assignmentsWithoutGPS": true,
+  "acceptance": true,
+  "liveTooltipRefresh": true,
+  "staleExplicit": true,
+  "permissions": true,
+  "textEscaped": true,
+  "errors": []
+}

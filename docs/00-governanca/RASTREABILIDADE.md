@@ -732,3 +732,7 @@ Pedido/correção e confirmação de 24/11/2026 → server/service-desk.mjs (int
 
 ### D131 — refino visual de 24/11/2026
 Responsável pediu botão discreto como Tipos de unidade. Controle Agente 0.1.9 recolhível ao lado da legenda, checkbox/contagem internos e ponto laranja de estado ativo; fechar não desfaz filtro. Refino de apresentação da publicação D131 previamente autorizada, sem nova regra, SQL, migração ou APK. web/map-agent-filter.js e painel.css; teste existente de navegador atualizado. Publicado às 14:27:54 Fortaleza, painel 6c6c3da2-b60e-4ff9-b731-239a73eb7078 em 100%, commit 30bdb9a. Três testes direcionados, quatro roteiros de navegador e 62 verificações HTTP aprovados. Ver docs/05-qualidade/FILTRO_AGENTE_COMPACTO_D131_2026-11-24.md.
+
+
+## D132 — nomes no aviso da unidade
+Pedido de 24/11/2026 → web/map-unit-technicians.js, dispatch-map.js, desktop-map.js; server/dispatch-road-routing.mjs; build/CI → tests/map-unit-technicians.test.mjs (quatro cenários), map-unit-technicians-browser.cjs → [contrato](../03-painel-desktop/TECNICOS_TOOLTIP_MAPA_D132.md), [qualidade](../05-qualidade/TECNICOS_TOOLTIP_D132_2026-11-24.md). 385 testes completos e quatro verificações navegador/runtime aprovados. Local somente; publicação pendente, sem migração/APK ou escrita oficial.

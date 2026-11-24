@@ -199,3 +199,7 @@ Durante o modo explícito Criar rota, clique no marcador/anel seleciona a unidad
 
 ## D131 — filtro do mapa, não etapa da criação de rota
 Correção explícita do responsável supera a proposta de filtro dentro do criador: controle independente no Panorama, usado antes de abrir Criar rota e mantido ao abri-lo. “Agente atualizado” é aptidão para testes D118 confirmada no vínculo atual, não comunicação online nem exigência de atualizar todos os computadores. Escola com um compatível e outros antigos sai do filtro por decisão expressa. D127 continua medindo vínculo geral e D083/D100 comunicação; números desses blocos não são reclassificados. [Contrato](../03-painel-desktop/FILTRO_AGENTE_INTERNET_D131.md).
+
+
+## D132 — atribuição não é posição nem chegada
+O nome no aviso da unidade vem da atribuição atual à demanda, mesmo antes de GPS/aceite. Campo livre responsible, primeira parada da rota e proximidade não identificam técnico designado. Aceite confirmado usa atividade D126, independente da sessão de localização; não declara chegada à escola. Mantida visibilidade root da API D105. [Contrato](../03-painel-desktop/TECNICOS_TOOLTIP_MAPA_D132.md).

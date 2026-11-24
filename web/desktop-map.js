@@ -5,6 +5,7 @@ import {unitMapColor} from './unit-map-palette.js';
 import {getPendingState} from './desktop-demand-count.js';
 import {mountMapRoutePlanner} from './map-route-planner.js';
 import {mountMapAgentFilter} from './map-agent-filter.js';
+import {mapUnitTechnicians,unitTechniciansText} from './map-unit-technicians.js';
 let current=null,generation=0;
 let hardwareUnits=new Map(),paintFrame=null;
 function schedulePaint(){if(!current||paintFrame!==null)return;paintFrame=requestAnimationFrame(()=>{paintFrame=null;paintHardware();});}
@@ -58,12 +59,14 @@ function paintHardware(){
  if(mapStatus){const hidden=demandReady&&!pendingState.error,message=pendingState.error?'Demandas: consulta indisponível. Última leitura preservada.':'Consultando demandas abertas…';if(mapStatus.hidden!==hidden)mapStatus.hidden=hidden;if(mapStatus.textContent!==message)mapStatus.textContent=message;}
  for(const [id,entry] of context.markers){const alert=hardwareUnits.get(id),pending=alert?.pending||0,demands=alert?.demands||0;
   const openDemands=counts.get(id)||0,accepted=acceptedCounts.get(id)||0,node=entry.marker.getElement(),position=entry.marker.getLatLng();
-  const paintKey=JSON.stringify([entry.name,entry.type,entry.color,entry.students,entry.seats,pending,demands,openDemands,accepted,!!pendingState.error,position.lat,position.lng]);
+  const technicianText=unitTechniciansText(context.technicians,id,openDemands);
+  const paintKey=JSON.stringify([entry.name,entry.type,entry.color,entry.students,entry.seats,pending,demands,openDemands,accepted,technicianText,!!pendingState.error,position.lat,position.lng]);
   if(entry.paintKey===paintKey&&entry.paintedNode===node)continue;
   entry.paintKey=paintKey;entry.paintedNode=node;
   entry.label.textContent=entry.name+' · '+entry.type+'\nAlunos: '+mapFigure(entry.students)+'\nVagas disponíveis: '+mapFigure(entry.seats)+(pending?'\n'+pending+' alteração(ões) de hardware aguardando decisão':'')+(openDemands?'\n'+openDemands+' demanda(s) aberta(s)':'');
   if(pendingState.error&&openDemands)entry.label.textContent+=' · Demandas: última leitura, atualização indisponível';
   if(accepted)entry.label.textContent+='\n'+accepted+' atendimento(s) aceito(s) · A caminho ou em atendimento';
+  if(technicianText)entry.label.textContent+='\n'+technicianText;
   if(entry.marker.options.fillColor!==entry.color)entry.marker.setStyle({fillColor:entry.color});
   if(node){node.dataset.unitId=id;node.dataset.unitType=entry.type;node.dataset.hardwareState=pending?'pending':demands?'demand':'none';node.setAttribute('aria-label',entry.label.textContent);node.setAttribute('role','button');node.setAttribute('tabindex','0');node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.marker.fire('click',{keyboard:true});}};}
   // O aviso pertence à coordenada da unidade; nunca à posição fixa da tela.
@@ -79,6 +82,7 @@ function paintHardware(){
    entry.demandNotice.setLatLng(entry.marker.getLatLng());const ring=entry.demandNotice.getElement();
    if(ring){ring.dataset.unitId=id;ring.dataset.demands=String(openDemands);ring.dataset.attending=String(accepted>0);ring.dataset.stale=String(!!pendingState.error);ring.setAttribute('role','button');ring.setAttribute('aria-label',entry.label.textContent+' · Abrir demandas desta unidade');ring.title=entry.label.textContent+' · Abrir demandas desta unidade';ring.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();entry.demandNotice.fire('click',{keyboard:true});}};}
   }else if(entry.demandNotice){context.unitGroup.removeLayer(entry.demandNotice);entry.demandNotice=null;}
+  for(const target of [entry.marker,entry.notice,entry.demandNotice])if(target?.isTooltipOpen())target.setTooltipContent(target===entry.marker?entry.label:()=>entry.label.cloneNode(true));
  }
 }
 const preference={base:'streets',boundary:false,camera:null,examples:true};
@@ -133,7 +137,15 @@ export async function mountMap(container,{units=[],selected=null,onSelect=()=>{}
   const L=window.L;if(!L)throw new Error('Biblioteca cartográfica indisponível');
   const map=L.map(container,{zoomControl:false,attributionControl:true,scrollWheelZoom:false,minZoom:8,maxZoom:19,preferCanvas:false});
   const context={map,container,geometry:data,layer:null,boundary:null,observer:null,markerCount:0,examplesData:examples,exampleCount:0,examplesLayer:L.layerGroup(),markers:new Map(),unitGroup:L.featureGroup().addTo(map),onSelect};current=context;
-  if(technical)context.stopDispatch=mountDispatchMap(map,container);
+  if(technical){
+   context.technicians={enabled:true,ready:false,error:false,units:new Map()};
+   context.stopDispatch=mountDispatchMap(map,container,{onAssignments:result=>{
+    if(current!==context)return;
+    try{if(result.error)throw Error();context.technicians={enabled:true,ready:true,error:false,units:mapUnitTechnicians(result.routes)};}
+    catch{context.technicians={...context.technicians,error:true};}
+    schedulePaint();
+   }});
+  }
   if(technical&&container.closest('.panorama'))context.planner=mountMapRoutePlanner(context,identity);
   if(container.closest('.panorama')&&identity())context.agentFilter=mountMapAgentFilter(context,()=>updateMarkers(context.sourceUnits||[],context.selected));
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');

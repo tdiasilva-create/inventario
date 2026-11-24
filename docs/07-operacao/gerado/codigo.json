@@ -3,9 +3,9 @@
   "files": [
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4990,
-      "lines": 174,
-      "sha256": "c9752dc426e4d94e513244115a8d012a338f55a7001df522566e4e72d66201d5",
+      "bytes": 5635,
+      "lines": 198,
+      "sha256": "294d8f0a5b78f1f7e86ba4b8b4b2e83bc6c79dc2e4e54c61182518df2e1bac67",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -635,9 +635,9 @@
     },
     {
       "path": "scripts/build-desktop.mjs",
-      "bytes": 6942,
+      "bytes": 7066,
       "lines": 55,
-      "sha256": "48fbbe75aaf66eed46c79e6899f62efcd1e4db1f2adbee199c495ec08155afe5",
+      "sha256": "f830c66507f6b37e9a3c9f3fb7dbfcb7c9c1ae0d2bc640bb8c808b024458feb6",
       "imports": [
         "../shared/mobile-assets.mjs",
         "./bundle-collector.mjs",
@@ -1395,9 +1395,9 @@
     },
     {
       "path": "scripts/test-audit-browser.mjs",
-      "bytes": 1210,
+      "bytes": 1405,
       "lines": 21,
-      "sha256": "72c5610f42fd95c0a0bad16559ed1e0fdc57e086a8c32df83333eb58ed1d0a24",
+      "sha256": "e4721c7042e81b2503ddb0854063c80b09304c6bff2e20d9389534c5de8b6fc9",
       "imports": [
         "node:child_process"
       ],
@@ -2587,6 +2587,32 @@
       ]
     },
     {
+      "path": "server/collection-dispatch.mjs",
+      "bytes": 9445,
+      "lines": 82,
+      "sha256": "04bc479639fa0b8e4e553a382e87d6f4ad368670441804dfd22c20b375e58859",
+      "imports": [],
+      "exports": [
+        "collectionDispatchRoutes",
+        "collectionPurpose",
+        "collectionRoles",
+        "collectionTaskCondition",
+        "collectionTasksSql",
+        "readCollectionTasks"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/collection-designate",
+        "/api/dispatch/collection-options",
+        "/api/dispatch/collection-tasks",
+        "/api/dispatch/unit-request-create",
+        "/api/dispatch/unit-request-options"
+      ]
+    },
+    {
       "path": "server/collection-equality.mjs",
       "bytes": 1587,
       "lines": 25,
@@ -2808,15 +2834,17 @@
     },
     {
       "path": "server/dispatch-road-routing.mjs",
-      "bytes": 9912,
-      "lines": 94,
-      "sha256": "e9c22da57d5533f2797fe9a04c890822e0f8ee301d1766e0c55046b6b6f88ad3",
+      "bytes": 11849,
+      "lines": 110,
+      "sha256": "a033c89fc135d1556bf5bb8ff0289e9bf4edee1aa9f0595ef308eaa81be11372",
       "imports": [
         "./security.mjs",
         "./technician-tracking.mjs"
       ],
       "exports": [
+        "dispatchMapAssignmentsSql",
         "distanceMeters",
+        "previewRoadRoute",
         "readDispatchMap",
         "roadRoute",
         "routeCoordinates"
@@ -3145,6 +3173,29 @@
       ]
     },
     {
+      "path": "server/map-route-planner.mjs",
+      "bytes": 11173,
+      "lines": 94,
+      "sha256": "cab45872911f292a2ed4a4503d6ffd46102d29e9b7272f12c381865e6e836ec0",
+      "imports": [
+        "./dispatch-road-routing.mjs",
+        "./security.mjs"
+      ],
+      "exports": [
+        "insertMapRoute",
+        "mapRoutePlannerRoutes"
+      ],
+      "environment": [
+        "APP_KIND",
+        "DB"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/map-route-create",
+        "/api/dispatch/map-route-options",
+        "/api/dispatch/map-route-preview"
+      ]
+    },
+    {
       "path": "server/mobile-app.mjs",
       "bytes": 1980,
       "lines": 29,
@@ -3464,11 +3515,12 @@
     },
     {
       "path": "server/service-desk.mjs",
-      "bytes": 20712,
-      "lines": 155,
-      "sha256": "245c40bb85ef494085089cfe907030b10379351620c7f0e4bad387886f8613d2",
+      "bytes": 21325,
+      "lines": 158,
+      "sha256": "0de145723e421b0a602b2649b98b4307b879186db3a889b334d2a5b85fe57df3",
       "imports": [
         "./agentes/presence.mjs",
+        "./collection-dispatch.mjs",
         "./demand-deletion.mjs",
         "./equipment-link-state.mjs",
         "./panel-read-cache.mjs"
@@ -3498,11 +3550,13 @@
     },
     {
       "path": "server/technical-dispatch.mjs",
-      "bytes": 19962,
-      "lines": 181,
-      "sha256": "6d3dd11dcca60c251d8d5f6cca62c7fbf073fc324e9db07a2a311ca6e5c8c159",
+      "bytes": 21033,
+      "lines": 187,
+      "sha256": "f97c8628b3796bacdee74f6811483e871932f466c2192c07d4f951ec07d01462",
       "imports": [
+        "./collection-dispatch.mjs",
         "./dispatch-road-routing.mjs",
+        "./map-route-planner.mjs",
         "./security.mjs",
         "./technician-avatars.mjs",
         "./technician-tracking.mjs"
@@ -3684,9 +3738,9 @@
     },
     {
       "path": "server/worker.mjs",
-      "bytes": 31043,
+      "bytes": 31091,
       "lines": 202,
-      "sha256": "d61807fae5baeda661b31849752f0cfcc19f6392ceab7b4a8d3aedfb666341b1",
+      "sha256": "af503f8c394705bc1f169631bc6d0dbfe6aa5d515af0720f21e63442287005d7",
       "imports": [
         "../shared/mobile-assets.mjs",
         "./agent-monitoring.mjs",
@@ -3749,6 +3803,7 @@
         "/api/collector/photo-upload",
         "/api/dispatch/",
         "/api/dispatch/avatar",
+        "/api/dispatch/map-route-create",
         "/api/mobile/me",
         "/api/mobile/units",
         "/api/operations/",
@@ -4108,6 +4163,55 @@
       ],
       "apiLiterals": [
         "/api/collection-control"
+      ]
+    },
+    {
+      "path": "tests/collection-designation-browser.cjs",
+      "bytes": 6460,
+      "lines": 40,
+      "sha256": "b0d884c983def05ff71b5295e83f1c9469a327e76069ffa4c68d2069105d6ff3",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/dispatch/collection-tasks"
+      ]
+    },
+    {
+      "path": "tests/collection-dispatch.test.mjs",
+      "bytes": 11250,
+      "lines": 115,
+      "sha256": "480c32ffb5852f436e027594f1b15d0f50b9b4ec89163cf65adae1da80cb31f8",
+      "imports": [
+        "../server/collection-dispatch.mjs",
+        "../server/security.mjs",
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/equipment-consultation.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/assign",
+        "/api/dispatch/collection-designate",
+        "/api/dispatch/collection-options?unitId=",
+        "/api/dispatch/collection-tasks?unitIds=",
+        "/api/operations/request-delete",
+        "/api/operations/request-delete-preview?id=",
+        "/api/operations/request-save",
+        "/api/operations/requests?id=",
+        "/api/technician/accept",
+        "/api/technician/complete",
+        "/api/technician/queue"
       ]
     },
     {
@@ -4783,9 +4887,9 @@
     },
     {
       "path": "tests/d1-usage.test.mjs",
-      "bytes": 7761,
+      "bytes": 7814,
       "lines": 70,
-      "sha256": "41f8ce0fd403a4d0ccb428c66355296aeb8c8a6809ece55c91a0d43dabece905",
+      "sha256": "745f8ed9e4ed4ecfeb92e3aeb644f27de5647ac79f213a39983c6c5445464852",
       "imports": [
         "../server/d1-usage.mjs",
         "../server/worker.mjs",
@@ -5864,6 +5968,40 @@
       ]
     },
     {
+      "path": "tests/map-agent-filter-browser.cjs",
+      "bytes": 7517,
+      "lines": 35,
+      "sha256": "f9239907767d5744708418aec4a5102d2ba6548d6fe580b499701fd12b459430",
+      "imports": [
+        "./helpers/equipment-consultation.mjs",
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/operations/units"
+      ]
+    },
+    {
+      "path": "tests/map-agent-filter.test.mjs",
+      "bytes": 3890,
+      "lines": 36,
+      "sha256": "3a8b7838cbcffefbf1b46b2d66d374072e5ea5cc4d9e367aed89ff974b157250",
+      "imports": [
+        "../server/service-desk.mjs",
+        "../web/map-agent-filter.js",
+        "./helpers/collector-db.mjs",
+        "./helpers/equipment-consultation.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "tests/map-browser.cjs",
       "bytes": 6977,
       "lines": 51,
@@ -5928,6 +6066,100 @@
       "exports": [],
       "environment": [],
       "apiLiterals": []
+    },
+    {
+      "path": "tests/map-route-planner-browser.cjs",
+      "bytes": 8723,
+      "lines": 39,
+      "sha256": "b72a1501c7b925f55a7b0212d6ceb2cf2faadb44fac8613c1a24a8caab0fc8ac",
+      "imports": [
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [
+        "ROUTING_FETCH"
+      ],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/map-route-planner.test.mjs",
+      "bytes": 8935,
+      "lines": 58,
+      "sha256": "160f74fbf373b071c042f8df6fdda09a8c886f595e6c887ede266ac5ef4175d2",
+      "imports": [
+        "../server/map-route-planner.mjs",
+        "../server/security.mjs",
+        "../server/technical-dispatch.mjs",
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND",
+        "ROUTING_FETCH"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/map-route-create",
+        "/api/dispatch/map-route-options",
+        "/api/dispatch/map-route-options?technicianId=",
+        "/api/dispatch/map-route-preview",
+        "/api/technician/accept",
+        "/api/technician/queue"
+      ]
+    },
+    {
+      "path": "tests/map-unit-technicians-browser.cjs",
+      "bytes": 7185,
+      "lines": 40,
+      "sha256": "8eab81472b49d37f361a4f458994aafbaab2211dfd2aef242b05fcba604284d4",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/panel-browser.cjs",
+        "./helpers/routing-provider.mjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [
+        "ROUTING_FETCH"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/assign",
+        "/api/dispatch/map",
+        "/api/dispatch/technician",
+        "/api/operations/request-save",
+        "/api/technician/accept"
+      ]
+    },
+    {
+      "path": "tests/map-unit-technicians.test.mjs",
+      "bytes": 5971,
+      "lines": 60,
+      "sha256": "cb0420e3e23e8116af51dbebb2aee8ef0d78536d9d677688bcc7b976f6812aa8",
+      "imports": [
+        "../server/dispatch-road-routing.mjs",
+        "../server/technical-dispatch.mjs",
+        "../web/map-unit-technicians.js",
+        "./helpers/agent-client.mjs",
+        "./helpers/dispatch-fixture.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/map",
+        "/api/operations/request-delete",
+        "/api/operations/request-delete-preview?id="
+      ]
     },
     {
       "path": "tests/mobile-app-browser.cjs",
@@ -7083,6 +7315,40 @@
       ]
     },
     {
+      "path": "tests/unit-agent-overview-browser.cjs",
+      "bytes": 7250,
+      "lines": 49,
+      "sha256": "70f15f3d3942ead307513f2b87381b5eb021887d608fb0b036b5da684c371c76",
+      "imports": [
+        "./helpers/equipment-consultation.mjs",
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": [
+        "/api/operations/units"
+      ]
+    },
+    {
+      "path": "tests/unit-agent-overview.test.mjs",
+      "bytes": 4084,
+      "lines": 40,
+      "sha256": "d94c917754795b18026addb639246c745f742bb072cc4671b1882b3d97d04ac6",
+      "imports": [
+        "../server/service-desk.mjs",
+        "../web/unit-agent-overview.js",
+        "./helpers/collector-db.mjs",
+        "./helpers/equipment-consultation.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "tests/unit-catalogue-browser.cjs",
       "bytes": 9357,
       "lines": 32,
@@ -7127,6 +7393,45 @@
         "/api/root/unit-save",
         "/api/root/units",
         "/api/units"
+      ]
+    },
+    {
+      "path": "tests/unit-demand-browser.cjs",
+      "bytes": 4698,
+      "lines": 26,
+      "sha256": "30cf857271614d571e0afbd0a11f4e98547e73eb096b7b7a3687bf6de1f7b787",
+      "imports": [
+        "./helpers/equipment-consultation.mjs",
+        "./helpers/panel-browser.cjs",
+        "node:assert/strict",
+        "node:fs"
+      ],
+      "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "tests/unit-demand.test.mjs",
+      "bytes": 4443,
+      "lines": 30,
+      "sha256": "2f38be3cfa2d59001247eb5fb39f22bf35e7578c2dbd2dad8428a1bac9750a09",
+      "imports": [
+        "../server/worker.mjs",
+        "./helpers/agent-client.mjs",
+        "./helpers/collector-db.mjs",
+        "./helpers/equipment-consultation.mjs",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "exports": [],
+      "environment": [
+        "APP_KIND"
+      ],
+      "apiLiterals": [
+        "/api/dispatch/collection-tasks?unitIds=",
+        "/api/dispatch/unit-request-create",
+        "/api/dispatch/unit-request-options?unitId=",
+        "/api/technician/queue"
       ]
     },
     {
@@ -7420,6 +7725,23 @@
       "apiLiterals": [
         "/api/auth/me",
         "/api/collection-control"
+      ]
+    },
+    {
+      "path": "web/collection-designation.js",
+      "bytes": 9541,
+      "lines": 75,
+      "sha256": "8438a28db68d3e0cdfe49696da19a21da8ef10130a5ff752bed92c688f99ecf7",
+      "imports": [
+        "./desktop-request.js"
+      ],
+      "exports": [
+        "createCollectionDesignations"
+      ],
+      "environment": [],
+      "apiLiterals": [
+        "/api/dispatch/",
+        "/api/dispatch/collection-tasks?unitIds="
       ]
     },
     {
@@ -7973,9 +8295,9 @@
     },
     {
       "path": "web/desktop-blocks.js",
-      "bytes": 2167,
+      "bytes": 2189,
       "lines": 34,
-      "sha256": "9f256a80f57a61bf6953419549c6b72bb0749f83b806e96489b21189591e45d1",
+      "sha256": "47bdb5d99219bc078da0ecaca50c5af36496a0d35eba5166115c81bc3f569242",
       "imports": [],
       "exports": [
         "updateBlocks"
@@ -8148,20 +8470,24 @@
     },
     {
       "path": "web/desktop-map.js",
-      "bytes": 22384,
-      "lines": 247,
-      "sha256": "69ca3be9e76a5aed7ec5131ec48d5102fd9f31d817f6d5c30c5eb8b11fa8f768",
+      "bytes": 24272,
+      "lines": 272,
+      "sha256": "104ac84bb6f97a694ba165358414fa311afede398f60c6c6afb2502ffaf3e529",
       "imports": [
         "./desktop-demand-count.js",
         "./desktop-icons.js",
         "./dispatch-map.js",
+        "./map-agent-filter.js",
         "./map-geography.js",
+        "./map-route-planner.js",
+        "./map-unit-technicians.js",
         "./unit-map-palette.js"
       ],
       "exports": [
         "changeBasemap",
         "collapseMap",
         "expandMap",
+        "filterMapSearchUnits",
         "fitMap",
         "focusUnit",
         "mountMap",
@@ -8348,11 +8674,12 @@
     },
     {
       "path": "web/desktop.js",
-      "bytes": 55202,
-      "lines": 343,
-      "sha256": "85a6b112e6a651c21bad2b41a3b020298405dce8e5b8d66f2c572df93891cc29",
+      "bytes": 56118,
+      "lines": 350,
+      "sha256": "acaab3be92b5e22e2eb9f71ad0e2d75cc46a9185df3e238296378f4c98be012f",
       "imports": [
         "./agent-connection.js",
+        "./collection-designation.js",
         "./collection-overview.js",
         "./desktop-agents.js",
         "./desktop-blocks.js",
@@ -8375,6 +8702,7 @@
         "./runtime-config.js",
         "./school-presence.js",
         "./spreadsheet-io.js",
+        "./unit-agent-overview.js",
         "./unit-equipment-map.js",
         "./unit-figures.js",
         "./unit-map-palette.js",
@@ -8399,9 +8727,9 @@
     },
     {
       "path": "web/dispatch-map.js",
-      "bytes": 5596,
+      "bytes": 5687,
       "lines": 63,
-      "sha256": "59c9cd5b44e21190c70af1684cac67b374988acf5137fd922d072e3a5002d737",
+      "sha256": "0a038abd6aaa69ae54d3749a9221c0a3aa4ac422875a7f9a43525b24d33d3865",
       "imports": [
         "./desktop-request.js",
         "./technician-avatar.js"
@@ -8427,9 +8755,9 @@
     },
     {
       "path": "web/dispatch.js",
-      "bytes": 8809,
+      "bytes": 8936,
       "lines": 31,
-      "sha256": "fcd6fa71c9c467930b5acf1172f401dc384e1902f854fe04119a5af6847f3495",
+      "sha256": "844fc491f40ed19bd8b032098755a290a1ad577b75df7d340b00afc23423cf98",
       "imports": [
         "./panel-confirm.js",
         "./panel-shell.js",
@@ -8593,6 +8921,22 @@
       ]
     },
     {
+      "path": "web/map-agent-filter.js",
+      "bytes": 5130,
+      "lines": 64,
+      "sha256": "3bb5f0fd5e4ea28567460834cb2ad78576017ffd30b911876a9f79d8c9c3e8dc",
+      "imports": [
+        "./map-geography.js",
+        "./unit-schema.js"
+      ],
+      "exports": [
+        "mountMapAgentFilter",
+        "unitsWithoutInternetAgent"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
       "path": "web/map-geography.js",
       "bytes": 914,
       "lines": 16,
@@ -8601,6 +8945,38 @@
       "exports": [
         "coordinatesForUnit",
         "geolocatedUnits"
+      ],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/map-route-planner.js",
+      "bytes": 14294,
+      "lines": 111,
+      "sha256": "145925d2f985432edadee57585dd173de9b78f49cfd449bc174fa58be4881adb",
+      "imports": [
+        "./desktop-request.js",
+        "./panel-confirm.js"
+      ],
+      "exports": [
+        "mountMapRoutePlanner"
+      ],
+      "environment": [],
+      "apiLiterals": [
+        "/api/dispatch/map-route-create",
+        "/api/dispatch/map-route-options",
+        "/api/dispatch/map-route-preview"
+      ]
+    },
+    {
+      "path": "web/map-unit-technicians.js",
+      "bytes": 1463,
+      "lines": 22,
+      "sha256": "487db909efcdfb15dc5a989c3b5318bf62c6667bf06b6607e4be3e11d800fea1",
+      "imports": [],
+      "exports": [
+        "mapUnitTechnicians",
+        "unitTechniciansText"
       ],
       "environment": [],
       "apiLiterals": []
@@ -8727,9 +9103,9 @@
     },
     {
       "path": "web/painel.css",
-      "bytes": 123068,
-      "lines": 1183,
-      "sha256": "bfe2c14f1cffbc88984b86f2b26fb889dfe43de853300adf4a2ee0d4faf61e17",
+      "bytes": 134442,
+      "lines": 1301,
+      "sha256": "428bcfa08065af60f618c3941a382c45506a9e1372d3e59615c868171901894f",
       "imports": [],
       "exports": [],
       "environment": [],
@@ -8850,9 +9226,9 @@
     },
     {
       "path": "web/panel-unit-search.js",
-      "bytes": 5325,
+      "bytes": 5363,
       "lines": 60,
-      "sha256": "4e4d1b52f2798d62065a7718ea3fb5138d6484cd6df4e8d266a03a2784014e7a",
+      "sha256": "e9f003900163e35403684406409b87b9d36be7a842dc3448640b83d766625776",
       "imports": [
         "./desktop-icons.js",
         "./desktop-request.js",
@@ -9104,6 +9480,23 @@
       "sha256": "e9d2b170b9adca15390fda614bdd62e109380da1cadb856d70bb40aca06c0765",
       "imports": [],
       "exports": [],
+      "environment": [],
+      "apiLiterals": []
+    },
+    {
+      "path": "web/unit-agent-overview.js",
+      "bytes": 7142,
+      "lines": 89,
+      "sha256": "81e662104f2b5c44a4789452c911074a7d7302c965ff2bbfd1e7f8e19203b85f",
+      "imports": [
+        "./collection-designation.js",
+        "./unit-schema.js"
+      ],
+      "exports": [
+        "createUnitAgentOverview",
+        "findAgentUnits",
+        "unitAgentGroups"
+      ],
       "environment": [],
       "apiLiterals": []
     },
