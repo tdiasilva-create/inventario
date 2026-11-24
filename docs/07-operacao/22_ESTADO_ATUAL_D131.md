@@ -1,0 +1,11 @@
+# Estado D131 — 24/11/2026
+
+Complementa [D130](21_ESTADO_ATUAL_D130.md). **Sem agente 0.1.9** fica diretamente nos controles do mapa do Panorama, normal ou ampliado. Basta um computador com vínculo atual e capacidade `network_test_protocol=1` para ocultar a unidade, mesmo offline ou com outros agentes antigos. Criar rota continua independente e utiliza os marcadores visíveis. [Contrato](../03-painel-desktop/FILTRO_AGENTE_INTERNET_D131.md), [testes e publicação](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md).
+
+Publicado com autorização expressa em **24/11/2026 às 14:08:22 Fortaleza**, painel `de6b5594-a28f-4aeb-a438-e94c5fa4dbb1`, 100%; commit funcional `f19628f`, branch `codex/filtro-agente-internet-d131`. **381 testes**, regressões de navegador, build e **64 verificações HTTP** aprovados. Conferência root oficial comparou os nomes: 77 marcadores antes, 32 compatíveis ocultados, 45 restantes; desligar/restaurar o filtro funcionou. Contagens podem mudar conforme novos vínculos e comunicação dos agentes.
+
+São **37 migrações**, sem alteração de esquema. Coletor independente permanece `a1ff9077-58ac-4799-b733-5d88605c58da`; APK 1.0.4, GPS, alertas, permissões e plano gratuito preservados. `internet_test_capable` é agregado em memória na leitura existente `/api/operations/units`; nenhum SQL, join, polling ou requisição adicional por clique. A capacidade permanece fresca junto à presença, não no cache estático de catálogo/vínculos. Falhas conservam última leitura com aviso, nunca viram ausência fictícia.
+
+Na migração física, preservar declaração autenticada de capacidade, vínculo atual por ID, exclusões/revogações, elegibilidade de computador e relação com unidade. Não substituir por texto da versão nem exigir comunicação online. Manter reutilização do pulso existente e busca local coerente com o filtro. Nenhuma alteração do protocolo do agente foi necessária.
+
+Rollback para D130 `c516cd99-c3d0-4480-b5ef-aaaf1383e5ed` remove o controle e o campo agregado, sem restauração de banco ou alteração de demandas. Evidências reais em `private-data/d131/`, fora do repositório. Não houve escrita de cadastro/demanda de teste em produção nem nova homologação física de GPS/instalador.

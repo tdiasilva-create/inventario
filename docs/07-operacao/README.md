@@ -1,6 +1,6 @@
 # Operação, manutenção e migração
 
-Referência atual: **24/11/2026, até D130**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](21_ESTADO_ATUAL_D130.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D130 já foram publicados; a preparação anterior de auditoria é histórica.
+Referência atual: **24/11/2026, até D131**. São **37 migrações**, 102 tabelas de aplicação, 78 índices explícitos, quatro views e 147 triggers, derivados em SQLite vazio. [Estado consolidado e versões](22_ESTADO_ATUAL_D131.md). [Entrada para auditoria independente](../08-auditoria/README.md). Os guias datados e adendos mantêm o histórico; contagens D110/D122 não representam a entrega atual. D123–D131 já foram publicados; a preparação anterior de auditoria é histórica.
 
 | Guia | Uso |
 |---|---|

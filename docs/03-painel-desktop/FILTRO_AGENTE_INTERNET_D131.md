@@ -1,6 +1,6 @@
 # D131 — filtro independente de agentes para testes de internet
 
-24/11/2026. Implementação local, ainda não publicada. [Verificações](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md).
+24/11/2026. Publicado após autorização expressa, com conferência root real. [Verificações](../05-qualidade/FILTRO_AGENTE_D131_2026-11-24.md).
 
 ## Decisão e experiência
 
@@ -26,4 +26,4 @@ Arquivos: `server/service-desk.mjs`; `web/map-agent-filter.js`, `desktop-map.js`
 
 ## Publicação
 
-Preparado para publicar somente o Worker do painel após autorização específica. Produção continua D130 `c516cd99-c3d0-4480-b5ef-aaaf1383e5ed`. Sem migração; rollback de código remove o filtro sem alterar demandas ou dados. A autorização anterior de D130 publicou o criador de rotas, não esta nova alteração de filtro.
+Publicado somente o Worker do painel após autorização específica de D131, em 24/11/2026 às 14:08:22 Fortaleza. Versão `de6b5594-a28f-4aeb-a438-e94c5fa4dbb1` em 100%; commit funcional `f19628f`. Sem migração; rollback para D130 `c516cd99-c3d0-4480-b5ef-aaaf1383e5ed` remove o filtro sem alterar demandas ou dados. Coletor independente e APK preservados. [Estado operacional](../07-operacao/22_ESTADO_ATUAL_D131.md).
