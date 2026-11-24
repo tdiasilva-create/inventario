@@ -469,3 +469,6 @@ Opção 1 publicada após autorização explícita em 17/11/2026 às 06:12 Forta
 
 ## D129 — atalho na página da unidade
 Publicado após autorização explícita em 17/11/2026 às 07:13:17 Fortaleza; painel 0933006b-fd3a-4b90-9622-2c037d0a46fc em 100%. Conferência root real concluída sem criar demanda de teste. Sem migração ou APK. [Estado](../05-qualidade/DEMANDA_UNIDADE_D129_2026-11-17.md). Nenhuma demanda oficial foi criada para teste. Demais decisões da auditoria continuam pendentes.
+
+## D130 — rota lateral local
+Implementação/testes concluídos em 24/11/2026. Falta autorização específica para publicar o Worker do painel e conferência autenticada após publicação. Não requer migração nem APK. [Estado e limites](../05-qualidade/CRIAR_ROTA_D130_2026-11-24.md). As demais pendências da auditoria continuam abertas.

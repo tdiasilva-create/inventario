@@ -193,3 +193,6 @@ O pedido usa “iniciar vínculo” para atribuir a visita a um usuário. A opç
 
 ## D129 — demanda geral não é designação de coleta
 O responsável corrigiu o local/nome do atalho: fica ao lado do nome na página da unidade e se chama Registrar nova demanda. D128 permanece na lista Sem agente vinculado. A restrição de uma designação de coleta aberta e de técnico com papel de coleta pertence a D128; atendimento geral mantém a elegibilidade da Central, inclusive técnico habilitado com papel visualizador. Não concede acesso de coleta. D095 não foi revogada: unidades com demanda aberta ainda abrem a Central pelo mapa. [Contrato](../03-painel-desktop/REGISTRAR_DEMANDA_UNIDADE_D129.md).
+
+## D130 — seleção temporária não redefine clique nem roteamento
+Durante o modo explícito Criar rota, clique no marcador/anel seleciona a unidade e não navega para a Central/ficha. Fora desse modo, D095 permanece. Preview é somente entre as unidades do rascunho; não finge posição do técnico nem otimiza a sequência. O acompanhamento D106 continua partindo do GPS após aceite. Precedência antes das pendências preserva o aceite operacional D126, mesmo com sessão/GPS vencidos; não usar apenas dispatch_attendances para escolher o atendimento protegido. [Contrato](../03-painel-desktop/CRIAR_ROTA_MAPA_D130.md).

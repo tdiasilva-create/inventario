@@ -52,6 +52,21 @@ async function limitedJson(response){
  try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>2500000)throw Error('size');chunks.push(value);}}finally{await reader.cancel();}
  const all=new Uint8Array(size);let at=0;for(const chunk of chunks){all.set(chunk,at);at+=chunk.byteLength;}return JSON.parse(new TextDecoder().decode(all));
 }
+// Explicit draft preview only. It shares the live routes' durable provider gate,
+// sends coordinates alone and never stores a technician position or a demand.
+export async function previewRoadRoute(env,points){
+ const now=Date.now(),token=crypto.randomUUID(),db=env.DB;
+ const gate=await db.prepare('UPDATE dispatch_routing_gate SET next_at=?,lease_until=?,token=? WHERE id=1 AND next_at<=? AND lease_until<=?').bind(now+1200,now+15000,token,now,now).run();
+ if(!gate.meta.changes)return {status:'waiting',message:'Outro trajeto está sendo calculado. Aguarde alguns segundos e tente novamente.'};
+ try{
+  const url=PROVIDER+points.map(([lat,lon])=>lon.toFixed(6)+','+lat.toFixed(6)).join(';')+'?overview=full&geometries=geojson&steps=false&alternatives=false&generate_hints=false&radiuses='+points.map(()=>SNAP_M).join(';');
+  const response=await (env.ROUTING_FETCH||fetch)(url,{redirect:'manual',signal:AbortSignal.timeout(9000),headers:{'User-Agent':'SEMED-Paco-Inventario/1.0 (+https://painel-semed-paco.secretaria-municipal-de-educa-o-de-pa-o-do-lumiar.workers.dev)','Accept':'application/json'}});
+  if(!response.ok){await response.body?.cancel();throw Error('provider');}
+  const route=validateRoute(await limitedJson(response),points);
+  return route?{status:'ready',...route,provider:'OSRM / OpenStreetMap'}:unavailable('NO_ROUTE','Não foi possível calcular as ruas. Confira as coordenadas das unidades.');
+ }catch{return unavailable('PROVIDER_UNAVAILABLE','Prévia de ruas indisponível. Você pode tentar novamente ou continuar sem a prévia.');}
+ finally{await db.prepare('UPDATE dispatch_routing_gate SET lease_until=0,token=NULL WHERE id=1 AND token=?').bind(token).run();}
+}
 // Called only after the Worker's authentication, root authorization and app isolation.
 export async function roadRoute(env,userId,{json}){
  const db=env.DB,c=await context(db,userId),now=Date.now();

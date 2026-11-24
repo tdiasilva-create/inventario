@@ -3,6 +3,7 @@ import {readDispatchMap,roadRoute} from './dispatch-road-routing.mjs';
 import {technicianAvatarRoutes} from './technician-avatars.mjs';
 import {cleanTracking,trackingCredential} from './technician-tracking.mjs';
 import {collectionDispatchRoutes,collectionPurpose,collectionRoles} from './collection-dispatch.mjs';
+import {mapRoutePlannerRoutes} from './map-route-planner.mjs';
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(v);
 const freshMs=180000;
 export async function cleanDispatchPositions(db,now=Date.now()){
@@ -60,6 +61,7 @@ export async function technicalDispatchRoutes(request,url,user,env,helpers){
  if(env.APP_KIND==='collector')return fail('Este módulo não pertence ao coletor.',403);
  const db=env.DB,admin=path.startsWith('/api/dispatch/'),root=user.role==='root';
  if(admin&&!root)return fail('Somente root organiza e acompanha os atendimentos.',403);
+ const planner=await mapRoutePlannerRoutes(request,url,user,env,helpers);if(planner)return planner;
  const collection=await collectionDispatchRoutes(request,url,user,env,helpers);if(collection)return collection;
  if(!admin&&!await isTechnician(db,user.id))return fail('Sua conta ainda não foi habilitada como técnico pelo root.',403);
  const avatar=await technicianAvatarRoutes(request,url,user,env,helpers);if(avatar)return avatar;

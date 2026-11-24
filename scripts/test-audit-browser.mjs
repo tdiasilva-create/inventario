@@ -8,7 +8,7 @@ const files=[
  'collection-control-browser.cjs','collection-overview-browser.cjs',
  'network-tests-browser.cjs','panel-unit-search-browser.cjs',
  'panorama-map-browser.cjs','equipment-consultation-browser.cjs',
- 'demand-activity-deletion-browser.cjs','unit-agent-overview-browser.cjs','collection-designation-browser.cjs','unit-demand-browser.cjs','technical-dispatch-browser.cjs','dispatch-road-routing-runtime.cjs'
+ 'demand-activity-deletion-browser.cjs','unit-agent-overview-browser.cjs','collection-designation-browser.cjs','unit-demand-browser.cjs','map-route-planner-browser.cjs','technical-dispatch-browser.cjs','dispatch-road-routing-runtime.cjs'
 ];
 const results=[];
 for(const name of files){

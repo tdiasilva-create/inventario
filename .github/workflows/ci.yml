@@ -183,3 +183,7 @@ jobs:
       - run: node tests/unit-demand-browser.cjs
         env:
           SEMED_TEST_BROWSER: chromium
+
+      - run: node tests/map-route-planner-browser.cjs
+        env:
+          SEMED_TEST_BROWSER: chromium

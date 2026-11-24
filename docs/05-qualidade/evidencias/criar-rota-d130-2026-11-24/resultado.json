@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "localOnly": true,
+  "selectionWithoutReads": true,
+  "ordered": true,
+  "retryIdempotent": true,
+  "gpsUnchanged": true,
+  "rootOnly": true,
+  "errors": []
+}

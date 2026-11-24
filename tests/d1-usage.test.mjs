@@ -6,7 +6,7 @@ import {session,humanFetch} from './helpers/agent-client.mjs';
 import worker from '../server/worker.mjs';
 const now=Date.parse('2026-11-13T12:00:00Z');
 const sum=(rowsRead=3500000,rowsWritten=85000)=>({rowsRead,rowsWritten});
-const result=(rowsRead,rowsWritten)=>({data:{viewer:{accounts:[{current:[{sum:sum(rowsRead,rowsWritten)}],recent:[{sum:sum(100000,2000)}],history:[{dimensions:{date:'2026-11-13'},sum:sum(rowsRead,rowsWritten)}]}]}}});
+const result=(rowsRead,rowsWritten,date='2026-11-13')=>({data:{viewer:{accounts:[{current:[{sum:sum(rowsRead,rowsWritten)}],recent:[{sum:sum(100000,2000)}],history:[{dimensions:{date},sum:sum(rowsRead,rowsWritten)}]}]}}});
 function kv(initial=null){let value=initial;return {gets:0,puts:0,async get(key){assert.equal(key,USAGE_KEY);this.gets++;return structuredClone(value);},async put(key,text,opts){assert.equal(opts.expirationTtl,604800);this.puts++;value=JSON.parse(text);},value:()=>value};}
 const env=cache=>({USAGE_CACHE:cache,USAGE_ACCOUNT_ID:'TEST-ACCOUNT',CLOUDFLARE_ANALYTICS_TOKEN:'TEST-ONLY'});
 test('D109: account-wide quota, precise 70/85/95 boundaries, reads and writes independently',()=>{
@@ -48,7 +48,7 @@ test('D109: failures preserve last real counts, classify errors without exposing
  const cache=kv();await refreshD1Usage(env(cache),now,{fetcher:async()=>{throw Error();}});assert.equal(usageView(cache.value(),now).metrics,null);
 });
 test('D109: root session, forced password, revocation, collector and methods validated by actual Worker',async()=>{
- const f=collectorFixture(),cache=kv({snapshot:parseUsage(result(),Date.now())}),e={...env(cache),DB:f.db,AUTH_PEPPER:'TEST-ONLY'};
+ const f=collectorFixture(),cache=kv({snapshot:parseUsage(result(undefined,undefined,usagePeriod(Date.now()).date),Date.now())}),e={...env(cache),DB:f.db,AUTH_PEPPER:'TEST-ONLY'};
  const origin='https://test.invalid',path='/api/root/d1-usage';try{
   const root=await session(f,f.root);assert.equal((await humanFetch(worker,e,origin,root,path)).status,200);
   const reads=cache.gets;for(const role of ['admin','visualizador','operador']){f.sqlite.prepare('UPDATE users SET role=? WHERE id=?').run(role,f.root.id);assert.equal((await humanFetch(worker,e,origin,root,path)).status,403);}assert.equal(cache.gets,reads);
